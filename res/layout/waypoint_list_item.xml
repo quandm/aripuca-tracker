@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" 
+	android:padding="3dp"
+	>
+
+	<LinearLayout 
+		android:orientation="vertical" 
+		android:layout_width="0dp"
+		android:layout_weight="4"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="4dp"
+		>
+
+		<TextView android:id="@+id/text1"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textSize="19dp"
+			android:layout_marginBottom = "3dp"
+		/>
+
+		<TextView android:id="@+id/text2"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:textSize="12dp" 
+		/>
+			
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:orientation="vertical" 
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:layout_height="wrap_content"
+		android:gravity="right"
+		>
+
+		<com.aripuca.tracker.view.CompassImage 
+			android:id="@+id/compassImage"
+			android:src="@drawable/arrow16"
+			android:layout_margin="5dp"
+			android:layout_width="20dp"
+			android:layout_height="20dp"
+		 />
+		 
+		<TextView android:id="@+id/text3"
+			android:paddingTop="3dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:textSize="12dp" 
+			android:textStyle="normal" />
+			
+	</LinearLayout>
+	
+</LinearLayout>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.aripuca.tracker" android:versionCode="1"
+	android:versionName="1.0.1">
+	
+	<!-- android:installLocation="preferExternal"  -->
+
+	<application android:icon="@drawable/icon" android:label="@string/main_app_title"
+		android:debuggable="true" android:name="com.aripuca.tracker.MyApp">
+
+		<uses-library android:name="com.google.android.maps" />
+
+		<activity android:name=".MainActivity"
+			android:label="@string/main_app_title"	
+			>
+			<!--  android:configChanges="keyboardHidden|orientation"  -->
+
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+
+		</activity>
+
+		<activity android:name=".TrackDetailsActivity"
+			android:label="@string/track_details_activity_title">
+		</activity>
+
+		<activity android:name=".WaypointsListActivity"
+			android:label="@string/waypoints_activity_title">
+		</activity>
+
+		<activity android:name=".TracksListActivity"
+			android:label="@string/tracks_activity_title">
+		</activity>
+
+		<activity android:name=".MyMapActivity"
+			android:label="@string/main_app_title" android:theme="@android:style/Theme.NoTitleBar">
+		</activity>
+
+		<activity android:label="@string/main_app_title"
+			android:name=".SettingsActivity">
+		</activity>
+
+		<service android:enabled="true" android:exported="false"
+			android:name=".GpsService" />
+
+	</application>
+
+	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="7" />
+
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+
+	<uses-feature android:name="android.hardware.location.gps"
+		android:required="true" />
+
+	<uses-feature android:name="android.hardware.sensor.compass"
+		android:required="true" />
+
+</manifest> 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<!-- ELEVATION -->
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
+
+			<TextView android:id="@+id/elevation" style="@style/SmallLabel">
+			</TextView>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/gain" style="@style/SmallHeader"></TextView>
+
+			<TextView android:id="@+id/elevationGain" style="@style/SmallLabel">
+			</TextView>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/loss" style="@style/SmallHeader"></TextView>
+
+			<TextView android:id="@+id/elevationLoss" style="@style/SmallLabel">
+			</TextView>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+

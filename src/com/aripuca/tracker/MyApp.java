@@ -1,0 +1,374 @@
+package com.aripuca.tracker;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import com.google.android.maps.GeoPoint;
+
+import android.app.Application;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.os.Environment;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
+
+/**
+ * 
+ */
+public class MyApp extends Application {
+
+	/**
+	 * gps on/off flag
+	 */
+	private boolean gpsOn = false;
+
+	private boolean gpsStateBeforeRotation = true;
+
+	/**
+	 * 
+	 */
+	private Track track;
+
+	/**
+	 * 
+	 */
+	private File waypointsFile = null;
+
+	/**
+	 * 
+	 */
+	private ArrayList<Waypoint> waypointList;
+
+	/**
+	 * 
+	 */
+	private Location currentLocation = null;
+
+	//	private float azimuth = 0;
+
+	private SQLiteDatabase db;
+
+	/**
+	 * is external storage available, ex: SD card
+	 */
+	public boolean externalStorageAvailable = false;
+
+	/**
+	 * is external storage writable
+	 */
+	public boolean externalStorageWriteable = false;
+
+	/**
+	 * 
+	 */
+	protected static MainActivity mainActivity;
+
+	/**
+	 * 
+	 */
+	protected static WaypointsListActivity waypointsListActivity;
+
+	/**
+	 * 
+	 */
+	private static TracksListActivity tracksListActivity;
+
+	/**
+	 * Android shared preferences
+	 */
+	private SharedPreferences preferences;
+
+	/**
+	 * 
+	 */
+	private static final String DATABASE_NAME = "AripucaTracker";
+
+	/**
+	 * 
+	 */
+	private String appDir;
+
+	/**
+	 * application database create/open helper class
+	 */
+	public class OpenHelper extends SQLiteOpenHelper {
+
+		private static final int DATABASE_VERSION = 1;
+
+		// private static final String NOTES_TABLE_NAME = "notes";
+
+		/**
+		 * tracks table name
+		 */
+		private static final String TRACKS_TABLE = "tracks";
+		/**
+		 * tracks table create sql
+		 */
+		private static final String TRACKS_TABLE_CREATE =
+				"CREATE TABLE " + TRACKS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"title TEXT NOT NULL," +
+						"descr TEXT," +
+						"activity INTEGER," +
+						"distance REAL," +
+						"total_time INTEGER," +
+						"moving_time INTEGER," +
+						"max_speed REAL," +
+						"max_elevation REAL," +
+						"min_elevation REAL," +
+						"elevation_gain REAL," +
+						"elevation_loss REAL," +
+						"recording INTEGER NOT NULL," +
+						"start_time INTEGER NOT NULL," +
+						"finish_time INTEGER)";
+
+		/**
+		 * track points table title
+		 */
+		private static final String TRACKPOINTS_TABLE = "track_points";
+		/**
+		 * track points table create sql
+		 */
+		private static final String TRACKPOINTS_TABLE_CREATE =
+				"CREATE TABLE " + TRACKPOINTS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"track_id INTEGER NOT NULL," +
+						"segment_id INTEGER," +
+						"lat REAL NOT NULL," +
+						"lng REAL NOT NULL," +
+						"accuracy REAL," +
+						"elevation REAL," +
+						"speed REAL," +
+						"time INTEGER NOT NULL)";
+
+		/**
+		 * waypoints sql table name
+		 */
+		private static final String WAYPOINTS_TABLE = "waypoints";
+
+		/**
+		 * waypointss table create sql
+		 */
+		private static final String WAYPOINTS_TABLE_CREATE =
+				"CREATE TABLE " + WAYPOINTS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+						"track_id INTEGER," +
+						"title TEXT NOT NULL, " +
+						"descr TEXT, " +
+						"lat REAL NOT NULL, " +
+						"lng REAL NOT NULL, " +
+						"accuracy REAL," +
+						"elevation REAL," +
+						"time INTEGER NOT NULL)";
+
+		OpenHelper(Context context) {
+			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+
+			db.execSQL(WAYPOINTS_TABLE_CREATE);
+			db.execSQL(TRACKS_TABLE_CREATE);
+			db.execSQL(TRACKPOINTS_TABLE_CREATE);
+
+		}
+
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
+			onCreate(db);
+
+		}
+
+	}
+
+	@Override
+	public void onCreate() {
+
+		// accessing preferences
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		waypointList = new ArrayList<Waypoint>();
+
+		OpenHelper openHelper = new OpenHelper(getApplicationContext());
+
+		// SQLiteDatabase
+		db = openHelper.getWritableDatabase();
+
+		// checking access to SD card
+		String state = Environment.getExternalStorageState();
+
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			// We can read and write the media
+			externalStorageAvailable = externalStorageWriteable = true;
+		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			// We can only read the media
+			externalStorageAvailable = true;
+			externalStorageWriteable = false;
+		} else {
+			// Something else is wrong. It may be one of many other states, but
+			// all we need to know is we can neither read nor write
+			externalStorageAvailable = externalStorageWriteable = false;
+		}
+
+		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
+				+ getString(R.string.main_app_title_code);
+
+		super.onCreate();
+		
+		//TODO: add a few popular waypoints on first start
+
+	}
+
+	public String getAppDir() {
+		return appDir;
+	}
+
+	public SQLiteDatabase getDatabase() {
+		return db;
+	}
+
+	public SharedPreferences getPreferences() {
+		return preferences;
+	}
+
+	/**
+	 * 
+	 */
+	public void setWaypointsFile(File f) {
+		waypointsFile = f;
+	}
+
+	/**
+	 * 
+	 */
+	public File getWaypointFile() {
+		return waypointsFile;
+	}
+
+	/**
+	 * 
+	 */
+	public void setCurrentLocation(Location cl) {
+		currentLocation = cl;
+	}
+
+	/**
+	 * 
+	 */
+	public Location getCurrentLocation() {
+		return currentLocation;
+	}
+
+	/**
+	 * Get application version name
+	 * 
+	 * @param context
+	 */
+	public static String getVersionName(Context context) {
+
+		PackageInfo packageInfo;
+		try {
+			packageInfo = context.getPackageManager().getPackageInfo(
+					context.getPackageName(), 0);
+			return packageInfo.versionName;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public void setMainActivity(MainActivity ma) {
+
+		mainActivity = ma;
+
+	}
+
+	public MainActivity getMainActivity() {
+
+		return mainActivity;
+
+	}
+
+	public void setWaypointsListActivity(WaypointsListActivity wa) {
+		waypointsListActivity = wa;
+	}
+
+	public void setTracksListActivity(TracksListActivity ta) {
+		tracksListActivity = ta;
+	}
+
+	public WaypointsListActivity getWaypointsListActivity() {
+		return waypointsListActivity;
+	}
+
+	// -------------------------------------------------------------------------
+	// TRACK RECORDING
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Return active track object
+	 */
+	public Track getTrack() {
+		return this.track;
+	}
+
+	public void startTrackRecording() {
+		this.track = new Track(this);
+	}
+
+	public void stopTrackRecording() {
+		this.track.stopRecording();
+		this.track = null;
+	}
+
+	public boolean isGpsOn() {
+
+		return this.gpsOn;
+
+	}
+
+	public void setGpsStateBeforeRotation() {
+
+		gpsStateBeforeRotation = this.gpsOn;
+
+	}
+
+	public boolean getGpsStateBeforeRotation() {
+
+		return gpsStateBeforeRotation;
+
+	}
+
+	public void setGpsOn(boolean flag) {
+
+		this.gpsOn = flag;
+
+	}
+
+	private boolean activityRestarting = false;
+
+	public boolean isActivityRestarting() {
+		return activityRestarting;
+	}
+
+	public void setActivityRestarting(boolean activityRestarting) {
+		this.activityRestarting = activityRestarting;
+	}
+
+}

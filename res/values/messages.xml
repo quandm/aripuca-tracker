@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="recording_started">Track recording started</string>
+	<string name="recording_paused">Track recording paused</string>
+	<string name="recording_resumed">Track recording resumed</string>
+	<string name="recording_finished">Track saved</string>
+
+	<string name="waypoint_title_required">Waypoint title required</string>
+	<string name="waypoint_saved">Waypoint saved</string>
+	<string name="waypoint_updated">Waypoint updated</string>
+	<string name="waypoint_deleted">Waypoint deleted</string>
+	<string name="all_waypoints_deleted">All waypoints deleted</string>
+
+	<string name="track_title_required">Track title required</string>
+	<string name="edit_track">Edit track</string>
+	<string name="track_updated">Track updated</string>
+	<string name="track_deleted">Track deleted</string>
+	<string name="all_tracks_deleted">All tracks deleted</string>
+
+	<string name="select_file">Select file</string>
+
+	<string name="memory_card_not_found">Memory card not found</string>
+	<string name="memory_card_not_writable">No write access to memory card</string>
+	
+	<string name="select_tracking_mode">Select tracking mode</string>
+	
+	<string name="are_you_sure">Are you sure?</string>
+	
+	<string name="username_or_password_required">User name and password required</string>
+	<string name="stop_track_recording">Please stop track recording</string>
+	<string name="click_again_to_exit">Click again to exit</string>
+	
+</resources>

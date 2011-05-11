@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent">
+
+	<com.google.android.maps.MapView
+		android:id="@+id/mapview" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:clickable="true"
+		android:apiKey="0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ" />
+
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:orientation="vertical"
+		android:background="#33000000" android:padding="2dp">
+
+		<TextView android:id="@+id/distance" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:textColor="#FF000000">
+		</TextView>
+
+	</LinearLayout>
+
+</FrameLayout>
+
+<!-- HOME-WKS7 MD5 key: 37:C0:95:E3:AD:DC:00:4C:55:0C:13:61:0B:EB:1E:6E MAP 
+	KEY: 0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ -->
+
+<!-- WORK-WKS MD5 key: 86:BA:B4:1A:8F:3F:F6:75:38:0F:21:20:05:21:65:A5 MAP 
+	KEY: 0XQ_7l3D8Jr66WwnVufO-sgRrIcVuJxLy_O6bDg -->
