@@ -47,8 +47,9 @@ public class Track {
 	/**
 	 * Id of the current track segment
 	 */
-	protected int segmentId = 0;
-	protected boolean segmentStarted = true;
+	private int segmentId = 0;
+	private long segmentDistance = 0; 
+	private long recordedSegmentDistance = 0; 
 
 	/**
 	 * recording start time
@@ -88,7 +89,7 @@ public class Track {
 		this.myApp = myApp;
 
 		this.trackTimeStart = (new Date()).getTime();
-		
+
 		this.saveNewTrack();
 
 	}
@@ -178,9 +179,11 @@ public class Track {
 	 * Id of the track being recorded
 	 */
 	private long trackId;
+
 	public void setTrackId(long tid) {
 		this.trackId = tid;
 	}
+
 	public long getTrackId() {
 		return this.trackId;
 	}
@@ -247,12 +250,12 @@ public class Track {
 
 		this.currentSystemTime = SystemClock.uptimeMillis();
 
-		if (this.startTime==0) {
+		if (this.startTime == 0) {
 			this.startTime = this.currentSystemTime;
 		}
 
 		this.processPauseTime();
-		
+
 		if (this.trackingPaused) {
 			// after resuming the recording we will start measuring distance from saved location
 			this.currentLocation = location;
@@ -266,50 +269,63 @@ public class Track {
 
 		// save current location once distance is incremented
 		this.currentLocation = location;
-		
-		this.processIdleTime(this.currentLocation);
-		
-		this.processElevation(this.currentLocation);
 
-		this.processSpeed(this.currentLocation);
+		this.segmentTrack();
+
+		this.processIdleTime();
+
+		this.processElevation();
+
+		this.processSpeed();
 
 		// add new track point to db
 		this.recordTrackPoint(this.currentLocation);
 
 	}
 	
-	private void processPauseTime() {
+	private void segmentTrack() {
 		
+		// let's segment our track every MAX_SEGMENT_DISTANCE
+		segmentDistance = Math.round(this.distance);
+		if (segmentDistance % Constants.MAX_SEGMENT_DISTANCE == 0 && recordedSegmentDistance != segmentDistance) {
+			this.segmentId++;
+			recordedSegmentDistance = segmentDistance;
+		}
+		
+	}
+
+	private void processPauseTime() {
+
 		if (this.trackingPaused) {
-			
+
 			// if idle interval started increment total idle time
 			if (this.idleTimeStart != 0) {
 				this.totalIdleTime += this.currentSystemTime - this.idleTimeStart;
 				this.idleTimeStart = 0;
 			}
 
-			if (this.pauseTimeStart!=0) {
+			if (this.pauseTimeStart != 0) {
 				this.totalPauseTime += this.currentSystemTime - this.pauseTimeStart;
 			}
-			
+
 			// saving new pause time start
 			this.pauseTimeStart = this.currentSystemTime;
 
 		} else {
-			
-			if (this.pauseTimeStart!=0) {
+
+			if (this.pauseTimeStart != 0) {
 				this.totalPauseTime += this.currentSystemTime - this.pauseTimeStart;
 			}
-			
-			this.pauseTimeStart = 0;		
+
+			this.pauseTimeStart = 0;
 		}
-		
+
 	}
 
-	private void processIdleTime(Location location) {
+	private void processIdleTime() {
 
 		// updating idle time in track
-		if (location.getSpeed() < Constants.MIN_SPEED) {
+		if (this.currentLocation.getSpeed() < Constants.MIN_SPEED) {
 
 			// if idle interval started increment total idle time 
 			if (this.idleTimeStart != 0) {
@@ -319,22 +335,22 @@ public class Track {
 			this.idleTimeStart = this.currentSystemTime;
 
 		} else {
-		
+
 			// increment total idle time with already started interval  
 			if (this.idleTimeStart != 0) {
 				this.totalIdleTime += this.currentSystemTime - this.idleTimeStart;
 				this.idleTimeStart = 0;
 			}
-			
+
 		}
 
 	}
 
-	private void processElevation(Location location) {
+	private void processElevation() {
 
 		// processing elevation data
-		if (location.hasAltitude()) {
-			double e = location.getAltitude();
+		if (this.currentLocation.hasAltitude()) {
+			double e = this.currentLocation.getAltitude();
 			// max elevation
 			if (this.maxElevation < e) {
 				this.maxElevation = e;
@@ -358,12 +374,12 @@ public class Track {
 		}
 	}
 
-	private void processSpeed(Location location) {
+	private void processSpeed() {
 
 		// calculating max speed
-		if (location.hasSpeed()) {
+		if (this.currentLocation.hasSpeed()) {
 
-			float s = location.getSpeed();
+			float s = this.currentLocation.getSpeed();
 
 			if (s == 0) {
 				s = this.getAverageSpeed();

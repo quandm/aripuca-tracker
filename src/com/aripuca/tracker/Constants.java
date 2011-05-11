@@ -15,7 +15,10 @@ public abstract class Constants {
 	 */
 	public static final int MIN_DISTANCE = 8; // meters
 	
-	public static final double MIN_SPEED = 0.224;
+	public static final double MIN_SPEED = 0.224; // meters per second
+
+	public static final double MAX_SEGMENT_DISTANCE = 5000; //meters
+
 	
 
 }
