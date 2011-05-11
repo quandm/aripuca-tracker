@@ -222,10 +222,6 @@ public class Track {
 
 		this.trackingPaused = false;
 
-		// pause will always start new segment
-		this.segmentId++;
-		// segment id will not be incremented again when speed is still zero (see updateStatistics)
-		this.segmentStarted = false;
 	}
 
 	/**
@@ -322,16 +318,8 @@ public class Track {
 			// save start idle time
 			this.idleTimeStart = this.currentSystemTime;
 
-			// increment segment id only if speed changes from non-zero to zero
-			if (segmentStarted) {
-				segmentId++;
-				segmentStarted = false;
-			}
-
 		} else {
 		
-			segmentStarted = true;
-			
 			// increment total idle time with already started interval  
 			if (this.idleTimeStart != 0) {
 				this.totalIdleTime += this.currentSystemTime - this.idleTimeStart;
