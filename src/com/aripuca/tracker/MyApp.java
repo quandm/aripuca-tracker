@@ -22,6 +22,7 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -105,7 +106,7 @@ public class MyApp extends Application {
 	 */
 	public class OpenHelper extends SQLiteOpenHelper {
 
-		private static final int DATABASE_VERSION = 1;
+		private static final int DATABASE_VERSION = 2;
 
 		// private static final String NOTES_TABLE_NAME = "notes";
 
@@ -146,6 +147,7 @@ public class MyApp extends Application {
 						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
 						"track_id INTEGER NOT NULL," +
 						"segment_id INTEGER," +
+						"distance REAL," +
 						"lat REAL NOT NULL," +
 						"lng REAL NOT NULL," +
 						"accuracy REAL," +
@@ -188,10 +190,23 @@ public class MyApp extends Application {
 
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
-			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
-			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
-			onCreate(db);
+			Log.w(Constants.TAG, "Upgrading database from version " + oldVersion + " to "
+					+ newVersion);
+			
+			if (oldVersion < 1) {
+				
+				db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
+				db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
+				db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
+				onCreate(db);
+				
+			} else {
+
+				// adding "distance" field to track points table
+				if (oldVersion == 1) {
+					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
+				}
+			}
 
 		}
 
@@ -205,7 +220,7 @@ public class MyApp extends Application {
 
 		waypointList = new ArrayList<Waypoint>();
 
-		OpenHelper openHelper = new OpenHelper(getApplicationContext());
+		OpenHelper openHelper = new OpenHelper(this);
 
 		// SQLiteDatabase
 		db = openHelper.getWritableDatabase();
@@ -230,7 +245,7 @@ public class MyApp extends Application {
 				+ getString(R.string.main_app_title_code);
 
 		super.onCreate();
-		
+
 		//TODO: add a few popular waypoints on first start
 
 	}

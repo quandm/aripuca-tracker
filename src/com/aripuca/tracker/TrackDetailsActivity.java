@@ -63,17 +63,17 @@ public class TrackDetailsActivity extends Activity {
 		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 
 		// get track data
-		String sql = "SELECT *, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
+		String sql = "SELECT tracks.*, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
 				+ this.trackId + " AND tracks._id = track_points.track_id";
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
-		// average speed in meters per second
-		float averageSpeed = cursor.getFloat(cursor.getColumnIndex("distance"))
-				/ (cursor.getLong(cursor.getColumnIndex("total_time")) / 1000f);
-
 		float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
+		
+		// average speed in meters per second
+		float averageSpeed = distance / (cursor.getLong(cursor.getColumnIndex("total_time")) / 1000f);
+
 		long movingTime = cursor.getLong(cursor.getColumnIndex("moving_time"));
 
 		float averageMovingSpeed = 0;

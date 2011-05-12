@@ -460,6 +460,8 @@ public class Track {
 		values.put("speed", location.getSpeed());
 		values.put("time", (new Date()).getTime());
 		values.put("segment_id", segmentId);
+		values.put("distance", this.distance);
+		values.put("accuracy", location.getAccuracy());
 
 		try {
 

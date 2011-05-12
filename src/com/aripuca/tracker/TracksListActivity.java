@@ -152,7 +152,7 @@ public class TracksListActivity extends ListActivity {
 
 		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
 
-		cursorAdapter = new TracksCursorAdapter(this.getApplicationContext(), cursor, false);
+		cursorAdapter = new TracksCursorAdapter(this, cursor, false);
 		setListAdapter(cursorAdapter);
 
 	}

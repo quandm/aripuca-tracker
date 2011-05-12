@@ -13,7 +13,7 @@ public abstract class Constants {
 	/**
 	 * Minimum distance between 2 consecutive track points to be recorded
 	 */
-	public static final int MIN_DISTANCE = 10; // meters
+	public static final int MIN_DISTANCE = 5; // meters
 	
 	public static final double MIN_SPEED = 0.224; // meters per second
 

@@ -89,6 +89,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		pw.println("<extensions>");
 		pw.println("<speed>" + tpCursor.getFloat(tpCursor.getColumnIndex("speed")) + "</speed>");
+		pw.println("<distance>" + tpCursor.getFloat(tpCursor.getColumnIndex("distance")) + "</distance>");
 		pw.println("<segment_id>" + tpCursor.getInt(tpCursor.getColumnIndex("segment_id")) + "</segment_id>");
 		pw.println("</extensions>");
 
