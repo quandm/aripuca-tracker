@@ -48,8 +48,6 @@ public class Track {
 	 * Id of the current track segment
 	 */
 	private int segmentId = 0;
-	private long segmentDistance = 0; 
-	private long recordedSegmentDistance = 0; 
 
 	/**
 	 * recording start time
@@ -286,10 +284,8 @@ public class Track {
 	private void segmentTrack() {
 		
 		// let's segment our track every MAX_SEGMENT_DISTANCE
-		segmentDistance = Math.round(this.distance);
-		if (segmentDistance % Constants.MAX_SEGMENT_DISTANCE == 0 && recordedSegmentDistance != segmentDistance) {
+		if (this.distance/Constants.MAX_SEGMENT_DISTANCE > this.segmentId+1) {
 			this.segmentId++;
-			recordedSegmentDistance = segmentDistance;
 		}
 		
 	}

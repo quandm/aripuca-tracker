@@ -398,10 +398,6 @@ public class MainActivity extends Activity {
 		outState.putInt("distanceContainerId", distanceContainerCarousel.getCurrentContainerId());
 		outState.putInt("elevationContainerId", elevationContainerCarousel.getCurrentContainerId());
 		outState.putInt("coordinatesContainerId", coordinatesContainerCarousel.getCurrentContainerId());
-		
-		outState.putInt("coordinatesContainerId", coordinatesContainerCarousel.getCurrentContainerId());
-		
-		
 
 		outState.putString("pauseButtonText", ((Button) findViewById(R.id.pauseResumeTrackButton)).getText().toString());
 		outState.putBoolean("pauseButtonState", ((Button) findViewById(R.id.pauseResumeTrackButton)).isEnabled());
@@ -409,15 +405,9 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * 
+	 * Setting up listeners for application buttons
 	 */
 	private void initializeControlButtons() {
-
-		// setting up listeners for application buttons
-		// ((Button)
-		// findViewById(R.id.gpsServiceButton)).setOnClickListener(gpsServiceButtonClick);
-		// ((Button)
-		// findViewById(R.id.gpsServiceButton)).setOnLongClickListener(gpsServiceButtonLongClick);
 
 		((Button) findViewById(R.id.addWaypointButton)).setOnClickListener(addWaypointListener);
 
