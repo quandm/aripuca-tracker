@@ -169,7 +169,7 @@ public class MyMapActivity extends MapActivity {
 			
 			
 			// get track data
-			String sql = "SELECT *, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
+			String sql = "SELECT tracks.*, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
 					+ this.trackId + " AND tracks._id = track_points.track_id";
 
 			Cursor cursor = myApp.getDatabase().rawQuery(sql, null);

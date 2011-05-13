@@ -206,6 +206,7 @@ public class MyApp extends Application {
 				if (oldVersion == 1) {
 					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
 				}
+				
 			}
 
 		}
