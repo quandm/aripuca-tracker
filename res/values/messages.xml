@@ -20,7 +20,7 @@
 
 	<string name="select_file">Select file</string>
 
-	<string name="memory_card_not_found">Memory card not found</string>
+	<string name="memory_card_not_available">Memory card not available</string>
 	<string name="memory_card_not_writable">No write access to memory card</string>
 	
 	<string name="select_tracking_mode">Select tracking mode</string>

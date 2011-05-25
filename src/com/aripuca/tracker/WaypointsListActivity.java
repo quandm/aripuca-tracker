@@ -1,9 +1,7 @@
 package com.aripuca.tracker;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -635,7 +633,7 @@ public class WaypointsListActivity extends ListActivity {
 
 	}
 
-	protected void importFromTextFile() {
+/*	protected void importFromTextFile() {
 
 		try {
 
@@ -681,6 +679,7 @@ public class WaypointsListActivity extends ListActivity {
 		waypointsArrayAdapter.notifyDataSetChanged();
 
 	}
+	*/
 
 	protected void importFromXMLFile() {
 

@@ -7,7 +7,9 @@ import com.aripuca.tracker.R;
 import java.io.IOException;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.io.*;
 
 import android.app.Activity;
@@ -21,13 +23,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-
 import android.location.*;
 
 import android.widget.*;
@@ -37,10 +34,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 
@@ -176,7 +171,6 @@ public class MainActivity extends Activity {
 
 		if (!myApp.getPreferences().contains("time_container_id")) {
 			editor.putInt("time_container_id", 0);
-			editor.commit();
 		}
 
 		if (!myApp.getPreferences().contains("distance_container_id")) {
@@ -290,11 +284,23 @@ public class MainActivity extends Activity {
 		initializeControlButtons();
 
 		// create all folders required by the application on external storage
-		createFolderStructure();
+		if (myApp.getExternalStorageAvailable() && myApp.getExternalStorageWriteable()) {
+			createFolderStructure();
+		} else {
+			Toast.makeText(MainActivity.this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
+		}
 
-		// TODO: ???
-		//		createStorageFiles();
+		// adding famous waypoints only once
+		if (!myApp.getPreferences().contains("famous_waypoints")) {
 
+			createFamousWaypoints();
+			
+			SharedPreferences.Editor editor = myApp.getPreferences().edit();
+			editor.putInt("famous_waypoints", 1);
+			editor.commit();
+			
+		}
+		
 	}
 
 	@Override
@@ -705,28 +711,6 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Set external storage for data import/export
-	 */
-	private void createStorageFiles() {
-
-		if (!myApp.externalStorageAvailable) {
-			Toast.makeText(MainActivity.this, R.string.memory_card_not_found, Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		if (!myApp.externalStorageWriteable) {
-			Toast.makeText(MainActivity.this, R.string.memory_card_not_writable, Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		File file = this.createStorageFile(this.waypointsFile);
-		myApp.setWaypointsFile(file);
-
-		// myApp.setTracksFile(this.createStorageFile(this.tracksFile));
-
-	}
-
-	/**
 	 * Create file on external storage
 	 * 
 	 * @param fileName Name of external storage file
@@ -1133,4 +1117,39 @@ public class MainActivity extends Activity {
 		wakeLock.release();
 	}
 
+	/**
+	 * Create a list of famous waypoints to be added when application first installed 
+	 */
+	public void createFamousWaypoints() {
+		
+		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
+		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
+
+		insertFamousWaypoints(famousWaypoints);
+		
+	}
+	
+	private void insertFamousWaypoints(ArrayList<Waypoint> famousWaypoints) {
+		
+	    Iterator<Waypoint> itr = famousWaypoints.iterator();
+	 
+	    while(itr.hasNext()) {
+	    	
+	    	Waypoint wp = itr.next();
+	    	
+			ContentValues values = new ContentValues();
+			values.put("title", wp.getTitle());
+			values.put("lat", wp.getLatitude());
+			values.put("lng", wp.getLongitude());
+			values.put("time", wp.getTime());
+
+			myApp.getDatabase().insert("waypoints", null, values);
+	    	
+		}		
+		
+	    //TODO: switch flag of famous locations added to true
+	    
+	}
+	
+	
 }

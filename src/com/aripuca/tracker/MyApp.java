@@ -1,17 +1,11 @@
 package com.aripuca.tracker;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import com.google.android.maps.GeoPoint;
+import java.util.Iterator;
 
 import android.app.Application;
-import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -19,11 +13,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.os.Environment;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * 
@@ -45,12 +36,7 @@ public class MyApp extends Application {
 	/**
 	 * 
 	 */
-	private File waypointsFile = null;
-
-	/**
-	 * 
-	 */
-	private ArrayList<Waypoint> waypointList;
+	//	private ArrayList<Waypoint> waypointList;
 
 	/**
 	 * 
@@ -64,22 +50,22 @@ public class MyApp extends Application {
 	/**
 	 * is external storage available, ex: SD card
 	 */
-	public boolean externalStorageAvailable = false;
+	private boolean externalStorageAvailable = false;
 
 	/**
 	 * is external storage writable
 	 */
-	public boolean externalStorageWriteable = false;
+	private boolean externalStorageWriteable = false;
 
 	/**
 	 * 
 	 */
-	protected static MainActivity mainActivity;
+	private static MainActivity mainActivity;
 
 	/**
 	 * 
 	 */
-	protected static WaypointsListActivity waypointsListActivity;
+	private static WaypointsListActivity waypointsListActivity;
 
 	/**
 	 * 
@@ -100,7 +86,7 @@ public class MyApp extends Application {
 	 * 
 	 */
 	private String appDir;
-
+	
 	/**
 	 * application database create/open helper class
 	 */
@@ -188,25 +174,29 @@ public class MyApp extends Application {
 
 		}
 
+		/**
+		 * 
+		 */
+		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 			Log.w(Constants.TAG, "Upgrading database from version " + oldVersion + " to "
 					+ newVersion);
-			
+
 			if (oldVersion < 1) {
-				
+
 				db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 				db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 				db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
 				onCreate(db);
-				
+
 			} else {
 
 				// adding "distance" field to track points table
 				if (oldVersion == 1) {
 					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
 				}
-				
+
 			}
 
 		}
@@ -219,12 +209,28 @@ public class MyApp extends Application {
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		waypointList = new ArrayList<Waypoint>();
+		//		waypointList = new ArrayList<Waypoint>();
 
 		OpenHelper openHelper = new OpenHelper(this);
 
 		// SQLiteDatabase
 		db = openHelper.getWritableDatabase();
+
+		setExternalStorageState();
+
+		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
+				+ getString(R.string.main_app_title_code);
+		
+		super.onCreate();
+
+		//TODO: add a few popular waypoints on first start
+
+	}
+
+	/**
+	 * Checking if external storage is available and writable
+	 */
+	private void setExternalStorageState() {
 
 		// checking access to SD card
 		String state = Environment.getExternalStorageState();
@@ -242,13 +248,14 @@ public class MyApp extends Application {
 			externalStorageAvailable = externalStorageWriteable = false;
 		}
 
-		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
-				+ getString(R.string.main_app_title_code);
+	}
 
-		super.onCreate();
+	public boolean getExternalStorageWriteable() {
+		return externalStorageWriteable;
+	}
 
-		//TODO: add a few popular waypoints on first start
-
+	public boolean getExternalStorageAvailable() {
+		return externalStorageAvailable;
 	}
 
 	public String getAppDir() {
@@ -261,20 +268,6 @@ public class MyApp extends Application {
 
 	public SharedPreferences getPreferences() {
 		return preferences;
-	}
-
-	/**
-	 * 
-	 */
-	public void setWaypointsFile(File f) {
-		waypointsFile = f;
-	}
-
-	/**
-	 * 
-	 */
-	public File getWaypointFile() {
-		return waypointsFile;
 	}
 
 	/**

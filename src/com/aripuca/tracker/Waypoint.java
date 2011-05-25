@@ -1,14 +1,17 @@
 package com.aripuca.tracker;
 
+import java.util.Date;
+
 import android.location.Location;
 
 public class Waypoint extends Object {
 	
-	protected double latitude;
-	protected double longitude;
-	protected double elevation;
-	protected long time;
-	protected String title;
+	private double latitude;
+	private double longitude;
+	private double elevation = 0;
+	private long time;
+
+	private String title;
 	
 	public Waypoint(String title, long t, double lat, double lng, double ele) {
 		
@@ -18,9 +21,18 @@ public class Waypoint extends Object {
 		this.time = t;
 		this.elevation = ele;
 		
-//		description = descr;
+	}
+	
+	public Waypoint(String title, double lat, double lng) {
+		
+		this.title = title;
+		this.latitude = lat;
+		this.longitude = lng;
+		
+		this.time = (new Date()).getTime();
 		
 	}
+	
 	/**
 	 * returns simple Location object for calculating bearing and distance to this waypoint
 	 * @return Location
@@ -37,6 +49,19 @@ public class Waypoint extends Object {
 		return loc; 
 		
 	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public long getTime() {
+		return time;
+	}
+	
 	/**
 	 * returns string ready for storing
 	 */

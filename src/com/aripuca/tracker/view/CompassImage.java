@@ -3,7 +3,6 @@ package com.aripuca.tracker.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class CompassImage extends ImageView {
