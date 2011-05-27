@@ -20,6 +20,7 @@ public abstract class Constants {
 	public static final double MAX_SEGMENT_DISTANCE = 5000; //meters
 	
 	public static final int SEGMENT_EQUAL = 0;
-	public static final int SEGMENT_CUSTOM = 1;
+	public static final int SEGMENT_CUSTOM_1 = 1;
+	public static final int SEGMENT_CUSTOM_2 = 3;
 
 }

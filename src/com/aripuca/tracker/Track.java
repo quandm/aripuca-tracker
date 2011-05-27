@@ -105,6 +105,8 @@ public class Track {
 
 	private void setSegmentInterval() {
 
+		
+		
 		// if user entered invalid value - set default interval
 		try {
 			segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_equal", "5"));
@@ -117,7 +119,16 @@ public class Track {
 
 	private void setSegmentIntervals() {
 
-		String[] tmpArr = myApp.getPreferences().getString("segment_custom", "").split(",");
+		String segmentIntervalsKey;
+		if (this.segmentingMode==Constants.SEGMENT_CUSTOM_1) {
+			segmentIntervalsKey = "segment_custom_1";
+		} else if (this.segmentingMode==Constants.SEGMENT_CUSTOM_2) {
+			segmentIntervalsKey = "segment_custom_2";
+		} else {
+			return;
+		}
+		
+		String[] tmpArr = myApp.getPreferences().getString(segmentIntervalsKey, "").split(",");
 
 		segmentIntervals = new float[tmpArr.length];
 
@@ -346,6 +357,8 @@ public class Track {
 			
 		} else {
 
+			// processing custom segment intervals
+			
 			if (this.segmentId < segmentIntervals.length) {
 
 				return segmentIntervals[this.segmentId] * 1000;

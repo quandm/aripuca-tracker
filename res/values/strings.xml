@@ -139,7 +139,8 @@
 	<string name="segment_equal">Equal intervals</string>
 	<string name="segment_equal_summary">Segment track every N km</string>
 	
-	<string name="segment_custom">Custom intervals</string>
+	<string name="segment_custom_1">Custom intervals 1</string>
+	<string name="segment_custom_2">Custom intervals 2</string>
 	<string name="segment_custom_summary">Segment by preset intervals</string>
  	
 </resources>

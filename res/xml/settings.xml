@@ -61,9 +61,8 @@
 			<EditTextPreference android:defaultValue="5"
 				android:title="@string/segment_equal" android:key="segment_equal"
 				android:summary="@string/segment_equal_summary"></EditTextPreference>
-			<EditTextPreference android:title="@string/segment_custom"
-				android:key="segment_custom" android:defaultValue="5,16,22.5,27,36.4"
-				android:summary="@string/segment_custom_summary"></EditTextPreference>
+			<EditTextPreference android:summary="@string/segment_custom_summary" android:title="@string/segment_custom_1" android:key="segment_custom_1" android:defaultValue="6,10,15,20,25"></EditTextPreference>
+			<EditTextPreference android:title="@string/segment_custom_2" android:key="segment_custom_2" android:defaultValue="10,20,30,40" android:summary="@string/segment_custom_summary"></EditTextPreference>
 		</PreferenceCategory>
 		
 		
