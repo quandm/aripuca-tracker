@@ -1,4 +1,4 @@
-package com.aripuca.tracker;
+package com.aripuca.tracker.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -132,7 +132,7 @@ public class Utils {
 		if (value < 0.224) {
 			return "00:00";
 		}
-		
+
 		if (unit.equals("kph")) {
 			return formatInterval((long) (1000000 / value), false);
 		}
@@ -178,8 +178,8 @@ public class Utils {
 	}
 
 	/**
-	 * Formats coordinate value to string based on output type
-	 * (modified version from Android API)
+	 * Formats coordinate value to string based on output type (modified version
+	 * from Android API)
 	 */
 	public static String formatCoord(double coordinate, int outputType) {
 
@@ -238,8 +238,7 @@ public class Utils {
 	public static String md5(String s) {
 		try {
 			// Create MD5 Hash
-			MessageDigest digest = java.security.MessageDigest
-					.getInstance("MD5");
+			MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
 			digest.update(s.getBytes());
 			byte messageDigest[] = digest.digest();
 
@@ -263,8 +262,8 @@ public class Utils {
 	}
 
 	public static String formatInterval(long milliseconds, boolean showHours) {
-		
-		int seconds = Math.round(milliseconds/1000.0f);
+
+		int seconds = Math.round(milliseconds / 1000.0f);
 
 		int hours = (int) (seconds / 3600);
 		int minutes = (int) (seconds / 60);
@@ -294,38 +293,6 @@ public class Utils {
 
 		return builder.toString();
 
-	}
-
-	/**
-	 * Formats a number of seconds as a string (00:00:00).
-	 */
-	public static String formatInterval_MyTracks(long time, boolean alwaysShowHours) {
-
-		int[] parts = new int[3];
-
-		long seconds = time;
-		parts[0] = (int) (seconds % 60);
-		int tmp = (int) (seconds / 60);
-		parts[1] = tmp % 60;
-		parts[2] = tmp / 60;
-
-		StringBuilder builder = new StringBuilder();
-		if (parts[2] > 0 || alwaysShowHours) {
-			builder.append(parts[2]);
-			builder.append(':');
-			if (parts[1] <= 9) {
-				builder.append("0");
-			}
-		}
-
-		builder.append(parts[1]);
-		builder.append(':');
-		if (parts[0] <= 9) {
-			builder.append("0");
-		}
-		builder.append(parts[0]);
-
-		return builder.toString();
 	}
 
 }

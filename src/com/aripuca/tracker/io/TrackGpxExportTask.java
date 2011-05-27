@@ -4,7 +4,8 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 
 import android.content.Context;
-import com.aripuca.tracker.Utils;
+
+import com.aripuca.tracker.util.Utils;
 
 public class TrackGpxExportTask extends TrackExportTask {
 

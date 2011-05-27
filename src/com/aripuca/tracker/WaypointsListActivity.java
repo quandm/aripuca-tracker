@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.io.WaypointGpxExportTask;
+import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
 import android.app.AlertDialog;

@@ -103,12 +103,13 @@
 	
 	<!--  SETTINGS  -->
 	<string name="min_distance_title">Minimum distance</string>
-	<string name="min_distance_summary">Minimum distance between 2 recorded points</string>
+	<string name="min_distance_summary">Minimum distance between 2 recorded points (meters)</string>
+	
 	<string name="max_distance_title">Maximum distance</string>
 	<string name="max_distance_summary">Maximum distance between 2 points on a straight line</string>
 
 	<string name="min_accuracy_title">Minimum accuracy</string>
-	<string name="min_accuracy_summary">Minimum accuracy required for recording</string>
+	<string name="min_accuracy_summary">Minimum accuracy required for recording (meters)</string>
 
 	<string name="app_settings_title">Application settings</string>
 	<string name="user_interface_title">User inteface</string>
@@ -130,5 +131,15 @@
 	<string name="user_name">Login name</string>
 	<string name="user_password">Password</string>
 	
+	<string name="track_recording">Track recording</string>
+	
+	<string name="segmenting">Segmenting</string>
+	<string name="segmenting_mode">Segmenting mode</string>
+	
+	<string name="segment_equal">Equal intervals</string>
+	<string name="segment_equal_summary">Segment track every N km</string>
+	
+	<string name="segment_custom">Custom intervals</string>
+	<string name="segment_custom_summary">Segment by preset intervals</string>
  	
 </resources>

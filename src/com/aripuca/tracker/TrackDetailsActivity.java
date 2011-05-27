@@ -2,6 +2,8 @@ package com.aripuca.tracker;
 
 import java.text.SimpleDateFormat;
 
+import com.aripuca.tracker.util.Utils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;

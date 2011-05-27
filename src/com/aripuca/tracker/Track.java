@@ -71,16 +71,20 @@ public class Track {
 	/**
 	 * total time recording was paused
 	 */
-	protected long totalPauseTime = 0;
+	private long totalPauseTime = 0;
 
-	protected long totalIdleTime = 0;
+	private long totalIdleTime = 0;
 
-	protected long idleTimeStart = 0;
+	private long idleTimeStart = 0;
 
 	/**
 	 * 
 	 */
-	protected Activity activity;
+	private int segmentingMode;
+
+	private float segmentInterval;
+
+	private float[] segmentIntervals;
 
 	public Track(MyApp myApp) {
 
@@ -89,6 +93,44 @@ public class Track {
 		this.trackTimeStart = (new Date()).getTime();
 
 		this.saveNewTrack();
+
+		this.segmentingMode = Integer.parseInt(myApp.getPreferences().getString("segmenting_mode", "0"));
+
+		// setting segment interval
+		this.setSegmentInterval();
+
+		this.setSegmentIntervals();
+
+	}
+
+	private void setSegmentInterval() {
+
+		// if user entered invalid value - set default interval
+		try {
+			segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_equal", "5"));
+		} catch (NumberFormatException e) {
+			// default interval 5 km
+			segmentInterval = 5;
+		}
+
+	}
+
+	private void setSegmentIntervals() {
+
+		String[] tmpArr = myApp.getPreferences().getString("segment_custom", "").split(",");
+
+		segmentIntervals = new float[tmpArr.length];
+
+		for (int i = 0; i < tmpArr.length; i++) {
+
+			try {
+				segmentIntervals[i] = Float.parseFloat(tmpArr[i]);
+			} catch (NumberFormatException e) {
+				// default interval 5 km
+				segmentIntervals[i] = 5;
+			}
+
+		}
 
 	}
 
@@ -280,14 +322,43 @@ public class Track {
 		this.recordTrackPoint(this.currentLocation);
 
 	}
-	
+
+	/**
+	 * Check if segment id incrementing is required
+	 */
 	private void segmentTrack() {
-		
-		// let's segment our track every MAX_SEGMENT_DISTANCE
-		if (this.distance/Constants.MAX_SEGMENT_DISTANCE > this.segmentId+1) {
+
+		if (this.distance / this.getNextSegment() > 1) {
 			this.segmentId++;
 		}
-		
+
+	}
+
+	private float getNextSegment() {
+
+		if (this.segmentingMode == Constants.SEGMENT_EQUAL) {
+
+			float nextSegment = 0;
+			for (int i = 0; i <= this.segmentId; i++) {
+				nextSegment += segmentInterval;
+			}
+			return nextSegment * 1000;
+			
+		} else {
+
+			if (this.segmentId < segmentIntervals.length) {
+
+				return segmentIntervals[this.segmentId] * 1000;
+
+			} else {
+
+				// no more segmenting if not enough intervals set by user
+				return 10000000;
+
+			}
+
+		}
+
 	}
 
 	private void processPauseTime() {

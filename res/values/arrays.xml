@@ -45,12 +45,14 @@
 		<item>2</item>
 	</string-array>
 
-	<!-- TRACKING MODE SPINNER  -->	
-    <string-array name="tracking_modes">
-        <item>Walking</item>
-        <item>Running</item>
-        <item>Cycling</item>
-        <item>Driving</item>
+    <string-array name="segmenting_modes_labels">
+        <item>Equal intervals</item>
+        <item>Custom intervals</item>
     </string-array>
+
+	<string-array name="segmenting_modes_values">
+		<item>0</item>
+		<item>1</item>
+	</string-array>
 
 </resources>

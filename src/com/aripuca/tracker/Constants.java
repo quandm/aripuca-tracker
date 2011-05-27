@@ -18,5 +18,8 @@ public abstract class Constants {
 	public static final double MIN_SPEED = 0.224; // meters per second
 
 	public static final double MAX_SEGMENT_DISTANCE = 5000; //meters
+	
+	public static final int SEGMENT_EQUAL = 0;
+	public static final int SEGMENT_CUSTOM = 1;
 
 }

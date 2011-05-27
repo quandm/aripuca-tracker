@@ -1,6 +1,7 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.util.ContainerCarousel;
+import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
 
@@ -290,16 +291,8 @@ public class MainActivity extends Activity {
 			Toast.makeText(MainActivity.this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
 		}
 
-		// adding famous waypoints only once
-		if (!myApp.getPreferences().contains("famous_waypoints")) {
-
-			createFamousWaypoints();
-			
-			SharedPreferences.Editor editor = myApp.getPreferences().edit();
-			editor.putInt("famous_waypoints", 1);
-			editor.commit();
-			
-		}
+		// adding famous waypoints
+		processFamousWaypoints();
 		
 	}
 
@@ -1118,21 +1111,21 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Create a list of famous waypoints to be added when application first installed 
+	 * Create a list of famous waypoints and insert to db when application first installed 
 	 */
-	public void createFamousWaypoints() {
-		
+	public void processFamousWaypoints() {
+
+		// adding famous waypoints only once
+		if (myApp.getPreferences().contains("famous_waypoints")) {
+			return;
+		}
+
+		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
 		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
 
-		insertFamousWaypoints(famousWaypoints);
-		
-	}
-	
-	private void insertFamousWaypoints(ArrayList<Waypoint> famousWaypoints) {
-		
+		// insert waypoints to db
 	    Iterator<Waypoint> itr = famousWaypoints.iterator();
-	 
 	    while(itr.hasNext()) {
 	    	
 	    	Waypoint wp = itr.next();
@@ -1147,9 +1140,13 @@ public class MainActivity extends Activity {
 	    	
 		}		
 		
-	    //TODO: switch flag of famous locations added to true
-	    
+	    // switch flag of famous locations added to true
+		SharedPreferences.Editor editor = myApp.getPreferences().edit();
+		editor.putInt("famous_waypoints", 1);
+		editor.commit();
+		
 	}
 	
+
 	
 }
