@@ -96,17 +96,22 @@ public class Track {
 
 		this.segmentingMode = Integer.parseInt(myApp.getPreferences().getString("segmenting_mode", "0"));
 
-		// setting segment interval
-		this.setSegmentInterval();
+		if (this.segmentingMode==Constants.SEGMENT_EQUAL) {
+			
+			// setting segment interval
+			this.setSegmentInterval();
+		}
 
-		this.setSegmentIntervals();
+		if (this.segmentingMode==Constants.SEGMENT_CUSTOM_1 || 
+				this.segmentingMode==Constants.SEGMENT_CUSTOM_2) {
+			
+			this.setSegmentIntervals();
+		}
 
 	}
 
 	private void setSegmentInterval() {
 
-		
-		
 		// if user entered invalid value - set default interval
 		try {
 			segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_equal", "5"));
@@ -120,14 +125,14 @@ public class Track {
 	private void setSegmentIntervals() {
 
 		String segmentIntervalsKey;
-		if (this.segmentingMode==Constants.SEGMENT_CUSTOM_1) {
+		if (this.segmentingMode == Constants.SEGMENT_CUSTOM_1) {
 			segmentIntervalsKey = "segment_custom_1";
-		} else if (this.segmentingMode==Constants.SEGMENT_CUSTOM_2) {
+		} else if (this.segmentingMode == Constants.SEGMENT_CUSTOM_2) {
 			segmentIntervalsKey = "segment_custom_2";
 		} else {
 			return;
 		}
-		
+
 		String[] tmpArr = myApp.getPreferences().getString(segmentIntervalsKey, "").split(",");
 
 		segmentIntervals = new float[tmpArr.length];
@@ -276,6 +281,14 @@ public class Track {
 
 		this.trackingPaused = false;
 
+		// segmenting by pause/resume
+		if (this.segmentingMode == Constants.SEGMENT_PAUSE_RESUME) {
+
+			//TODO: add new segment stats to db
+			
+			this.segmentId++;
+		}
+
 	}
 
 	/**
@@ -321,16 +334,17 @@ public class Track {
 		// save current location once distance is incremented
 		this.currentLocation = location;
 
+		// segmenting by distance
 		this.segmentTrack();
 
-		this.processIdleTime();
+		this.processIdleTime(location);
 
-		this.processElevation();
+		this.processElevation(location);
 
-		this.processSpeed();
+		this.processSpeed(location);
 
 		// add new track point to db
-		this.recordTrackPoint(this.currentLocation);
+		this.recordTrackPoint(location);
 
 	}
 
@@ -338,40 +352,57 @@ public class Track {
 	 * Check if segment id incrementing is required
 	 */
 	private void segmentTrack() {
+		
+		if (this.segmentingMode == Constants.SEGMENT_NONE ||
+				this.segmentingMode == Constants.SEGMENT_PAUSE_RESUME) {
+			return;
+		}
 
+		
+		
+		
+		
 		if (this.distance / this.getNextSegment() > 1) {
+			
+			//TODO: add new segment stats to db
+			
 			this.segmentId++;
 		}
 
 	}
 
+	/**
+	 * Calculate interval where to start new segment 
+	 */
 	private float getNextSegment() {
 
-		if (this.segmentingMode == Constants.SEGMENT_EQUAL) {
+		switch (this.segmentingMode) {
 
-			float nextSegment = 0;
-			for (int i = 0; i <= this.segmentId; i++) {
-				nextSegment += segmentInterval;
-			}
-			return nextSegment * 1000;
-			
-		} else {
+			case Constants.SEGMENT_EQUAL:
 
-			// processing custom segment intervals
-			
-			if (this.segmentId < segmentIntervals.length) {
+				float nextSegment = 0;
+				for (int i = 0; i <= this.segmentId; i++) {
+					nextSegment += segmentInterval;
+				}
+				return nextSegment * 1000;
 
-				return segmentIntervals[this.segmentId] * 1000;
+			case Constants.SEGMENT_CUSTOM_1:
+			case Constants.SEGMENT_CUSTOM_2:
 
-			} else {
+				// processing custom segment intervals
 
-				// no more segmenting if not enough intervals set by user
-				return 10000000;
+				if (this.segmentId < segmentIntervals.length) {
 
-			}
+					return segmentIntervals[this.segmentId] * 1000;
 
+				} else {
+
+					// no more segmenting if not enough intervals set by user
+					return 10000000;
+				}
 		}
-
+		
+		return 10000000;
 	}
 
 	private void processPauseTime() {
@@ -402,10 +433,10 @@ public class Track {
 
 	}
 
-	private void processIdleTime() {
+	private void processIdleTime(Location location) {
 
 		// updating idle time in track
-		if (this.currentLocation.getSpeed() < Constants.MIN_SPEED) {
+		if (location.getSpeed() < Constants.MIN_SPEED) {
 
 			// if idle interval started increment total idle time 
 			if (this.idleTimeStart != 0) {
@@ -426,11 +457,11 @@ public class Track {
 
 	}
 
-	private void processElevation() {
+	private void processElevation(Location location) {
 
 		// processing elevation data
-		if (this.currentLocation.hasAltitude()) {
-			double e = this.currentLocation.getAltitude();
+		if (location.hasAltitude()) {
+			double e = location.getAltitude();
 			// max elevation
 			if (this.maxElevation < e) {
 				this.maxElevation = e;
@@ -454,12 +485,12 @@ public class Track {
 		}
 	}
 
-	private void processSpeed() {
+	private void processSpeed(Location location) {
 
 		// calculating max speed
-		if (this.currentLocation.hasSpeed()) {
+		if (location.hasSpeed()) {
 
-			float s = this.currentLocation.getSpeed();
+			float s = location.getSpeed();
 
 			if (s == 0) {
 				s = this.getAverageSpeed();

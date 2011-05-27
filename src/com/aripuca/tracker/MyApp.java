@@ -92,7 +92,7 @@ public class MyApp extends Application {
 	 */
 	public class OpenHelper extends SQLiteOpenHelper {
 
-		private static final int DATABASE_VERSION = 2;
+		private static final int DATABASE_VERSION = 3;
 
 		// private static final String NOTES_TABLE_NAME = "notes";
 
@@ -121,6 +121,23 @@ public class MyApp extends Application {
 						"start_time INTEGER NOT NULL," +
 						"finish_time INTEGER)";
 
+		private static final String SEGMENTS_TABLE = "segments";
+		
+		private static final String SEGMENTS_TABLE_CREATE =
+			"CREATE TABLE " + SEGMENTS_TABLE +
+					" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"track_id INTEGER NOT NULL," +
+					"distance REAL," +
+					"total_time INTEGER," +
+					"moving_time INTEGER," +
+					"max_speed REAL," +
+					"max_elevation REAL," +
+					"min_elevation REAL," +
+					"elevation_gain REAL," +
+					"elevation_loss REAL," +
+					"start_time INTEGER NOT NULL," +
+					"finish_time INTEGER)";
+		
 		/**
 		 * track points table title
 		 */
@@ -165,17 +182,21 @@ public class MyApp extends Application {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 
+		/**
+		 * Creating application db
+		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 
 			db.execSQL(WAYPOINTS_TABLE_CREATE);
 			db.execSQL(TRACKS_TABLE_CREATE);
 			db.execSQL(TRACKPOINTS_TABLE_CREATE);
+			db.execSQL(SEGMENTS_TABLE_CREATE);
 
 		}
 
 		/**
-		 * 
+		 * Upgrading application db 
 		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -188,15 +209,22 @@ public class MyApp extends Application {
 				db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 				db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 				db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
+				db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
 				onCreate(db);
 
 			} else {
 
 				// adding "distance" field to track points table
-				if (oldVersion == 1) {
+				if (oldVersion <= 1) {
+					Log.i(Constants.TAG, "distance field added to track_points table");
 					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
 				}
 
+				if (oldVersion <= 2) {
+					Log.i(Constants.TAG, "Segments table added");
+					db.execSQL(SEGMENTS_TABLE_CREATE);
+				}
+				
 			}
 
 		}

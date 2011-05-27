@@ -46,6 +46,8 @@
 	</string-array>
 
     <string-array name="segmenting_modes_labels">
+        <item>None</item>
+        <item>Pause/Resume</item>
         <item>Equal intervals</item>
         <item>Custom intervals 1</item>
         <item>Custom intervals 2</item>
@@ -55,6 +57,8 @@
 		<item>0</item>
 		<item>1</item>
 		<item>2</item>
+		<item>4</item>
+		<item>5</item>
 	</string-array>
 
 </resources>
