@@ -154,8 +154,6 @@ public class MainActivity extends Activity {
 		
 		public void onClick(View v) {
 
-			TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
-			
 			if (trackRecorder.isRecordingPaused()) {
 				
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
@@ -256,9 +254,10 @@ public class MainActivity extends Activity {
 			restoreInstanceState(savedInstanceState);
 		}
 
-		// attaching default middle layout
+		// get instance of TrackRecorder class for fast access from MainActivity
 		trackRecorder = TrackRecorder.getInstance(myApp);
 		
+		// attaching default middle layout
 		if (trackRecorder.isRecording()) {
 			this.replaceDynamicView(R.layout.main_tracking);
 		} else {
@@ -437,7 +436,7 @@ public class MainActivity extends Activity {
 
 	}
 
-	protected void setContainer(ContainerCarousel carousel) {
+	private void setContainer(ContainerCarousel carousel) {
 
 		// assigning click event listener to speed or pace container
 		if (findViewById(carousel.getResourceId()) != null) {
@@ -554,7 +553,7 @@ public class MainActivity extends Activity {
 		// new track recording started
 //		myApp.startTrackRecording();
 		
-		TrackRecorder.getInstance(myApp).start();
+		trackRecorder.start();
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
@@ -982,6 +981,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Returns compass rotation angle when orientation of the phone changes
+	 */
 	private int getOrientationAdjustment() {
 
 		switch (this.getResources().getConfiguration().orientation) {

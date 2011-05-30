@@ -17,7 +17,7 @@ public class TrackRecorder {
 	protected Location lastRecordedLocation;
 	
 	/**
-	 * 
+	 * track being recorded 
 	 */
 	private Track track;
 
@@ -31,28 +31,15 @@ public class TrackRecorder {
 	 */
 	protected long pauseTimeStart = 0;
 	
-	/**
-	 * total time recording was paused
-	 */
-	protected long totalPauseTime = 0;
-
-	protected long totalIdleTime = 0;
-
 	protected long idleTimeStart = 0;
 	
-	protected long currentSystemTime = 0;
+	private long currentSystemTime = 0;
 
 	/**
 	 * recording start time
 	 */
-	protected long startTime = 0;
+	private long startTime = 0;
 
-	/**
-	 * real time of the track start
-	 */
-	protected long trackTimeStart;
-	
-	
 	/**
 	 * 
 	 */
@@ -87,8 +74,9 @@ public class TrackRecorder {
 	 */
 	public void start() {
 		
+		// create new track statistics object
 		this.track = new Track(myApp);
-		
+
 		this.segmentingMode = Integer.parseInt(myApp.getPreferences().getString("segmenting_mode", "0"));
 
 		if (this.segmentingMode==Constants.SEGMENT_EQUAL) {
@@ -171,9 +159,12 @@ public class TrackRecorder {
 	public void updateStatistics(Location location) {
 
 		this.currentSystemTime = SystemClock.uptimeMillis();
+		
+		this.track.setCurrentSystemTime(this.currentSystemTime);
 
 		if (this.startTime == 0) {
 			this.startTime = this.currentSystemTime;
+			this.track.setStartTime(this.startTime);
 		}
 
 		this.processPauseTime();
@@ -193,7 +184,7 @@ public class TrackRecorder {
 		this.currentLocation = location;
 
 		//TODO: segmenting by distance
-//		this.track.segmentTrack();
+		this.segmentTrack();
 
 		this.processIdleTime(location);
 
@@ -212,7 +203,7 @@ public class TrackRecorder {
 		} else {
 
 			if (this.lastRecordedLocation.distanceTo(location) >= Constants.MIN_DISTANCE) {
-				this.track.recordTrackPoint(location);
+				this.track.recordTrackPoint(location, this.segmentId);
 				this.lastRecordedLocation = location;
 			}
 			
@@ -226,12 +217,12 @@ public class TrackRecorder {
 
 			// if idle interval started increment total idle time
 			if (this.idleTimeStart != 0) {
-				this.totalIdleTime += this.currentSystemTime - this.idleTimeStart;
+				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				this.idleTimeStart = 0;
 			}
 
 			if (this.pauseTimeStart != 0) {
-				this.totalPauseTime += this.currentSystemTime - this.pauseTimeStart;
+				this.track.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 			}
 
 			// saving new pause time start
@@ -240,7 +231,7 @@ public class TrackRecorder {
 		} else {
 
 			if (this.pauseTimeStart != 0) {
-				this.totalPauseTime += this.currentSystemTime - this.pauseTimeStart;
+				this.track.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 			}
 
 			this.pauseTimeStart = 0;
@@ -255,7 +246,9 @@ public class TrackRecorder {
 
 			// if idle interval started increment total idle time 
 			if (this.idleTimeStart != 0) {
-				this.totalIdleTime += this.currentSystemTime - this.idleTimeStart;
+				
+				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+				
 			}
 			// save start idle time
 			this.idleTimeStart = this.currentSystemTime;
@@ -264,8 +257,10 @@ public class TrackRecorder {
 
 			// increment total idle time with already started interval  
 			if (this.idleTimeStart != 0) {
-				this.totalIdleTime += this.currentSystemTime - this.idleTimeStart;
+				
+				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				this.idleTimeStart = 0;
+				
 			}
 
 		}
@@ -313,11 +308,6 @@ public class TrackRecorder {
 
 	}
 	
-	public long getTotalIdleTime() {
-		return this.totalIdleTime;
-	}
-	
-	
 	public Track getTrack() {
 		
 		return track;
@@ -333,7 +323,6 @@ public class TrackRecorder {
 				this.segmentingMode == Constants.SEGMENT_PAUSE_RESUME) {
 			return;
 		}
-
 
 		if (this.track.getDistance() / this.getNextSegment() > 1) {
 			

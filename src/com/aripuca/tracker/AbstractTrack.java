@@ -28,43 +28,25 @@ public abstract class AbstractTrack {
 	protected double elevationLoss = 0;
 
 	protected int trackPointsCount = 0;
-
-
-	/**
-	 * recording start time
-	 */
-	protected long startTime = 0;
-
+	
 	/**
 	 * real time of the track start
 	 */
 	protected long trackTimeStart;
-
-	/**
-	 * total time of recording
-	 */
-	protected long totalTime = 0;
-	protected long movingTime = 0;
+	public long getTrackTimeStart() {
+		return trackTimeStart;
+	}
 
 	// --------------------------------------------------------------------------------------------------------
 
 	public AbstractTrack(MyApp myApp) {
 		
 		this.myApp = myApp;
-		
-		this.trackTimeStart = (new Date()).getTime();
 
+		this.trackTimeStart = (new Date()).getTime();
+		
 	}
 	
-	/**
-	 * Return time track recording started
-	 */
-	public long getTrackTimeStart() {
-
-		return this.trackTimeStart;
-
-	}
-
 	/**
 	 * Get average trip speed in meters per second
 	 */
@@ -195,6 +177,36 @@ public abstract class AbstractTrack {
 		
 	}
 	
+	/*
+	 * total idle time
+	 */
+	protected long totalIdleTime = 0;
+	public void updateTotalIdleTime(long t) {
+		this.totalIdleTime+=t;
+	}
+	public long getTotalIdleTime() {
+		return this.totalIdleTime;
+	}
 	
+	/**
+	 * total time recording was paused
+	 */
+	protected long totalPauseTime = 0;
+	public void updateTotalPauseTime(long t) {
+		this.totalPauseTime+=t;
+	}
+	public long getTotalPauseTime() {
+		return this.totalPauseTime;
+	}
+	
+	protected long currentSystemTime = 0;
+	public void setCurrentSystemTime(long cst) {
+		this.currentSystemTime = cst;
+	}
 
+	protected long startTime = 0;
+	public void setStartTime(long st) {
+		this.startTime = st;
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.SystemClock;
@@ -13,20 +14,12 @@ import android.widget.Toast;
 
 public class Track extends AbstractTrack {
 
-	/**
-	 * total time of recording
-	 */
-	protected long totalTime = 0;
-	protected long movingTime = 0;
-
 	public Track(MyApp myApp) {
 		
 		super(myApp);
 
-		this.trackTimeStart = (new Date()).getTime();
-
-		this.saveNewTrack();
-
+		this.insertNewTrack();
+		
 	}
 
 
@@ -49,12 +42,12 @@ public class Track extends AbstractTrack {
 	/**
 	 * Add new track to application db after recording started
 	 */
-	private void saveNewTrack() {
+	public void insertNewTrack() {
 
 		ContentValues values = new ContentValues();
 		values.put("title", "New track");
 		values.put("recording", 1);
-		values.put("start_time", this.getTrackTimeStart());
+		values.put("start_time", this.trackTimeStart);
 
 		try {
 			long newTrackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
@@ -73,7 +66,7 @@ public class Track extends AbstractTrack {
 
 		long finishTime = (new Date()).getTime();
 
-		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.getTrackTimeStart()) + "-" +
+		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-" +
 								(new SimpleDateFormat("H:mm")).format(finishTime);
 
 		ContentValues values = new ContentValues();
@@ -95,8 +88,6 @@ public class Track extends AbstractTrack {
 			Toast.makeText(myApp.getMainActivity(), "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
-		
-		
 
 	}
 
