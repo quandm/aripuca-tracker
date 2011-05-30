@@ -25,68 +25,115 @@ public class MyApp extends Application {
 	 * gps on/off flag
 	 */
 	private boolean gpsOn = false;
-
-	private boolean gpsStateBeforeRotation = true;
+	public void setGpsOn(boolean flag) {
+		this.gpsOn = flag;
+	}
+	public boolean isGpsOn() {
+		return this.gpsOn;
+	}
 
 	/**
 	 * 
 	 */
-	//	private ArrayList<Waypoint> waypointList;
+	private boolean gpsStateBeforeRotation = true;
+	public void setGpsStateBeforeRotation() {
+		gpsStateBeforeRotation = this.gpsOn;
+	}
+	public boolean getGpsStateBeforeRotation() {
+		return gpsStateBeforeRotation;
+	}
+
+	/**
+	 * activity is being restarted flag
+	 */
+	private boolean activityRestarting = false;
+	public boolean isActivityRestarting() {
+		return activityRestarting;
+	}
+	public void setActivityRestarting(boolean activityRestarting) {
+		this.activityRestarting = activityRestarting;
+	}
 
 	/**
 	 * 
 	 */
 	private Location currentLocation = null;
-
-	//	private float azimuth = 0;
+	public void setCurrentLocation(Location cl) {
+		currentLocation = cl;
+	}
+	public Location getCurrentLocation() {
+		return currentLocation;
+	}
 
 	private SQLiteDatabase db;
+	public SQLiteDatabase getDatabase() {
+		return db;
+	}
 
 	/**
 	 * is external storage available, ex: SD card
 	 */
 	private boolean externalStorageAvailable = false;
+	public boolean getExternalStorageAvailable() {
+		return externalStorageAvailable;
+	}
 
 	/**
 	 * is external storage writable
 	 */
 	private boolean externalStorageWriteable = false;
+	public boolean getExternalStorageWriteable() {
+		return externalStorageWriteable;
+	}
 
 	/**
-	 * 
+	 * MainActivity object reference 
 	 */
 	private static MainActivity mainActivity;
+	public void setMainActivity(MainActivity ma) {
+		mainActivity = ma;
+	}
+	public MainActivity getMainActivity() {
+		return mainActivity;
+	}
 
 	/**
-	 * 
+	 * WaypointsListActivity object reference 
 	 */
 	private static WaypointsListActivity waypointsListActivity;
-
-	/**
-	 * 
-	 */
-	private static TracksListActivity tracksListActivity;
+	public void setWaypointsListActivity(WaypointsListActivity wa) {
+		waypointsListActivity = wa;
+	}
+	public WaypointsListActivity getWaypointsListActivity() {
+		return waypointsListActivity;
+	}
 
 	/**
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;
-
-	/**
-	 * 
-	 */
-	private static final String DATABASE_NAME = "AripucaTracker";
+	public SharedPreferences getPreferences() {
+		return preferences;
+	}
 
 	/**
 	 * 
 	 */
 	private String appDir;
+	public String getAppDir() {
+		return appDir;
+	}
 	
 	/**
 	 * application database create/open helper class
 	 */
 	public class OpenHelper extends SQLiteOpenHelper {
 
+		/**
+		 * 
+		 */
+		private static final String DATABASE_NAME = "AripucaTracker";
+		
 		private static final int DATABASE_VERSION = 3;
 
 		// private static final String NOTES_TABLE_NAME = "notes";
@@ -215,6 +262,7 @@ public class MyApp extends Application {
 					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
 				}
 
+				// adding segment stats table
 				if (oldVersion <= 2) {
 					Log.i(Constants.TAG, "Segments table added");
 					db.execSQL(SEGMENTS_TABLE_CREATE);
@@ -273,40 +321,6 @@ public class MyApp extends Application {
 
 	}
 
-	public boolean getExternalStorageWriteable() {
-		return externalStorageWriteable;
-	}
-
-	public boolean getExternalStorageAvailable() {
-		return externalStorageAvailable;
-	}
-
-	public String getAppDir() {
-		return appDir;
-	}
-
-	public SQLiteDatabase getDatabase() {
-		return db;
-	}
-
-	public SharedPreferences getPreferences() {
-		return preferences;
-	}
-
-	/**
-	 * 
-	 */
-	public void setCurrentLocation(Location cl) {
-		currentLocation = cl;
-	}
-
-	/**
-	 * 
-	 */
-	public Location getCurrentLocation() {
-		return currentLocation;
-	}
-
 	/**
 	 * Get application version name
 	 * 
@@ -325,66 +339,5 @@ public class MyApp extends Application {
 		}
 	}
 
-	public void setMainActivity(MainActivity ma) {
-
-		mainActivity = ma;
-
-	}
-
-	public MainActivity getMainActivity() {
-
-		return mainActivity;
-
-	}
-
-	public void setWaypointsListActivity(WaypointsListActivity wa) {
-		waypointsListActivity = wa;
-	}
-
-	public void setTracksListActivity(TracksListActivity ta) {
-		tracksListActivity = ta;
-	}
-
-	public WaypointsListActivity getWaypointsListActivity() {
-		return waypointsListActivity;
-	}
-
-	// -------------------------------------------------------------------------
-	// TRACK RECORDING
-	// -------------------------------------------------------------------------
-
-	public boolean isGpsOn() {
-
-		return this.gpsOn;
-
-	}
-
-	public void setGpsStateBeforeRotation() {
-
-		gpsStateBeforeRotation = this.gpsOn;
-
-	}
-
-	public boolean getGpsStateBeforeRotation() {
-
-		return gpsStateBeforeRotation;
-
-	}
-
-	public void setGpsOn(boolean flag) {
-
-		this.gpsOn = flag;
-
-	}
-
-	private boolean activityRestarting = false;
-
-	public boolean isActivityRestarting() {
-		return activityRestarting;
-	}
-
-	public void setActivityRestarting(boolean activityRestarting) {
-		this.activityRestarting = activityRestarting;
-	}
 
 }

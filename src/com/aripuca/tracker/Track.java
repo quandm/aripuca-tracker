@@ -22,7 +22,6 @@ public class Track extends AbstractTrack {
 		
 	}
 
-
 	/**
 	 * Id of the track being recorded
 	 */

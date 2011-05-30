@@ -147,8 +147,6 @@ public class TracksListActivity extends ListActivity {
 
 		myApp = ((MyApp) getApplicationContext());
 
-		myApp.setTracksListActivity(this);
-
 		registerForContextMenu(this.getListView());
 
 		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
@@ -174,7 +172,6 @@ public class TracksListActivity extends ListActivity {
 		cursor.close();
 		cursor = null;
 
-		myApp.setTracksListActivity(null);
 		myApp = null;
 
 		super.onDestroy();
@@ -438,6 +435,10 @@ public class TracksListActivity extends ListActivity {
 						sql = "DELETE FROM tracks WHERE _id=" + trackId + ";";
 						myApp.getDatabase().execSQL(sql);
 
+						// delete track from db
+						sql = "DELETE FROM segments WHERE track_id=" + trackId + ";";
+						myApp.getDatabase().execSQL(sql);
+						
 						cursor.requery();
 
 						Toast.makeText(TracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT).show();
