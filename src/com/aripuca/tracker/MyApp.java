@@ -31,11 +31,6 @@ public class MyApp extends Application {
 	/**
 	 * 
 	 */
-	private Track track;
-
-	/**
-	 * 
-	 */
 	//	private ArrayList<Waypoint> waypointList;
 
 	/**
@@ -357,22 +352,6 @@ public class MyApp extends Application {
 	// -------------------------------------------------------------------------
 	// TRACK RECORDING
 	// -------------------------------------------------------------------------
-
-	/**
-	 * Return active track object
-	 */
-	public Track getTrack() {
-		return this.track;
-	}
-
-	public void startTrackRecording() {
-		this.track = new Track(this);
-	}
-
-	public void stopTrackRecording() {
-		this.track.stopRecording();
-		this.track = null;
-	}
 
 	public boolean isGpsOn() {
 

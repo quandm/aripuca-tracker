@@ -45,8 +45,6 @@ import android.view.View.OnClickListener;
  */
 public class MainActivity extends Activity {
 
-	private final String waypointsFile = "waypoints.txt";
-
 	/**
 	 * 
 	 */
@@ -56,6 +54,8 @@ public class MainActivity extends Activity {
 	 * Reference to Application object
 	 */
 	private MyApp myApp;
+	
+	private TrackRecorder trackRecorder;
 
 	private ContainerCarousel speedContainerCarousel = new ContainerCarousel() {
 		@Override
@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
 			// disable pause/resume button when tracking started or stopped
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
 
-			if (myApp.getTrack() != null) {
+			if (TrackRecorder.getInstance(myApp).isRecording()) {
 				stopTracking();
 			} else {
 				startTracking();
@@ -134,11 +134,15 @@ public class MainActivity extends Activity {
 
 	private OnClickListener trackRecordingButtonClick = new OnClickListener() {
 		public void onClick(View v) {
-			if (myApp.getTrack() == null) {
-				Toast.makeText(MainActivity.this, "Press and hold to start track recording", Toast.LENGTH_SHORT).show();
-			} else {
+			
+			TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
+			
+			if (trackRecorder.isRecording()) {
 				Toast.makeText(MainActivity.this, "Press and hold to stop track recording", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(MainActivity.this, "Press and hold to start track recording", Toast.LENGTH_SHORT).show();
 			}
+			
 		}
 
 	};
@@ -147,12 +151,27 @@ public class MainActivity extends Activity {
 	 * 
 	 */
 	private OnClickListener pauseResumeTrackListener = new OnClickListener() {
+		
 		public void onClick(View v) {
 
-			if (myApp.getTrack().isTrackingPaused()) {
-				resumeTracking();
+			TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
+			
+			if (trackRecorder.isRecordingPaused()) {
+				
+				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
+
+				trackRecorder.resume();
+
+				Toast.makeText(MainActivity.this, R.string.recording_resumed, Toast.LENGTH_SHORT).show();
+				
 			} else {
-				pauseTracking();
+				
+				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.resume));
+
+				trackRecorder.pause();
+
+				Toast.makeText(MainActivity.this, R.string.recording_paused, Toast.LENGTH_SHORT).show();
+				
 			}
 
 		}
@@ -193,8 +212,7 @@ public class MainActivity extends Activity {
 		timeContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("time_container_id", 0));
 		distanceContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("distance_container_id", 0));
 		elevationContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("elavation_container_id", 0));
-		coordinatesContainerCarousel
-				.setCurrentContainerId(myApp.getPreferences().getInt("coordinates_container_id", 0));
+		coordinatesContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("coordinates_container_id", 0));
 
 	}
 
@@ -239,10 +257,12 @@ public class MainActivity extends Activity {
 		}
 
 		// attaching default middle layout
-		if (myApp.getTrack() == null) {
-			this.replaceDynamicView(R.layout.main_idle);
-		} else {
+		trackRecorder = TrackRecorder.getInstance(myApp);
+		
+		if (trackRecorder.isRecording()) {
 			this.replaceDynamicView(R.layout.main_tracking);
+		} else {
+			this.replaceDynamicView(R.layout.main_idle);
 		}
 
 		// once activity is started set restarting flag to false
@@ -267,7 +287,7 @@ public class MainActivity extends Activity {
 			// to orientation change
 
 			// if track recording mode is ON
-			if (myApp.getTrack() != null) {
+			if (trackRecorder.isRecording()) {
 
 				((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
 
@@ -507,7 +527,7 @@ public class MainActivity extends Activity {
 		// findViewById(R.id.gpsServiceButton)).setText(getString(R.string.gps_off));
 
 		// stop tracking if active
-		if (myApp.getTrack() != null) {
+		if (trackRecorder.isRecording()) {
 			stopTracking();
 		}
 
@@ -532,7 +552,9 @@ public class MainActivity extends Activity {
 		this.replaceDynamicView(R.layout.main_tracking);
 
 		// new track recording started
-		myApp.startTrackRecording();
+//		myApp.startTrackRecording();
+		
+		TrackRecorder.getInstance(myApp).start();
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
@@ -550,38 +572,12 @@ public class MainActivity extends Activity {
 		// Change button label from Stop to Record
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record));
 
-		myApp.stopTrackRecording();
+		TrackRecorder.getInstance(myApp).stop();
 
 		// switching to initial layout
 		this.replaceDynamicView(R.layout.main_idle);
 
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
-
-	}
-
-	/**
-	 * Resume track recording
-	 */
-	private void resumeTracking() {
-
-		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
-
-		myApp.getTrack().resume();
-
-		Toast.makeText(this, R.string.recording_resumed, Toast.LENGTH_SHORT).show();
-
-	}
-
-	/**
-	 * Pause track recording
-	 */
-	private void pauseTracking() {
-
-		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.resume));
-
-		myApp.getTrack().pause();
-
-		Toast.makeText(this, R.string.recording_paused, Toast.LENGTH_SHORT).show();
 
 	}
 
@@ -650,8 +646,8 @@ public class MainActivity extends Activity {
 					values.put("time", myApp.getCurrentLocation().getTime());
 
 					// if track recording started save track_id as
-					if (myApp.getTrack() != null) {
-						values.put("track_id", myApp.getTrack().getTrackId());
+					if (trackRecorder.isRecording()) {
+						values.put("track_id", trackRecorder.getTrack().getTrackId());
 					}
 
 					try {
@@ -819,7 +815,7 @@ public class MainActivity extends Activity {
 				if (myApp.isGpsOn()) {
 
 					// if in track recording mode do not stop GPS, display warning message instead 
-					if (myApp.getTrack() == null) {
+					if (!trackRecorder.isRecording()) {
 						stopGPSService();
 					} else {
 						Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
@@ -864,6 +860,8 @@ public class MainActivity extends Activity {
 	 * Update main activity view
 	 */
 	public void updateMainActivity() {
+		
+		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
@@ -923,60 +921,60 @@ public class MainActivity extends Activity {
 		}
 
 		// updating track recording info
-		if (myApp.getTrack() != null) {
+		if (trackRecorder.isRecording()) {
 
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
-				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(myApp.getTrack()
+				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()
 						.getElevationGain(), elevationUnit));
 			}
 
 			// elevation loss
 			if (findViewById(R.id.elevationLoss) != null) {
-				((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(myApp.getTrack()
+				((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(trackRecorder.getTrack()
 						.getElevationLoss(), elevationUnit));
 			}
 
 			// average speed
 			if (findViewById(R.id.averageSpeed) != null) {
-				((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(myApp.getTrack()
+				((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
 						.getAverageSpeed(), speedUnit));
 			}
 
 			// average moving speed
 			if (findViewById(R.id.averageMovingSpeed) != null) {
-				((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(myApp.getTrack()
+				((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
 						.getAverageMovingSpeed(), speedUnit));
 			}
 
 			// max speed
 			if (findViewById(R.id.maxSpeed) != null) {
-				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(myApp.getTrack().getMaxSpeed(),
+				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack().getMaxSpeed(),
 						speedUnit));
 			}
 
 			// average pace
 			if (findViewById(R.id.averagePace) != null) {
 				((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(
-						myApp.getTrack().getAverageSpeed(),
+						trackRecorder.getTrack().getAverageSpeed(),
 						speedUnit));
 			}
 
 			// average moving pace
 			if (findViewById(R.id.averageMovingPace) != null) {
-				((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(myApp.getTrack()
+				((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(trackRecorder.getTrack()
 						.getAverageMovingSpeed(), speedUnit));
 			}
 
 			// max pace
 			if (findViewById(R.id.maxPace) != null) {
-				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(myApp.getTrack().getMaxSpeed(),
+				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(trackRecorder.getTrack().getMaxSpeed(),
 						speedUnit));
 			}
 
 			// total distance
 			if (findViewById(R.id.distance) != null) {
-				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(myApp.getTrack().getDistance(),
+				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackRecorder.getTrack().getDistance(),
 						distanceUnit));
 			}
 
@@ -1037,16 +1035,16 @@ public class MainActivity extends Activity {
 	 */
 	public void updateTime() {
 
-		if (myApp.getTrack() != null) {
+		if (trackRecorder.isRecording()) {
 
 			if (findViewById(R.id.totalTime) != null) {
 				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
-						myApp.getTrack().getTotalTime(), false));
+						trackRecorder.getTrack().getTotalTime(), false));
 			}
 
 			if (findViewById(R.id.movingTime) != null) {
 				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(
-						myApp.getTrack().getMovingTime(), false));
+						trackRecorder.getTrack().getMovingTime(), false));
 			}
 
 		}
@@ -1067,8 +1065,10 @@ public class MainActivity extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
+		
 		backClickCount++;
-		if (myApp.getTrack() != null && backClickCount < 2) {
+		
+		if (trackRecorder.isRecording() && backClickCount < 2) {
 			Toast.makeText(MainActivity.this, R.string.click_again_to_exit, Toast.LENGTH_SHORT).show();
 			// click count is cleared after 3 seconds
 			clearClickCountHandler.postDelayed(clearClickCountTask, 3000);

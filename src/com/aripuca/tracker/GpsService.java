@@ -140,8 +140,9 @@ public class GpsService extends Service {
 			if (myApp.getMainActivity() != null) {
 				
 				// update track statistics 
-				if (myApp.getTrack() != null && currentLocation!=null) {
-					myApp.getTrack().updateStatistics(currentLocation);
+				TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp); 
+				if (trackRecorder.isRecording() && currentLocation!=null) {
+					trackRecorder.updateStatistics(currentLocation);
 				}
 				
 				myApp.getMainActivity().updateTime();
