@@ -14,7 +14,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * main application activity
@@ -31,8 +35,32 @@ public class TrackDetailsActivity extends Activity {
 	private int currentSegment = 0;
 
 	private int numberOfSegments = 0;
-	
+
 	private ArrayList<Integer> segmentIds;
+
+	private OnClickListener nextSegmentButtonClick = new OnClickListener() {
+		public void onClick(View v) {
+
+			if (numberOfSegments==0) {
+				Toast.makeText(TrackDetailsActivity.this, R.string.no_segments, Toast.LENGTH_SHORT).show();
+				return;
+			}
+			
+			if (currentSegment < numberOfSegments) {
+
+				currentSegment++;
+				updateSegment(currentSegment-1);
+
+			} else {
+
+				currentSegment=0;
+				update();
+				
+			}
+			
+		}
+
+	};
 
 	/**
 	 * Initialize activity
@@ -51,6 +79,8 @@ public class TrackDetailsActivity extends Activity {
 		this.trackId = b.getLong("track_id", 0);
 
 		this.getSegments();
+
+		((Button) findViewById(R.id.nextSegment)).setOnClickListener(nextSegmentButtonClick);
 
 	}
 
@@ -89,8 +119,9 @@ public class TrackDetailsActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		// if user changes application settings (ex: measurement units) from this activity
-		// call of update here will display correct units 
+		// if user changes application settings (ex: measurement units) from
+		// this activity
+		// call of update here will display correct units
 		update();
 
 		super.onResume();
@@ -196,7 +227,9 @@ public class TrackDetailsActivity extends Activity {
 	/**
 	 * Update track details view
 	 */
-	protected void updateSegment() {
+	protected void updateSegment(int segmentIndex) {
+		
+		int segmentId = segmentIds.get(segmentIndex);
 
 		// measuring units
 		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
@@ -204,7 +237,7 @@ public class TrackDetailsActivity extends Activity {
 		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 
 		// get track data
-		String sql = "SELECT * FROM segments WHERE track_id=" + this.trackId;
+		String sql = "SELECT * FROM segments WHERE _id=" + segmentId;
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -223,7 +256,7 @@ public class TrackDetailsActivity extends Activity {
 
 		float maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
 
-		((TextView) findViewById(R.id.descr)).setText(cursor.getString(cursor.getColumnIndex("count")));
+		((TextView) findViewById(R.id.descr)).setText("Segment: "+segmentIndex+" ("+segmentId+")");
 
 		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
 				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
@@ -304,7 +337,7 @@ public class TrackDetailsActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
-		//		MenuItem mi = menu.findItem(R.id.showSegments);
+		// MenuItem mi = menu.findItem(R.id.showSegments);
 
 		return true;
 	}

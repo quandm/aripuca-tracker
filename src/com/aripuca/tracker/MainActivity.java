@@ -138,9 +138,9 @@ public class MainActivity extends Activity {
 			TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 			
 			if (trackRecorder.isRecording()) {
-				Toast.makeText(MainActivity.this, "Press and hold to stop track recording", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_stop, Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(MainActivity.this, "Press and hold to start track recording", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_start, Toast.LENGTH_SHORT).show();
 			}
 			
 		}

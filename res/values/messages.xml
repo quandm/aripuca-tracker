@@ -31,4 +31,9 @@
 	<string name="stop_track_recording">Please stop track recording</string>
 	<string name="click_again_to_exit">Click again to exit</string>
 	
+	<string name="press_and_hold_to_stop">Press and hold to stop track recording</string>
+	<string name="press_and_hold_to_start">Press and hold to start track recording</string>
+
+	<string name="no_segments">No segments created for this track</string>
+	
 </resources>

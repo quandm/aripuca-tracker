@@ -4,19 +4,14 @@
 	android:layout_height="fill_parent" android:layout_width="fill_parent"
 	android:background="@drawable/bg1repeat">
 
-	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:orientation="vertical"
+	<ScrollView android:layout_width="fill_parent" android:id="@+id/dynamicView"
+		android:layout_height="fill_parent" android:scrollbars="none"
 		android:layout_marginBottom="52dp" android:paddingTop="2dp">
 
-		<ScrollView android:layout_width="fill_parent" android:id="@+id/dynamicView"
-			android:layout_height="fill_parent" android:scrollbars="none">
+		<!-- This scroll view will be dynamically populated by the required layout 
+			in runtime -->
 
-			<!-- This scroll view will be dynamically populated by the required layout 
-				in runtime -->
-
-		</ScrollView>
-
-	</LinearLayout>
+	</ScrollView>
 
 	<!-- CONTROL BUTTONS -->
 

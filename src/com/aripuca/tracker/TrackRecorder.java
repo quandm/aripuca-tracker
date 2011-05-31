@@ -2,6 +2,7 @@ package com.aripuca.tracker;
 
 import android.location.Location;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class TrackRecorder {
 
@@ -80,6 +81,11 @@ public class TrackRecorder {
 	 * Start track recording
 	 */
 	public void start() {
+		
+		currentSystemTime = 0;
+		startTime = 0;
+		pauseTimeStart = 0;
+		idleTimeStart = 0;
 
 		// create new track statistics object
 		this.track = new Track(myApp);
@@ -159,6 +165,8 @@ public class TrackRecorder {
 
 		this.segment.insertSegment(this.getTrack().getTrackId());
 
+		this.segment = null;
+		
 		this.segment = new Segment(myApp);
 
 		this.segmentId++;
@@ -190,11 +198,12 @@ public class TrackRecorder {
 		this.segment.setCurrentSystemTime(this.currentSystemTime);
 
 		if (this.startTime == 0) {
-
 			this.startTime = this.currentSystemTime;
-
-			this.track.setStartTime(this.startTime);
-			this.segment.setStartTime(this.startTime);
+			this.track.setStartTime(this.currentSystemTime);
+		}
+		
+		if (this.segment.getStartTime()==0) {
+			this.segment.setStartTime(this.currentSystemTime);
 		}
 
 		this.processPauseTime();
@@ -245,6 +254,42 @@ public class TrackRecorder {
 	}
 
 	/**
+	 * Process time the device was not moving 
+	 */
+	protected void processIdleTime(Location location) {
+
+		// updating idle time in track
+		if (location.getSpeed() < Constants.MIN_SPEED) {
+
+			// if idle interval started increment total idle time 
+			if (this.idleTimeStart != 0) {
+
+				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+				this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+
+			}
+			// save start idle time
+			this.idleTimeStart = this.currentSystemTime;
+
+		} else {
+
+			// increment total idle time with already started interval  
+			if (this.idleTimeStart != 0) {
+
+				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+				this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+
+				this.idleTimeStart = 0;
+
+			}
+
+		}
+		
+		Log.v(Constants.TAG, "processIdleTime: Moving: "+this.segment.getMovingTime()+"; Total: "+this.segment.getTotalTime());
+
+	}
+	
+	/**
 	 * Process time this track was paused
 	 */
 	private void processPauseTime() {
@@ -276,40 +321,9 @@ public class TrackRecorder {
 			this.pauseTimeStart = 0;
 		}
 
-	}
-
-	/**
-	 * Process time the device was not moving 
-	 */
-	protected void processIdleTime(Location location) {
-
-		// updating idle time in track
-		if (location.getSpeed() < Constants.MIN_SPEED) {
-
-			// if idle interval started increment total idle time 
-			if (this.idleTimeStart != 0) {
-
-				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
-				this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
-
-			}
-			// save start idle time
-			this.idleTimeStart = this.currentSystemTime;
-
-		} else {
-
-			// increment total idle time with already started interval  
-			if (this.idleTimeStart != 0) {
-
-				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
-				this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
-
-				this.idleTimeStart = 0;
-
-			}
-
-		}
-
+		Log.i(Constants.TAG, "processPauseTime: Moving: "+this.segment.getMovingTime()+"; Total: "+this.segment.getTotalTime());
+		
+		
 	}
 
 	/**

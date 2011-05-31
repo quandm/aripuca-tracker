@@ -281,8 +281,8 @@ public class TracksListActivity extends ListActivity {
 		menu.add(Menu.NONE, 2, 2, R.string.delete);
 
 		SubMenu exportSubMenu = menu.addSubMenu(Menu.NONE, 3, 3, R.string.export);
-		exportSubMenu.add(Menu.NONE, 31, 1, R.string.exportToGpx);
-		exportSubMenu.add(Menu.NONE, 32, 2, R.string.exportToKml);
+		exportSubMenu.add(Menu.NONE, 31, 1, R.string.export_to_gpx);
+		exportSubMenu.add(Menu.NONE, 32, 2, R.string.export_to_kml);
 
 		// menu.add(Menu.NONE, 4, 6, R.string.online_sync);
 

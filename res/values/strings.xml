@@ -27,6 +27,8 @@
 	<string name="show_track">Show track</string>
 
 	<string name="segments">Segments</string>
+	<string name="prev_segment">Prev segment</string>
+	<string name="next_segment">Next segment</string>
 	
 	<!-- SEPARATE WORDS -->
 	
@@ -39,8 +41,8 @@
 	<string name="delete">Delete</string>
 	<string name="import1">Import</string>
 	<string name="export">Export</string>
-	<string name="exportToGpx">Export to GPX</string>
-	<string name="exportToKml">Export to KML</string>
+	<string name="export_to_gpx">Export to GPX</string>
+	<string name="export_to_kml">Export to KML</string>
 	<string name="pause">Pause</string>
 	<string name="resume">Resume</string>
 	<string name="record">Record</string>

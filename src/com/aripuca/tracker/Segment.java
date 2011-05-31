@@ -7,31 +7,32 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.widget.Toast;
 
-
 public class Segment extends AbstractTrack {
-	
+
 	public Segment(MyApp myApp) {
-		
+
 		super(myApp);
-		
+
 	}
-	
+
 	/**
 	 * Id of the track being recorded
 	 */
 	private long segmentId;
+
 	public void setSegmentId(long sid) {
 		this.segmentId = sid;
 	}
+
 	public long getSegmentId() {
 		return this.segmentId;
 	}
-	
+
 	/**
 	 * Add new track to application db after recording started
 	 */
 	public void insertSegment(long trackId) {
-		
+
 		long finishTime = (new Date()).getTime();
 
 		ContentValues values = new ContentValues();
@@ -47,19 +48,19 @@ public class Segment extends AbstractTrack {
 		values.put("start_time", this.trackTimeStart);
 		values.put("finish_time", finishTime);
 
+		Log.w(Constants.TAG, "insertSegment: Total: " + this.getTotalTime() + " Moving: " + this.getMovingTime());
+
 		try {
 
 			myApp.getDatabase().insertOrThrow("segments", null, values);
-			
+
 		} catch (SQLiteException e) {
-			
+
 			Toast.makeText(myApp.getMainActivity(), "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
-			
+
 		}
 
 	}
-	
-	
-	
+
 }

@@ -208,5 +208,8 @@ public abstract class AbstractTrack {
 	public void setStartTime(long st) {
 		this.startTime = st;
 	}
+	public long getStartTime() {
+		return this.startTime;
+	}
 	
 }
