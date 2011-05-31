@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.aripuca.tracker.util.Utils;
-import com.google.android.maps.GeoPoint;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,26 +36,59 @@ public class TrackDetailsActivity extends Activity {
 
 	private ArrayList<Integer> segmentIds;
 
-	private OnClickListener nextSegmentButtonClick = new OnClickListener() {
+	private OnClickListener prevSegmentButtonClick = new OnClickListener() {
+		@Override
 		public void onClick(View v) {
 
-			if (numberOfSegments==0) {
+			if (numberOfSegments == 0) {
 				Toast.makeText(TrackDetailsActivity.this, R.string.no_segments, Toast.LENGTH_SHORT).show();
 				return;
 			}
-			
-			if (currentSegment < numberOfSegments) {
 
-				currentSegment++;
-				updateSegment(currentSegment-1);
+			if (currentSegment == 0) {
+				currentSegment = numberOfSegments;
+				updateSegment(currentSegment);
+				return;
+
+			}
+
+			if (currentSegment > 1) {
+
+				currentSegment--;
+				updateSegment(currentSegment);
 
 			} else {
 
-				currentSegment=0;
+				currentSegment = 0;
 				update();
-				
+
 			}
-			
+
+		}
+
+	};
+
+	private OnClickListener nextSegmentButtonClick = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+
+			if (numberOfSegments == 0) {
+				Toast.makeText(TrackDetailsActivity.this, R.string.no_segments, Toast.LENGTH_SHORT).show();
+				return;
+			}
+
+			if (currentSegment < numberOfSegments) {
+
+				currentSegment++;
+				updateSegment(currentSegment);
+
+			} else {
+
+				currentSegment = 0;
+				update();
+
+			}
+
 		}
 
 	};
@@ -80,10 +111,14 @@ public class TrackDetailsActivity extends Activity {
 
 		this.getSegments();
 
+		((Button) findViewById(R.id.prevSegment)).setOnClickListener(prevSegmentButtonClick);
 		((Button) findViewById(R.id.nextSegment)).setOnClickListener(nextSegmentButtonClick);
 
 	}
 
+	/**
+	 * 
+	 */
 	private void getSegments() {
 
 		// get track data
@@ -138,7 +173,9 @@ public class TrackDetailsActivity extends Activity {
 		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 
 		// get track data
-		String sql = "SELECT * FROM tracks WHERE tracks._id=" + this.trackId;
+		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks, track_points WHERE "+
+					 " tracks._id=" + this.trackId +
+					 " AND tracks._id = track_points.track_id";
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -164,6 +201,8 @@ public class TrackDetailsActivity extends Activity {
 		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
 				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
 
+		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
+		
 		((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
 				cursor.getLong(cursor.getColumnIndex("total_time")), true));
 
@@ -228,8 +267,8 @@ public class TrackDetailsActivity extends Activity {
 	 * Update track details view
 	 */
 	protected void updateSegment(int segmentIndex) {
-		
-		int segmentId = segmentIds.get(segmentIndex);
+
+		int segmentId = segmentIds.get(segmentIndex-1);
 
 		// measuring units
 		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
@@ -237,7 +276,11 @@ public class TrackDetailsActivity extends Activity {
 		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 
 		// get track data
-		String sql = "SELECT * FROM segments WHERE _id=" + segmentId;
+		String sql = "SELECT segments.*, COUNT(track_points._id) AS count FROM segments, track_points WHERE" +
+				" segments._id=" + segmentId + 
+				" AND segments.track_id=" + this.trackId +
+				" AND track_points.segment_id=" + (segmentIndex-1) +
+				" AND segments.track_id = track_points.track_id";
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -256,10 +299,12 @@ public class TrackDetailsActivity extends Activity {
 
 		float maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
 
-		((TextView) findViewById(R.id.descr)).setText("Segment: "+segmentIndex+" ("+segmentId+")");
+		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex + " (" + segmentId + ")");
 
 		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
 				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
+
+		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
 
 		((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
 				cursor.getLong(cursor.getColumnIndex("total_time")), true));

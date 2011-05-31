@@ -269,9 +269,9 @@ public class MyMapActivity extends MapActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
 		if (mode == Constants.SHOW_WAYPOINT) {
-			((MenuItem)menu.findItem(R.id.showTrack)).setVisible(false);
+			(menu.findItem(R.id.showTrack)).setVisible(false);
 		} else {
-			((MenuItem)menu.findItem(R.id.showWaypoint)).setVisible(false);
+			(menu.findItem(R.id.showWaypoint)).setVisible(false);
 		}
 		
 		return true;

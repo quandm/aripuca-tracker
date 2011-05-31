@@ -5,6 +5,7 @@ import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.text.SimpleDateFormat;
@@ -12,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.io.*;
+import java.nio.channels.FileChannel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -54,7 +57,7 @@ public class MainActivity extends Activity {
 	 * Reference to Application object
 	 */
 	private MyApp myApp;
-	
+
 	private TrackRecorder trackRecorder;
 
 	private ContainerCarousel speedContainerCarousel = new ContainerCarousel() {
@@ -87,6 +90,7 @@ public class MainActivity extends Activity {
 
 			containers.add(R.layout.container_distance_1);
 			containers.add(R.layout.container_distance_2);
+			containers.add(R.layout.container_distance_3);
 		}
 	};
 	private ContainerCarousel elevationContainerCarousel = new ContainerCarousel() {
@@ -116,6 +120,7 @@ public class MainActivity extends Activity {
 	 */
 	private OnLongClickListener trackRecordingButtonLongClick = new OnLongClickListener() {
 
+		@Override
 		public boolean onLongClick(View v) {
 
 			// disable pause/resume button when tracking started or stopped
@@ -133,16 +138,17 @@ public class MainActivity extends Activity {
 	};
 
 	private OnClickListener trackRecordingButtonClick = new OnClickListener() {
+		@Override
 		public void onClick(View v) {
-			
+
 			TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
-			
+
 			if (trackRecorder.isRecording()) {
 				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_stop, Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_start, Toast.LENGTH_SHORT).show();
 			}
-			
+
 		}
 
 	};
@@ -151,25 +157,26 @@ public class MainActivity extends Activity {
 	 * 
 	 */
 	private OnClickListener pauseResumeTrackListener = new OnClickListener() {
-		
+
+		@Override
 		public void onClick(View v) {
 
 			if (trackRecorder.isRecordingPaused()) {
-				
+
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
 
 				trackRecorder.resume();
 
 				Toast.makeText(MainActivity.this, R.string.recording_resumed, Toast.LENGTH_SHORT).show();
-				
+
 			} else {
-				
+
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.resume));
 
 				trackRecorder.pause();
 
 				Toast.makeText(MainActivity.this, R.string.recording_paused, Toast.LENGTH_SHORT).show();
-				
+
 			}
 
 		}
@@ -210,7 +217,8 @@ public class MainActivity extends Activity {
 		timeContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("time_container_id", 0));
 		distanceContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("distance_container_id", 0));
 		elevationContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("elavation_container_id", 0));
-		coordinatesContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("coordinates_container_id", 0));
+		coordinatesContainerCarousel
+				.setCurrentContainerId(myApp.getPreferences().getInt("coordinates_container_id", 0));
 
 	}
 
@@ -256,7 +264,7 @@ public class MainActivity extends Activity {
 
 		// get instance of TrackRecorder class for fast access from MainActivity
 		trackRecorder = TrackRecorder.getInstance(myApp);
-		
+
 		// attaching default middle layout
 		if (trackRecorder.isRecording()) {
 			this.replaceDynamicView(R.layout.main_tracking);
@@ -447,6 +455,7 @@ public class MainActivity extends Activity {
 
 			containerView.setOnClickListener(
 					new OnClickListener() {
+						@Override
 						public void onClick(View v) {
 							ViewGroup containerView = (ViewGroup) findViewById(resourceId);
 
@@ -551,8 +560,8 @@ public class MainActivity extends Activity {
 		this.replaceDynamicView(R.layout.main_tracking);
 
 		// new track recording started
-//		myApp.startTrackRecording();
-		
+		//		myApp.startTrackRecording();
+
 		trackRecorder.start();
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
@@ -585,6 +594,7 @@ public class MainActivity extends Activity {
 	 */
 	private OnClickListener addWaypointListener = new OnClickListener() {
 
+		@Override
 		public void onClick(View v) {
 
 			/*
@@ -622,6 +632,7 @@ public class MainActivity extends Activity {
 
 			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
+				@Override
 				public void onClick(DialogInterface dialog, int id) {
 
 					// waypoint title from input dialog
@@ -664,6 +675,7 @@ public class MainActivity extends Activity {
 			});
 
 			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int id) {
 					// dialog.dismiss();
 				}
@@ -731,6 +743,7 @@ public class MainActivity extends Activity {
 		createFolder(myApp.getAppDir());
 		createFolder(myApp.getAppDir() + "/tracks");
 		createFolder(myApp.getAppDir() + "/waypoints");
+		createFolder(myApp.getAppDir() + "/backup");
 	}
 
 	/**
@@ -841,6 +854,7 @@ public class MainActivity extends Activity {
 		builder.setMessage(getString(R.string.main_app_title) + " " + MyApp.getVersionName(this) + "\n"
 						+ getString(R.string.app_url))
 				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.dismiss();
 					}
@@ -859,7 +873,7 @@ public class MainActivity extends Activity {
 	 * Update main activity view
 	 */
 	public void updateMainActivity() {
-		
+
 		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
@@ -922,6 +936,11 @@ public class MainActivity extends Activity {
 		// updating track recording info
 		if (trackRecorder.isRecording()) {
 
+			// number of track points recorded
+			if (findViewById(R.id.pointsCount) != null) {
+				((TextView) findViewById(R.id.pointsCount)).setText(Integer.toString(trackRecorder.getPointsCount()));
+			}
+
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
 				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()
@@ -948,7 +967,8 @@ public class MainActivity extends Activity {
 
 			// max speed
 			if (findViewById(R.id.maxSpeed) != null) {
-				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack().getMaxSpeed(),
+				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
+						.getMaxSpeed(),
 						speedUnit));
 			}
 
@@ -967,13 +987,15 @@ public class MainActivity extends Activity {
 
 			// max pace
 			if (findViewById(R.id.maxPace) != null) {
-				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(trackRecorder.getTrack().getMaxSpeed(),
+				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(
+						trackRecorder.getTrack().getMaxSpeed(),
 						speedUnit));
 			}
 
 			// total distance
 			if (findViewById(R.id.distance) != null) {
-				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackRecorder.getTrack().getDistance(),
+				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackRecorder.getTrack()
+						.getDistance(),
 						distanceUnit));
 			}
 
@@ -1067,9 +1089,9 @@ public class MainActivity extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
-		
+
 		backClickCount++;
-		
+
 		if (trackRecorder.isRecording() && backClickCount < 2) {
 			Toast.makeText(MainActivity.this, R.string.click_again_to_exit, Toast.LENGTH_SHORT).show();
 			// click count is cleared after 3 seconds
@@ -1084,6 +1106,7 @@ public class MainActivity extends Activity {
 	 */
 	private Handler clearClickCountHandler = new Handler();
 	private Runnable clearClickCountTask = new Runnable() {
+		@Override
 		public void run() {
 			backClickCount = 0;
 		}
@@ -1113,7 +1136,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Create a list of famous waypoints and insert to db when application first installed 
+	 * Create a list of famous waypoints and insert to db when application first
+	 * installed
 	 */
 	public void processFamousWaypoints() {
 
@@ -1127,11 +1151,11 @@ public class MainActivity extends Activity {
 		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
 
 		// insert waypoints to db
-	    Iterator<Waypoint> itr = famousWaypoints.iterator();
-	    while(itr.hasNext()) {
-	    	
-	    	Waypoint wp = itr.next();
-	    	
+		Iterator<Waypoint> itr = famousWaypoints.iterator();
+		while (itr.hasNext()) {
+
+			Waypoint wp = itr.next();
+
 			ContentValues values = new ContentValues();
 			values.put("title", wp.getTitle());
 			values.put("lat", wp.getLatitude());
@@ -1139,16 +1163,50 @@ public class MainActivity extends Activity {
 			values.put("time", wp.getTime());
 
 			myApp.getDatabase().insert("waypoints", null, values);
-	    	
-		}		
-		
-	    // switch flag of famous locations added to true
+
+		}
+
+		// switch flag of famous locations added to true
 		SharedPreferences.Editor editor = myApp.getPreferences().edit();
 		editor.putInt("famous_waypoints", 1);
 		editor.commit();
+
+	}
+
+	private void backupDatabase() {
+		
+		try {
+
+			File sd = Environment.getExternalStorageDirectory();
+
+			File data = Environment.getDataDirectory();
+
+			if (sd.canWrite()) {
+
+				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\AripucaTracker";
+
+				String backupDBPath = "backup/AripucaTracker.db";
+
+				File currentDB = new File(data, currentDBPath);
+
+				File backupDB = new File(sd, backupDBPath);
+
+				if (currentDB.exists()) {
+					FileChannel src = new FileInputStream(currentDB).getChannel();
+					FileChannel dst = new FileOutputStream(backupDB).getChannel();
+					dst.transferFrom(src, 0, src.size());
+					src.close();
+					dst.close();
+				}
+			}
+		}
+
+		catch (Exception e) {
+			
+			Log.e(Constants.TAG, e.getMessage());
+			
+		}
 		
 	}
-	
 
-	
 }

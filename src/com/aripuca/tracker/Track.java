@@ -3,12 +3,9 @@ package com.aripuca.tracker;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.app.Activity;
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 

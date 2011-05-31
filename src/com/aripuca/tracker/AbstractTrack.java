@@ -171,7 +171,7 @@ public abstract class AbstractTrack {
 		}
 	}
 	
-	public void setDistance(float d) {
+	public void updateDistance(float d) {
 		
 		this.distance+=d;
 		

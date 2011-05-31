@@ -32,6 +32,7 @@ public class GpsService extends Service {
 	private LocationListener locationListener = new LocationListener() {
 
 		// Called when a new location is found by the network location provider.
+		@Override
 		public void onLocationChanged(Location location) {
 
 			if (myApp == null) {
@@ -57,12 +58,15 @@ public class GpsService extends Service {
 
 		}
 
+		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 		}
 
+		@Override
 		public void onProviderEnabled(String provider) {
 		}
 
+		@Override
 		public void onProviderDisabled(String provider) {
 			Toast.makeText(myApp.getMainActivity(), "GPS provider disabled", Toast.LENGTH_SHORT).show();
 		}
@@ -135,6 +139,7 @@ public class GpsService extends Service {
 	 */
 	private Handler updateTimeHandler = new Handler();
 	private Runnable updateTimeTask = new Runnable() {
+		@Override
 		public void run() {
 			
 			if (myApp.getMainActivity() != null) {

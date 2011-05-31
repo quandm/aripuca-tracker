@@ -1,10 +1,6 @@
 package com.aripuca.tracker;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.app.Application;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;

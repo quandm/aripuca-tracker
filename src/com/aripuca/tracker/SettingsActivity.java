@@ -5,13 +5,11 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 
 import com.aripuca.tracker.util.ArrayUtils;
-import com.aripuca.tracker.view.CompassImage;
 
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener  {

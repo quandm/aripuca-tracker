@@ -7,6 +7,10 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:orientation="horizontal" android:paddingTop="2dp">
 
+		<Button android:id="@+id/prevSegment" android:text="@string/prev_segment"
+			style="@style/ControlButton">
+		</Button>
+
 		<Button android:id="@+id/nextSegment" android:text="@string/next_segment"
 			style="@style/ControlButton">
 		</Button>
@@ -51,6 +55,16 @@
 					</TextView>
 
 					<TextView android:id="@+id/distance" style="@style/SmallLabel">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsCell">
+
+					<TextView android:text="@string/points" style="@style/SmallHeader">
+					</TextView>
+
+					<TextView android:id="@+id/pointsCount" style="@style/SmallLabel">
 					</TextView>
 
 				</LinearLayout>

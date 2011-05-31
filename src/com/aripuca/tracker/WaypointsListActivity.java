@@ -83,6 +83,7 @@ public class WaypointsListActivity extends ListActivity {
 	protected class WaypointsArrayAdapter extends ArrayAdapter<Waypoint> {
 
 		private final Comparator<Waypoint> distanceComparator = new Comparator<Waypoint>() {
+			@Override
 			public int compare(Waypoint wp1, Waypoint wp2) {
 				return (wp1.getDistanceTo() < wp2.getDistanceTo() ? -1
 						: (wp1.getDistanceTo() == wp2.getDistanceTo() ? 0 : 1));

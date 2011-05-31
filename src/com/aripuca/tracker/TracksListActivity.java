@@ -228,6 +228,7 @@ public class TracksListActivity extends ListActivity {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage("Are you sure?").setCancelable(true)
 						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								String sql = "DELETE FROM tracks";
 								myApp.getDatabase().execSQL(sql);
@@ -238,6 +239,7 @@ public class TracksListActivity extends ListActivity {
 										.show();
 							}
 						}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								Toast.makeText(TracksListActivity.this, R.string.cancelled, Toast.LENGTH_SHORT).show();
 								dialog.cancel();
@@ -379,6 +381,7 @@ public class TracksListActivity extends ListActivity {
 		trDescr.setText(tmpCursor.getString(tmpCursor.getColumnIndex("descr")));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int id) {
 
 				// track title from input dialog
@@ -403,6 +406,7 @@ public class TracksListActivity extends ListActivity {
 		});
 
 		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 			}
@@ -425,6 +429,7 @@ public class TracksListActivity extends ListActivity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.are_you_sure).setCancelable(true)
 				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
 						// delete all track points first
@@ -444,6 +449,7 @@ public class TracksListActivity extends ListActivity {
 						Toast.makeText(TracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT).show();
 					}
 				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 					}
@@ -502,6 +508,7 @@ public class TracksListActivity extends ListActivity {
 		pd.setMax(totalPoints);
 
 		pd.setOnCancelListener(new OnCancelListener() {
+			@Override
 			public void onCancel(DialogInterface dialog) {
 				Log.i(Constants.TAG, "AsyncTask: onCancel()");
 				// cancel exporting track task
