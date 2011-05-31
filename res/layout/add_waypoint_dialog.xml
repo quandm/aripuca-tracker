@@ -1,0 +1,55 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:id="@+id/add_waypoint_dialog_layout_root"
+	>
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:padding="3dp">
+
+		<TextView android:text="@string/title"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+		<EditText android:id="@+id/waypointTitleInputText"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:maxLines="1" android:maxLength="50" android:hint="enter title" />
+
+		<!-- android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine" 
+			android:imeOptions="actionSend|flagNoEnterAction" -->
+
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<LinearLayout android:orientation="vertical" android:layout_weight="1"
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+				<TextView android:text="@string/lat" android:layout_width="fill_parent"
+					android:layout_height="wrap_content"></TextView>
+				<EditText android:id="@+id/waypointLatInputText"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:maxLines="1" android:maxLength="50" android:hint="enter latitude" />
+			</LinearLayout>
+
+			<LinearLayout android:orientation="vertical"  android:layout_weight="1"
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+				<TextView android:text="@string/lng" android:layout_width="fill_parent"
+					android:layout_height="wrap_content"></TextView>
+				<EditText android:id="@+id/waypointLngInputText"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:maxLines="1" android:maxLength="50" android:hint="enter longitude" />
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<TextView android:text="@string/description"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+
+		<EditText android:id="@+id/waypointDescriptionInputText"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:lines="3" android:gravity="top" android:maxLength="200"
+			android:hint="waypoint description" />
+
+	</LinearLayout>
+
+</ScrollView>
