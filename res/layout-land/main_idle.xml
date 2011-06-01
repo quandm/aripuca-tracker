@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent">
+
+	<LinearLayout android:id="@+id/mainLayout"
+		android:orientation="horizontal" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="0dp" android:layout_height="fill_parent"
+			android:layout_weight="2">
+
+			<!-- COORDINATES -->
+
+			<LinearLayout style="@style/TrackDetailsRow">
+
+				<LinearLayout style="@style/TrackDetailsLeftCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/lat" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/lng" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<LinearLayout style="@style/TrackDetailsRow">
+
+				<LinearLayout style="@style/TrackDetailsLeftCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/lastFix" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/accuracy" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/accuracy" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<LinearLayout style="@style/TrackDetailsRow">
+
+				<LinearLayout style="@style/TrackDetailsLeftCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/speed" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/pace" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+
+			</LinearLayout>
+
+			<!-- ELEVATION & COMPASS -->
+
+			<LinearLayout style="@style/TrackDetailsRow">
+
+				<LinearLayout style="@style/TrackDetailsLeftCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/elevation" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/azimuth" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/azimuth" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<!-- Compass layout -->
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center" android:paddingTop="23dp">
+		<ImageView android:src="@drawable/circle420" android:id="@+id/circleImage"
+			android:layout_width="170dp" android:layout_height="170dp" />
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center" android:paddingTop="23dp">
+		<com.aripuca.tracker.view.CompassImage
+			android:id="@+id/compassImage" android:src="@drawable/windrose420"
+			android:layout_width="170dp" android:layout_height="170dp" />
+	</LinearLayout>
+
+</FrameLayout>
