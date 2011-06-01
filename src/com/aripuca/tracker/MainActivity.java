@@ -941,6 +941,11 @@ public class MainActivity extends Activity {
 				((TextView) findViewById(R.id.pointsCount)).setText(Integer.toString(trackRecorder.getPointsCount()));
 			}
 
+			// number of track points recorded
+			if (findViewById(R.id.segmentsCount) != null) {
+				((TextView) findViewById(R.id.segmentsCount)).setText(Integer.toString(trackRecorder.getSegmentsCount()));
+			}
+			
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
 				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()

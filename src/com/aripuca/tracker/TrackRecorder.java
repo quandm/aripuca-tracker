@@ -5,7 +5,8 @@ import android.os.SystemClock;
 import android.util.Log;
 
 /**
- * TrackRecorder class 
+ * TrackRecorder class
+ * 
  * Handles tracks and segments statistics
  */
 public class TrackRecorder {
@@ -68,12 +69,20 @@ public class TrackRecorder {
 	 * 
 	 */
 	private int segmentingMode;
+
 	/**
 	 * Id of the current track segment
 	 */
 	private int segmentId = 0;
 	private float segmentInterval;
 	private float[] segmentIntervals;
+
+	/**
+	 * Returns number of segments created for the track
+	 */
+	public int getSegmentsCount() {
+		return segmentId + 1;
+	}
 
 	/**
 	 * Singleton pattern
@@ -217,8 +226,11 @@ public class TrackRecorder {
 	 */
 	public void updateStatistics(Location location) {
 
+		// set interval start time
 		// measure time intervals (idle, pause)
-		this.measureTrackTimes(location);
+		if (!this.measureTrackTimes(location)) {
+			return;
+		}
 
 		// let's not record this update if accuracy is not acceptable
 		if (location.getAccuracy() > minAccuracy) {
@@ -263,7 +275,7 @@ public class TrackRecorder {
 	/**
 	 * 
 	 */
-	private void measureTrackTimes(Location location) {
+	private boolean measureTrackTimes(Location location) {
 
 		// all times measured got synchronized with currentSystemTime
 		this.currentSystemTime = SystemClock.uptimeMillis();
@@ -292,12 +304,14 @@ public class TrackRecorder {
 			// after resuming the recording we will start measuring distance
 			// from saved location
 			this.currentLocation = location;
-			return;
+			return false;
 		}
 
 		this.processIdleTime(location);
 		// ------------------------------------------------------------------------------
 
+		return true;
+		
 	}
 
 	/**
@@ -392,8 +406,9 @@ public class TrackRecorder {
 	 */
 	private void recordTrackPoint(Location location) {
 
-		// record points only if distance between 2 consecutive points is
-		// greater than min_distance
+		// record points only if distance between 2 consecutive points is greater than min_distance
+		// if new segment just started we may not add new points for it  
+
 		if (this.lastRecordedLocation == null) {
 
 			this.track.recordTrackPoint(location, this.segmentId);

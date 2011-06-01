@@ -24,6 +24,15 @@
 
 		</LinearLayout>
 
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/segments" style="@style/SmallHeader"></TextView>
+
+			<TextView android:id="@+id/segmentsCount" style="@style/SmallLabel">
+			</TextView>
+
+		</LinearLayout>
+
 	</LinearLayout>
 
 </LinearLayout>
