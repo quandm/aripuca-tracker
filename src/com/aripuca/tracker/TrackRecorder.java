@@ -4,6 +4,10 @@ import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
 
+/**
+ * TrackRecorder class
+ * Handles tracks and segments statistics 
+ */
 public class TrackRecorder {
 
 	private static TrackRecorder instance = null;
