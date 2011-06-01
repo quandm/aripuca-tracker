@@ -9,6 +9,9 @@ import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Track statistics class 
+ */
 public class Track extends AbstractTrack {
 
 	public Track(MyApp myApp) {
