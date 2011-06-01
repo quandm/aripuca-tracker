@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string-array name="speed_units_labels">
+		<item>km/h</item>
+		<item>mph</item>
+		<item>knot</item>
+	</string-array>
+
+	<string-array name="speed_units_values">
+		<item>kph</item>
+		<item>mph</item>
+		<item>kn</item>
+	</string-array>
+
+	<string-array name="distance_units_labels">
+		<item>kilometers</item>
+		<item>miles</item>
+	</string-array>
+
+	<string-array name="distance_units_values">
+		<item>km</item>
+		<item>mi</item>
+	</string-array>
+
+	<string-array name="elevation_units_labels">
+		<item>meters</item>
+		<item>feet</item>
+	</string-array>
+
+	<string-array name="elevation_units_values">
+		<item>m</item>
+		<item>ft</item>
+	</string-array>
+
+	<string-array name="coord_units_labels">
+		<item>degrees (dd.dd°)</item>
+		<item>minutes (dd°mm.mm\')</item>
+		<item>seconds (dd°mm\'ss.ss\'\')</item>
+	</string-array>
+
+	<string-array name="coord_units_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+
+    <string-array name="segmenting_modes_labels">
+        <item>None</item>
+        <item>Pause/Resume</item>
+        <item>Equal intervals</item>
+        <item>Custom intervals 1</item>
+        <item>Custom intervals 2</item>
+    </string-array>
+
+	<string-array name="segmenting_modes_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+	</string-array>
+
+</resources>

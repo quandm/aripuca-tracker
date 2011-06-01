@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <style name="SeparatorLine">
+        <item name="android:layout_height">2dip</item>
+        <item name="android:background">#333</item>
+    </style>
+
+	<!-- TRACK DETAILS LAYOUT STYLES -->
+
+    <style name="TrackDetailsRow">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+
+    <style name="TrackDetailsRowOfRows">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+    
+    <style name="TrackDetailsCell">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    
+    <style name="TrackDetailsLeftCell" parent ="@style/TrackDetailsCell">
+        <item name="android:layout_marginRight">1dp</item>
+    </style>
+    
+    <style name="TrackDetailsRightCell" parent ="@style/TrackDetailsCell">
+        <item name="android:layout_marginLeft">1dp</item>
+    </style>
+
+	<!-- BUTTONS -->
+
+    <style name="ControlButton" parent="@android:Widget.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    
+    <!-- LABELS -->
+    
+    <style name="AppLabel">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">#222</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="BigLabel" parent="@style/AppLabel">
+        <item name="android:textSize">55sp</item>
+    </style>
+
+    <style name="MediumLabel" parent="@style/AppLabel">
+        <item name="android:textSize">40sp</item>
+    </style>
+    
+    <style name="SmallLabel" parent="@style/AppLabel">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="SmallLabel1" parent="@style/AppLabel">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="SmallLabel2" parent="@style/AppLabel">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="SmallLabel3" parent="@style/AppLabel">
+        <item name="android:textSize">29sp</item>
+    </style>
+
+    <style name="SmallHeader" parent="@style/AppLabel">
+        <item name="android:textSize">13sp</item>
+        <item name="android:background">#0000</item>
+    </style>
+
+</resources>

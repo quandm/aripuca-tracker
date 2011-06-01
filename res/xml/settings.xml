@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/app_settings_title">
+
+	<CheckBoxPreference android:defaultValue="true"
+		android:key="wake_lock" android:title="@string/wake_lock_title"
+		android:summary="@string/wake_lock_summary"></CheckBoxPreference>
+
+	<!-- <PreferenceScreen android:title="@string/user_interface_title"> <CheckBoxPreference 
+		android:defaultValue="true" android:key="show_compass" android:title="@string/show_compass_title"></CheckBoxPreference> 
+		</PreferenceScreen> -->
+	<!-- <PreferenceScreen android:title="@string/tracking_title"> <CheckBoxPreference 
+		android:summary="Automatically pause track recording when not in move" android:title="Auto 
+		pause" android:enabled="false"></CheckBoxPreference> <EditTextPreference 
+		android:key="min_accuracy" android:title="@string/min_accuracy_title" android:summary="@string/min_accuracy_summary" 
+		android:defaultValue="50"></EditTextPreference> <EditTextPreference android:title="@string/min_distance_title" 
+		android:key="min_distance" android:summary="@string/min_distance_summary" 
+		android:defaultValue="10"></EditTextPreference> </PreferenceScreen> -->
+
+	<!-- <PreferenceScreen android:title="@string/online_sync_title" android:summary="@string/online_sync_summary"> 
+		<EditTextPreference android:defaultValue="http://dev.aripuca.com" android:key="sync_url" 
+		android:title="@string/online_sync_url"></EditTextPreference> <EditTextPreference 
+		android:title="@string/user_name" android:key="user_name"></EditTextPreference> 
+		<EditTextPreference android:title="@string/user_password" android:key="user_password" 
+		android:password="true"></EditTextPreference> <CheckBoxPreference android:summary="Realtime 
+		sync when in track mode" android:key="autoSyncTrack" android:defaultValue="false" 
+		android:title="Auto sync track"></CheckBoxPreference> </PreferenceScreen> -->
+	<PreferenceScreen android:title="@string/units"
+		android:summary="@string/units_summary">
+		<ListPreference android:key="speed_units"
+			android:dialogTitle="@string/speed" android:title="@string/speed"
+			android:entryValues="@array/speed_units_values" android:entries="@array/speed_units_labels"
+			android:defaultValue="kph"></ListPreference>
+		<ListPreference android:key="distance_units"
+			android:dialogTitle="@string/distance" android:title="@string/distance"
+			android:entryValues="@array/distance_units_values" android:entries="@array/distance_units_labels"
+			android:defaultValue="km"></ListPreference>
+		<ListPreference android:key="elevation_units"
+			android:dialogTitle="@string/speed" android:title="@string/elevation"
+			android:entryValues="@array/elevation_units_values" android:entries="@array/elevation_units_labels"
+			android:defaultValue="m"></ListPreference>
+		<ListPreference android:key="coord_units"
+			android:dialogTitle="@string/coordinates" android:title="@string/coordinates"
+			android:entryValues="@array/coord_units_values" android:entries="@array/coord_units_labels"
+			android:defaultValue="0"></ListPreference>
+	</PreferenceScreen>
+	<PreferenceScreen android:title="@string/track_recording">
+
+		<PreferenceCategory android:title="@string/tracks">
+			<EditTextPreference android:title="@string/min_distance_title"
+				android:defaultValue="5"
+				android:summary="@string/min_distance_summary" android:key="min_distance"></EditTextPreference>
+			<EditTextPreference android:summary="@string/min_accuracy_summary"
+				android:title="@string/min_accuracy_title" android:key="min_accuracy" android:defaultValue="15"></EditTextPreference>
+		</PreferenceCategory>
+
+		<PreferenceCategory android:title="@string/segmenting">
+			<ListPreference android:entries="@array/segmenting_modes_labels"
+				android:entryValues="@array/segmenting_modes_values" android:title="@string/segmenting_mode"
+				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode" android:defaultValue="0"></ListPreference>
+			<EditTextPreference android:defaultValue="5"
+				android:title="@string/segment_equal" android:key="segment_equal"
+				android:summary="@string/segment_equal_summary"></EditTextPreference>
+			<EditTextPreference android:summary="@string/segment_custom_summary" android:title="@string/segment_custom_1" android:key="segment_custom_1" android:defaultValue="6,10,15,20,25"></EditTextPreference>
+			<EditTextPreference android:title="@string/segment_custom_2" android:key="segment_custom_2" android:defaultValue="10,20,30,40" android:summary="@string/segment_custom_summary"></EditTextPreference>
+		</PreferenceCategory>
+		
+		
+</PreferenceScreen>
+	
+
+</PreferenceScreen>

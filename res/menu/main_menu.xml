@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item android:id="@+id/waypointsMenuItem" 
+		android:title="@string/waypoints"
+		android:icon="@android:drawable/ic_menu_myplaces" />
+
+	<item android:id="@+id/tracksMenuItem" 
+		android:title="@string/tracks"
+		android:icon="@android:drawable/ic_menu_share" />
+
+	<item android:id="@+id/gpsOnOff" 
+			android:title="@string/start_gps"
+			android:icon="@android:drawable/ic_menu_mylocation" />
+
+	<item android:id="@+id/settingsMenuItem" 
+			android:title="@string/settings"
+			android:icon="@android:drawable/ic_menu_preferences" />
+
+	<item android:id="@+id/aboutMenuItem" 
+			android:title="@string/about"
+			android:icon="@android:drawable/ic_menu_info_details" />
+
+</menu>
