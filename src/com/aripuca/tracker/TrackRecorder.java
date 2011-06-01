@@ -2,6 +2,7 @@ package com.aripuca.tracker;
 
 import android.location.Location;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class TrackRecorder {
 
@@ -24,6 +25,7 @@ public class TrackRecorder {
 	 * track being recorded
 	 */
 	private Track track;
+
 	public Track getTrack() {
 		return track;
 	}
@@ -48,10 +50,11 @@ public class TrackRecorder {
 	private long currentSystemTime = 0;
 
 	private int pointsCount = 0;
+
 	public int getPointsCount() {
 		return pointsCount;
 	}
-	
+
 	/**
 	 * recording start time
 	 */
@@ -69,7 +72,7 @@ public class TrackRecorder {
 	private float[] segmentIntervals;
 
 	/**
-	 * Singleton pattern 
+	 * Singleton pattern
 	 */
 	public static TrackRecorder getInstance(MyApp myApp) {
 
@@ -99,9 +102,11 @@ public class TrackRecorder {
 		startTime = 0;
 		pauseTimeStart = 0;
 		idleTimeStart = 0;
-		
+
 		pointsCount = 0;
 
+		segmentId = 0;
+		
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("min_distance", "15"));
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("min_accuracy", "15"));
 
@@ -111,7 +116,7 @@ public class TrackRecorder {
 		this.segmentingMode = Integer.parseInt(myApp.getPreferences().getString("segmenting_mode", "0"));
 
 		// creating default segment
-		// if no segments will be created during track recording 
+		// if no segments will be created during track recording
 		// we won't insert segment data to db
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
@@ -139,7 +144,8 @@ public class TrackRecorder {
 	public void stop() {
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			// insert segment in db only if there were more then one segments in this track
+			// insert segment in db only if there were more then one segments in
+			// this track
 			if (this.segmentId > 0) {
 				this.segment.insertSegment(this.getTrack().getTrackId());
 				this.segment = null;
@@ -175,15 +181,18 @@ public class TrackRecorder {
 
 	}
 
+	/**
+	 * Insert new segment to db and create new one
+	 */
 	private void addNewSegment() {
 
 		this.segment.insertSegment(this.getTrack().getTrackId());
 
 		this.segment = null;
 
-		this.segment = new Segment(myApp);
-
 		this.segmentId++;
+		
+		this.segment = new Segment(myApp);
 
 	}
 
@@ -208,12 +217,10 @@ public class TrackRecorder {
 		this.measureTrackTimes(location);
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) {
-			return;
-		}
+		if (location.getAccuracy() > minAccuracy) { return; }
 
 		// calculating total distance starting from 2nd update
-		// if current location is not set yet 
+		// if current location is not set yet
 		if (this.currentLocation != null && this.currentLocation.getSpeed() > Constants.MIN_SPEED) {
 
 			// accumulate track distance
@@ -246,13 +253,13 @@ public class TrackRecorder {
 		this.recordTrackPoint(location);
 
 	}
-	
+
 	/**
 	 * 
 	 */
 	private void measureTrackTimes(Location location) {
-		
-		// all times measured got synchronized with currentSystemTime 
+
+		// all times measured got synchronized with currentSystemTime
 		this.currentSystemTime = SystemClock.uptimeMillis();
 
 		this.track.setCurrentSystemTime(this.currentSystemTime);
@@ -272,20 +279,19 @@ public class TrackRecorder {
 		}
 
 		// ------------------------------------------------------------------------------
-		// times are recorded even if accuracy is not acceptable 
+		// times are recorded even if accuracy is not acceptable
 		this.processPauseTime();
 
 		if (this.recordingPaused) {
-			// after resuming the recording we will start measuring distance from saved location
+			// after resuming the recording we will start measuring distance
+			// from saved location
 			this.currentLocation = location;
 			return;
 		}
 
 		this.processIdleTime(location);
 		// ------------------------------------------------------------------------------
-		
-		
-		
+
 	}
 
 	/**
@@ -296,7 +302,7 @@ public class TrackRecorder {
 		// updating idle time in track
 		if (location.getSpeed() < Constants.MIN_SPEED) {
 
-			// if idle interval started increment total idle time 
+			// if idle interval started increment total idle time
 			if (this.idleTimeStart != 0) {
 
 				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
@@ -311,7 +317,7 @@ public class TrackRecorder {
 
 		} else {
 
-			// increment total idle time with already started interval  
+			// increment total idle time with already started interval
 			if (this.idleTimeStart != 0) {
 
 				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
@@ -380,14 +386,15 @@ public class TrackRecorder {
 	 */
 	private void recordTrackPoint(Location location) {
 
-		// record points only if distance between 2 consecutive points is greater than min_distance
+		// record points only if distance between 2 consecutive points is
+		// greater than min_distance
 		if (this.lastRecordedLocation == null) {
 
 			this.track.recordTrackPoint(location, this.segmentId);
 			this.lastRecordedLocation = location;
 
 			pointsCount++;
-			
+
 		} else {
 
 			if (this.lastRecordedLocation.distanceTo(location) >= minDistance) {
@@ -481,6 +488,9 @@ public class TrackRecorder {
 
 				if (this.segmentId < segmentIntervals.length) {
 
+//					Log.v(Constants.TAG, " segmentId: " + this.segmentId);
+//					Log.v(Constants.TAG, " segmentIntervals: " + segmentIntervals[this.segmentId] * 1000);
+
 					return segmentIntervals[this.segmentId] * 1000;
 
 				} else {
@@ -488,6 +498,7 @@ public class TrackRecorder {
 					// no more segmenting if not enough intervals set by user
 					return 10000000;
 				}
+				
 		}
 
 		return 10000000;
