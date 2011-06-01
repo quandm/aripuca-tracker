@@ -5,8 +5,8 @@ import android.os.SystemClock;
 import android.util.Log;
 
 /**
- * TrackRecorder class
- * Handles tracks and segments statistics 
+ * TrackRecorder class 
+ * Handles tracks and segments statistics
  */
 public class TrackRecorder {
 
@@ -110,7 +110,7 @@ public class TrackRecorder {
 		pointsCount = 0;
 
 		segmentId = 0;
-		
+
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("min_distance", "15"));
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("min_accuracy", "15"));
 
@@ -195,7 +195,7 @@ public class TrackRecorder {
 		this.segment = null;
 
 		this.segmentId++;
-		
+
 		this.segment = new Segment(myApp);
 
 	}
@@ -221,7 +221,9 @@ public class TrackRecorder {
 		this.measureTrackTimes(location);
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) { return; }
+		if (location.getAccuracy() > minAccuracy) {
+			return;
+		}
 
 		// calculating total distance starting from 2nd update
 		// if current location is not set yet
@@ -492,8 +494,8 @@ public class TrackRecorder {
 
 				if (this.segmentId < segmentIntervals.length) {
 
-//					Log.v(Constants.TAG, " segmentId: " + this.segmentId);
-//					Log.v(Constants.TAG, " segmentIntervals: " + segmentIntervals[this.segmentId] * 1000);
+					//					Log.v(Constants.TAG, " segmentId: " + this.segmentId);
+					//					Log.v(Constants.TAG, " segmentIntervals: " + segmentIntervals[this.segmentId] * 1000);
 
 					return segmentIntervals[this.segmentId] * 1000;
 
@@ -502,7 +504,7 @@ public class TrackRecorder {
 					// no more segmenting if not enough intervals set by user
 					return 10000000;
 				}
-				
+
 		}
 
 		return 10000000;
