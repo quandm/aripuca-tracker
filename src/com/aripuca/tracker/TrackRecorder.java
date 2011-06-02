@@ -5,9 +5,8 @@ import android.os.SystemClock;
 import android.util.Log;
 
 /**
- * TrackRecorder class
+ * TrackRecorder class. Handles tracks and segments statistics
  * 
- * Handles tracks and segments statistics
  */
 public class TrackRecorder {
 
@@ -508,9 +507,6 @@ public class TrackRecorder {
 				// processing custom segment intervals
 
 				if (this.segmentId < segmentIntervals.length) {
-
-					//					Log.v(Constants.TAG, " segmentId: " + this.segmentId);
-					//					Log.v(Constants.TAG, " segmentIntervals: " + segmentIntervals[this.segmentId] * 1000);
 
 					return segmentIntervals[this.segmentId] * 1000;
 
