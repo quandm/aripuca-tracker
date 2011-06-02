@@ -37,6 +37,7 @@
 	<string name="no">No</string>
 	<string name="cancel">Cancel</string>
 	<string name="cancelled">Cancelled</string>
+	<string name="view">View</string>
 	<string name="edit">Edit</string>
 	<string name="delete">Delete</string>
 	<string name="import1">Import</string>

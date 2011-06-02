@@ -75,6 +75,12 @@ public class TracksListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 
+		this.viewTrackDetails(id);
+
+	}
+	
+	private void viewTrackDetails(long id) {
+		
 		Intent intent = new Intent(this, TrackDetailsActivity.class);
 
 		// using Bundle to pass track id into new activity
@@ -84,7 +90,8 @@ public class TracksListActivity extends ListActivity {
 		intent.putExtras(b);
 
 		startActivity(intent);
-
+		
+		
 	}
 
 	protected class TracksCursorAdapter extends CursorAdapter {
@@ -279,16 +286,17 @@ public class TracksListActivity extends ListActivity {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle("Track: " + info.id);
-		menu.add(Menu.NONE, 1, 1, R.string.edit);
-		menu.add(Menu.NONE, 2, 2, R.string.delete);
+		menu.add(Menu.NONE, 1, 1, R.string.view);
+		menu.add(Menu.NONE, 2, 2, R.string.edit);
+		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
-		SubMenu exportSubMenu = menu.addSubMenu(Menu.NONE, 3, 3, R.string.export);
-		exportSubMenu.add(Menu.NONE, 31, 1, R.string.export_to_gpx);
-		exportSubMenu.add(Menu.NONE, 32, 2, R.string.export_to_kml);
+		SubMenu exportSubMenu = menu.addSubMenu(Menu.NONE, 4, 4, R.string.export);
+		exportSubMenu.add(Menu.NONE, 41, 1, R.string.export_to_gpx);
+		exportSubMenu.add(Menu.NONE, 42, 2, R.string.export_to_kml);
 
-		// menu.add(Menu.NONE, 4, 6, R.string.online_sync);
+		// menu.add(Menu.NONE, 5, 5, R.string.online_sync);
 
-		menu.add(Menu.NONE, 5, 7, R.string.show_on_map);
+		menu.add(Menu.NONE, 6, 6, R.string.show_on_map);
 
 	}
 
@@ -310,32 +318,37 @@ public class TracksListActivity extends ListActivity {
 
 		switch (item.getItemId()) {
 
-			// edit track info
+			// view track info
 			case 1:
+				this.viewTrackDetails(info.id);
+			break;
+			
+			// edit track info
+			case 2:
 				this.updateTrack(info.id);
 			break;
 
 			// delete track
-			case 2:
+			case 3:
 				this.deleteTrack(info.id);
 			break;
 
 			// export to GPX
-			case 31:
+			case 41:
 				this.exportTrackToGpx(info.id);
 			break;
 
 			// export to KML
-			case 32:
+			case 42:
 				this.exportTrackToKml(info.id);
 			break;
 
 			// sync track online
-			case 4:
+			case 5:
 
 			break;
 
-			case 5:
+			case 6:
 
 				this.showTrackOnMap(info.id);
 				

@@ -396,10 +396,6 @@ public class TrackDetailsActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.showSegments:
-
-				return true;
-
 			case R.id.showOnMap:
 
 				Intent i = new Intent(this, MyMapActivity.class);
