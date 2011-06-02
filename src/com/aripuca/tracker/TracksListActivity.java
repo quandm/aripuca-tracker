@@ -79,6 +79,10 @@ public class TracksListActivity extends ListActivity {
 
 	}
 	
+	/**
+	 * Start the track details activity
+	 * @param id Track id
+	 */
 	private void viewTrackDetails(long id) {
 		
 		Intent intent = new Intent(this, TrackDetailsActivity.class);
