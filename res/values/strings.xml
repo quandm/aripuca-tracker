@@ -6,7 +6,9 @@
     <string name="author_name">VitalNik</string>
     <string name="company">Aripuca Apps</string>
     <string name="app_url">http://tracker.aripuca.com</string>
-    
+    <string name="blog_url">tracker.aripuca.com/blog</string>
+    <string name="source_url">http://code.google.com/p/aripuca-tracker</string>
+        
     <string name="waypoints_activity_title">Waypoints</string>
     <string name="tracks_activity_title">Tracks</string>
     <string name="track_details_activity_title">Track details</string>
@@ -32,6 +34,7 @@
 	
 	<!-- SEPARATE WORDS -->
 	
+	<string name="ver">Ver.</string>
 	<string name="ok">Ok</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>

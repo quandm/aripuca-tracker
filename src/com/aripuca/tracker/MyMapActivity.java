@@ -77,6 +77,8 @@ public class MyMapActivity extends MapActivity {
 			}
 
 			if (mode == Constants.SHOW_TRACK) {
+				
+				//TODO: Show segments in different colors
 
 				Paint paint = new Paint();
 				paint.setColor(getResources().getColor(R.color.red));

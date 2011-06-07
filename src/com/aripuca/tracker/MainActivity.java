@@ -33,6 +33,7 @@ import android.location.*;
 
 import android.widget.*;
 
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -320,7 +321,7 @@ public class MainActivity extends Activity {
 
 		// adding famous waypoints
 		processFamousWaypoints();
-		
+
 	}
 
 	@Override
@@ -851,14 +852,23 @@ public class MainActivity extends Activity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setMessage(getString(R.string.main_app_title) + " " + MyApp.getVersionName(this) + "\n"
-						+ getString(R.string.app_url))
-				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-					}
-				})
+		builder.setMessage(
+				Html.fromHtml(
+							getString(R.string.main_app_title) + " " +
+							getString(R.string.ver) + " " + MyApp.getVersionName(this) +
+							"<br><br>" + getString(R.string.about_message) +
+							"<br><br>" + getString(R.string.visit_blog) +
+							"<br>" + getString(R.string.blog_url)
+						)
+
+		)
+
+		.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+			}
+		})
 				.setInverseBackgroundForced(true)
 				.setTitle(getString(R.string.about))
 				.setCancelable(true);
@@ -943,9 +953,10 @@ public class MainActivity extends Activity {
 
 			// number of track points recorded
 			if (findViewById(R.id.segmentsCount) != null) {
-				((TextView) findViewById(R.id.segmentsCount)).setText(Integer.toString(trackRecorder.getSegmentsCount()));
+				((TextView) findViewById(R.id.segmentsCount))
+						.setText(Integer.toString(trackRecorder.getSegmentsCount()));
 			}
-			
+
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
 				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()
@@ -1179,7 +1190,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void backupDatabase() {
-		
+
 		try {
 
 			File sd = Environment.getExternalStorageDirectory();
@@ -1207,11 +1218,11 @@ public class MainActivity extends Activity {
 		}
 
 		catch (Exception e) {
-			
+
 			Log.e(Constants.TAG, e.getMessage());
-			
+
 		}
-		
+
 	}
 
 }

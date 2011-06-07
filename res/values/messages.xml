@@ -36,4 +36,7 @@
 
 	<string name="no_segments">No segments created for this track</string>
 	
+	<string name="visit_blog">Visit blog at:</string>
+	<string name="about_message">Open source GPS tracking app for Android</string>
+	
 </resources>
