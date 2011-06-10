@@ -290,8 +290,6 @@ public class MyApp extends Application {
 		
 		super.onCreate();
 
-		//TODO: add a few popular waypoints on first start
-
 	}
 
 	/**

@@ -45,28 +45,39 @@
 			android:defaultValue="0"></ListPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/track_recording">
-
 		<PreferenceCategory android:title="@string/tracks">
 			<EditTextPreference android:title="@string/min_distance_title"
-				android:defaultValue="5"
-				android:summary="@string/min_distance_summary" android:key="min_distance"></EditTextPreference>
+				android:defaultValue="5" android:summary="@string/min_distance_summary"
+				android:key="min_distance"></EditTextPreference>
 			<EditTextPreference android:summary="@string/min_accuracy_summary"
-				android:title="@string/min_accuracy_title" android:key="min_accuracy" android:defaultValue="15"></EditTextPreference>
+				android:title="@string/min_accuracy_title" android:key="min_accuracy"
+				android:defaultValue="15"></EditTextPreference>
 		</PreferenceCategory>
 
 		<PreferenceCategory android:title="@string/segmenting">
 			<ListPreference android:entries="@array/segmenting_modes_labels"
 				android:entryValues="@array/segmenting_modes_values" android:title="@string/segmenting_mode"
-				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode" android:defaultValue="0"></ListPreference>
+				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode"
+				android:defaultValue="0"></ListPreference>
 			<EditTextPreference android:defaultValue="5"
 				android:title="@string/segment_equal" android:key="segment_equal"
 				android:summary="@string/segment_equal_summary"></EditTextPreference>
-			<EditTextPreference android:summary="@string/segment_custom_summary" android:title="@string/segment_custom_1" android:key="segment_custom_1" android:defaultValue="6,10,15,20,25"></EditTextPreference>
-			<EditTextPreference android:title="@string/segment_custom_2" android:key="segment_custom_2" android:defaultValue="10,20,30,40" android:summary="@string/segment_custom_summary"></EditTextPreference>
+			<EditTextPreference android:summary="@string/segment_custom_summary"
+				android:title="@string/segment_custom_1" android:key="segment_custom_1"
+				android:defaultValue="6,10,15,20,25"></EditTextPreference>
+			<EditTextPreference android:title="@string/segment_custom_2"
+				android:key="segment_custom_2" android:defaultValue="10,20,30,40"
+				android:summary="@string/segment_custom_summary"></EditTextPreference>
 		</PreferenceCategory>
 		
-		
 </PreferenceScreen>
+
+	<PreferenceScreen android:title="@string/waypoints">
+		<CheckBoxPreference android:defaultValue="true"
+			android:key="waypoint_default_description" android:summary="@string/waypoint_default_description_summary"
+			android:title="@string/waypoint_default_description"></CheckBoxPreference>
+	</PreferenceScreen>
+	
 	
 
 </PreferenceScreen>

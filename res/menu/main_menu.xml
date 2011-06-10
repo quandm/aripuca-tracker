@@ -21,4 +21,12 @@
 			android:title="@string/about"
 			android:icon="@android:drawable/ic_menu_info_details" />
 
+	<item android:id="@+id/backupMenuItem" 
+			android:title="@string/backup_db"
+			android:icon="@android:drawable/ic_menu_save" />
+
+	<item android:id="@+id/restoreMenuItem" 
+			android:title="@string/restore_db"
+			android:icon="@android:drawable/ic_menu_revert" />
+
 </menu>

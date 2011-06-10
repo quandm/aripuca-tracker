@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -367,10 +368,10 @@ public class WaypointsListActivity extends ListActivity {
 
 			case R.id.exportMenuItem:
 
-				waypointToGpx = new WaypointGpxExportTask(this);
-				waypointToGpx.setApp(myApp);
-				waypointToGpx.execute(0L);
-
+				//TODO: enter destination file name
+				
+				exportWaypoints();
+				
 				return true;
 
 			case R.id.settingsMenuItem:
@@ -854,4 +855,63 @@ public class WaypointsListActivity extends ListActivity {
 		return azimuth;
 	}
 
+	/**
+	 * 
+	 */
+	private void exportWaypoints() {
+
+		Context mContext = this;
+
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.filename_dialog,
+				(ViewGroup) findViewById(R.id.filename_dialog_layout_root));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+		builder.setTitle(R.string.export_waypoints);
+		builder.setView(layout);
+
+		final String defaultFilename = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format((new Date()).getTime());  
+		
+		// creating references to input fields in order to use them in
+		// onClick handler
+		final EditText filenameEditText = (EditText) layout.findViewById(R.id.filenameInputText);
+		filenameEditText.setText(defaultFilename);
+
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+
+				// waypoint title from input dialog
+				String filenameStr = filenameEditText.getText().toString().trim();
+
+				if (filenameStr.equals("")) {
+					filenameStr = defaultFilename;
+				}
+
+				waypointToGpx = new WaypointGpxExportTask(WaypointsListActivity.this, filenameStr);
+				waypointToGpx.setApp(myApp);
+				waypointToGpx.execute(0L);
+
+				Toast.makeText(WaypointsListActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
+
+				dialog.dismiss();
+
+			}
+		});
+
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				// dialog.dismiss();
+			}
+		});
+
+		AlertDialog dialog = builder.create();
+		dialog.show();
+
+	}
+	
+	
 }
