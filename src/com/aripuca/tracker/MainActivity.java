@@ -1,5 +1,6 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -12,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 import java.io.*;
 import java.nio.channels.FileChannel;
 
@@ -20,6 +23,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.content.ContentValues;
@@ -607,87 +611,206 @@ public class MainActivity extends Activity {
 			 * "Please wait for a better fix", Toast.LENGTH_SHORT).show(); } }
 			 */
 
-			Context mContext = v.getContext();
+			// let's make reverse geocoder request and then show Add Waypoint dialog
+			// address will be inserted as default description for this waypoint
+			// processing is done in separate thread
 
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-			View layout = inflater.inflate(R.layout.add_waypoint_dialog,
-					(ViewGroup) findViewById(R.id.add_waypoint_dialog_layout_root));
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-
-			builder.setTitle(R.string.add_waypoint);
-			builder.setView(layout);
-
-			// creating references to input fields in order to use them in
-			// onClick handler
-			final EditText wpTitle = (EditText) layout.findViewById(R.id.waypointTitleInputText);
-			wpTitle.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((new Date()).getTime()));
-
-			final EditText wpDescr = (EditText) layout.findViewById(R.id.waypointDescriptionInputText);
-
-			final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
-			wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(), 0));
-
-			final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-			wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(), 0));
-
-			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int id) {
-
-					// waypoint title from input dialog
-					String titleStr = wpTitle.getText().toString().trim();
-					String descrStr = wpDescr.getText().toString().trim();
-
-					if (titleStr.equals("")) {
-						Toast.makeText(MainActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT).show();
-						dialog.dismiss();
-					}
-
-					String latStr = wpLat.getText().toString().trim();
-					String lngStr = wpLng.getText().toString().trim();
-
-					ContentValues values = new ContentValues();
-					values.put("title", titleStr);
-					values.put("descr", descrStr);
-					values.put("lat", latStr);
-					values.put("lng", lngStr);
-					values.put("elevation", myApp.getCurrentLocation().getAltitude());
-					values.put("time", myApp.getCurrentLocation().getTime());
-
-					// if track recording started save track_id as
-					if (trackRecorder.isRecording()) {
-						values.put("track_id", trackRecorder.getTrack().getTrackId());
-					}
-
-					try {
-						myApp.getDatabase().insertOrThrow("waypoints", null, values);
-					} catch (SQLiteException e) {
-						Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-						Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
-					}
-
-					Toast.makeText(MainActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
-
-					dialog.dismiss();
-
-				}
-			});
-
-			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int id) {
-					// dialog.dismiss();
-				}
-			});
-
-			AlertDialog dialog = builder.create();
-			dialog.show();
+			if (myApp.getPreferences().getBoolean("waypoint_default_description", true)) {
+				geocodeLocation(myApp.getCurrentLocation(), MainActivity.this, new GeocoderHandler());
+			} else {
+				showAddWaypointDialog(null);
+			}
 
 		}
 
 	};
+
+	/**
+	 * Geocoder handler class. Receives a message from geocoder thread and
+	 * displays "Add Waypoint" dialog even if geocoding request failed
+	 */
+	private class GeocoderHandler extends Handler {
+
+		/**
+		 * Processing message from geocoder thread
+		 */
+		@Override
+		public void handleMessage(Message message) {
+
+			String addressStr;
+			switch (message.what) {
+				case 1:
+					Bundle bundle = message.getData();
+					addressStr = bundle.getString("address");
+				break;
+				default:
+					addressStr = null;
+			}
+
+			showAddWaypointDialog(addressStr);
+
+		}
+	};
+
+	/**
+	 * Running geocoder request as a separate thread. The thread will send a
+	 * message to provided Handler object in order to update UI
+	 * 
+	 * @param location
+	 * @param context
+	 * @param handler
+	 */
+	private void geocodeLocation(final Location location, final Context context, final Handler handler) {
+
+		Thread thread = new Thread() {
+
+			@Override
+			public void run() {
+
+				String addressStr = "";
+
+				try {
+					Geocoder myLocation = new Geocoder(context, Locale.getDefault());
+
+					List<Address> addressList = myLocation.getFromLocation(location.getLatitude(),
+							location.getLongitude(), 1);
+
+					if (addressList != null && addressList.size() > 0) {
+
+						Address address = addressList.get(0);
+
+						int linesCount = address.getMaxAddressLineIndex();
+						for (int i = 0; i < linesCount; i++) {
+							addressStr += address.getAddressLine(i);
+							if (i != linesCount - 1) {
+								addressStr += ", ";
+							}
+						}
+					}
+
+				}
+				catch (IOException e) {
+
+					Log.e(Constants.TAG, "Impossible to connect to Geocoder", e);
+
+				} finally {
+
+					// sending message to a handler
+					Message msg = Message.obtain();
+					msg.setTarget(handler);
+
+					if (addressStr != "") {
+						msg.what = 1;
+
+						// passing address string in the bundle
+						Bundle bundle = new Bundle();
+						bundle.putString("address", addressStr);
+
+						msg.setData(bundle);
+
+					} else {
+						msg.what = 0;
+					}
+
+					msg.sendToTarget();
+
+				}
+			}
+		};
+
+		thread.start();
+
+	}
+
+	/**
+	 * Add Waypoint dialog
+	 * 
+	 * @param address Address string returned from geocoder thread
+	 */
+	private void showAddWaypointDialog(String address) {
+
+		Context mContext = this;
+
+		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.add_waypoint_dialog,
+				(ViewGroup) findViewById(R.id.add_waypoint_dialog_layout_root));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+		builder.setTitle(R.string.add_waypoint);
+		builder.setView(layout);
+
+		// creating references to input fields in order to use them in
+		// onClick handler
+		final EditText wpTitle = (EditText) layout.findViewById(R.id.waypointTitleInputText);
+		wpTitle.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((new Date()).getTime()));
+
+		final EditText wpDescr = (EditText) layout.findViewById(R.id.waypointDescriptionInputText);
+		if (address != null) {
+			wpDescr.setText(address);
+		}
+
+		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
+		wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(), 0));
+
+		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
+		wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(), 0));
+
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+
+				// waypoint title from input dialog
+				String titleStr = wpTitle.getText().toString().trim();
+				String descrStr = wpDescr.getText().toString().trim();
+
+				if (titleStr.equals("")) {
+					Toast.makeText(MainActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT).show();
+					dialog.dismiss();
+				}
+
+				String latStr = wpLat.getText().toString().trim();
+				String lngStr = wpLng.getText().toString().trim();
+
+				ContentValues values = new ContentValues();
+				values.put("title", titleStr);
+				values.put("descr", descrStr);
+				values.put("lat", latStr);
+				values.put("lng", lngStr);
+				values.put("elevation", myApp.getCurrentLocation().getAltitude());
+				values.put("time", myApp.getCurrentLocation().getTime());
+
+				// if track recording started save track_id as
+				if (trackRecorder.isRecording()) {
+					values.put("track_id", trackRecorder.getTrack().getTrackId());
+				}
+
+				try {
+					myApp.getDatabase().insertOrThrow("waypoints", null, values);
+				} catch (SQLiteException e) {
+					Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+					Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+				}
+
+				Toast.makeText(MainActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
+
+				dialog.dismiss();
+
+			}
+		});
+
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				// dialog.dismiss();
+			}
+		});
+
+		AlertDialog dialog = builder.create();
+		dialog.show();
+
+	}
 
 	/**
 	 * Show compass image
@@ -754,7 +877,7 @@ public class MainActivity extends Activity {
 	 */
 	private void createFolder(String folderName) {
 
-		File folder = new File(myApp.getAppDir() + "/" + folderName);
+		File folder = new File(folderName);
 
 		// create output folder
 		if (!folder.exists()) {
@@ -840,6 +963,18 @@ public class MainActivity extends Activity {
 
 				return true;
 
+			case R.id.backupMenuItem:
+
+				backupDatabase();
+
+				return true;
+
+			case R.id.restoreMenuItem:
+
+				Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+
+				return true;
+
 			default:
 
 				return super.onOptionsItemSelected(item);
@@ -848,6 +983,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * About dialog
+	 */
 	private void showAboutDialog() {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -855,10 +993,10 @@ public class MainActivity extends Activity {
 		builder.setMessage(
 				Html.fromHtml(
 							getString(R.string.main_app_title) + " " +
-							getString(R.string.ver) + " " + MyApp.getVersionName(this) +
-							"<br><br>" + getString(R.string.about_message) +
-							"<br><br>" + getString(R.string.visit_blog) +
-							"<br>" + getString(R.string.blog_url)
+									getString(R.string.ver) + " " + MyApp.getVersionName(this) +
+									"<br><br>" + getString(R.string.about_message) +
+									"<br><br>" + getString(R.string.visit_blog) +
+									"<br>" + getString(R.string.blog_url)
 						)
 
 		)
@@ -1164,7 +1302,15 @@ public class MainActivity extends Activity {
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
+		famousWaypoints.add(new Waypoint("Aripuca", 50.12457, 8.6555));
 		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
+		famousWaypoints.add(new Waypoint("Niagara Falls", 43.08, -79.071));
+		famousWaypoints.add(new Waypoint("Golden Gate Bridge", 37.819722, -122.478611));
+		famousWaypoints.add(new Waypoint("Stonehenge", 51.178844, -1.826189));
+		famousWaypoints.add(new Waypoint("Mount Everest", 27.988056, 86.925278));
+		famousWaypoints.add(new Waypoint("Colosseum", 41.890169, 12.492269));
+		famousWaypoints.add(new Waypoint("Red Square", 55.754167, 37.62));
+		famousWaypoints.add(new Waypoint("Charles Bridge", 50.086447, 14.411856));
 
 		// insert waypoints to db
 		Iterator<Waypoint> itr = famousWaypoints.iterator();
@@ -1189,23 +1335,23 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Copy application database to sd card
+	 */
 	private void backupDatabase() {
 
 		try {
 
-			File sd = Environment.getExternalStorageDirectory();
-
 			File data = Environment.getDataDirectory();
 
-			if (sd.canWrite()) {
+			if (myApp.getExternalStorageWriteable()) {
 
 				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\AripucaTracker";
 
-				String backupDBPath = "backup/AripucaTracker.db";
+				String dateStr = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date());
 
 				File currentDB = new File(data, currentDBPath);
-
-				File backupDB = new File(sd, backupDBPath);
+				File backupDB = new File(myApp.getAppDir() + "/backup/AripucaTracker_" + dateStr + ".db");
 
 				if (currentDB.exists()) {
 					FileChannel src = new FileInputStream(currentDB).getChannel();
@@ -1214,12 +1360,19 @@ public class MainActivity extends Activity {
 					src.close();
 					dst.close();
 				}
+
+				Toast.makeText(MainActivity.this, getString(R.string.backup_completed) + " " + backupDB.getPath(),
+						Toast.LENGTH_LONG).show();
+
 			}
 		}
 
 		catch (Exception e) {
 
 			Log.e(Constants.TAG, e.getMessage());
+
+			Toast.makeText(MainActivity.this, getString(R.string.backup_error) + " " + e.getMessage(),
+					Toast.LENGTH_LONG).show();
 
 		}
 

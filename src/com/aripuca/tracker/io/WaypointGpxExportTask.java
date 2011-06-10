@@ -13,21 +13,23 @@ import android.content.Context;
 
 public class WaypointGpxExportTask extends TrackExportTask {
 	
-	public WaypointGpxExportTask(Context c) {
+	private String filename;
+	
+	public WaypointGpxExportTask(Context c, String fn) {
 		super(c);
 
 		extension = "gpx";
+		
+		filename = fn;
 
 	}
 	
 	protected void prepareWriter() throws IOException {
 
-		String todayDate = (new SimpleDateFormat("yyyy-MM-dd_HH-mm")).format((new Date()).getTime());
-		
 		// create file named as track title on sd card
 		File outputFolder = new File(myApp.getAppDir() + "/waypoints");
 
-		file = new File(outputFolder, "wp_" + todayDate + "."+extension);
+		file = new File(outputFolder, filename + "."+extension);
 
 		if (!file.exists()) {
 			file.createNewFile();

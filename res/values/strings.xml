@@ -74,6 +74,13 @@
 	<string name="title">Title</string>
 	<string name="points">Points</string>
 
+	<string name="backup">Backup</string>
+	<string name="backup_db">Backup DB</string>
+	<string name="restore_db">Restore DB</string>
+
+	<string name="file">File</string>
+	<string name="filename">File name</string>
+
 	<string name="show_on_map">Show on map</string>
 	<string name="online_sync">Online sync</string>
 
@@ -107,6 +114,7 @@
 	<string name="sync_all">Sync</string>
 	<string name="export_all">Export</string>
 	<string name="import_all">Import</string>
+	<string name="export_waypoints">Export waypoints</string>
 	
 	<string name="debug_data">Debug</string>
 	
@@ -151,5 +159,8 @@
 	<string name="segment_custom_1">Custom intervals 1</string>
 	<string name="segment_custom_2">Custom intervals 2</string>
 	<string name="segment_custom_summary">Segment by preset intervals</string>
+
+	<string name="waypoint_default_description">Default description</string>
+	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as waypoint description</string>
  	
 </resources>
