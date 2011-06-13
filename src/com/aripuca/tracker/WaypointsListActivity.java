@@ -871,7 +871,7 @@ public class WaypointsListActivity extends ListActivity {
 		builder.setTitle(R.string.export_waypoints);
 		builder.setView(layout);
 
-		final String defaultFilename = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format((new Date()).getTime());  
+		final String defaultFilename = "wp_"+(new SimpleDateFormat("yyyy-MM-dd")).format((new Date()).getTime());  
 		
 		// creating references to input fields in order to use them in
 		// onClick handler
@@ -893,8 +893,6 @@ public class WaypointsListActivity extends ListActivity {
 				waypointToGpx = new WaypointGpxExportTask(WaypointsListActivity.this, filenameStr);
 				waypointToGpx.setApp(myApp);
 				waypointToGpx.execute(0L);
-
-				Toast.makeText(WaypointsListActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
 
 				dialog.dismiss();
 
