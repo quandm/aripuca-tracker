@@ -214,7 +214,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 			progressDialog.dismiss();
 		}
 
-//		Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, R.string.export_completed, Toast.LENGTH_SHORT).show();
 
 		if (context instanceof TracksListActivity) {
 			((TracksListActivity) context).unlockOrientationChange();
