@@ -3,8 +3,6 @@ package com.aripuca.tracker;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -35,11 +34,13 @@ public class MyMapActivity extends MapActivity {
 	private MapController mc;
 
 	private GeoPoint waypoint;
-	private GeoPoint startPoint;
+	private TrackPoint startPoint;
 
 	private Path path;
-	private ArrayList<GeoPoint> points;
-	
+	private ArrayList<TrackPoint> points;
+
+	private ArrayList<Path> segmentPath;
+
 	private long trackId;
 	/**
 	 * Track span values
@@ -76,19 +77,23 @@ public class MyMapActivity extends MapActivity {
 				canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight() / 2, null);
 			}
 
+			// drawing the track on the map
 			if (mode == Constants.SHOW_TRACK) {
-				
+
 				//TODO: Show segments in different colors
 
-				Paint paint = new Paint();
-				paint.setColor(getResources().getColor(R.color.red));
-				paint.setStrokeWidth(3);
-				paint.setStyle(Paint.Style.STROKE);
-				paint.setAntiAlias(true);
+				drawSegments(projection, canvas);
 
-				updatePath(projection);
-
-				canvas.drawPath(path, paint);
+				/*
+				 * Paint paint = new Paint();
+				 * paint.setColor(getResources().getColor(R.color.red));
+				 * paint.setStrokeWidth(3); paint.setStyle(Paint.Style.STROKE);
+				 * paint.setAntiAlias(true);
+				 * 
+				 * updatePath(projection);
+				 * 
+				 * canvas.drawPath(path, paint);
+				 */
 
 			}
 
@@ -109,7 +114,7 @@ public class MyMapActivity extends MapActivity {
 
 			for (int i = 0; i < points.size(); i++) {
 
-				projection.toPixels(points.get(i), screenPts);
+				projection.toPixels(points.get(i).getGeoPoint(), screenPts);
 
 				if (!pathStarted) {
 					path.moveTo(screenPts.x, screenPts.y);
@@ -119,6 +124,83 @@ public class MyMapActivity extends MapActivity {
 				}
 
 			}
+
+		}
+
+		private void drawSegments(Projection projection, Canvas canvas) {
+
+			Paint paint = new Paint();
+			paint.setStrokeWidth(3);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setAntiAlias(true);
+
+			updatePath(projection);
+			
+			boolean pathStarted = false;
+			Point screenPts = new Point();
+
+			// 
+			int currentSegment = -1;
+
+			segmentPath = new ArrayList<Path>();
+
+			for (int i = 0; i < points.size(); i++) {
+				
+				// start new segment
+				if (currentSegment != points.get(i).getSegmentId()) {
+
+					if (i == 0) {
+
+						// first segment created
+						path = new Path();
+
+					} else {
+
+						// saving previous segment
+						segmentPath.add(path);
+
+						// create new segment
+						path = new Path();
+					}
+
+					pathStarted = false;
+					
+					// new current segment
+					currentSegment = points.get(i).getSegmentId();
+
+				}
+
+				// converting geopoint coordinates to screen ones
+				projection.toPixels(points.get(i).getGeoPoint(), screenPts);
+
+				// populating path object
+				if (!pathStarted) {
+					path.moveTo(screenPts.x, screenPts.y);
+					pathStarted = true;
+				} else {
+					path.lineTo(screenPts.x, screenPts.y);
+				}
+
+				// adding last segment if not empty
+				if (i==points.size()-1 && pathStarted) {
+					segmentPath.add(path);
+				}
+				
+			}
+
+			// drawing segments in different colors
+			for (int i = 0; i < segmentPath.size(); i++) {
+				
+				if (i % 2 == 0) {
+					paint.setColor(getResources().getColor(R.color.red));
+				} else {
+					paint.setColor(getResources().getColor(R.color.blue));
+				}
+				
+				canvas.drawPath(segmentPath.get(i), paint);
+				
+			}
+			
 
 		}
 
@@ -143,7 +225,7 @@ public class MyMapActivity extends MapActivity {
 
 		// getting extra data passed to the activity
 		Bundle b = getIntent().getExtras();
-		
+
 		this.mode = b.getInt("mode");
 
 		// show waypoint
@@ -158,7 +240,7 @@ public class MyMapActivity extends MapActivity {
 
 		// show track
 		if (this.mode == Constants.SHOW_TRACK) {
-			
+
 			this.trackId = b.getLong("track_id");
 
 			this.createPath(this.trackId);
@@ -169,8 +251,7 @@ public class MyMapActivity extends MapActivity {
 			// pan to the center of track occupied area
 			mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2,
 															(maxLng + minLng) / 2));
-			
-			
+
 			// get track data
 			String sql = "SELECT tracks.*, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
 					+ this.trackId + " AND tracks._id = track_points.track_id";
@@ -179,12 +260,12 @@ public class MyMapActivity extends MapActivity {
 			cursor.moveToFirst();
 
 			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
-			
+
 			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
 					cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
-			
+
 			cursor.close();
-			
+
 		}
 
 		// ---Add a location marker---
@@ -204,16 +285,17 @@ public class MyMapActivity extends MapActivity {
 		Cursor tpCursor = myApp.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
 
-		points = new ArrayList<GeoPoint>();
+		points = new ArrayList<TrackPoint>();
 
-		int lat, lng;
+		int lat, lng, segmentId;
 
 		while (tpCursor.isAfterLast() == false) {
 
 			lat = (int) (tpCursor.getFloat(tpCursor.getColumnIndex("lat")) * 1E6);
 			lng = (int) (tpCursor.getFloat(tpCursor.getColumnIndex("lng")) * 1E6);
+			segmentId = tpCursor.getInt(tpCursor.getColumnIndex("segment_id"));
 
-			GeoPoint gp = new GeoPoint(lat, lng);
+			TrackPoint gp = new TrackPoint(new GeoPoint(lat, lng), segmentId);
 
 			calculateTrackSpan(lat, lng);
 
@@ -251,22 +333,21 @@ public class MyMapActivity extends MapActivity {
 		return false;
 	}
 
-	
 	/**
 	 * onCreateOptionsMenu handler
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		
+
 		// options menu only in track mode
-		
+
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.map_menu, menu);
-		
+
 		return true;
-		
+
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
@@ -275,10 +356,9 @@ public class MyMapActivity extends MapActivity {
 		} else {
 			(menu.findItem(R.id.showWaypoint)).setVisible(false);
 		}
-		
+
 		return true;
 	}
-	
 
 	/**
 	 * Process main activity menu
@@ -295,7 +375,7 @@ public class MyMapActivity extends MapActivity {
 				mapView.getController().animateTo(waypoint);
 
 				return true;
-			
+
 			case R.id.showTrack:
 
 				// zoom to track points span 
@@ -306,7 +386,7 @@ public class MyMapActivity extends MapActivity {
 																(maxLng + minLng) / 2));
 
 				return true;
-			
+
 			default:
 
 				return super.onOptionsItemSelected(item);
@@ -314,6 +394,5 @@ public class MyMapActivity extends MapActivity {
 		}
 
 	}
-	
-	
+
 }
