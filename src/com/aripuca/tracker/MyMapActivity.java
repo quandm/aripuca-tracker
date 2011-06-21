@@ -36,10 +36,7 @@ public class MyMapActivity extends MapActivity {
 	private GeoPoint waypoint;
 	private TrackPoint startPoint;
 
-	private Path path;
 	private ArrayList<TrackPoint> points;
-
-	private ArrayList<Path> segmentPath;
 
 	private long trackId;
 	/**
@@ -80,8 +77,6 @@ public class MyMapActivity extends MapActivity {
 			// drawing the track on the map
 			if (mode == Constants.SHOW_TRACK) {
 
-				//TODO: Show segments in different colors
-
 				drawSegments(projection, canvas);
 
 				/*
@@ -101,7 +96,7 @@ public class MyMapActivity extends MapActivity {
 
 		}
 
-		private void updatePath(Projection projection) {
+/*		private void updatePath_DEPRECATED(Projection projection) {
 
 			if (path == null) {
 				path = new Path();
@@ -125,8 +120,14 @@ public class MyMapActivity extends MapActivity {
 
 			}
 
-		}
+		} */
 
+		/**
+		 * Drawing segments in different colors
+		 * 
+		 * @param projection
+		 * @param canvas
+		 */
 		private void drawSegments(Projection projection, Canvas canvas) {
 
 			Paint paint = new Paint();
@@ -134,15 +135,14 @@ public class MyMapActivity extends MapActivity {
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setAntiAlias(true);
 
-			updatePath(projection);
-			
 			boolean pathStarted = false;
 			Point screenPts = new Point();
 
 			// 
 			int currentSegment = -1;
 
-			segmentPath = new ArrayList<Path>();
+			Path path = null;
+			ArrayList<Path> segmentPath = new ArrayList<Path>();
 
 			for (int i = 0; i < points.size(); i++) {
 				
