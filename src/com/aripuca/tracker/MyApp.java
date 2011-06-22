@@ -21,9 +21,11 @@ public class MyApp extends Application {
 	 * gps on/off flag
 	 */
 	private boolean gpsOn = false;
+
 	public void setGpsOn(boolean flag) {
 		this.gpsOn = flag;
 	}
+
 	public boolean isGpsOn() {
 		return this.gpsOn;
 	}
@@ -32,9 +34,11 @@ public class MyApp extends Application {
 	 * 
 	 */
 	private boolean gpsStateBeforeRotation = true;
+
 	public void setGpsStateBeforeRotation() {
 		gpsStateBeforeRotation = this.gpsOn;
 	}
+
 	public boolean getGpsStateBeforeRotation() {
 		return gpsStateBeforeRotation;
 	}
@@ -43,9 +47,11 @@ public class MyApp extends Application {
 	 * activity is being restarted flag
 	 */
 	private boolean activityRestarting = false;
+
 	public boolean isActivityRestarting() {
 		return activityRestarting;
 	}
+
 	public void setActivityRestarting(boolean activityRestarting) {
 		this.activityRestarting = activityRestarting;
 	}
@@ -54,14 +60,17 @@ public class MyApp extends Application {
 	 * 
 	 */
 	private Location currentLocation = null;
+
 	public void setCurrentLocation(Location cl) {
 		currentLocation = cl;
 	}
+
 	public Location getCurrentLocation() {
 		return currentLocation;
 	}
 
 	private SQLiteDatabase db;
+
 	public SQLiteDatabase getDatabase() {
 		return db;
 	}
@@ -70,6 +79,7 @@ public class MyApp extends Application {
 	 * is external storage available, ex: SD card
 	 */
 	private boolean externalStorageAvailable = false;
+
 	public boolean getExternalStorageAvailable() {
 		return externalStorageAvailable;
 	}
@@ -78,28 +88,33 @@ public class MyApp extends Application {
 	 * is external storage writable
 	 */
 	private boolean externalStorageWriteable = false;
+
 	public boolean getExternalStorageWriteable() {
 		return externalStorageWriteable;
 	}
 
 	/**
-	 * MainActivity object reference 
+	 * MainActivity object reference
 	 */
 	private static MainActivity mainActivity;
+
 	public void setMainActivity(MainActivity ma) {
 		mainActivity = ma;
 	}
+
 	public MainActivity getMainActivity() {
 		return mainActivity;
 	}
 
 	/**
-	 * WaypointsListActivity object reference 
+	 * WaypointsListActivity object reference
 	 */
 	private static WaypointsListActivity waypointsListActivity;
+
 	public void setWaypointsListActivity(WaypointsListActivity wa) {
 		waypointsListActivity = wa;
 	}
+
 	public WaypointsListActivity getWaypointsListActivity() {
 		return waypointsListActivity;
 	}
@@ -108,6 +123,7 @@ public class MyApp extends Application {
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;
+
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}
@@ -116,10 +132,11 @@ public class MyApp extends Application {
 	 * 
 	 */
 	private String appDir;
+
 	public String getAppDir() {
 		return appDir;
 	}
-	
+
 	/**
 	 * application database create/open helper class
 	 */
@@ -129,8 +146,8 @@ public class MyApp extends Application {
 		 * 
 		 */
 		private static final String DATABASE_NAME = "AripucaTracker";
-		
-		private static final int DATABASE_VERSION = 3;
+
+		private static final int DATABASE_VERSION = 1;
 
 		// private static final String NOTES_TABLE_NAME = "notes";
 
@@ -160,22 +177,22 @@ public class MyApp extends Application {
 						"finish_time INTEGER)";
 
 		private static final String SEGMENTS_TABLE = "segments";
-		
+
 		private static final String SEGMENTS_TABLE_CREATE =
-			"CREATE TABLE " + SEGMENTS_TABLE +
-					" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					"track_id INTEGER NOT NULL," +
-					"distance REAL," +
-					"total_time INTEGER," +
-					"moving_time INTEGER," +
-					"max_speed REAL," +
-					"max_elevation REAL," +
-					"min_elevation REAL," +
-					"elevation_gain REAL," +
-					"elevation_loss REAL," +
-					"start_time INTEGER NOT NULL," +
-					"finish_time INTEGER)";
-		
+				"CREATE TABLE " + SEGMENTS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"track_id INTEGER NOT NULL," +
+						"distance REAL," +
+						"total_time INTEGER," +
+						"moving_time INTEGER," +
+						"max_speed REAL," +
+						"max_elevation REAL," +
+						"min_elevation REAL," +
+						"elevation_gain REAL," +
+						"elevation_loss REAL," +
+						"start_time INTEGER NOT NULL," +
+						"finish_time INTEGER)";
+
 		/**
 		 * track points table title
 		 */
@@ -234,9 +251,22 @@ public class MyApp extends Application {
 		}
 
 		/**
-		 * Upgrading application db 
+		 * Upgrading application db
 		 */
 		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
+			
+			onCreate(db);
+
+		}
+
+		/*
+		// upgrading db example
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 			Log.w(Constants.TAG, "Upgrading database from version " + oldVersion + " to "
@@ -263,10 +293,10 @@ public class MyApp extends Application {
 					Log.i(Constants.TAG, "Segments table added");
 					db.execSQL(SEGMENTS_TABLE_CREATE);
 				}
-				
+
 			}
 
-		}
+		} */
 
 	}
 
@@ -287,7 +317,7 @@ public class MyApp extends Application {
 
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
 				+ getString(R.string.main_app_title_code);
-		
+
 		super.onCreate();
 
 	}
@@ -332,6 +362,5 @@ public class MyApp extends Application {
 			return "";
 		}
 	}
-
 
 }
