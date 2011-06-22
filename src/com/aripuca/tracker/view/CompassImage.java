@@ -9,8 +9,6 @@ public class CompassImage extends ImageView {
 	
 	protected float angle = 0;
 	
-	private static final String TAG = "CompassImage"; 
-
 	public CompassImage(Context context) {
 		super(context);
 	}
