@@ -195,14 +195,11 @@ public class MyMapActivity extends MapActivity {
 		 */
 		private void showMapPin(Projection projection, Canvas canvas, GeoPoint point) {
 			
-			// ---translate the GeoPoint to screen pixels---
+			// translate the GeoPoint to screen pixels
 			Point screenPts = new Point();
 			projection.toPixels(point, screenPts);
 
-			// ---add the marker---
-//			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-//					android.R.drawable.btn_star_big_on);
-			
+			// add the marker
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
 								R.drawable.map_pin);
 			

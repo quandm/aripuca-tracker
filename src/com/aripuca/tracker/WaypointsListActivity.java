@@ -368,8 +368,6 @@ public class WaypointsListActivity extends ListActivity {
 
 			case R.id.exportMenuItem:
 
-				//TODO: enter destination file name
-				
 				exportWaypoints();
 				
 				return true;
@@ -856,7 +854,7 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	/**
-	 * 
+	 * Export waypoints to external file 
 	 */
 	private void exportWaypoints() {
 

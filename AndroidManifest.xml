@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.aripuca.tracker" android:versionCode="1"
-	android:versionName="1.0.1">
-	
-	<!-- android:installLocation="preferExternal"  -->
+	android:versionName="1.0.1" android:installLocation="preferExternal">
 
 	<application android:icon="@drawable/icon" android:label="@string/main_app_title"
 		android:debuggable="true" android:name="com.aripuca.tracker.MyApp">
 
 		<uses-library android:name="com.google.android.maps" />
 
-		<activity android:name=".MainActivity"
-			android:label="@string/main_app_title"	
-			>
-			<!--  android:configChanges="keyboardHidden|orientation"  -->
+		<activity android:name=".MainActivity" android:label="@string/main_app_title">
+			<!-- android:configChanges="keyboardHidden|orientation" -->
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -22,20 +18,18 @@
 
 		</activity>
 
-		<activity android:name=".TrackDetailsActivity"
-			android:label="@string/track_details_activity_title">
+		<activity android:name=".TrackDetailsActivity" android:label="@string/track_details_activity_title">
 		</activity>
 
 		<activity android:name=".WaypointsListActivity"
 			android:label="@string/waypoints_activity_title">
 		</activity>
 
-		<activity android:name=".TracksListActivity"
-			android:label="@string/tracks_activity_title">
+		<activity android:name=".TracksListActivity" android:label="@string/tracks_activity_title">
 		</activity>
 
-		<activity android:name=".MyMapActivity"
-			android:label="@string/main_app_title" android:theme="@android:style/Theme.NoTitleBar">
+		<activity android:name=".MyMapActivity" android:label="@string/main_app_title"
+			android:theme="@android:style/Theme.NoTitleBar">
 		</activity>
 
 		<activity android:label="@string/main_app_title"
