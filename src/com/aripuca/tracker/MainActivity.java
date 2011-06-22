@@ -1,6 +1,5 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -835,32 +834,6 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Create file on external storage
-	 * 
-	 * @param fileName Name of external storage file
-	 * @return File
-	 */
-	private File createStorageFile(String fileName) {
-
-		File file = new File(myApp.getAppDir(), fileName);
-
-		// creating storage files if needed
-		try {
-
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-
-			return file;
-
-		} catch (IOException e) {
-			Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-			return null;
-		}
-
-	}
-
-	/**
 	 * Create application folders
 	 */
 	private void createFolderStructure() {
@@ -993,10 +966,9 @@ public class MainActivity extends Activity {
 		builder.setMessage(
 				Html.fromHtml(
 							getString(R.string.main_app_title) + " " +
-									getString(R.string.ver) + " " + MyApp.getVersionName(this) +
+									getString(R.string.ver) + MyApp.getVersionName(this) +
 									"<br><br>" + getString(R.string.about_message) +
-									"<br><br>" + getString(R.string.visit_blog) +
-									"<br>" + getString(R.string.blog_url)
+									"<br><br>http://" + getString(R.string.blog_url)
 						)
 
 		)

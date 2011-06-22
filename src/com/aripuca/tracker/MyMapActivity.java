@@ -20,25 +20,45 @@ import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
+/**
+ * Map activity
+ */
 public class MyMapActivity extends MapActivity {
 
+	/**
+	 * 
+	 */
 	private MyApp myApp;
 
+	/**
+	 * 
+	 */
 	private MapView mapView;
 
-	private MapController mc;
-
+	/**
+	 * 
+	 */
 	private GeoPoint waypoint;
+	
+	/**
+	 * 
+	 */
 	private TrackPoint startPoint;
 
+	/**
+	 * track points array
+	 */
 	private ArrayList<TrackPoint> points;
 
+	/**
+	 * id of the track being shown
+	 */
 	private long trackId;
+	
 	/**
 	 * Track span values
 	 */
@@ -52,8 +72,14 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private int mode;
 
+	/**
+	 * Map overlay class 
+	 */
 	class MapOverlay extends com.google.android.maps.Overlay {
 
+		/**
+		 * Overridden draw method
+		 */
 		@Override
 		public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
 
@@ -63,64 +89,21 @@ public class MyMapActivity extends MapActivity {
 
 			// display waypoint
 			if (mode == Constants.SHOW_WAYPOINT) {
+				
+				this.showMapPin(projection, canvas, waypoint);
 
-				// ---translate the GeoPoint to screen pixels---
-				Point screenPts = new Point();
-				projection.toPixels(waypoint, screenPts);
-
-				// ---add the marker---
-				Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-						android.R.drawable.btn_star_big_on);
-				canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight() / 2, null);
 			}
 
 			// drawing the track on the map
 			if (mode == Constants.SHOW_TRACK) {
 
-				drawSegments(projection, canvas);
-
-				/*
-				 * Paint paint = new Paint();
-				 * paint.setColor(getResources().getColor(R.color.red));
-				 * paint.setStrokeWidth(3); paint.setStyle(Paint.Style.STROKE);
-				 * paint.setAntiAlias(true);
-				 * 
-				 * updatePath(projection);
-				 * 
-				 * canvas.drawPath(path, paint);
-				 */
+				this.drawSegments(projection, canvas);
 
 			}
 
 			return true;
 
 		}
-
-/*		private void updatePath_DEPRECATED(Projection projection) {
-
-			if (path == null) {
-				path = new Path();
-			} else {
-				path.reset();
-			}
-
-			boolean pathStarted = false;
-			Point screenPts = new Point();
-
-			for (int i = 0; i < points.size(); i++) {
-
-				projection.toPixels(points.get(i).getGeoPoint(), screenPts);
-
-				if (!pathStarted) {
-					path.moveTo(screenPts.x, screenPts.y);
-					pathStarted = true;
-				} else {
-					path.lineTo(screenPts.x, screenPts.y);
-				}
-
-			}
-
-		} */
 
 		/**
 		 * Drawing segments in different colors
@@ -143,22 +126,18 @@ public class MyMapActivity extends MapActivity {
 
 			Path path = null;
 			ArrayList<Path> segmentPath = new ArrayList<Path>();
-
+			
 			for (int i = 0; i < points.size(); i++) {
-				
+
 				// start new segment
 				if (currentSegment != points.get(i).getSegmentId()) {
 
 					if (i == 0) {
-
 						// first segment created
 						path = new Path();
-
 					} else {
-
 						// saving previous segment
 						segmentPath.add(path);
-
 						// create new segment
 						path = new Path();
 					}
@@ -201,7 +180,34 @@ public class MyMapActivity extends MapActivity {
 				
 			}
 			
+			// drawing start and end map pins
+			this.showMapPin(projection, canvas, points.get(1).getGeoPoint());			
+			this.showMapPin(projection, canvas, points.get(points.size()-1).getGeoPoint());			
 
+		}
+		
+		/**
+		 * Shows standard map pin on the map
+		 * 
+		 * @param projection
+		 * @param canvas
+		 * @param point
+		 */
+		private void showMapPin(Projection projection, Canvas canvas, GeoPoint point) {
+			
+			// ---translate the GeoPoint to screen pixels---
+			Point screenPts = new Point();
+			projection.toPixels(point, screenPts);
+
+			// ---add the marker---
+//			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
+//					android.R.drawable.btn_star_big_on);
+			
+			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
+								R.drawable.map_pin);
+			
+			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth()/2, screenPts.y - bmp.getHeight(), null);
+			
 		}
 
 	}
@@ -279,6 +285,11 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
+	/**
+	 * Loads track points from DB and populates points array
+	 * 
+	 * @param trackId
+	 */
 	private void createPath(long trackId) {
 
 		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
@@ -311,6 +322,12 @@ public class MyMapActivity extends MapActivity {
 		tpCursor.close();
 	}
 
+	/**
+	 * Calculates min and max coordinates range 
+	 * 
+	 * @param lat
+	 * @param lng
+	 */
 	private void calculateTrackSpan(int lat, int lng) {
 
 		if (lat < minLat) {
@@ -328,6 +345,9 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -348,6 +368,9 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
+	/**
+	 * Changes activity menu on the fly
+	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
