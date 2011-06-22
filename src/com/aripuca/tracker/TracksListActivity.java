@@ -34,8 +34,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-//TODO: compare 2 tracks on the map
-//TODO: show main parameters of the track on the map 
+ 
+//TODO: compare 2 tracks on the map, select track to compare
+//TODO: show main parameters of the track and segments on the map 
+
 
 /**
  * Waypoints list activity
