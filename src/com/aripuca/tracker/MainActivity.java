@@ -19,6 +19,7 @@ import java.nio.channels.FileChannel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -46,6 +47,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.Window;
 
 /**
  * main application activity
@@ -248,6 +250,9 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+	
+		//TODO: ???
+//		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); 		
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
@@ -944,8 +949,10 @@ public class MainActivity extends Activity {
 
 			case R.id.restoreMenuItem:
 
-				Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+				//TODO: restore db from external sqlite file
 
+				restoreDatabase();
+				
 				return true;
 
 			default:
@@ -1318,7 +1325,7 @@ public class MainActivity extends Activity {
 
 			if (myApp.getExternalStorageWriteable()) {
 
-				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\AripucaTracker";
+				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\AripucaTracker.db";
 
 				String dateStr = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date());
 
@@ -1349,5 +1356,83 @@ public class MainActivity extends Activity {
 		}
 
 	}
+
+	private void restoreDatabase() {
+		
+		Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+		
+		/*
+		File importFolder = new File("\\data\\data\\com.aripuca.tracker\\databases");
+		final String importFiles[] = importFolder.list();
+
+		if (importFiles == null || importFiles.length == 0) {
+			Toast.makeText(MainActivity.this, "Import folder is empty", Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
+		builder.setSingleChoiceItems(importFiles, 0, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				
+			}
+		});
+		
+		AlertDialog alert = builder.create();
+		alert.show();
+		 */
+		
+//		restoreDatabaseHandler.post(restoreDatabaseRunnable);
+		
+	}
+	
+	private Handler restoreDatabaseHandler = new Handler();
+	private Runnable restoreDatabaseRunnable = new Runnable() {
+		@Override
+		public void run() {
+			
+			myApp.getDatabase().close();
+			
+			try {
+
+				File data = Environment.getDataDirectory();
+
+				if (myApp.getExternalStorageWriteable()) {
+
+					String currentDBPath = myApp.getAppDir() + "/backup/AripucaTracker_2011-06-23.db";
+
+					File currentDB = new File(currentDBPath);
+					File backupDB = new File(data, "\\data\\com.aripuca.tracker\\databases\\AripucaTracker.db");
+					
+					if (currentDB.exists()) {
+						FileChannel src = new FileInputStream(currentDB).getChannel();
+						FileChannel dst = new FileOutputStream(backupDB).getChannel();
+						dst.transferFrom(src, 0, src.size());
+						src.close();
+						dst.close();
+					}
+				
+					myApp.setDatabase();
+					
+					Toast.makeText(MainActivity.this, getString(R.string.restore_completed),
+							Toast.LENGTH_LONG).show();
+
+				}
+				
+			}
+			catch (Exception e) {
+
+				Log.e(Constants.TAG, e.getMessage());
+				
+				myApp.setDatabase();
+				
+				Toast.makeText(MainActivity.this, getString(R.string.backup_error) + " " + e.getMessage(),
+						Toast.LENGTH_LONG).show();
+
+			}
+			
+		}
+	};
+	
 
 }

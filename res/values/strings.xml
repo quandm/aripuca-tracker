@@ -76,6 +76,7 @@
 
 	<string name="backup">Backup</string>
 	<string name="backup_db">Backup DB</string>
+	
 	<string name="restore_db">Restore DB</string>
 
 	<string name="file">File</string>
