@@ -528,7 +528,7 @@ public class TracksListActivity extends ListActivity {
 
 		pd.setOnCancelListener(new OnCancelListener() {
 			@Override
-			public void onCancel(DialogInterface dialog) {
+			public void onCancel(DialogInterface dialog) 	{
 				Log.i(Constants.TAG, "AsyncTask: onCancel()");
 				// cancel exporting track task
 				trackExportTask.cancel(false);

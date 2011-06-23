@@ -41,6 +41,8 @@
 	
 	<string name="backup_completed">Application database copied to:</string>
 	<string name="backup_error">An error occurred copying application database.</string>
+
+	<string name="restore_completed">Database restored</string>
 	
 	<string name="coming_soon">Coming soon...</string>
 	

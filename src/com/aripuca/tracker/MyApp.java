@@ -75,6 +75,14 @@ public class MyApp extends Application {
 		return db;
 	}
 
+	public void setDatabase() {
+		
+		OpenHelper openHelper = new OpenHelper(this);
+		
+		db = openHelper.getWritableDatabase();
+		
+	}
+	
 	/**
 	 * is external storage available, ex: SD card
 	 */
@@ -145,7 +153,7 @@ public class MyApp extends Application {
 		/**
 		 * 
 		 */
-		private static final String DATABASE_NAME = "AripucaTracker";
+		private static final String DATABASE_NAME = "AripucaTracker.db";
 
 		private static final int DATABASE_VERSION = 1;
 
@@ -312,7 +320,7 @@ public class MyApp extends Application {
 
 		// SQLiteDatabase
 		db = openHelper.getWritableDatabase();
-
+		
 		setExternalStorageState();
 
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
