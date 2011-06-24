@@ -974,10 +974,12 @@ public class MainActivity extends Activity {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.about_dialog, null);
 
-		TextView textView = (TextView) layout.findViewById(R.id.message);
+		TextView versionView = (TextView) layout.findViewById(R.id.version);
+		versionView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver) + MyApp.getVersionName(this));
+		
+		TextView messageView = (TextView) layout.findViewById(R.id.message);
 
-		String aboutStr = getString(R.string.main_app_title) + " " + getString(R.string.ver)
-								+ MyApp.getVersionName(this) + "\n\n" + getText(R.string.about_dialog_message);	
+		String aboutStr = getString(R.string.about_dialog_message);	
 
 		// i.e.: R.string.dialog_message =>
 		// "Test this dialog following the link to dtmilano.blogspot.com"
@@ -985,11 +987,11 @@ public class MainActivity extends Activity {
 
 		Linkify.addLinks(s, Linkify.ALL);
 		
-		textView.setText(s);
+		messageView.setText(s);
 		
 //		textView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
 //				+ MyApp.getVersionName(this) + "\n\n" + s);
-		textView.setMovementMethod(LinkMovementMethod.getInstance());
+		messageView.setMovementMethod(LinkMovementMethod.getInstance());
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.about);
