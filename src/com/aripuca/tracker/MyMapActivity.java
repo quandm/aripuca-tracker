@@ -72,6 +72,8 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private int mode;
 
+	private int mapMode;
+	
 	/**
 	 * Map overlay class 
 	 */
@@ -223,8 +225,12 @@ public class MyMapActivity extends MapActivity {
 
 		mapView = (MapView) findViewById(R.id.mapview);
 
+		// initial map mode is street view
+		mapMode = Constants.MAP_STREET;
+		mapView.setStreetView(true);
+		mapView.setSatellite(false);
+		
 		mapView.setBuiltInZoomControls(true);
-		// mapView.setSatellite(true);
 
 		// getting extra data passed to the activity
 		Bundle b = getIntent().getExtras();
@@ -377,6 +383,13 @@ public class MyMapActivity extends MapActivity {
 			(menu.findItem(R.id.showWaypoint)).setVisible(false);
 		}
 
+		MenuItem mapMenuItem = menu.findItem(R.id.mapMode);
+		if (mapMode == Constants.MAP_STREET) {
+			mapMenuItem.setTitle(R.string.satellite);
+		} else {
+			mapMenuItem.setTitle(R.string.street);
+		}
+		
 		return true;
 	}
 
@@ -407,6 +420,20 @@ public class MyMapActivity extends MapActivity {
 
 				return true;
 
+			case R.id.mapMode:
+
+				if (mapMode == Constants.MAP_STREET) {
+					mapView.setStreetView(false);
+					mapView.setSatellite(true);
+					mapMode = Constants.MAP_SATELLITE;
+				} else {
+					mapView.setSatellite(false);
+					mapView.setStreetView(true);
+					mapMode = Constants.MAP_STREET;
+				}
+
+				return true;
+				
 			default:
 
 				return super.onOptionsItemSelected(item);

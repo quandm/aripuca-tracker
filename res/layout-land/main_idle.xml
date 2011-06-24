@@ -4,12 +4,12 @@
 	android:layout_height="fill_parent" android:layout_width="fill_parent">
 
 	<LinearLayout android:id="@+id/mainLayout"
-		android:orientation="horizontal" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="horizontal">
 
 		<LinearLayout android:orientation="vertical"
-			android:layout_width="0dp" android:layout_height="fill_parent"
-			android:layout_weight="2">
+			android:layout_height="fill_parent" android:layout_weight="2"
+			android:layout_width="match_parent">
 
 			<!-- COORDINATES -->
 
@@ -23,6 +23,9 @@
 					<TextView android:id="@+id/lat" style="@style/SmallLabel2">
 					</TextView>
 
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsLeftCell">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
@@ -48,6 +51,9 @@
 					</TextView>
 
 				</LinearLayout>
+				
+				<LinearLayout style="@style/TrackDetailsLeftCell">
+				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
 					android:background="@drawable/border1">
@@ -71,6 +77,9 @@
 					<TextView android:id="@+id/speed" style="@style/SmallLabel2">
 					</TextView>
 
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsLeftCell">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
@@ -98,6 +107,9 @@
 					<TextView android:id="@+id/elevation" style="@style/SmallLabel2">
 					</TextView>
 
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsLeftCell">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"

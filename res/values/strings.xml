@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="main_app_title">Aripuca Tracker</string>
-    <string name="main_app_title_code">AripucaTracker</string>
-    <string name="author_name">VitalNik</string>
-    <string name="company">Aripuca Apps</string>
-    <string name="app_url">http://tracker.aripuca.com</string>
-    <string name="blog_url">tracker.aripuca.com/blog</string>
-    <string name="source_url">http://code.google.com/p/aripuca-tracker</string>
-        
-    <string name="waypoints_activity_title">Waypoints</string>
-    <string name="tracks_activity_title">Tracks</string>
-    <string name="track_details_activity_title">Track details</string>
-	
+	<string name="main_app_title">Aripuca Tracker</string>
+	<string name="main_app_title_code">AripucaTracker</string>
+	<string name="author_name">VitalNik</string>
+	<string name="company">Aripuca Apps</string>
+	<string name="app_url">http://tracker.aripuca.com</string>
+	<string name="blog_url">tracker.aripuca.com/blog</string>
+	<string name="source_url">http://code.google.com/p/aripuca-tracker</string>
+
+	<string name="about_dialog_message">Open source GPS tracking app for Android.\n\nVisit
+		our official blog at:\nhttp://tracker.aripuca.com/blog\n\nGet source
+		code from:\nhttp://code.google.com/p/aripuca-tracker</string>
+
+	<string name="waypoints_activity_title">Waypoints</string>
+	<string name="tracks_activity_title">Tracks</string>
+	<string name="track_details_activity_title">Track details</string>
+
 	<string name="gps_on">GPS On</string>
 	<string name="gps_off">GPS Off</string>
 
@@ -31,9 +35,9 @@
 	<string name="segments">Segments</string>
 	<string name="prev_segment">Prev segment</string>
 	<string name="next_segment">Next segment</string>
-	
+
 	<!-- SEPARATE WORDS -->
-	
+
 	<string name="ver">v.</string>
 	<string name="ok">Ok</string>
 	<string name="yes">Yes</string>
@@ -76,7 +80,7 @@
 
 	<string name="backup">Backup</string>
 	<string name="backup_db">Backup DB</string>
-	
+
 	<string name="restore_db">Restore DB</string>
 
 	<string name="file">File</string>
@@ -102,32 +106,40 @@
 	<string name="max_pace">Max pace</string>
 
 	<string name="speed_and_pace">Speed and pace</string>
-	
+
 	<string name="total_time">Total time</string>
 	<string name="moving_time">Moving time</string>
 	<string name="idle_time">Idle time</string>
 	<string name="start_time">Start time</string>
 	<string name="finish_time">Finish time</string>
-	
+
 	<string name="delete_waypoints">Clear all</string>
 	<string name="delete_tracks">Clear all</string>
-	
+
 	<string name="sync_all">Sync</string>
 	<string name="export_all">Export</string>
 	<string name="import_all">Import</string>
 	<string name="export_waypoints">Export waypoints</string>
-	
+
 	<string name="debug_data">Debug</string>
-	
-	<!--  SETTINGS  -->
+
+	<string name="map_mode">Satellite</string>
+
+	<string name="street">Street</string>
+	<string name="satellite">Satellite</string>
+
+	<!-- SETTINGS -->
 	<string name="min_distance_title">Minimum distance</string>
-	<string name="min_distance_summary">Minimum distance between 2 recorded points (meters)</string>
-	
+	<string name="min_distance_summary">Minimum distance between 2 recorded points (meters)
+	</string>
+
 	<string name="max_distance_title">Maximum distance</string>
-	<string name="max_distance_summary">Maximum distance between 2 points on a straight line</string>
+	<string name="max_distance_summary">Maximum distance between 2 points on a straight
+		line</string>
 
 	<string name="min_accuracy_title">Minimum accuracy</string>
-	<string name="min_accuracy_summary">Minimum accuracy required for recording (meters)</string>
+	<string name="min_accuracy_summary">Minimum accuracy required for recording (meters)
+	</string>
 
 	<string name="app_settings_title">Application settings</string>
 	<string name="user_interface_title">User inteface</string>
@@ -138,30 +150,32 @@
 	<string name="show_compass_title">Show compass</string>
 
 	<string name="units">Units</string>
-	<string name="units_summary">Measurement units (coordinates, distance, speed, etc)</string>
+	<string name="units_summary">Measurement units (coordinates, distance, speed,
+		etc)</string>
 
 	<string name="tracking_title">Tracking</string>
-	
+
 	<string name="online_sync_title">Online sync</string>
 	<string name="online_sync_summary">Synchronize your data with online resource</string>
-	
+
 	<string name="online_sync_url">Sync URL</string>
 	<string name="user_name">Login name</string>
 	<string name="user_password">Password</string>
-	
+
 	<string name="track_recording">Track recording</string>
-	
+
 	<string name="segmenting">Segmenting</string>
 	<string name="segmenting_mode">Segmenting mode</string>
-	
+
 	<string name="segment_equal">Equal intervals</string>
 	<string name="segment_equal_summary">Segment track every N km</string>
-	
+
 	<string name="segment_custom_1">Custom intervals 1</string>
 	<string name="segment_custom_2">Custom intervals 2</string>
 	<string name="segment_custom_summary">Segment by preset intervals</string>
 
 	<string name="waypoint_default_description">Default description</string>
-	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as waypoint description</string>
- 	
+	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as
+		waypoint description</string>
+
 </resources>
