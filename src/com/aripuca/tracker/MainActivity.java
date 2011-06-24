@@ -38,6 +38,9 @@ import android.location.*;
 import android.widget.*;
 
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -250,9 +253,9 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-	
+
 		//TODO: ???
-//		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); 		
+		//		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); 		
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
@@ -952,7 +955,7 @@ public class MainActivity extends Activity {
 				//TODO: restore db from external sqlite file
 
 				restoreDatabase();
-				
+
 				return true;
 
 			default:
@@ -968,30 +971,40 @@ public class MainActivity extends Activity {
 	 */
 	private void showAboutDialog() {
 
+		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.about_dialog, null);
+
+		TextView textView = (TextView) layout.findViewById(R.id.message);
+
+		String aboutStr = getString(R.string.main_app_title) + " " + getString(R.string.ver)
+								+ MyApp.getVersionName(this) + "\n\n" + getText(R.string.about_dialog_message);	
+
+		// i.e.: R.string.dialog_message =>
+		// "Test this dialog following the link to dtmilano.blogspot.com"
+		final SpannableString s = new SpannableString(aboutStr);
+
+		Linkify.addLinks(s, Linkify.ALL);
+		
+		textView.setText(s);
+		
+//		textView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
+//				+ MyApp.getVersionName(this) + "\n\n" + s);
+		textView.setMovementMethod(LinkMovementMethod.getInstance());
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.about);
+		builder.setView(layout);
 
-		builder.setMessage(
-				Html.fromHtml(
-							getString(R.string.main_app_title) + " " +
-									getString(R.string.ver) + MyApp.getVersionName(this) +
-									"<br><br>" + getString(R.string.about_message) +
-									"<br><br>http://" + getString(R.string.blog_url)
-						)
-
-		)
-
-		.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 			}
-		})
-				.setInverseBackgroundForced(true)
-				.setTitle(getString(R.string.about))
-				.setCancelable(true);
+		});
+
+		builder.setCancelable(true);
 
 		AlertDialog alert = builder.create();
-
 		alert.show();
 
 	}
@@ -1358,41 +1371,40 @@ public class MainActivity extends Activity {
 	}
 
 	private void restoreDatabase() {
-		
+
 		Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
-		
+
 		/*
-		File importFolder = new File("\\data\\data\\com.aripuca.tracker\\databases");
-		final String importFiles[] = importFolder.list();
-
-		if (importFiles == null || importFiles.length == 0) {
-			Toast.makeText(MainActivity.this, "Import folder is empty", Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		
-		builder.setSingleChoiceItems(importFiles, 0, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				
-			}
-		});
-		
-		AlertDialog alert = builder.create();
-		alert.show();
+		 * File importFolder = new
+		 * File("\\data\\data\\com.aripuca.tracker\\databases"); final String
+		 * importFiles[] = importFolder.list();
+		 * 
+		 * if (importFiles == null || importFiles.length == 0) {
+		 * Toast.makeText(MainActivity.this, "Import folder is empty",
+		 * Toast.LENGTH_SHORT).show(); return; }
+		 * 
+		 * AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		 * 
+		 * builder.setSingleChoiceItems(importFiles, 0, new
+		 * DialogInterface.OnClickListener() { public void
+		 * onClick(DialogInterface dialog, int whichButton) {
+		 * 
+		 * } });
+		 * 
+		 * AlertDialog alert = builder.create(); alert.show();
 		 */
-		
-//		restoreDatabaseHandler.post(restoreDatabaseRunnable);
-		
+
+		//		restoreDatabaseHandler.post(restoreDatabaseRunnable);
+
 	}
-	
+
 	private Handler restoreDatabaseHandler = new Handler();
 	private Runnable restoreDatabaseRunnable = new Runnable() {
 		@Override
 		public void run() {
-			
+
 			myApp.getDatabase().close();
-			
+
 			try {
 
 				File data = Environment.getDataDirectory();
@@ -1403,7 +1415,7 @@ public class MainActivity extends Activity {
 
 					File currentDB = new File(currentDBPath);
 					File backupDB = new File(data, "\\data\\com.aripuca.tracker\\databases\\AripucaTracker.db");
-					
+
 					if (currentDB.exists()) {
 						FileChannel src = new FileInputStream(currentDB).getChannel();
 						FileChannel dst = new FileOutputStream(backupDB).getChannel();
@@ -1411,28 +1423,27 @@ public class MainActivity extends Activity {
 						src.close();
 						dst.close();
 					}
-				
+
 					myApp.setDatabase();
-					
+
 					Toast.makeText(MainActivity.this, getString(R.string.restore_completed),
 							Toast.LENGTH_LONG).show();
 
 				}
-				
+
 			}
 			catch (Exception e) {
 
 				Log.e(Constants.TAG, e.getMessage());
-				
+
 				myApp.setDatabase();
-				
+
 				Toast.makeText(MainActivity.this, getString(R.string.backup_error) + " " + e.getMessage(),
 						Toast.LENGTH_LONG).show();
 
 			}
-			
+
 		}
 	};
-	
 
 }

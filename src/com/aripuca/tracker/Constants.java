@@ -9,6 +9,12 @@ public abstract class Constants {
 	 */
 	public static final int SHOW_WAYPOINT = 0;
 	public static final int SHOW_TRACK = 1;
+
+	/**
+	 * map view modes
+	 */
+	public static final int MAP_STREET = 0;
+	public static final int MAP_SATELLITE = 1;
 	
 	/**
 	 * Minimum distance between 2 consecutive track points to be recorded
@@ -24,5 +30,6 @@ public abstract class Constants {
 	public static final int SEGMENT_EQUAL = 2;
 	public static final int SEGMENT_CUSTOM_1 = 3;
 	public static final int SEGMENT_CUSTOM_2 = 4;
-
+	
+	
 }
