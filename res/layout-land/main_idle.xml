@@ -25,7 +25,7 @@
 
 				</LinearLayout>
 
-				<LinearLayout style="@style/TrackDetailsLeftCell">
+				<LinearLayout style="@style/TrackDetailsLeftCell" android:layout_weight="0.1">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
@@ -52,7 +52,7 @@
 
 				</LinearLayout>
 				
-				<LinearLayout style="@style/TrackDetailsLeftCell">
+				<LinearLayout style="@style/TrackDetailsLeftCell"  android:layout_weight="0.5">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
@@ -79,7 +79,7 @@
 
 				</LinearLayout>
 
-				<LinearLayout style="@style/TrackDetailsLeftCell">
+				<LinearLayout style="@style/TrackDetailsLeftCell" android:layout_weight="0.5">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
@@ -109,7 +109,7 @@
 
 				</LinearLayout>
 
-				<LinearLayout style="@style/TrackDetailsLeftCell">
+				<LinearLayout style="@style/TrackDetailsLeftCell" android:layout_weight="0.1">
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRightCell"
