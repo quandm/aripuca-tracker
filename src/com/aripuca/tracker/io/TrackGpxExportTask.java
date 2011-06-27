@@ -4,15 +4,33 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.aripuca.tracker.util.Utils;
 
 public class TrackGpxExportTask extends TrackExportTask {
+	
+	/**
+	 * Segments table cursor
+	 */
+	protected Cursor segCursor = null;
 
 	public TrackGpxExportTask(Context c) {
 		super(c);
 
 		extension = "gpx";
+
+	}
+
+	
+	protected void prepareCursors() {
+		
+		super.prepareCursors();
+
+		// track cursor
+		String sql = "SELECT * FROM segments WHERE track_id=" + trackId;
+		segCursor = myApp.getDatabase().rawQuery(sql, null);
+		segCursor.moveToFirst();
 
 	}
 
@@ -55,16 +73,63 @@ public class TrackGpxExportTask extends TrackExportTask {
 		pw.println("<moving_time>" + movingTime + "</moving_time>");
 		pw.println("<max_speed>" + tCursor.getFloat(tCursor.getColumnIndex("max_speed")) + "</max_speed>");
 		pw.println("<max_elevation>" + tCursor.getFloat(tCursor.getColumnIndex("max_elevation")) + "</max_elevation>");
+		pw.println("<min_elevation>" + tCursor.getFloat(tCursor.getColumnIndex("min_elevation")) + "</min_elevation>");
 		pw.println("<elevation_gain>" + tCursor.getFloat(tCursor.getColumnIndex("elevation_gain"))
 				+ "</elevation_gain>");
 		pw.println("<elevation_loss>" + tCursor.getFloat(tCursor.getColumnIndex("elevation_loss"))
 				+ "</elevation_loss>");
 		pw.println("<start_time>" + startTime + "</start_time>");
 		pw.println("<finish_time>" + finishTime + "</finish_time>");
+		
+		// write segments info
+		pw.println("<segments>");
+		this.writeSegments();
+		pw.println("</segments>");
+		
 		pw.println("</extensions>");
 
 		pw.println("<trkseg>");
 		
+	}
+	
+	/**
+	 * Exporting track segment details as an extension to GPX format
+	 */
+	protected void writeSegments() {
+	
+		while (segCursor.isAfterLast() == false) {
+			
+			String startTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(segCursor.getLong(segCursor
+					.getColumnIndex("start_time")));
+
+			String finishTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(segCursor.getLong(segCursor
+					.getColumnIndex("finish_time")));
+
+			String totalTime = Utils.formatInterval(segCursor.getLong(segCursor.getColumnIndex("total_time")), true);
+			String movingTime = Utils.formatInterval(segCursor.getLong(segCursor.getColumnIndex("moving_time")), true);
+
+			pw.println("<segment>");
+			pw.println("<number>" + segCursor.getString(segCursor.getColumnIndex("_id")) + "</number>");
+			pw.println("<distance>" + segCursor.getFloat(segCursor.getColumnIndex("distance")) + "</distance>");
+			pw.println("<total_time>" + totalTime + "</total_time>");
+			pw.println("<moving_time>" + movingTime + "</moving_time>");
+			pw.println("<max_speed>" + segCursor.getFloat(segCursor.getColumnIndex("max_speed")) + "</max_speed>");
+			pw.println("<max_elevation>" + segCursor.getFloat(segCursor.getColumnIndex("max_elevation")) + "</max_elevation>");
+			pw.println("<min_elevation>" + segCursor.getFloat(segCursor.getColumnIndex("min_elevation")) + "</min_elevation>");
+			pw.println("<elevation_gain>" + segCursor.getFloat(segCursor.getColumnIndex("elevation_gain"))
+					+ "</elevation_gain>");
+			pw.println("<elevation_loss>" + segCursor.getFloat(segCursor.getColumnIndex("elevation_loss"))
+					+ "</elevation_loss>");
+			pw.println("<start_time>" + startTime + "</start_time>");
+			pw.println("<finish_time>" + finishTime + "</finish_time>");
+
+			pw.println("</segment>");
+			
+			segCursor.moveToNext();
+			
+		}
+		
+	
 	}
 
 	protected void writeTrackPoint() {
@@ -110,5 +175,17 @@ public class TrackGpxExportTask extends TrackExportTask {
 		pw.println("</gpx>");
 
 	}
+	
+	protected void closeWriter() {
+		
+		super.closeWriter();
+
+		if (segCursor!=null) {
+			segCursor.close();
+		}
+		
+	}
+	
+	
 
 }
