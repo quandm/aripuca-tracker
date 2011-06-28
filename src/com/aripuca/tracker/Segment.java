@@ -16,27 +16,28 @@ public class Segment extends AbstractTrack {
 	}
 
 	/**
-	 * Id of the track being recorded
+	 * Index of the segment being recorded
 	 */
-	private long segmentId;
+	private long segmentIndex;
 
-	public void setSegmentId(long sid) {
-		this.segmentId = sid;
+	public void setSegmentIndex(long sid) {
+		this.segmentIndex = sid;
 	}
 
-	public long getSegmentId() {
-		return this.segmentId;
+	public long getSegmentIndex() {
+		return this.segmentIndex;
 	}
 
 	/**
 	 * Add new track to application db after recording started
 	 */
-	public void insertSegment(long trackId) {
+	public long insertSegment(long trackId, long segmentIndex) {
 
 		long finishTime = (new Date()).getTime();
 
 		ContentValues values = new ContentValues();
 		values.put("track_id", trackId);
+		values.put("segment_index", segmentIndex);
 		values.put("distance", this.getDistance());
 		values.put("total_time", this.getTotalTime());
 		values.put("moving_time", this.getMovingTime());
@@ -50,9 +51,10 @@ public class Segment extends AbstractTrack {
 
 		Log.w(Constants.TAG, "insertSegment: Total: " + this.getTotalTime() + " Moving: " + this.getMovingTime());
 
+		long newSegmentId = -1;
 		try {
 
-			myApp.getDatabase().insertOrThrow("segments", null, values);
+			newSegmentId = myApp.getDatabase().insertOrThrow("segments", null, values);
 
 		} catch (SQLiteException e) {
 
@@ -60,6 +62,8 @@ public class Segment extends AbstractTrack {
 			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 
 		}
+		
+		return newSegmentId;
 
 	}
 

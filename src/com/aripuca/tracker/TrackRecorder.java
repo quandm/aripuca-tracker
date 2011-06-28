@@ -69,9 +69,9 @@ public class TrackRecorder {
 	private int segmentingMode;
 
 	/**
-	 * Id of the current track segment
+	 * Index of the current track segment
 	 */
-	private int segmentId = 0;
+	private int segmentIndex = 0;
 	private float segmentInterval;
 	private float[] segmentIntervals;
 
@@ -79,7 +79,7 @@ public class TrackRecorder {
 	 * Returns number of segments created for the track
 	 */
 	public int getSegmentsCount() {
-		return segmentId + 1;
+		return segmentIndex + 1;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class TrackRecorder {
 
 		pointsCount = 0;
 
-		segmentId = 0;
+		segmentIndex = 0;
 
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("min_distance", "15"));
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("min_accuracy", "15"));
@@ -157,8 +157,8 @@ public class TrackRecorder {
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 			// insert segment in db only if there were more then one segments in
 			// this track
-			if (this.segmentId > 0) {
-				this.segment.insertSegment(this.getTrack().getTrackId());
+			if (this.segmentIndex > 0) {
+				this.segment.insertSegment(this.getTrack().getTrackId(), this.segmentIndex);
 				this.segment = null;
 			}
 		}
@@ -197,11 +197,11 @@ public class TrackRecorder {
 	 */
 	private void addNewSegment() {
 
-		this.segment.insertSegment(this.getTrack().getTrackId());
+		this.segment.insertSegment(this.getTrack().getTrackId(), this.segmentIndex);
 
 		this.segment = null;
 
-		this.segmentId++;
+		this.segmentIndex++;
 
 		this.segment = new Segment(myApp);
 
@@ -409,7 +409,7 @@ public class TrackRecorder {
 
 		if (this.lastRecordedLocation == null) {
 
-			this.track.recordTrackPoint(location, this.segmentId);
+			this.track.recordTrackPoint(location, this.segmentIndex);
 			this.lastRecordedLocation = location;
 
 			pointsCount++;
@@ -418,7 +418,7 @@ public class TrackRecorder {
 
 			if (this.lastRecordedLocation.distanceTo(location) >= minDistance) {
 
-				this.track.recordTrackPoint(location, this.segmentId);
+				this.track.recordTrackPoint(location, this.segmentIndex);
 				this.lastRecordedLocation = location;
 
 				pointsCount++;
@@ -495,7 +495,7 @@ public class TrackRecorder {
 			case Constants.SEGMENT_EQUAL:
 
 				float nextSegment = 0;
-				for (int i = 0; i <= this.segmentId; i++) {
+				for (int i = 0; i <= this.segmentIndex; i++) {
 					nextSegment += segmentInterval;
 				}
 				return nextSegment * 1000;
@@ -505,9 +505,9 @@ public class TrackRecorder {
 
 				// processing custom segment intervals
 
-				if (this.segmentId < segmentIntervals.length) {
+				if (this.segmentIndex < segmentIntervals.length) {
 
-					return segmentIntervals[this.segmentId] * 1000;
+					return segmentIntervals[this.segmentIndex] * 1000;
 
 				} else {
 

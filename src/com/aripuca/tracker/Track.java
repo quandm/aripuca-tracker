@@ -95,7 +95,7 @@ public class Track extends AbstractTrack {
 	 * 
 	 * @param location Current location
 	 */
-	protected void recordTrackPoint(Location location, int segmentId) {
+	protected void recordTrackPoint(Location location, int segmentIndex) {
 
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
@@ -104,7 +104,7 @@ public class Track extends AbstractTrack {
 		values.put("elevation", location.getAltitude());
 		values.put("speed", location.getSpeed());
 		values.put("time", (new Date()).getTime());
-		values.put("segment_id", segmentId);
+		values.put("segment_index", segmentIndex);
 		values.put("distance", this.distance);
 		values.put("accuracy", location.getAccuracy());
 

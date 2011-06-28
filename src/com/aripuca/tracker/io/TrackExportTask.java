@@ -43,8 +43,8 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	protected String extension;
 	
 	protected boolean segmentOpen = false;
-	protected int prevSegmentId = 0;
-	protected int curSegmentId = 0;
+	protected int prevSegmentIndex = 0;
+	protected int curSegmentIndex = 0;
 	
 	public TrackExportTask(Context c) {
 		
@@ -85,19 +85,26 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 	}
 	
+	/**
+	 * Creates database cursors
+	 */
 	protected void prepareCursors() {
 
-		// track cursor
+		// tracks table cursor
 		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
 		tCursor = myApp.getDatabase().rawQuery(sql, null);
 		tCursor.moveToFirst();
 
+		// track points table  cursor
 		sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 		tpCursor = myApp.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
 
 	}
 
+	/**
+	 * Closes writer and cursors
+	 */
 	protected void closeWriter() {
 
 		pw.flush();
