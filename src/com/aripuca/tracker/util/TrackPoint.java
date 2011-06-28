@@ -6,12 +6,12 @@ public class TrackPoint extends Object {
 	
 	private GeoPoint geoPoint;
 	
-	private int segmentId;
+	private int segmentIndex;
 	
-	public TrackPoint(GeoPoint gp, int sid) {
+	public TrackPoint(GeoPoint gp, int si) {
 		
 		this.geoPoint = gp;
-		this.segmentId = sid;
+		this.segmentIndex = si;
 		
 	}
 	
@@ -19,8 +19,8 @@ public class TrackPoint extends Object {
 		return this.geoPoint;
 	}
 
-	public int getSegmentId() {
-		return this.segmentId;
+	public int getSegmentIndex() {
+		return this.segmentIndex;
 	}
 
 }

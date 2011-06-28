@@ -124,7 +124,7 @@ public class MyMapActivity extends MapActivity {
 			Point screenPts = new Point();
 
 			// 
-			int currentSegment = -1;
+			int currentSegmentIndex = -1;
 
 			Path path = null;
 			ArrayList<Path> segmentPath = new ArrayList<Path>();
@@ -132,7 +132,7 @@ public class MyMapActivity extends MapActivity {
 			for (int i = 0; i < points.size(); i++) {
 
 				// start new segment
-				if (currentSegment != points.get(i).getSegmentId()) {
+				if (currentSegmentIndex != points.get(i).getSegmentIndex()) {
 
 					if (i == 0) {
 						// first segment created
@@ -147,7 +147,7 @@ public class MyMapActivity extends MapActivity {
 					pathStarted = false;
 					
 					// new current segment
-					currentSegment = points.get(i).getSegmentId();
+					currentSegmentIndex = points.get(i).getSegmentIndex();
 
 				}
 
@@ -301,15 +301,15 @@ public class MyMapActivity extends MapActivity {
 
 		points = new ArrayList<TrackPoint>();
 
-		int lat, lng, segmentId;
+		int lat, lng, segmentIndex;
 
 		while (tpCursor.isAfterLast() == false) {
 
 			lat = (int) (tpCursor.getFloat(tpCursor.getColumnIndex("lat")) * 1E6);
 			lng = (int) (tpCursor.getFloat(tpCursor.getColumnIndex("lng")) * 1E6);
-			segmentId = tpCursor.getInt(tpCursor.getColumnIndex("segment_id"));
+			segmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
 
-			TrackPoint gp = new TrackPoint(new GeoPoint(lat, lng), segmentId);
+			TrackPoint gp = new TrackPoint(new GeoPoint(lat, lng), segmentIndex);
 
 			calculateTrackSpan(lat, lng);
 

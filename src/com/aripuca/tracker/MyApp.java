@@ -190,6 +190,7 @@ public class MyApp extends Application {
 				"CREATE TABLE " + SEGMENTS_TABLE +
 						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
 						"track_id INTEGER NOT NULL," +
+						"segment_index INTEGER," +
 						"distance REAL," +
 						"total_time INTEGER," +
 						"moving_time INTEGER," +
@@ -212,7 +213,7 @@ public class MyApp extends Application {
 				"CREATE TABLE " + TRACKPOINTS_TABLE +
 						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
 						"track_id INTEGER NOT NULL," +
-						"segment_id INTEGER," +
+						"segment_index INTEGER," +
 						"distance REAL," +
 						"lat REAL NOT NULL," +
 						"lng REAL NOT NULL," +
@@ -273,9 +274,8 @@ public class MyApp extends Application {
 
 		}
 
-		/*
 		// upgrading db example
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		/*public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 			Log.w(Constants.TAG, "Upgrading database from version " + oldVersion + " to "
 					+ newVersion);
@@ -295,16 +295,16 @@ public class MyApp extends Application {
 					Log.i(Constants.TAG, "distance field added to track_points table");
 					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
 				}
-
+	
 				// adding segment stats table
-				if (oldVersion <= 2) {
+				if (oldVersion <= 1) {
 					Log.i(Constants.TAG, "Segments table added");
 					db.execSQL(SEGMENTS_TABLE_CREATE);
 				}
 
 			}
 
-		} */
+		} */ 
 
 	}
 

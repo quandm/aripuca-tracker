@@ -34,6 +34,9 @@ public class TrackDetailsActivity extends Activity {
 
 	private int numberOfSegments = 0;
 
+	/**
+	 * Array of segment table unique ids (_id field)
+	 */
 	private ArrayList<Integer> segmentIds;
 
 	private OnClickListener prevSegmentButtonClick = new OnClickListener() {
@@ -279,7 +282,7 @@ public class TrackDetailsActivity extends Activity {
 		String sql = "SELECT segments.*, COUNT(track_points._id) AS count FROM segments, track_points WHERE" +
 				" segments._id=" + segmentId + 
 				" AND segments.track_id=" + this.trackId +
-				" AND track_points.segment_id=" + (segmentIndex-1) +
+				" AND track_points.segment_index=" + (segmentIndex-1) +
 				" AND segments.track_id = track_points.track_id";
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);

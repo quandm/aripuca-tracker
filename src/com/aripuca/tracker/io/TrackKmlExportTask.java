@@ -36,11 +36,11 @@ public class TrackKmlExportTask extends TrackExportTask {
 	protected void writeTrackPoint() {
 		
 		if (!segmentOpen) {
-			prevSegmentId = tpCursor.getInt(tpCursor.getColumnIndex("segment_id"));
+			prevSegmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
 			segmentOpen = true;
 		} 
 		
-		if (prevSegmentId != tpCursor.getInt(tpCursor.getColumnIndex("segment_id"))) {
+		if (prevSegmentIndex != tpCursor.getInt(tpCursor.getColumnIndex("segment_index"))) {
 			pw.println("</coordinates></LineString>");
 			pw.println("<LineString><coordinates>");
 			segmentOpen = false;
