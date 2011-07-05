@@ -97,6 +97,8 @@ public class Track extends AbstractTrack {
 	 */
 	protected void recordTrackPoint(Location location, int segmentIndex) {
 
+		//TODO: change type of lat and lng in db to be more accurate
+		
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
 		values.put("lat", location.getLatitude());

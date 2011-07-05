@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteException;
+import android.hardware.GeomagneticField;
 import android.location.*;
 
 import android.widget.*;
@@ -758,10 +759,12 @@ public class MainActivity extends Activity {
 		}
 
 		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
-		wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(), 0));
+		//		wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(), 0));
+		wpLat.setText(Double.toString(myApp.getCurrentLocation().getLatitude()));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-		wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(), 0));
+		//		wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(), 0));
+		wpLng.setText(Double.toString(myApp.getCurrentLocation().getLongitude()));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -975,22 +978,23 @@ public class MainActivity extends Activity {
 		View layout = inflater.inflate(R.layout.about_dialog, null);
 
 		TextView versionView = (TextView) layout.findViewById(R.id.version);
-		versionView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver) + MyApp.getVersionName(this));
-		
+		versionView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
+				+ MyApp.getVersionName(this));
+
 		TextView messageView = (TextView) layout.findViewById(R.id.message);
 
-		String aboutStr = getString(R.string.about_dialog_message);	
+		String aboutStr = getString(R.string.about_dialog_message);
 
 		// i.e.: R.string.dialog_message =>
 		// "Test this dialog following the link to dtmilano.blogspot.com"
 		final SpannableString s = new SpannableString(aboutStr);
 
 		Linkify.addLinks(s, Linkify.ALL);
-		
+
 		messageView.setText(s);
-		
-//		textView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
-//				+ MyApp.getVersionName(this) + "\n\n" + s);
+
+		//		textView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
+		//				+ MyApp.getVersionName(this) + "\n\n" + s);
 		messageView.setMovementMethod(LinkMovementMethod.getInstance());
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1171,11 +1175,24 @@ public class MainActivity extends Activity {
 	 */
 	public void updateCompass(float[] values) {
 
-		float azimuth = values[0];
+		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
+
+		float azimuth = 0;
+
+		//TODO: let's not request declination on every compass update 
+		float declination = 0;
+		if (trueNorth && myApp.getCurrentLocation() != null) {
+			long now = System.currentTimeMillis();
+			declination = this.getDeclination(myApp.getCurrentLocation(), now);
+		}
+
+		// magnetic north to true north
+		azimuth = values[0];
 
 		if (findViewById(R.id.azimuth) != null) {
-			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0) + Utils.degreeChar + " "
-					+ Utils.getDirectionCode(azimuth));
+			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth + declination, 0)
+					+ Utils.degreeChar + " "
+					+ Utils.getDirectionCode(azimuth + declination));
 		}
 
 		// updating compass image
@@ -1186,16 +1203,43 @@ public class MainActivity extends Activity {
 			if (compassImage.getVisibility() == View.VISIBLE) {
 
 				// Bitmap arrowBitmap =
-				// BitmapFactory.decodeResource(getResources(),
-				// R.drawable.windrose);
+				// BitmapFactory.decodeResource(getResources(), R.drawable.windrose);
 				// BitmapDrawable bmd = new BitmapDrawable(arrowBitmap);
-				compassImage.setAngle(360 - azimuth - getOrientationAdjustment());
+				compassImage.setAngle(360 - azimuth + declination - getOrientationAdjustment());
 				// compassImage.setAlpha(230);
 				compassImage.invalidate();
 				// compassImage.setImageDrawable(bmd);
 			}
+
+			CompassImage compassImage2 = (CompassImage) findViewById(R.id.compassImage2);
+
+			if (compassImage2.getVisibility() == View.VISIBLE) {
+
+				compassImage2.setAngle(360 - azimuth - getOrientationAdjustment());
+				compassImage2.setAlpha(50);
+				compassImage2.invalidate();
+			}
+
 		}
 
+	}
+
+	/**
+	 * Get current magnetic declination
+	 * 
+	 * @param location
+	 * @param timestamp
+	 * @return
+	 */
+	protected float getDeclination(Location location, long timestamp) {
+
+		GeomagneticField field = new GeomagneticField(
+				(float) location.getLatitude(),
+				(float) location.getLongitude(),
+				(float) location.getAltitude(),
+				timestamp);
+
+		return field.getDeclination();
 	}
 
 	// --------------------------------------------------------------------------------------------
@@ -1449,4 +1493,3 @@ public class MainActivity extends Activity {
 	};
 
 }
-

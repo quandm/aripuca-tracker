@@ -65,7 +65,6 @@
 	<string name="idle">Idle</string>
 	<string name="current">Current</string>
 	<string name="azimuth">Azimuth</string>
-	<string name="compass">Compass</string>
 	<string name="distance">Distance</string>
 	<string name="coordinates">Coordinates</string>
 	<string name="lat">Latitude</string>
@@ -147,8 +146,6 @@
 	<string name="wake_lock_title">Stay awake</string>
 	<string name="wake_lock_summary">Prevents phone from sleeping</string>
 
-	<string name="show_compass_title">Show compass</string>
-
 	<string name="units">Units</string>
 	<string name="units_summary">Measurement units (coordinates, distance, speed,
 		etc)</string>
@@ -177,5 +174,12 @@
 	<string name="waypoint_default_description">Default description</string>
 	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as
 		waypoint description</string>
+		
+	<!-- COMPASS RELATED -->
+	<string name="compass">Compass</string>
+	<string name="show_compass">Always show compass</string>
+	<string name="true_north">Point to True North</string>
+	<string name="true_north_summary">Compass points to True North instead of Magnetic North</string>
+		
 
 </resources>

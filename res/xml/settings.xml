@@ -43,8 +43,12 @@
 			android:dialogTitle="@string/coordinates" android:title="@string/coordinates"
 			android:entryValues="@array/coord_units_values" android:entries="@array/coord_units_labels"
 			android:defaultValue="0"></ListPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/track_recording">
+	</PreferenceScreen><PreferenceScreen android:title="@string/compass"><CheckBoxPreference android:key="show_compass" android:title="@string/show_compass" android:enabled="false"></CheckBoxPreference><CheckBoxPreference android:summary="@string/true_north_summary" android:title="@string/true_north" android:defaultValue="true" android:key="true_north"></CheckBoxPreference>
+	
+</PreferenceScreen>
+	<PreferenceScreen android:title="@string/waypoints">
+		<CheckBoxPreference android:defaultValue="true" android:key="waypoint_default_description" android:summary="@string/waypoint_default_description_summary" android:title="@string/waypoint_default_description"></CheckBoxPreference>
+	</PreferenceScreen><PreferenceScreen android:title="@string/track_recording">
 		<PreferenceCategory android:title="@string/tracks">
 			<EditTextPreference android:title="@string/min_distance_title"
 				android:defaultValue="5" android:summary="@string/min_distance_summary"
@@ -72,11 +76,9 @@
 		
 </PreferenceScreen>
 
-	<PreferenceScreen android:title="@string/waypoints">
-		<CheckBoxPreference android:defaultValue="true"
-			android:key="waypoint_default_description" android:summary="@string/waypoint_default_description_summary"
-			android:title="@string/waypoint_default_description"></CheckBoxPreference>
-	</PreferenceScreen>
+	
+	
+	
 	
 	
 
