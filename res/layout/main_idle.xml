@@ -125,6 +125,14 @@
 		android:layout_height="fill_parent" android:orientation="vertical"
 		android:gravity="center" android:paddingTop="208dp">
 			<com.aripuca.tracker.view.CompassImage
+				android:id="@+id/compassImage2" android:src="@drawable/windrose420"
+				android:layout_width="220dip" android:layout_height="220dip" />
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center" android:paddingTop="208dp">
+			<com.aripuca.tracker.view.CompassImage
 				android:id="@+id/compassImage" android:src="@drawable/windrose420"
 				android:layout_width="220dip" android:layout_height="220dip" />
 	</LinearLayout>
