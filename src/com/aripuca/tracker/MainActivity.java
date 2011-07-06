@@ -1197,7 +1197,7 @@ public class MainActivity extends Activity {
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
 					+ Utils.degreeChar + " "
-					+ Utils.getDirectionCode(azimuth) + " | " + Integer.toString(getOrientationAdjustment()));
+					+ Utils.getDirectionCode(azimuth));
 		}
 
 		// true north compass
