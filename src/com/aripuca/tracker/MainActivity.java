@@ -255,8 +255,8 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		//TODO: ???
-		//		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); 		
+		// TODO: ???
+		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
@@ -573,7 +573,7 @@ public class MainActivity extends Activity {
 		this.replaceDynamicView(R.layout.main_tracking);
 
 		// new track recording started
-		//		myApp.startTrackRecording();
+		// myApp.startTrackRecording();
 
 		trackRecorder.start();
 
@@ -619,7 +619,8 @@ public class MainActivity extends Activity {
 			 * "Please wait for a better fix", Toast.LENGTH_SHORT).show(); } }
 			 */
 
-			// let's make reverse geocoder request and then show Add Waypoint dialog
+			// let's make reverse geocoder request and then show Add Waypoint
+			// dialog
 			// address will be inserted as default description for this waypoint
 			// processing is done in separate thread
 
@@ -650,7 +651,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -759,11 +760,13 @@ public class MainActivity extends Activity {
 		}
 
 		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
-		//		wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(), 0));
+		// wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(),
+		// 0));
 		wpLat.setText(Double.toString(myApp.getCurrentLocation().getLatitude()));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-		//		wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(), 0));
+		// wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(),
+		// 0));
 		wpLng.setText(Double.toString(myApp.getCurrentLocation().getLongitude()));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -934,7 +937,8 @@ public class MainActivity extends Activity {
 
 				if (myApp.isGpsOn()) {
 
-					// if in track recording mode do not stop GPS, display warning message instead 
+					// if in track recording mode do not stop GPS, display
+					// warning message instead
 					if (!trackRecorder.isRecording()) {
 						stopGPSService();
 					} else {
@@ -955,7 +959,7 @@ public class MainActivity extends Activity {
 
 			case R.id.restoreMenuItem:
 
-				//TODO: restore db from external sqlite file
+				// TODO: restore db from external sqlite file
 
 				restoreDatabase();
 
@@ -993,8 +997,9 @@ public class MainActivity extends Activity {
 
 		messageView.setText(s);
 
-		//		textView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
-		//				+ MyApp.getVersionName(this) + "\n\n" + s);
+		// textView.setText(getString(R.string.main_app_title) + " " +
+		// getString(R.string.ver)
+		// + MyApp.getVersionName(this) + "\n\n" + s);
 		messageView.setMovementMethod(LinkMovementMethod.getInstance());
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1159,7 +1164,7 @@ public class MainActivity extends Activity {
 	 * Returns compass rotation angle when orientation of the phone changes
 	 */
 	private int getOrientationAdjustment() {
-
+		
 		switch (this.getResources().getConfiguration().orientation) {
 			case Configuration.ORIENTATION_PORTRAIT:
 				return 0;
@@ -1179,7 +1184,7 @@ public class MainActivity extends Activity {
 
 		float azimuth = 0;
 
-		//TODO: let's not request declination on every compass update 
+		// TODO: let's not request declination on every compass update
 		float declination = 0;
 		if (trueNorth && myApp.getCurrentLocation() != null) {
 			long now = System.currentTimeMillis();
@@ -1187,15 +1192,15 @@ public class MainActivity extends Activity {
 		}
 
 		// magnetic north to true north
-		azimuth = values[0];
+		azimuth = getAzimuth(values[0] + declination);
 
 		if (findViewById(R.id.azimuth) != null) {
-			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth + declination, 0)
+			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
 					+ Utils.degreeChar + " "
-					+ Utils.getDirectionCode(azimuth + declination));
+					+ Utils.getDirectionCode(azimuth) + " | " + Integer.toString(getOrientationAdjustment()));
 		}
 
-		// updating compass image
+		// true north compass
 		if (findViewById(R.id.compassImage) != null) {
 
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
@@ -1203,24 +1208,37 @@ public class MainActivity extends Activity {
 			if (compassImage.getVisibility() == View.VISIBLE) {
 
 				// Bitmap arrowBitmap =
-				// BitmapFactory.decodeResource(getResources(), R.drawable.windrose);
+				// BitmapFactory.decodeResource(getResources(),
+				// R.drawable.windrose);
 				// BitmapDrawable bmd = new BitmapDrawable(arrowBitmap);
-				compassImage.setAngle(360 - azimuth + declination - getOrientationAdjustment());
+				compassImage.setAngle(360 - azimuth - getOrientationAdjustment());
 				// compassImage.setAlpha(230);
 				compassImage.invalidate();
 				// compassImage.setImageDrawable(bmd);
 			}
+		}
+
+		// magnetic north compass
+		if (findViewById(R.id.compassImage2) != null) {
 
 			CompassImage compassImage2 = (CompassImage) findViewById(R.id.compassImage2);
 
 			if (compassImage2.getVisibility() == View.VISIBLE) {
 
-				compassImage2.setAngle(360 - azimuth - getOrientationAdjustment());
+				compassImage2.setAngle(360 - azimuth + declination - getOrientationAdjustment());
 				compassImage2.setAlpha(50);
 				compassImage2.invalidate();
 			}
 
 		}
+
+	}
+
+	protected float getAzimuth(float az) {
+
+		if (az > 360) { return az - 360; }
+
+		return az;
 
 	}
 
@@ -1334,9 +1352,7 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) {
-			return;
-		}
+		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
@@ -1423,24 +1439,17 @@ public class MainActivity extends Activity {
 		/*
 		 * File importFolder = new
 		 * File("\\data\\data\\com.aripuca.tracker\\databases"); final String
-		 * importFiles[] = importFolder.list();
-		 * 
-		 * if (importFiles == null || importFiles.length == 0) {
-		 * Toast.makeText(MainActivity.this, "Import folder is empty",
-		 * Toast.LENGTH_SHORT).show(); return; }
-		 * 
+		 * importFiles[] = importFolder.list(); if (importFiles == null ||
+		 * importFiles.length == 0) { Toast.makeText(MainActivity.this,
+		 * "Import folder is empty", Toast.LENGTH_SHORT).show(); return; }
 		 * AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		 * 
 		 * builder.setSingleChoiceItems(importFiles, 0, new
 		 * DialogInterface.OnClickListener() { public void
-		 * onClick(DialogInterface dialog, int whichButton) {
-		 * 
-		 * } });
-		 * 
-		 * AlertDialog alert = builder.create(); alert.show();
+		 * onClick(DialogInterface dialog, int whichButton) { } }); AlertDialog
+		 * alert = builder.create(); alert.show();
 		 */
 
-		//		restoreDatabaseHandler.post(restoreDatabaseRunnable);
+		// restoreDatabaseHandler.post(restoreDatabaseRunnable);
 
 	}
 
