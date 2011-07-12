@@ -186,7 +186,7 @@ public class Utils {
 		StringBuilder sb = new StringBuilder();
 		char endChar = degreeChar;
 
-		DecimalFormat df = new DecimalFormat("###.#####");
+		DecimalFormat df = new DecimalFormat("###.######");
 		if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
 			int degrees = (int) Math.floor(coordinate);
 			sb.append(degrees);
@@ -213,6 +213,11 @@ public class Utils {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public static String formatCoord(double coord) {
+		DecimalFormat df = new DecimalFormat("###.######");
+		return df.format(coord);	
+	}
 
 	public static String shortenStr(String s, int maxLength) {
 

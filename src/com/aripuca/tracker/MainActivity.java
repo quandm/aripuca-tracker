@@ -762,12 +762,12 @@ public class MainActivity extends Activity {
 		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
 		// wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(),
 		// 0));
-		wpLat.setText(Double.toString(myApp.getCurrentLocation().getLatitude()));
+		wpLat.setText(Utils.formatCoord(myApp.getCurrentLocation().getLatitude()));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
 		// wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(),
 		// 0));
-		wpLng.setText(Double.toString(myApp.getCurrentLocation().getLongitude()));
+		wpLng.setText(Utils.formatCoord(myApp.getCurrentLocation().getLongitude()));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -783,14 +783,14 @@ public class MainActivity extends Activity {
 					dialog.dismiss();
 				}
 
-				String latStr = wpLat.getText().toString().trim();
-				String lngStr = wpLng.getText().toString().trim();
+				int lat = (int)(Double.parseDouble(wpLat.getText().toString())*1E6);
+				int lng = (int)(Double.parseDouble(wpLng.getText().toString())*1E6);
 
 				ContentValues values = new ContentValues();
 				values.put("title", titleStr);
 				values.put("descr", descrStr);
-				values.put("lat", latStr);
-				values.put("lng", lngStr);
+				values.put("lat", lat);
+				values.put("lng", lng);
 				values.put("elevation", myApp.getCurrentLocation().getAltitude());
 				values.put("time", myApp.getCurrentLocation().getTime());
 
@@ -1374,8 +1374,8 @@ public class MainActivity extends Activity {
 
 			ContentValues values = new ContentValues();
 			values.put("title", wp.getTitle());
-			values.put("lat", wp.getLatitude());
-			values.put("lng", wp.getLongitude());
+			values.put("lat", (int)(wp.getLatitude()*1E6));
+			values.put("lng", (int)(wp.getLongitude()*1E6));
 			values.put("time", wp.getTime());
 
 			myApp.getDatabase().insert("waypoints", null, values);

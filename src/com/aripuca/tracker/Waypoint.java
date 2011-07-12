@@ -32,6 +32,16 @@ public class Waypoint extends Object {
 		this.time = (new Date()).getTime();
 		
 	}
+
+	public Waypoint(String title, int latE6, int lngE6) {
+		
+		this.title = title;
+		this.latitude = latE6/1E6;
+		this.longitude = lngE6/1E6;
+		
+		this.time = (new Date()).getTime();
+		
+	}
 	
 	/**
 	 * returns simple Location object for calculating bearing and distance to this waypoint

@@ -43,7 +43,7 @@ public class MyMapActivity extends MapActivity {
 	 * 
 	 */
 	private GeoPoint waypoint;
-	
+
 	/**
 	 * 
 	 */
@@ -58,7 +58,7 @@ public class MyMapActivity extends MapActivity {
 	 * id of the track being shown
 	 */
 	private long trackId;
-	
+
 	/**
 	 * Track span values
 	 */
@@ -73,9 +73,9 @@ public class MyMapActivity extends MapActivity {
 	private int mode;
 
 	private int mapMode;
-	
+
 	/**
-	 * Map overlay class 
+	 * Map overlay class
 	 */
 	class MapOverlay extends com.google.android.maps.Overlay {
 
@@ -91,7 +91,7 @@ public class MyMapActivity extends MapActivity {
 
 			// display waypoint
 			if (mode == Constants.SHOW_WAYPOINT) {
-				
+
 				this.showMapPin(projection, canvas, waypoint);
 
 			}
@@ -128,7 +128,7 @@ public class MyMapActivity extends MapActivity {
 
 			Path path = null;
 			ArrayList<Path> segmentPath = new ArrayList<Path>();
-			
+
 			for (int i = 0; i < points.size(); i++) {
 
 				// start new segment
@@ -145,7 +145,7 @@ public class MyMapActivity extends MapActivity {
 					}
 
 					pathStarted = false;
-					
+
 					// new current segment
 					currentSegmentIndex = points.get(i).getSegmentIndex();
 
@@ -163,31 +163,33 @@ public class MyMapActivity extends MapActivity {
 				}
 
 				// adding last segment if not empty
-				if (i==points.size()-1 && pathStarted) {
+				if (i == points.size() - 1 && pathStarted) {
 					segmentPath.add(path);
 				}
-				
+
 			}
 
 			// drawing segments in different colors
 			for (int i = 0; i < segmentPath.size(); i++) {
-				
+
 				if (i % 2 == 0) {
 					paint.setColor(getResources().getColor(R.color.red));
 				} else {
 					paint.setColor(getResources().getColor(R.color.blue));
 				}
-				
+
 				canvas.drawPath(segmentPath.get(i), paint);
-				
+
 			}
-			
+
 			// drawing start and end map pins
-			this.showMapPin(projection, canvas, points.get(1).getGeoPoint());			
-			this.showMapPin(projection, canvas, points.get(points.size()-1).getGeoPoint());			
+			this.showMapPin(projection, canvas, points.get(0).getGeoPoint());
+			if (points.size()>1) {
+				this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint());
+			}
 
 		}
-		
+
 		/**
 		 * Shows standard map pin on the map
 		 * 
@@ -196,7 +198,7 @@ public class MyMapActivity extends MapActivity {
 		 * @param point
 		 */
 		private void showMapPin(Projection projection, Canvas canvas, GeoPoint point) {
-			
+
 			// translate the GeoPoint to screen pixels
 			Point screenPts = new Point();
 			projection.toPixels(point, screenPts);
@@ -204,9 +206,9 @@ public class MyMapActivity extends MapActivity {
 			// add the marker
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
 								R.drawable.map_pin);
-			
-			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth()/2, screenPts.y - bmp.getHeight(), null);
-			
+
+			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
+
 		}
 
 	}
@@ -229,7 +231,7 @@ public class MyMapActivity extends MapActivity {
 		mapMode = Constants.MAP_STREET;
 		mapView.setStreetView(true);
 		mapView.setSatellite(false);
-		
+
 		mapView.setBuiltInZoomControls(true);
 
 		// getting extra data passed to the activity
@@ -240,7 +242,7 @@ public class MyMapActivity extends MapActivity {
 		// show waypoint
 		if (this.mode == Constants.SHOW_WAYPOINT) {
 
-			waypoint = new GeoPoint((int) (b.getDouble("lat") * 1E6), (int) (b.getDouble("lng") * 1E6));
+			waypoint = new GeoPoint(b.getInt("latE6"), b.getInt("lngE6"));
 
 			mapView.getController().setZoom(17);
 			mapView.getController().animateTo(waypoint);
@@ -301,17 +303,18 @@ public class MyMapActivity extends MapActivity {
 
 		points = new ArrayList<TrackPoint>();
 
-		int lat, lng, segmentIndex;
+		int latE6, lngE6, segmentIndex;
 
 		while (tpCursor.isAfterLast() == false) {
 
-			lat = (int) (tpCursor.getFloat(tpCursor.getColumnIndex("lat")) * 1E6);
-			lng = (int) (tpCursor.getFloat(tpCursor.getColumnIndex("lng")) * 1E6);
+			latE6 = tpCursor.getInt(tpCursor.getColumnIndex("lat"));
+			lngE6 = tpCursor.getInt(tpCursor.getColumnIndex("lng"));
+
 			segmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
 
-			TrackPoint gp = new TrackPoint(new GeoPoint(lat, lng), segmentIndex);
+			TrackPoint gp = new TrackPoint(new GeoPoint(latE6, lngE6), segmentIndex);
 
-			calculateTrackSpan(lat, lng);
+			calculateTrackSpan(latE6, lngE6);
 
 			if (startPoint == null) {
 				startPoint = gp;
@@ -321,12 +324,12 @@ public class MyMapActivity extends MapActivity {
 
 			tpCursor.moveToNext();
 		}
-
+		
 		tpCursor.close();
 	}
 
 	/**
-	 * Calculates min and max coordinates range 
+	 * Calculates min and max coordinates range
 	 * 
 	 * @param lat
 	 * @param lng
@@ -389,7 +392,7 @@ public class MyMapActivity extends MapActivity {
 		} else {
 			mapMenuItem.setTitle(R.string.street);
 		}
-		
+
 		return true;
 	}
 
@@ -433,7 +436,7 @@ public class MyMapActivity extends MapActivity {
 				}
 
 				return true;
-				
+
 			default:
 
 				return super.onOptionsItemSelected(item);

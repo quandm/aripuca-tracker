@@ -260,8 +260,8 @@ public class WaypointsListActivity extends ListActivity {
 
 			Waypoint wp = new Waypoint(cursor.getString(cursor.getColumnIndex("title")),
 										cursor.getLong(cursor.getColumnIndex("time")),
-										cursor.getDouble(cursor.getColumnIndex("lat")),
-										cursor.getDouble(cursor.getColumnIndex("lng")),
+										cursor.getDouble(cursor.getColumnIndex("lat"))/1E6,
+										cursor.getDouble(cursor.getColumnIndex("lng"))/1E6,
 										cursor.getDouble(cursor.getColumnIndex("elevation")));
 
 			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
@@ -557,8 +557,8 @@ public class WaypointsListActivity extends ListActivity {
 
 		String title = wpCursor.getString(wpCursor.getColumnIndex("title"));
 		String descr = wpCursor.getString(wpCursor.getColumnIndex("descr"));
-		Float lat = wpCursor.getFloat(wpCursor.getColumnIndex("lat"));
-		Float lng = wpCursor.getFloat(wpCursor.getColumnIndex("lng"));
+		Double lat = wpCursor.getDouble(wpCursor.getColumnIndex("lat"))/1E6;
+		Double lng = wpCursor.getDouble(wpCursor.getColumnIndex("lng"))/1E6;
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.add_waypoint_dialog,
@@ -578,10 +578,10 @@ public class WaypointsListActivity extends ListActivity {
 		wpDescr.setText(descr);
 
 		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
-		wpLat.setText(Float.toString(lat));
+		wpLat.setText(Double.toString(lat));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-		wpLng.setText(Float.toString(lng));
+		wpLng.setText(Double.toString(lng));
 
 		final String wpId = Long.toString(waypointId);
 
@@ -591,8 +591,8 @@ public class WaypointsListActivity extends ListActivity {
 				// waypoint title from input dialog
 				String titleStr = wpTitle.getText().toString().trim();
 				String descrStr = wpDescr.getText().toString().trim();
-				String latStr = wpLat.getText().toString().trim();
-				String lngStr = wpLng.getText().toString().trim();
+				int latE6 = (int) (Double.parseDouble(wpLat.getText().toString())*1E6);
+				int lngE6 = (int) (Double.parseDouble(wpLng.getText().toString())*1E6);
 
 				if (titleStr.equals("")) {
 					Toast.makeText(WaypointsListActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT)
@@ -603,8 +603,8 @@ public class WaypointsListActivity extends ListActivity {
 				ContentValues values = new ContentValues();
 				values.put("title", titleStr);
 				values.put("descr", descrStr);
-				values.put("lat", latStr);
-				values.put("lng", lngStr);
+				values.put("lat", latE6);
+				values.put("lng", lngE6);
 
 				try {
 					myApp.getDatabase().update("waypoints", values, "_id=" + wpId, null);
@@ -722,8 +722,8 @@ public class WaypointsListActivity extends ListActivity {
 
 					for (int i = 0; i < waypointsList.getLength(); i++) {
 
-						double lat = Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lat"));
-						double lng = Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lon"));
+						int latE6 = (int)(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lat"))*1E6);
+						int lngE6 = (int)(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lon"))*1E6);
 						String title = "";
 						String desc = "";
 						double ele = 0;
@@ -760,8 +760,8 @@ public class WaypointsListActivity extends ListActivity {
 							ContentValues values = new ContentValues();
 							values.put("title", title);
 							values.put("descr", desc);
-							values.put("lat", lat);
-							values.put("lng", lng);
+							values.put("lat", latE6);
+							values.put("lng", lngE6);
 							values.put("elevation", ele);
 							values.put("time", time);
 
@@ -824,8 +824,8 @@ public class WaypointsListActivity extends ListActivity {
 		// using Bundle to pass track id into new activity
 		Bundle b = new Bundle();
 		b.putInt("mode", Constants.SHOW_WAYPOINT);
-		b.putDouble("lat", tmpCursor.getDouble(tmpCursor.getColumnIndex("lat")));
-		b.putDouble("lng", tmpCursor.getDouble(tmpCursor.getColumnIndex("lng")));
+		b.putInt("latE6", tmpCursor.getInt(tmpCursor.getColumnIndex("lat")));
+		b.putInt("lngE6", tmpCursor.getInt(tmpCursor.getColumnIndex("lng")));
 
 		tmpCursor.close();
 
