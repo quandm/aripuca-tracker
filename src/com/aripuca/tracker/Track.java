@@ -101,8 +101,8 @@ public class Track extends AbstractTrack {
 		
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
-		values.put("lat", location.getLatitude());
-		values.put("lng", location.getLongitude());
+		values.put("lat", (int)(location.getLatitude()*1E6));
+		values.put("lng", (int)(location.getLongitude()*1E6));
 		values.put("elevation", location.getAltitude());
 		values.put("speed", location.getSpeed());
 		values.put("time", (new Date()).getTime());

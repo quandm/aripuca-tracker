@@ -215,8 +215,8 @@ public class MyApp extends Application {
 						"track_id INTEGER NOT NULL," +
 						"segment_index INTEGER," +
 						"distance REAL," +
-						"lat REAL NOT NULL," +
-						"lng REAL NOT NULL," +
+						"lat INTEGER NOT NULL," +
+						"lng INTEGER NOT NULL," +
 						"accuracy REAL," +
 						"elevation REAL," +
 						"speed REAL," +
@@ -236,8 +236,8 @@ public class MyApp extends Application {
 						"track_id INTEGER," +
 						"title TEXT NOT NULL, " +
 						"descr TEXT, " +
-						"lat REAL NOT NULL, " +
-						"lng REAL NOT NULL, " +
+						"lat INTEGER NOT NULL, " +
+						"lng INTEGER NOT NULL, " +
 						"accuracy REAL," +
 						"elevation REAL," +
 						"time INTEGER NOT NULL)";
