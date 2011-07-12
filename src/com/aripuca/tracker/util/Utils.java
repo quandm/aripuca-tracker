@@ -185,16 +185,23 @@ public class Utils {
 
 		StringBuilder sb = new StringBuilder();
 		char endChar = degreeChar;
-
+		
 		DecimalFormat df = new DecimalFormat("###.######");
 		if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
+
+			df = new DecimalFormat("##.###");
+			
 			int degrees = (int) Math.floor(coordinate);
 			sb.append(degrees);
 			sb.append(degreeChar); // degrees sign
 			endChar = '\''; // minutes sign
 			coordinate -= degrees;
 			coordinate *= 60.0;
+			
 			if (outputType == Location.FORMAT_SECONDS) {
+			
+				df = new DecimalFormat("##.##");
+				
 				int minutes = (int) Math.floor(coordinate);
 				sb.append(minutes);
 				sb.append('\''); // minutes sign
@@ -210,15 +217,21 @@ public class Utils {
 		return sb.toString();
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	/**
+	 * Simple coordinate decimal formatter
+	 * 
+	 * @param coord
+	 * @return
+	 */
 	public static String formatCoord(double coord) {
 		DecimalFormat df = new DecimalFormat("###.######");
 		return df.format(coord);	
 	}
-
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public static String shortenStr(String s, int maxLength) {
 
 		if (s.length() > maxLength) {
