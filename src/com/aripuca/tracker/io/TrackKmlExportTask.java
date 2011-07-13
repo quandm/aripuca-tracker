@@ -1,5 +1,7 @@
 package com.aripuca.tracker.io;
 
+import com.aripuca.tracker.util.Utils;
+
 import android.content.Context;
 
 /**
@@ -46,9 +48,10 @@ public class TrackKmlExportTask extends TrackExportTask {
 			segmentOpen = false;
 		}
 		
-		pw.println(tpCursor.getFloat(tpCursor.getColumnIndex("lng")) + ","
-						+ tpCursor.getFloat(tpCursor.getColumnIndex("lat")) + ","
-							+ tpCursor.getFloat(tpCursor.getColumnIndex("elevation")) + " ");
+		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
+		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
+		
+		pw.println(lng + "," + lat + "," + Utils.formatNumber(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + " ");
 
 	}
 

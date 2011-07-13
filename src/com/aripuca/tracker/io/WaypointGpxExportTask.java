@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.aripuca.tracker.util.Utils;
+
 import android.content.Context;
 
 
@@ -76,9 +78,11 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		String wpTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(tpCursor.getLong(tpCursor
 				.getColumnIndex("time")));
 
-		pw.println("<wpt lat=\"" + tpCursor.getFloat(tpCursor.getColumnIndex("lat")) + "\" lon=\""
-				+ tpCursor.getFloat(tpCursor.getColumnIndex("lng")) + "\">");
-		pw.println("<ele>" + tpCursor.getFloat(tpCursor.getColumnIndex("elevation")) + "</ele>");
+		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
+		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
+		
+		pw.println("<wpt lat=\"" + lat + "\" lon=\"" + lng + "\">");
+		pw.println("<ele>" + Utils.formatNumber(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + "</ele>");
 		pw.println("<time>" + wpTime + "</time>");
 		pw.println("<name>" + tpCursor.getString(tpCursor.getColumnIndex("title")) + "</name>");
 		pw.println("<desc>" + tpCursor.getString(tpCursor.getColumnIndex("descr")) + "</desc>");
