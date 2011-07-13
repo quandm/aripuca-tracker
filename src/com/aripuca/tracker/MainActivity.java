@@ -19,7 +19,6 @@ import java.nio.channels.FileChannel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -254,9 +253,6 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
-		// TODO: ???
-		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
