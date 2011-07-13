@@ -18,15 +18,15 @@ public class Utils {
 	protected static final double KMH_TO_MPH = 0.621371192;
 	protected static final double KMH_TO_KNOTS = 0.539957; // 1 knot = 1 nautical mile (1.852km) per hour
 
-	public static String formatNumber(Object value, int decimals) {
-		return Utils.formatNumber(value, decimals, 0);
+	public static String formatNumber(Object value, int max) {
+		return Utils.formatNumber(value, max, 0);
 	}
 
-	public static String formatNumber(Object value, int decimals, int fraction) {
+	public static String formatNumber(Object value, int max, int min) {
 
 		NumberFormat f = NumberFormat.getInstance();
-		f.setMaximumFractionDigits(decimals);
-		f.setMinimumFractionDigits(fraction);
+		f.setMaximumFractionDigits(max);
+		f.setMinimumFractionDigits(min);
 		f.setGroupingUsed(false);
 
 		try {

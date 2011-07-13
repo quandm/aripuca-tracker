@@ -74,15 +74,15 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		// tracker specific info
 		pw.println("<extensions>");
-		pw.println("<distance>" + tCursor.getFloat(tCursor.getColumnIndex("distance")) + "</distance>");
+		pw.println("<distance>" + Utils.formatNumber(tCursor.getFloat(tCursor.getColumnIndex("distance")),1) + "</distance>");
 		pw.println("<total_time>" + totalTime + "</total_time>");
 		pw.println("<moving_time>" + movingTime + "</moving_time>");
-		pw.println("<max_speed>" + tCursor.getFloat(tCursor.getColumnIndex("max_speed")) + "</max_speed>");
-		pw.println("<max_elevation>" + tCursor.getFloat(tCursor.getColumnIndex("max_elevation")) + "</max_elevation>");
-		pw.println("<min_elevation>" + tCursor.getFloat(tCursor.getColumnIndex("min_elevation")) + "</min_elevation>");
-		pw.println("<elevation_gain>" + tCursor.getFloat(tCursor.getColumnIndex("elevation_gain"))
+		pw.println("<max_speed>" + Utils.formatNumber(tCursor.getFloat(tCursor.getColumnIndex("max_speed")),1) + "</max_speed>");
+		pw.println("<max_elevation>" + tCursor.getInt(tCursor.getColumnIndex("max_elevation")) + "</max_elevation>");
+		pw.println("<min_elevation>" + tCursor.getInt(tCursor.getColumnIndex("min_elevation")) + "</min_elevation>");
+		pw.println("<elevation_gain>" + tCursor.getInt(tCursor.getColumnIndex("elevation_gain"))
 				+ "</elevation_gain>");
-		pw.println("<elevation_loss>" + tCursor.getFloat(tCursor.getColumnIndex("elevation_loss"))
+		pw.println("<elevation_loss>" + tCursor.getInt(tCursor.getColumnIndex("elevation_loss"))
 				+ "</elevation_loss>");
 		pw.println("<start_time>" + startTime + "</start_time>");
 		pw.println("<finish_time>" + finishTime + "</finish_time>");
@@ -118,17 +118,17 @@ public class TrackGpxExportTask extends TrackExportTask {
 			pw.println("<segment>");
 			pw.println("<number>" + segCursor.getString(segCursor.getColumnIndex("_id")) + "<number>");
 			pw.println("<index>" + segCursor.getString(segCursor.getColumnIndex("_id")) + "</index>");
-			pw.println("<distance>" + segCursor.getFloat(segCursor.getColumnIndex("distance")) + "</distance>");
+			pw.println("<distance>" + segCursor.getInt(segCursor.getColumnIndex("distance")) + "</distance>");
 			pw.println("<total_time>" + totalTime + "</total_time>");
 			pw.println("<moving_time>" + movingTime + "</moving_time>");
-			pw.println("<max_speed>" + segCursor.getFloat(segCursor.getColumnIndex("max_speed")) + "</max_speed>");
-			pw.println("<max_elevation>" + segCursor.getFloat(segCursor.getColumnIndex("max_elevation"))
+			pw.println("<max_speed>" + Utils.formatNumber(segCursor.getFloat(segCursor.getColumnIndex("max_speed")),2) + "</max_speed>");
+			pw.println("<max_elevation>" + segCursor.getInt(segCursor.getColumnIndex("max_elevation"))
 					+ "</max_elevation>");
-			pw.println("<min_elevation>" + segCursor.getFloat(segCursor.getColumnIndex("min_elevation"))
+			pw.println("<min_elevation>" + segCursor.getInt(segCursor.getColumnIndex("min_elevation"))
 					+ "</min_elevation>");
-			pw.println("<elevation_gain>" + segCursor.getFloat(segCursor.getColumnIndex("elevation_gain"))
+			pw.println("<elevation_gain>" + segCursor.getInt(segCursor.getColumnIndex("elevation_gain"))
 					+ "</elevation_gain>");
-			pw.println("<elevation_loss>" + segCursor.getFloat(segCursor.getColumnIndex("elevation_loss"))
+			pw.println("<elevation_loss>" + segCursor.getInt(segCursor.getColumnIndex("elevation_loss"))
 					+ "</elevation_loss>");
 			pw.println("<start_time>" + startTime + "</start_time>");
 			pw.println("<finish_time>" + finishTime + "</finish_time>");
@@ -158,17 +158,19 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		String timeStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(tpCursor.getLong(tpCursor
 					.getColumnIndex("time")));
+		
+		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
+		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
 
-		pw.println("<trkpt lat=\"" + tpCursor.getFloat(tpCursor.getColumnIndex("lat")) + "\" lon=\""
-					+ tpCursor.getFloat(tpCursor.getColumnIndex("lng")) + "\">");
-		pw.println("<ele>" + tpCursor.getFloat(tpCursor.getColumnIndex("elevation")) + "</ele>");
+		pw.println("<trkpt lat=\"" + lat + "\" lon=\"" + lng + "\">");
+		pw.println("<ele>" + Utils.formatNumber(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + "</ele>");
 		pw.println("<time>" + timeStr + "</time>");
 
 		pw.println("<extensions>");
 		pw.println("<number>" + tpCursor.getString(tpCursor.getColumnIndex("_id")) + "<number>");
-		pw.println("<speed>" + tpCursor.getFloat(tpCursor.getColumnIndex("speed")) + "</speed>");
-		pw.println("<distance>" + tpCursor.getFloat(tpCursor.getColumnIndex("distance")) + "</distance>");
-		pw.println("<accuracy>" + tpCursor.getFloat(tpCursor.getColumnIndex("accuracy")) + "</accuracy>");
+		pw.println("<speed>" + Utils.formatNumber(tpCursor.getFloat(tpCursor.getColumnIndex("speed")), 2) + "</speed>");
+		pw.println("<distance>" + tpCursor.getInt(tpCursor.getColumnIndex("distance")) + "</distance>");
+		pw.println("<accuracy>" + tpCursor.getInt(tpCursor.getColumnIndex("accuracy")) + "</accuracy>");
 		pw.println("<segment_index>" + tpCursor.getInt(tpCursor.getColumnIndex("segment_index")) + "</segment_index>");
 		pw.println("</extensions>");
 
