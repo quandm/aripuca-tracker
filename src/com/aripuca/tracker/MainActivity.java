@@ -787,7 +787,7 @@ public class MainActivity extends Activity {
 				values.put("descr", descrStr);
 				values.put("lat", lat);
 				values.put("lng", lng);
-				values.put("elevation", myApp.getCurrentLocation().getAltitude());
+				values.put("elevation", Utils.formatNumber(myApp.getCurrentLocation().getAltitude(),1));
 				values.put("time", myApp.getCurrentLocation().getTime());
 
 				// if track recording started save track_id as
@@ -1398,7 +1398,7 @@ public class MainActivity extends Activity {
 
 				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\AripucaTracker.db";
 
-				String dateStr = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date());
+				String dateStr = (new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")).format(new Date());
 
 				File currentDB = new File(data, currentDBPath);
 				File backupDB = new File(myApp.getAppDir() + "/backup/AripucaTracker_" + dateStr + ".db");

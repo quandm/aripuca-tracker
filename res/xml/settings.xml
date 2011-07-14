@@ -47,7 +47,7 @@
 	
 </PreferenceScreen>
 	<PreferenceScreen android:title="@string/waypoints">
-		<CheckBoxPreference android:defaultValue="true" android:key="waypoint_default_description" android:summary="@string/waypoint_default_description_summary" android:title="@string/waypoint_default_description"></CheckBoxPreference>
+		<CheckBoxPreference android:key="waypoint_default_description" android:summary="@string/waypoint_default_description_summary" android:title="@string/waypoint_default_description" android:defaultValue="false"></CheckBoxPreference>
 	</PreferenceScreen><PreferenceScreen android:title="@string/track_recording">
 		<PreferenceCategory android:title="@string/tracks">
 			<EditTextPreference android:title="@string/min_distance_title"
@@ -61,8 +61,7 @@
 		<PreferenceCategory android:title="@string/segmenting">
 			<ListPreference android:entries="@array/segmenting_modes_labels"
 				android:entryValues="@array/segmenting_modes_values" android:title="@string/segmenting_mode"
-				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode"
-				android:defaultValue="0"></ListPreference>
+				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode" android:defaultValue="2"></ListPreference>
 			<EditTextPreference android:defaultValue="5"
 				android:title="@string/segment_equal" android:key="segment_equal"
 				android:summary="@string/segment_equal_summary"></EditTextPreference>
