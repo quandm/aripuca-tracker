@@ -2,6 +2,8 @@ package com.aripuca.tracker;
 
 import java.util.Date;
 
+import com.aripuca.tracker.util.Utils;
+
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
@@ -38,12 +40,12 @@ public class Segment extends AbstractTrack {
 		ContentValues values = new ContentValues();
 		values.put("track_id", trackId);
 		values.put("segment_index", segmentIndex);
-		values.put("distance", this.getDistance());
+		values.put("distance", Utils.formatNumber(this.getDistance(),1));
 		values.put("total_time", this.getTotalTime());
 		values.put("moving_time", this.getMovingTime());
-		values.put("max_speed", this.getMaxSpeed());
-		values.put("max_elevation", this.getMaxElevation());
-		values.put("min_elevation", this.getMinElevation());
+		values.put("max_speed", Utils.formatNumber(this.getMaxSpeed(), 2));
+		values.put("max_elevation", Utils.formatNumber(this.getMaxElevation(),1));
+		values.put("min_elevation", Utils.formatNumber(this.getMinElevation(), 1));
 		values.put("elevation_gain", this.getElevationGain());
 		values.put("elevation_loss", this.getElevationLoss());
 		values.put("start_time", this.trackTimeStart);

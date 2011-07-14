@@ -3,6 +3,8 @@ package com.aripuca.tracker;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.aripuca.tracker.util.Utils;
+
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
@@ -70,12 +72,12 @@ public class Track extends AbstractTrack {
 
 		ContentValues values = new ContentValues();
 		values.put("title", trackTitle);
-		values.put("distance", this.getDistance());
+		values.put("distance", Utils.formatNumber(this.getDistance(),1));
 		values.put("total_time", this.getTotalTime());
 		values.put("moving_time", this.getMovingTime());
-		values.put("max_speed", this.getMaxSpeed());
-		values.put("max_elevation", this.getMaxElevation());
-		values.put("min_elevation", this.getMinElevation());
+		values.put("max_speed", Utils.formatNumber(this.getMaxSpeed(), 2));
+		values.put("max_elevation", Utils.formatNumber(this.getMaxElevation(), 1));
+		values.put("min_elevation", Utils.formatNumber(this.getMinElevation(), 1));
 		values.put("elevation_gain", this.getElevationGain());
 		values.put("elevation_loss", this.getElevationLoss());
 		values.put("finish_time", finishTime);
@@ -101,11 +103,11 @@ public class Track extends AbstractTrack {
 		values.put("track_id", this.getTrackId());
 		values.put("lat", (int)(location.getLatitude()*1E6));
 		values.put("lng", (int)(location.getLongitude()*1E6));
-		values.put("elevation", location.getAltitude());
-		values.put("speed", location.getSpeed());
+		values.put("elevation", Utils.formatNumber(location.getAltitude(), 1));
+		values.put("speed", Utils.formatNumber(location.getSpeed(), 2));
 		values.put("time", (new Date()).getTime());
 		values.put("segment_index", segmentIndex);
-		values.put("distance", this.distance);
+		values.put("distance", Utils.formatNumber(this.distance, 1));
 		values.put("accuracy", location.getAccuracy());
 
 		try {
