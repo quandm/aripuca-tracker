@@ -1370,6 +1370,7 @@ public class MainActivity extends Activity {
 
 			ContentValues values = new ContentValues();
 			values.put("title", wp.getTitle());
+			values.put("descr", "");
 			values.put("lat", (int)(wp.getLatitude()*1E6));
 			values.put("lng", (int)(wp.getLongitude()*1E6));
 			values.put("time", wp.getTime());

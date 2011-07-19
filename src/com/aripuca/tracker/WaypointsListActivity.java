@@ -556,7 +556,9 @@ public class WaypointsListActivity extends ListActivity {
 		wpCursor.moveToFirst();
 
 		String title = wpCursor.getString(wpCursor.getColumnIndex("title"));
+		
 		String descr = wpCursor.getString(wpCursor.getColumnIndex("descr"));
+		
 		Double lat = wpCursor.getDouble(wpCursor.getColumnIndex("lat"))/1E6;
 		Double lng = wpCursor.getDouble(wpCursor.getColumnIndex("lng"))/1E6;
 
