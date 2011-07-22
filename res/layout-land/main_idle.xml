@@ -136,6 +136,14 @@
 		<ImageView android:src="@drawable/circle420" android:id="@+id/circleImage"
 			android:layout_width="170dp" android:layout_height="170dp" />
 	</LinearLayout>
+	
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center" android:paddingTop="23dp">
+			<com.aripuca.tracker.view.CompassImage
+				android:id="@+id/compassImage2" android:src="@drawable/windrose420"
+				android:layout_width="170dip" android:layout_height="170dip" />
+	</LinearLayout>
 
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:orientation="vertical"
