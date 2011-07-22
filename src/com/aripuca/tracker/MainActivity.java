@@ -78,6 +78,7 @@ public class MainActivity extends Activity {
 			containers.add(R.layout.container_speed);
 			containers.add(R.layout.container_pace);
 			containers.add(R.layout.container_speed_pace);
+			containers.add(R.layout.container_speed_acceleration);
 		}
 	};
 	private ContainerCarousel timeContainerCarousel = new ContainerCarousel() {
@@ -1125,6 +1126,17 @@ public class MainActivity extends Activity {
 						speedUnit));
 			}
 
+			// acceleration
+			if (findViewById(R.id.acceleration) != null) {
+				
+				// let's display last non-zero acceleration
+				if (trackRecorder.getTrack().getAcceleration()>0) {
+					((TextView) findViewById(R.id.acceleration)).setText(
+							Utils.formatNumber(trackRecorder.getTrack().getAcceleration(),2));
+				}
+						
+			}
+			
 			// average pace
 			if (findViewById(R.id.averagePace) != null) {
 				((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(
