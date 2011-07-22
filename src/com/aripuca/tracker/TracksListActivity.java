@@ -57,6 +57,7 @@ public class TracksListActivity extends ListActivity {
 	 * Select all tracks sql query
 	 */
 	protected final String sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0";
+//	protected final String sqlSelectAllTracks = "SELECT * FROM tracks";
 
 	/**
 	 * Workaround Issue 7139: MenuItem.getMenuInfo() returns null for sub-menu

@@ -15,6 +15,8 @@ public abstract class AbstractTrack {
 
 	protected float averageSpeed = 0;
 
+	protected float acceleration = 0;
+
 	protected float maxSpeed = 0;
 
 	protected double currentElevation = 0;
@@ -28,11 +30,12 @@ public abstract class AbstractTrack {
 	protected double elevationLoss = 0;
 
 	protected int trackPointsCount = 0;
-	
+
 	/**
 	 * real time of the track start
 	 */
 	protected long trackTimeStart;
+
 	public long getTrackTimeStart() {
 		return trackTimeStart;
 	}
@@ -40,13 +43,13 @@ public abstract class AbstractTrack {
 	// --------------------------------------------------------------------------------------------------------
 
 	public AbstractTrack(MyApp myApp) {
-		
+
 		this.myApp = myApp;
 
 		this.trackTimeStart = (new Date()).getTime();
-		
+
 	}
-	
+
 	/**
 	 * Get average trip speed in meters per second
 	 */
@@ -155,12 +158,34 @@ public abstract class AbstractTrack {
 		}
 	}
 
-	protected void processSpeed(Location location) {
+	protected void processSpeed(Location lastLocation, Location currentLocation) {
+
+		if (lastLocation==null) {
+			return;
+		}
+
+		// calculate acceleration
+		if (lastLocation.hasSpeed() && currentLocation.hasSpeed()) {
+			
+			this.acceleration = 0;
+
+			long timeInterval = (currentLocation.getTime() - lastLocation.getTime()) / 1000;
+			if (timeInterval>0) {
+				this.acceleration = Math.abs(lastLocation.getSpeed() - currentLocation.getSpeed()) / timeInterval;
+			}
+
+			// abnormal accelerations will not affect max speed
+			if (this.acceleration > Constants.MAX_ACCELERATION) {
+				return;
+			}
+		}
+
+		// currentLocation.getSpeed() > Constants.MIN_SPEED
 
 		// calculating max speed
-		if (location.hasSpeed()) {
+		if (currentLocation.hasSpeed()) {
 
-			float s = location.getSpeed();
+			float s = currentLocation.getSpeed();
 
 			if (s == 0) {
 				s = this.getAverageSpeed();
@@ -168,48 +193,61 @@ public abstract class AbstractTrack {
 			if (s > this.maxSpeed) {
 				this.maxSpeed = s;
 			}
+
 		}
+
 	}
-	
+
 	public void updateDistance(float d) {
-		
-		this.distance+=d;
-		
+
+		this.distance += d;
+
 	}
-	
+
 	/*
 	 * total idle time
 	 */
 	protected long totalIdleTime = 0;
+
 	public void updateTotalIdleTime(long t) {
-		this.totalIdleTime+=t;
+		this.totalIdleTime += t;
 	}
+
 	public long getTotalIdleTime() {
 		return this.totalIdleTime;
 	}
-	
+
 	/**
 	 * total time recording was paused
 	 */
 	protected long totalPauseTime = 0;
+
 	public void updateTotalPauseTime(long t) {
-		this.totalPauseTime+=t;
+		this.totalPauseTime += t;
 	}
+
 	public long getTotalPauseTime() {
 		return this.totalPauseTime;
 	}
-	
+
 	protected long currentSystemTime = 0;
+
 	public void setCurrentSystemTime(long cst) {
 		this.currentSystemTime = cst;
 	}
 
 	protected long startTime = 0;
+
 	public void setStartTime(long st) {
 		this.startTime = st;
 	}
+
 	public long getStartTime() {
 		return this.startTime;
 	}
-	
+
+	public float getAcceleration() {
+		return this.acceleration;
+	}
+
 }

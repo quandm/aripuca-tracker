@@ -20,7 +20,7 @@ public class TrackRecorder {
 
 	private int minAccuracy;
 
-	protected Location currentLocation;
+	protected Location lastLocation;
 
 	protected Location lastRecordedLocation;
 
@@ -237,37 +237,44 @@ public class TrackRecorder {
 
 		// calculating total distance starting from 2nd update
 		// if current location is not set yet
-		if (this.currentLocation != null && this.currentLocation.getSpeed() > Constants.MIN_SPEED) {
+		if (this.lastLocation != null) {
 
 			// accumulate track distance
-			this.track.updateDistance(this.currentLocation.distanceTo(location));
+			this.track.updateDistance(this.lastLocation.distanceTo(location));
 
 			// accumulate segment distance
 			if (this.segmentingMode != Constants.SEGMENT_NONE) {
-				this.segment.updateDistance(this.currentLocation.distanceTo(location));
+				this.segment.updateDistance(this.lastLocation.distanceTo(location));
 			}
 		}
 
-		// segmenting the track by distance
+		// calculate maxSpeed and acceleration
+		this.track.processSpeed(this.lastLocation, location);
+		
+		this.track.processElevation(location);
+		
+		// ---------------------------------------------------------------------
+		// SEGMENTING
+		// segmenting track by distance
 		if (this.segmentingMode != Constants.SEGMENT_NONE &&
 				this.segmentingMode != Constants.SEGMENT_PAUSE_RESUME) {
 			this.segmentTrack();
 		}
 
-		this.track.processElevation(location);
-		this.track.processSpeed(location);
-
+		// updating segment statistics
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+			
 			this.segment.processElevation(location);
-			this.segment.processSpeed(location);
+			this.segment.processSpeed(this.lastLocation, location);
+			
 		}
+		// ---------------------------------------------------------------------
 
 		// add new track point to db
 		this.recordTrackPoint(location);
-		
+
 		// save current location once distance is incremented
-		this.currentLocation = location;
-		
+		this.lastLocation = location;
 
 	}
 
@@ -302,7 +309,7 @@ public class TrackRecorder {
 		if (this.recordingPaused) {
 			// after resuming the recording we will start measuring distance
 			// from saved location
-			this.currentLocation = location;
+			this.lastLocation = location;
 			return false;
 		}
 
@@ -310,7 +317,7 @@ public class TrackRecorder {
 		// ------------------------------------------------------------------------------
 
 		return true;
-		
+
 	}
 
 	/**

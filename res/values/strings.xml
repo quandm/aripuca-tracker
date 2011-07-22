@@ -99,6 +99,7 @@
 	<string name="average_speed">Aver. speed</string>
 	<string name="average_moving_speed">Moving speed</string>
 	<string name="max_speed">Max speed</string>
+	<string name="acceleration">Acceleration</string>
 
 	<string name="pace">Pace</string>
 	<string name="average_pace">Aver. pace</string>
