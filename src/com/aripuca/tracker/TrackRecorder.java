@@ -248,9 +248,6 @@ public class TrackRecorder {
 			}
 		}
 
-		// save current location once distance is incremented
-		this.currentLocation = location;
-
 		// segmenting the track by distance
 		if (this.segmentingMode != Constants.SEGMENT_NONE &&
 				this.segmentingMode != Constants.SEGMENT_PAUSE_RESUME) {
@@ -267,6 +264,10 @@ public class TrackRecorder {
 
 		// add new track point to db
 		this.recordTrackPoint(location);
+		
+		// save current location once distance is incremented
+		this.currentLocation = location;
+		
 
 	}
 
