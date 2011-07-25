@@ -1133,7 +1133,7 @@ public class MainActivity extends Activity {
 				if (trackRecorder.getTrack().getAcceleration()>0) {
 					((TextView) findViewById(R.id.acceleration)).setText(
 							Utils.formatNumber(trackRecorder.getTrack().getAcceleration(),2));
-				}
+				} 
 						
 			}
 			

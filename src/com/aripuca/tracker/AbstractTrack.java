@@ -169,7 +169,7 @@ public abstract class AbstractTrack {
 			
 			this.acceleration = 0;
 
-			long timeInterval = (currentLocation.getTime() - lastLocation.getTime()) / 1000;
+			long timeInterval = Math.abs(currentLocation.getTime() - lastLocation.getTime()) / 1000;
 			if (timeInterval>0) {
 				this.acceleration = Math.abs(lastLocation.getSpeed() - currentLocation.getSpeed()) / timeInterval;
 			}
@@ -180,16 +180,11 @@ public abstract class AbstractTrack {
 			}
 		}
 
-		// currentLocation.getSpeed() > Constants.MIN_SPEED
-
 		// calculating max speed
 		if (currentLocation.hasSpeed()) {
 
 			float s = currentLocation.getSpeed();
 
-			if (s == 0) {
-				s = this.getAverageSpeed();
-			}
 			if (s > this.maxSpeed) {
 				this.maxSpeed = s;
 			}
