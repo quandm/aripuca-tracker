@@ -5,7 +5,6 @@ import android.os.SystemClock;
 
 /**
  * TrackRecorder class. Handles tracks and segments statistics
- * 
  */
 public class TrackRecorder {
 
@@ -226,18 +225,14 @@ public class TrackRecorder {
 
 		// set interval start time
 		// measure time intervals (idle, pause)
-		if (!this.measureTrackTimes(location)) {
-			return;
-		}
+		if (!this.measureTrackTimes(location)) { return; }
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) {
-			return;
-		}
+		if (location.getAccuracy() > minAccuracy) { return; }
 
 		// calculating total distance starting from 2nd update
-		// if current location is not set yet
-		if (this.lastLocation != null) {
+		// speed at last location should be non-zero
+		if (this.lastLocation != null && this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
 
 			// accumulate track distance
 			this.track.updateDistance(this.lastLocation.distanceTo(location));
@@ -250,9 +245,9 @@ public class TrackRecorder {
 
 		// calculate maxSpeed and acceleration
 		this.track.processSpeed(this.lastLocation, location);
-		
+
 		this.track.processElevation(location);
-		
+
 		// ---------------------------------------------------------------------
 		// SEGMENTING
 		// segmenting track by distance
@@ -263,18 +258,18 @@ public class TrackRecorder {
 
 		// updating segment statistics
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			
+
 			this.segment.processElevation(location);
 			this.segment.processSpeed(this.lastLocation, location);
-			
+
 		}
 		// ---------------------------------------------------------------------
 
-		// add new track point to db
-		this.recordTrackPoint(location);
-
 		// save current location once distance is incremented
 		this.lastLocation = location;
+
+		// add new track point to db
+		this.recordTrackPoint(location);
 
 	}
 
@@ -412,8 +407,9 @@ public class TrackRecorder {
 	 */
 	private void recordTrackPoint(Location location) {
 
-		// record points only if distance between 2 consecutive points is greater than min_distance
-		// if new segment just started we may not add new points for it  
+		// record points only if distance between 2 consecutive points is
+		// greater than min_distance
+		// if new segment just started we may not add new points for it
 
 		if (this.lastRecordedLocation == null) {
 
