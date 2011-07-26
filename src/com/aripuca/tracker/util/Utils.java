@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import android.hardware.GeomagneticField;
 import android.location.Location;
 
 public class Utils {
@@ -313,4 +314,23 @@ public class Utils {
 
 	}
 
+	/**
+	 * Get current magnetic declination
+	 * 
+	 * @param location
+	 * @param timestamp
+	 * @return
+	 */
+	public static float getDeclination(Location location, long timestamp) {
+
+		GeomagneticField field = new GeomagneticField(
+				(float) location.getLatitude(),
+				(float) location.getLongitude(),
+				(float) location.getAltitude(),
+				timestamp);
+
+		return field.getDeclination();
+	}
+	
+	
 }

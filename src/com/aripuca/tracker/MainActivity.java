@@ -1196,7 +1196,7 @@ public class MainActivity extends Activity {
 		float declination = 0;
 		if (trueNorth && myApp.getCurrentLocation() != null) {
 			long now = System.currentTimeMillis();
-			declination = this.getDeclination(myApp.getCurrentLocation(), now);
+			declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
 		}
 
 		// magnetic north to true north
@@ -1248,24 +1248,6 @@ public class MainActivity extends Activity {
 
 		return az;
 
-	}
-
-	/**
-	 * Get current magnetic declination
-	 * 
-	 * @param location
-	 * @param timestamp
-	 * @return
-	 */
-	protected float getDeclination(Location location, long timestamp) {
-
-		GeomagneticField field = new GeomagneticField(
-				(float) location.getLatitude(),
-				(float) location.getLongitude(),
-				(float) location.getAltitude(),
-				timestamp);
-
-		return field.getDeclination();
 	}
 
 	// -------------------------------------------------------------------------
