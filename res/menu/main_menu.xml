@@ -5,13 +5,13 @@
 		android:title="@string/waypoints"
 		android:icon="@android:drawable/ic_menu_myplaces" />
 
-	<item android:id="@+id/tracksMenuItem" 
-		android:title="@string/tracks"
-		android:icon="@android:drawable/ic_menu_share" />
-
 	<item android:id="@+id/gpsOnOff" 
 			android:title="@string/start_gps"
 			android:icon="@android:drawable/ic_menu_mylocation" />
+
+	<item android:id="@+id/tracksMenuItem" 
+		android:title="@string/tracks"
+		android:icon="@android:drawable/ic_menu_share" />
 
 	<item android:id="@+id/settingsMenuItem" 
 			android:title="@string/settings"

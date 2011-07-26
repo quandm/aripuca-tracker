@@ -183,7 +183,7 @@ public class WaypointsListActivity extends ListActivity {
 				if (text3 != null) {
 					text3.setText(distStr);
 				}
-
+				
 				// rotating small arrow pointing to waypoint
 				CompassImage im = (CompassImage) v.findViewById(R.id.compassImage);
 				im.setAngle(newAzimuth);

@@ -2,6 +2,8 @@ package com.aripuca.tracker;
 
 import java.util.Date;
 
+import com.aripuca.tracker.util.Population;
+
 import android.location.Location;
 
 public abstract class AbstractTrack {
@@ -31,6 +33,8 @@ public abstract class AbstractTrack {
 
 	protected int trackPointsCount = 0;
 
+	protected Population speedPopulation;
+
 	/**
 	 * real time of the track start
 	 */
@@ -47,6 +51,8 @@ public abstract class AbstractTrack {
 		this.myApp = myApp;
 
 		this.trackTimeStart = (new Date()).getTime();
+
+		this.speedPopulation = new Population(10);
 
 	}
 
@@ -160,33 +166,44 @@ public abstract class AbstractTrack {
 
 	protected void processSpeed(Location lastLocation, Location currentLocation) {
 
-		if (lastLocation==null) {
+		if (lastLocation == null) {
+			return;
+		}
+
+		long timeInterval = 0;
+		float currentSpeed = currentLocation.getSpeed();
+
+		if (!lastLocation.hasSpeed() || !currentLocation.hasSpeed()) {
 			return;
 		}
 
 		// calculate acceleration
-		if (lastLocation.hasSpeed() && currentLocation.hasSpeed()) {
-			
-			this.acceleration = 0;
+		this.acceleration = 0;
 
-			long timeInterval = Math.abs(currentLocation.getTime() - lastLocation.getTime()) / 1000;
-			if (timeInterval>0) {
-				this.acceleration = Math.abs(lastLocation.getSpeed() - currentLocation.getSpeed()) / timeInterval;
-			}
-
-			// abnormal accelerations will not affect max speed
-			if (this.acceleration > Constants.MAX_ACCELERATION) {
-				return;
-			}
+		timeInterval = Math.abs(currentLocation.getTime() - lastLocation.getTime()) / 1000;
+		if (timeInterval > 0) {
+			this.acceleration = Math.abs(lastLocation.getSpeed() - currentSpeed) / timeInterval;
 		}
 
-		// calculating max speed
-		if (currentLocation.hasSpeed()) {
+		// abnormal accelerations will not affect max speed
+		if (this.acceleration > Constants.MAX_ACCELERATION) {
+			return;
+		}
 
-			float s = currentLocation.getSpeed();
+		this.speedPopulation.addValue(currentSpeed);
 
-			if (s > this.maxSpeed) {
-				this.maxSpeed = s;
+		if (this.speedPopulation.isFull()) {
+
+			double averageSpeed = this.speedPopulation.getAverage();
+//			double smoothedDiff = Math.abs(averageSpeed - currentSpeed);
+
+			if (currentSpeed < averageSpeed * 10) {
+				return;
+			}
+
+			// calculating max speed
+			if (currentSpeed > this.maxSpeed) {
+				this.maxSpeed = currentSpeed;
 			}
 
 		}
