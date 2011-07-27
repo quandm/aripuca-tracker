@@ -906,6 +906,12 @@ public class MainActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
+			case R.id.compassMenuItem:
+
+				startActivity(new Intent(this, CompassActivity.class));
+
+				return true;
+			
 			case R.id.waypointsMenuItem:
 
 				startActivity(new Intent(this, WaypointsListActivity.class));
@@ -1169,21 +1175,6 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Returns compass rotation angle when orientation of the phone changes
-	 */
-	private int getOrientationAdjustment() {
-		
-		switch (this.getResources().getConfiguration().orientation) {
-			case Configuration.ORIENTATION_PORTRAIT:
-				return 0;
-			case Configuration.ORIENTATION_LANDSCAPE:
-				return 90;
-		}
-
-		return 0;
-	}
-
-	/**
 	 * Update compass image and azimuth text
 	 */
 	public void updateCompass(float[] values) {
@@ -1206,38 +1197,6 @@ public class MainActivity extends Activity {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
 					+ Utils.degreeChar + " "
 					+ Utils.getDirectionCode(azimuth));
-		}
-
-		// true north compass
-		if (findViewById(R.id.compassImage) != null) {
-
-			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
-
-			if (compassImage.getVisibility() == View.VISIBLE) {
-
-				// Bitmap arrowBitmap =
-				// BitmapFactory.decodeResource(getResources(),
-				// R.drawable.windrose);
-				// BitmapDrawable bmd = new BitmapDrawable(arrowBitmap);
-				compassImage.setAngle(360 - azimuth - getOrientationAdjustment());
-				// compassImage.setAlpha(230);
-				compassImage.invalidate();
-				// compassImage.setImageDrawable(bmd);
-			}
-		}
-
-		// magnetic north compass
-		if (findViewById(R.id.compassImage2) != null) {
-
-			CompassImage compassImage2 = (CompassImage) findViewById(R.id.compassImage2);
-
-			if (compassImage2.getVisibility() == View.VISIBLE) {
-
-				compassImage2.setAngle(360 - azimuth + declination - getOrientationAdjustment());
-				compassImage2.setAlpha(50);
-				compassImage2.invalidate();
-			}
-
 		}
 
 	}

@@ -128,6 +128,19 @@ public class MyApp extends Application {
 	}
 
 	/**
+	 * CompassActivity object reference
+	 */
+	private static CompassActivity compassActivity;
+
+	public void setCompassActivity(CompassActivity ca) {
+		compassActivity = ca;
+	}
+
+	public CompassActivity getCompassActivity() {
+		return compassActivity;
+	}
+	
+	/**
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;

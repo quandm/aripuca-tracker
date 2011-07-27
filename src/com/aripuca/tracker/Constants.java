@@ -29,9 +29,10 @@ public abstract class Constants {
 	
 	public static final int SEGMENT_NONE = 0;
 	public static final int SEGMENT_PAUSE_RESUME = 1;
-	public static final int SEGMENT_EQUAL = 2;
-	public static final int SEGMENT_CUSTOM_1 = 3;
-	public static final int SEGMENT_CUSTOM_2 = 4;
+	public static final int SEGMENT_DISTANCE = 2;
+	public static final int SEGMENT_TIME = 3;
+	public static final int SEGMENT_CUSTOM_1 = 4;
+	public static final int SEGMENT_CUSTOM_2 = 5;
 	
 	
 }

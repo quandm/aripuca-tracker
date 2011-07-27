@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:background="@drawable/bg1repeat">
+
+	<!-- Compass layout -->
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center">
+			<ImageView
+				 android:src="@drawable/circle420" android:id="@+id/circleImage"
+				android:layout_width="300dip" android:layout_height="300dip" />
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center">
+			<com.aripuca.tracker.view.CompassImage
+				android:id="@+id/compassImage2" android:src="@drawable/windrose420"
+				android:layout_width="300dip" android:layout_height="300dip" />
+	</LinearLayout>
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:gravity="center">
+			<com.aripuca.tracker.view.CompassImage
+				android:id="@+id/compassImage" android:src="@drawable/windrose420"
+				android:layout_width="300dip" android:layout_height="300dip" />
+	</LinearLayout>
+
+</FrameLayout>
