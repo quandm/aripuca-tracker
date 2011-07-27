@@ -92,6 +92,9 @@ public class GpsService extends Service {
 				myApp.getMainActivity().updateCompass(event.values);
 			}
 
+			if (myApp.getCompassActivity() != null) {
+				myApp.getCompassActivity().updateCompass(event.values);
+			}
 	
 			if (myApp.getWaypointsListActivity() != null) {
 				myApp.getWaypointsListActivity().setAzimuth(event.values[0]);

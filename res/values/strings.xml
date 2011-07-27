@@ -13,6 +13,7 @@
 		our official blog at:\nhttp://tracker.aripuca.com/blog\n\nGet source
 		code from:\nhttp://code.google.com/p/aripuca-tracker</string>
 
+	<string name="compass_activity_title">Compass</string>
 	<string name="waypoints_activity_title">Waypoints</string>
 	<string name="tracks_activity_title">Tracks</string>
 	<string name="track_details_activity_title">Track details</string>
@@ -165,8 +166,11 @@
 	<string name="segmenting">Segmenting</string>
 	<string name="segmenting_mode">Segmenting mode</string>
 
-	<string name="segment_equal">Equal intervals</string>
-	<string name="segment_equal_summary">Segment track every N km</string>
+	<string name="segment_distance">By distance</string>
+	<string name="segment_distance_summary">Segment track every N km</string>
+
+	<string name="segment_time">By time</string>
+	<string name="segment_time_summary">Segment track every N min</string>
 
 	<string name="segment_custom_1">Custom intervals 1</string>
 	<string name="segment_custom_2">Custom intervals 2</string>
@@ -176,9 +180,8 @@
 	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as
 		waypoint description</string>
 		
-	<!-- COMPASS RELATED -->
+	<!-- COMPASS -->
 	<string name="compass">Compass</string>
-	<string name="show_compass">Always show compass</string>
 	<string name="true_north">Point to True North</string>
 	<string name="true_north_summary">Compass points to True North instead of Magnetic North</string>
 		

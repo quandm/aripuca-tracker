@@ -18,6 +18,10 @@
 
 		</activity>
 
+		<activity android:name=".CompassActivity"
+			android:label="@string/compass_activity_title">
+		</activity>
+
 		<activity android:name=".TrackDetailsActivity" android:label="@string/track_details_activity_title">
 		</activity>
 

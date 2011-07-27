@@ -132,7 +132,7 @@ public class TrackRecorder {
 
 			this.segment = new Segment(myApp);
 
-			if (this.segmentingMode == Constants.SEGMENT_EQUAL) {
+			if (this.segmentingMode == Constants.SEGMENT_DISTANCE) {
 
 				// setting segment interval
 				this.setSegmentInterval();
@@ -496,7 +496,7 @@ public class TrackRecorder {
 
 		switch (this.segmentingMode) {
 
-			case Constants.SEGMENT_EQUAL:
+			case Constants.SEGMENT_DISTANCE:
 
 				float nextSegment = 0;
 				for (int i = 0; i <= this.segmentIndex; i++) {
