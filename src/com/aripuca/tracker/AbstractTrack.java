@@ -197,7 +197,7 @@ public abstract class AbstractTrack {
 			double averageSpeed = this.speedPopulation.getAverage();
 //			double smoothedDiff = Math.abs(averageSpeed - currentSpeed);
 
-			if (currentSpeed < averageSpeed * 10) {
+			if (currentSpeed > averageSpeed * 10) {
 				return;
 			}
 
