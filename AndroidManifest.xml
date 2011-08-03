@@ -9,7 +9,6 @@
 		<uses-library android:name="com.google.android.maps" />
 
 		<activity android:name=".MainActivity" android:label="@string/main_app_title">
-			<!-- android:configChanges="keyboardHidden|orientation" -->
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -19,7 +18,7 @@
 		</activity>
 
 		<activity android:name=".CompassActivity"
-			android:label="@string/compass_activity_title">
+			android:label="@string/compass_activity_title" android:screenOrientation="portrait">
 		</activity>
 
 		<activity android:name=".TrackDetailsActivity" android:label="@string/track_details_activity_title">
