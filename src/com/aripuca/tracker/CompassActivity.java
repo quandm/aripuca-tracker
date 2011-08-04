@@ -6,6 +6,7 @@ import com.aripuca.tracker.view.CompassImage;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,7 +17,10 @@ public class CompassActivity extends Activity {
 	 */
 	private MyApp myApp;
 
-	
+	private long declinationLastUpdate = 0;
+
+	private float declination;
+
 	/**
 	 * Initialize the activity
 	 */
@@ -28,12 +32,11 @@ public class CompassActivity extends Activity {
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 		myApp.setCompassActivity(this);
-		
+
 		setContentView(R.layout.compass);
 
 	}
 
-	
 	/**
 	 * Update compass image and azimuth text
 	 */
@@ -43,11 +46,19 @@ public class CompassActivity extends Activity {
 
 		float azimuth = 0;
 
-		// TODO: let's not request declination on every compass update
-		float declination = 0;
 		if (trueNorth && myApp.getCurrentLocation() != null) {
+
 			long now = System.currentTimeMillis();
-			declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
+
+			// let's request declination every 15 minutes, not every compass update
+			if (now - declinationLastUpdate > 15 * 60 * 1000) {
+				declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
+				Log.d(Constants.TAG, "declination update: " + declination);
+				declinationLastUpdate = now;
+			}
+
+		} else {
+			declination = 0;
 		}
 
 		// magnetic north to true north
@@ -55,7 +66,7 @@ public class CompassActivity extends Activity {
 
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
-					+ Utils.degreeChar + " "
+					+ Utils.DEGREE_CHAR + " "
 					+ Utils.getDirectionCode(azimuth));
 		}
 
@@ -95,17 +106,19 @@ public class CompassActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
 	}
-	
+
 	/**
 	 * Returns compass rotation angle when orientation of the phone changes
 	 */
 	private int getOrientationAdjustment() {
-		
+
 		switch (this.getResources().getConfiguration().orientation) {
 			case Configuration.ORIENTATION_PORTRAIT:
 				return 0;

@@ -10,7 +10,7 @@ import android.location.Location;
 
 public class Utils {
 
-	public static final char degreeChar = (char) 0x00B0;
+	public static final char DEGREE_CHAR = (char) 0x00B0;
 
 	protected static final double KM_TO_MI = 0.621371192;
 	protected static final double M_TO_FT = 3.2808399;
@@ -162,7 +162,7 @@ public class Utils {
 			lat = -lat;
 		}
 
-		return formatCoord(lat, outputType) + " " + direction;
+		return formatCoord(lat, outputType) + direction;
 
 	}
 
@@ -174,7 +174,7 @@ public class Utils {
 			lng = -lng;
 		}
 
-		return formatCoord(lng, outputType) + " " + direction;
+		return formatCoord(lng, outputType) + direction;
 
 	}
 
@@ -185,7 +185,7 @@ public class Utils {
 	public static String formatCoord(double coordinate, int outputType) {
 
 		StringBuilder sb = new StringBuilder();
-		char endChar = degreeChar;
+		char endChar = DEGREE_CHAR;
 		
 		DecimalFormat df = new DecimalFormat("###.######");
 		if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
@@ -194,7 +194,7 @@ public class Utils {
 			
 			int degrees = (int) Math.floor(coordinate);
 			sb.append(degrees);
-			sb.append(degreeChar); // degrees sign
+			sb.append(DEGREE_CHAR); // degrees sign
 			endChar = '\''; // minutes sign
 			coordinate -= degrees;
 			coordinate *= 60.0;

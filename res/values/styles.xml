@@ -54,7 +54,7 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
-        <item name="android:background">#222</item>
+        <item name="android:background">#A222</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_margin">1dp</item>
     </style>
@@ -67,17 +67,13 @@
         <item name="android:textSize">40sp</item>
     </style>
 
-    <style name="MediumLabel2">
+    <style name="MediumLabel2" parent="@style/AppLabel">
         <item name="android:textSize">30sp</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_margin">1dp</item>
+        <item name="android:background">#0000</item>
     </style>
     
     <style name="SmallLabel" parent="@style/AppLabel">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="SmallLabel1" parent="@style/AppLabel">
@@ -92,8 +88,19 @@
         <item name="android:textSize">29sp</item>
     </style>
 
+    <style name="SmallLabel4" parent="@style/AppLabel">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- HEADERS -->
+
     <style name="SmallHeader" parent="@style/AppLabel">
         <item name="android:textSize">13sp</item>
+        <item name="android:background">#0000</item>
+    </style>
+
+    <style name="SmallHeader1" parent="@style/AppLabel">
+        <item name="android:textSize">18sp</item>
         <item name="android:background">#0000</item>
     </style>
 
