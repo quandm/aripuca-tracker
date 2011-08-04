@@ -1195,7 +1195,7 @@ public class MainActivity extends Activity {
 
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
-					+ Utils.degreeChar + " "
+					+ Utils.DEGREE_CHAR + " "
 					+ Utils.getDirectionCode(azimuth));
 		}
 

@@ -157,7 +157,7 @@ public class WaypointsListActivity extends ListActivity {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}
 
-					bearingStr = Utils.formatNumber(newBearing, 0) + Utils.degreeChar;
+					bearingStr = Utils.formatNumber(newBearing, 0) + Utils.DEGREE_CHAR;
 
 				}
 
