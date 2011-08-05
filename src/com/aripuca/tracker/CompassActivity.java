@@ -16,24 +16,17 @@ import android.widget.TextView;
 
 public class CompassActivity extends Activity {
 	
-	protected class CompassBroadcastReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			
-			Log.d(Constants.TAG, "CompassActivity: BROADCAST MESSAGE RECEIVED");
-			
-			Bundle bundle = intent.getExtras();
-			
-			updateCompass(bundle.getFloat("azimuth"));
-			
-		}
-			
-	}
 	/**
 	 * Compass updates broadcast receiver
 	 */
-	CompassBroadcastReceiver compassBroadcastReceiver;	
+	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(Constants.TAG, "CompassActivity: BROADCAST MESSAGE RECEIVED");
+			Bundle bundle = intent.getExtras();
+			updateCompass(bundle.getFloat("azimuth"));
+		}
+	};
 	
 	/**
 	 * Reference to Application object
@@ -72,7 +65,6 @@ public class CompassActivity extends Activity {
 
 		// registering receiver for compass updates 
 		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
-		compassBroadcastReceiver = new CompassBroadcastReceiver();
 		registerReceiver(compassBroadcastReceiver, filter);
 
 		super.onResume();

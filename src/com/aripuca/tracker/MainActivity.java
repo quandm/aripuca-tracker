@@ -1,6 +1,5 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.WaypointsListActivity.LocationBroadcastReceiver;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -69,41 +68,28 @@ public class MainActivity extends Activity {
 
 	private TrackRecorder trackRecorder;
 
-	protected class LocationBroadcastReceiver extends BroadcastReceiver {
-
+	/**
+	 * location updates broadcast receiver
+	 */
+	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
 			Log.d(Constants.TAG, "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
-
 			updateMainActivity();
-			
 		}
-			
-	}
+	};
 	/**
-	 * Location updates broadcast receiver
+	 * compass updates broadcast receiver
 	 */
-	LocationBroadcastReceiver locationBroadcastReceiver;	
-	
-	/**
-	 * compass updates broadcast receiver class
-	 */
-	protected class CompassBroadcastReceiver extends BroadcastReceiver {
+	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
 			Log.d(Constants.TAG, "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
-			
 			Bundle bundle = intent.getExtras();
-			
 			updateCompass(bundle.getFloat("azimuth"));
-			
 		}
-			
-	}
-	CompassBroadcastReceiver compassBroadcastReceiver;	
+	};
 
 	private ContainerCarousel speedContainerCarousel = new ContainerCarousel() {
 		@Override
@@ -398,14 +384,10 @@ public class MainActivity extends Activity {
 		}
 
 		// registering receiver for compass updates 
-		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
-		compassBroadcastReceiver = new CompassBroadcastReceiver();
-		registerReceiver(compassBroadcastReceiver, filter);
+		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 		
 		// registering receiver for location updates
-		IntentFilter filter2 = new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
-		locationBroadcastReceiver = new LocationBroadcastReceiver();
-		registerReceiver(locationBroadcastReceiver, filter2);
+		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
 		
 		super.onResume();
 	}
