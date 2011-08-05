@@ -1,5 +1,6 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.WaypointsListActivity.LocationBroadcastReceiver;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -25,19 +26,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteException;
-import android.hardware.GeomagneticField;
 import android.location.*;
 
 import android.widget.*;
 
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -50,7 +50,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.Window;
+
 
 /**
  * main application activity
@@ -68,6 +68,42 @@ public class MainActivity extends Activity {
 	private MyApp myApp;
 
 	private TrackRecorder trackRecorder;
+
+	protected class LocationBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			Log.d(Constants.TAG, "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+
+			updateMainActivity();
+			
+		}
+			
+	}
+	/**
+	 * Location updates broadcast receiver
+	 */
+	LocationBroadcastReceiver locationBroadcastReceiver;	
+	
+	/**
+	 * compass updates broadcast receiver class
+	 */
+	protected class CompassBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			Log.d(Constants.TAG, "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
+			
+			Bundle bundle = intent.getExtras();
+			
+			updateCompass(bundle.getFloat("azimuth"));
+			
+		}
+			
+	}
+	CompassBroadcastReceiver compassBroadcastReceiver;	
 
 	private ContainerCarousel speedContainerCarousel = new ContainerCarousel() {
 		@Override
@@ -361,6 +397,16 @@ public class MainActivity extends Activity {
 			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
 		}
 
+		// registering receiver for compass updates 
+		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
+		compassBroadcastReceiver = new CompassBroadcastReceiver();
+		registerReceiver(compassBroadcastReceiver, filter);
+		
+		// registering receiver for location updates
+		IntentFilter filter2 = new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
+		locationBroadcastReceiver = new LocationBroadcastReceiver();
+		registerReceiver(locationBroadcastReceiver, filter2);
+		
 		super.onResume();
 	}
 
@@ -371,6 +417,9 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.v(Constants.TAG, "onPause");
+		
+		unregisterReceiver(compassBroadcastReceiver);
+		unregisterReceiver(locationBroadcastReceiver);
 
 		super.onPause();
 	}
@@ -1177,11 +1226,11 @@ public class MainActivity extends Activity {
 	/**
 	 * Update compass image and azimuth text
 	 */
-	public void updateCompass(float[] values) {
+	public void updateCompass(float azimuth) {
 
 		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
 
-		float azimuth = 0;
+		float rotation = 0;
 
 		// TODO: let's not request declination on every compass update
 		float declination = 0;
@@ -1191,12 +1240,12 @@ public class MainActivity extends Activity {
 		}
 
 		// magnetic north to true north
-		azimuth = getAzimuth(values[0] + declination);
+		rotation = getAzimuth(azimuth + declination);
 
 		if (findViewById(R.id.azimuth) != null) {
-			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
+			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0)
 					+ Utils.DEGREE_CHAR + " "
-					+ Utils.getDirectionCode(azimuth));
+					+ Utils.getDirectionCode(rotation));
 		}
 
 	}

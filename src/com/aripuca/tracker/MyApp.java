@@ -57,24 +57,22 @@ public class MyApp extends Application {
 	}
 
 	/**
-	 * 
+	 * current gps location 
 	 */
 	private Location currentLocation = null;
-
 	public void setCurrentLocation(Location cl) {
 		currentLocation = cl;
 	}
-
 	public Location getCurrentLocation() {
 		return currentLocation;
 	}
-
+	/**
+	 * database object 
+	 */
 	private SQLiteDatabase db;
-
 	public SQLiteDatabase getDatabase() {
 		return db;
 	}
-
 	public void setDatabase() {
 		
 		OpenHelper openHelper = new OpenHelper(this);
@@ -82,7 +80,6 @@ public class MyApp extends Application {
 		db = openHelper.getWritableDatabase();
 		
 	}
-	
 	/**
 	 * is external storage available, ex: SD card
 	 */
@@ -91,73 +88,37 @@ public class MyApp extends Application {
 	public boolean getExternalStorageAvailable() {
 		return externalStorageAvailable;
 	}
-
 	/**
 	 * is external storage writable
 	 */
 	private boolean externalStorageWriteable = false;
-
 	public boolean getExternalStorageWriteable() {
 		return externalStorageWriteable;
 	}
-
 	/**
 	 * MainActivity object reference
 	 */
 	private static MainActivity mainActivity;
-
 	public void setMainActivity(MainActivity ma) {
 		mainActivity = ma;
 	}
-
 	public MainActivity getMainActivity() {
 		return mainActivity;
 	}
-
-	/**
-	 * WaypointsListActivity object reference
-	 */
-	private static WaypointsListActivity waypointsListActivity;
-
-	public void setWaypointsListActivity(WaypointsListActivity wa) {
-		waypointsListActivity = wa;
-	}
-
-	public WaypointsListActivity getWaypointsListActivity() {
-		return waypointsListActivity;
-	}
-
-	/**
-	 * CompassActivity object reference
-	 */
-	private static CompassActivity compassActivity;
-
-	public void setCompassActivity(CompassActivity ca) {
-		compassActivity = ca;
-	}
-
-	public CompassActivity getCompassActivity() {
-		return compassActivity;
-	}
-	
 	/**
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;
-
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}
-
 	/**
-	 * 
+	 * application directory 
 	 */
 	private String appDir;
-
 	public String getAppDir() {
 		return appDir;
 	}
-
 	/**
 	 * application database create/open helper class
 	 */
@@ -326,8 +287,6 @@ public class MyApp extends Application {
 
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-		//		waypointList = new ArrayList<Waypoint>();
 
 		OpenHelper openHelper = new OpenHelper(this);
 
