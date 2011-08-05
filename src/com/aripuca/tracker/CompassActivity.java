@@ -4,6 +4,10 @@ import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +15,26 @@ import android.view.View;
 import android.widget.TextView;
 
 public class CompassActivity extends Activity {
+	
+	protected class CompassBroadcastReceiver extends BroadcastReceiver {
 
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			Log.d(Constants.TAG, "CompassActivity: BROADCAST MESSAGE RECEIVED");
+			
+			Bundle bundle = intent.getExtras();
+			
+			updateCompass(bundle.getFloat("azimuth"));
+			
+		}
+			
+	}
+	/**
+	 * Compass updates broadcast receiver
+	 */
+	CompassBroadcastReceiver compassBroadcastReceiver;	
+	
 	/**
 	 * Reference to Application object
 	 */
@@ -31,20 +54,39 @@ public class CompassActivity extends Activity {
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
-		myApp.setCompassActivity(this);
 
 		setContentView(R.layout.compass);
 
 	}
 
+	@Override
+	public void onPause() {
+
+		unregisterReceiver(compassBroadcastReceiver);
+		
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume() {
+
+		// registering receiver for compass updates 
+		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
+		compassBroadcastReceiver = new CompassBroadcastReceiver();
+		registerReceiver(compassBroadcastReceiver, filter);
+
+		super.onResume();
+		
+	}
+	
 	/**
 	 * Update compass image and azimuth text
 	 */
-	public void updateCompass(float[] values) {
+	public void updateCompass(float azimuth) {
 
 		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
 
-		float azimuth = 0;
+		float rotation = 0;
 
 		if (trueNorth && myApp.getCurrentLocation() != null) {
 
@@ -62,12 +104,12 @@ public class CompassActivity extends Activity {
 		}
 
 		// magnetic north to true north
-		azimuth = getAzimuth(values[0] + declination);
+		rotation = getAzimuth(azimuth + declination);
 
 		if (findViewById(R.id.azimuth) != null) {
-			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(azimuth, 0)
+			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0)
 					+ Utils.DEGREE_CHAR + " "
-					+ Utils.getDirectionCode(azimuth));
+					+ Utils.getDirectionCode(rotation));
 		}
 
 		// true north compass
@@ -81,7 +123,7 @@ public class CompassActivity extends Activity {
 				// BitmapFactory.decodeResource(getResources(),
 				// R.drawable.windrose);
 				// BitmapDrawable bmd = new BitmapDrawable(arrowBitmap);
-				compassImage.setAngle(360 - azimuth - getOrientationAdjustment());
+				compassImage.setAngle(360 - rotation - getOrientationAdjustment());
 				// compassImage.setAlpha(230);
 				compassImage.invalidate();
 				// compassImage.setImageDrawable(bmd);
@@ -95,7 +137,7 @@ public class CompassActivity extends Activity {
 
 			if (compassImage2.getVisibility() == View.VISIBLE) {
 
-				compassImage2.setAngle(360 - azimuth + declination - getOrientationAdjustment());
+				compassImage2.setAngle(360 - rotation + declination - getOrientationAdjustment());
 				compassImage2.setAlpha(50);
 				compassImage2.invalidate();
 			}

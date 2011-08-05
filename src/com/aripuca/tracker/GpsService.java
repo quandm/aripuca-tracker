@@ -40,22 +40,14 @@ public class GpsService extends Service {
 			}
 			myApp.setCurrentLocation(location);
 
-			if (myApp.getMainActivity() != null) {
-				
-				currentLocation = location;
-				
-				// main activity updated with updates from GPS sensor 
-				// update main activity with new location data
-				myApp.getMainActivity().updateMainActivity();
-
-			}
-
-			// updating waypoints list activity
-			if (myApp.getWaypointsListActivity() != null) {
-				myApp.getWaypointsListActivity().getArrayAdapter().sortByDistance();
-				myApp.getWaypointsListActivity().getArrayAdapter().notifyDataSetChanged();
-			}
-
+			currentLocation = location;
+			
+			// let's broadcast compass data to any activity waiting for updates
+			// create intent for broadcating
+			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
+			// broadcasting compass updates 
+			sendBroadcast(intent);
+			
 		}
 
 		@Override
@@ -86,20 +78,19 @@ public class GpsService extends Service {
 			if (myApp == null) {
 				return;
 			}
+			
+			// let's broadcast compass data to any activity waiting for updates
+			// create intent for broadcating
+			Intent intent = new Intent("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
 
-			// compass updated more often 
-			if (myApp.getMainActivity() != null) {
-				myApp.getMainActivity().updateCompass(event.values);
-			}
-
-			if (myApp.getCompassActivity() != null) {
-				myApp.getCompassActivity().updateCompass(event.values);
-			}
-	
-			if (myApp.getWaypointsListActivity() != null) {
-				myApp.getWaypointsListActivity().setAzimuth(event.values[0]);
-				myApp.getWaypointsListActivity().getArrayAdapter().notifyDataSetChanged();
-			}
+			// packing azimuth value into bundle  
+			Bundle bundle = new Bundle();       
+			bundle.putFloat("azimuth", event.values[0]);
+			
+			intent.putExtras(bundle);			
+			
+			// broadcasting compass updates 
+			sendBroadcast(intent);
 
 		}
 
@@ -133,7 +124,6 @@ public class GpsService extends Service {
 		
 		// start updating time of tracking every second
 		updateTimeHandler.postDelayed(updateTimeTask, 100);
-		
 
 	}
 
