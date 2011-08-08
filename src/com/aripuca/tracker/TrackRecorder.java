@@ -73,6 +73,10 @@ public class TrackRecorder {
 	private int segmentIndex = 0;
 	private float segmentInterval;
 	private float[] segmentIntervals;
+	/**
+	 * segmenting time interval in minutes
+	 */
+	private float segmentTimeInterval;
 
 	/**
 	 * Returns number of segments created for the track
@@ -138,6 +142,14 @@ public class TrackRecorder {
 				this.setSegmentInterval();
 			}
 
+			if (this.segmentingMode == Constants.SEGMENT_DISTANCE) {
+
+				// default time segmenting: 10 minutes
+				segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
+				
+			}
+			
+			
 			if (this.segmentingMode == Constants.SEGMENT_CUSTOM_1 ||
 					this.segmentingMode == Constants.SEGMENT_CUSTOM_2) {
 
@@ -192,7 +204,7 @@ public class TrackRecorder {
 	}
 
 	/**
-	 * Insert new segment to db and create new one
+	 * Insert current segment to db and create new one
 	 */
 	private void addNewSegment() {
 
@@ -254,6 +266,11 @@ public class TrackRecorder {
 		if (this.segmentingMode != Constants.SEGMENT_NONE &&
 				this.segmentingMode != Constants.SEGMENT_PAUSE_RESUME) {
 			this.segmentTrack();
+		}
+		// segmenting track by time
+		if (this.segmentingMode != Constants.SEGMENT_TIME) {
+			
+			
 		}
 
 		// updating segment statistics
@@ -437,7 +454,7 @@ public class TrackRecorder {
 
 		// if user entered invalid value - set default interval
 		try {
-			segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_equal", "5"));
+			segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
 		} catch (NumberFormatException e) {
 			// default interval 5 km
 			segmentInterval = 5;
@@ -488,7 +505,16 @@ public class TrackRecorder {
 		}
 
 	}
+	
+	public void segmentTrackByTime() {
 
+		if (this.track.getMovingTime() / this.getNextSegment() > 1) {
+
+			this.addNewSegment();
+
+		}
+		
+	}
 	/**
 	 * Calculate interval where to start new segment
 	 */
@@ -504,6 +530,17 @@ public class TrackRecorder {
 				}
 				return nextSegment * 1000;
 
+			case Constants.SEGMENT_TIME:
+				
+				float nextSegment1 = 0;
+				for (int i = 0; i <= this.segmentIndex; i++) {
+					nextSegment1 += segmentTimeInterval;
+				}
+
+				// minutes to milliseconds
+				return nextSegment1 * 1000 * 60;
+				
+				
 			case Constants.SEGMENT_CUSTOM_1:
 			case Constants.SEGMENT_CUSTOM_2:
 

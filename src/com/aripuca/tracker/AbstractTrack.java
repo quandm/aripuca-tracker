@@ -81,7 +81,7 @@ public abstract class AbstractTrack {
 	}
 
 	/**
-	 * Get total trip distance
+	 * Get total trip distance in meters
 	 */
 	public float getDistance() {
 		return this.distance;

@@ -10,12 +10,17 @@ import java.io.IOException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.io.*;
 import java.nio.channels.FileChannel;
+
+import uk.me.jstott.coordconv.LatitudeLongitude;
+import uk.me.jstott.sun.Sun;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,7 +54,6 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-
 
 /**
  * main application activity
@@ -385,10 +389,10 @@ public class MainActivity extends Activity {
 
 		// registering receiver for compass updates 
 		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
-		
+
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
-		
+
 		super.onResume();
 	}
 
@@ -399,7 +403,7 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.v(Constants.TAG, "onPause");
-		
+
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
@@ -679,7 +683,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -811,15 +815,15 @@ public class MainActivity extends Activity {
 					dialog.dismiss();
 				}
 
-				int lat = (int)(Double.parseDouble(wpLat.getText().toString())*1E6);
-				int lng = (int)(Double.parseDouble(wpLng.getText().toString())*1E6);
+				int lat = (int) (Double.parseDouble(wpLat.getText().toString()) * 1E6);
+				int lng = (int) (Double.parseDouble(wpLng.getText().toString()) * 1E6);
 
 				ContentValues values = new ContentValues();
 				values.put("title", titleStr);
 				values.put("descr", descrStr);
 				values.put("lat", lat);
 				values.put("lng", lng);
-				values.put("elevation", Utils.formatNumber(myApp.getCurrentLocation().getAltitude(),1));
+				values.put("elevation", Utils.formatNumber(myApp.getCurrentLocation().getAltitude(), 1));
 				values.put("time", myApp.getCurrentLocation().getTime());
 
 				// if track recording started save track_id as
@@ -942,7 +946,7 @@ public class MainActivity extends Activity {
 				startActivity(new Intent(this, CompassActivity.class));
 
 				return true;
-			
+
 			case R.id.waypointsMenuItem:
 
 				startActivity(new Intent(this, WaypointsListActivity.class));
@@ -1165,15 +1169,15 @@ public class MainActivity extends Activity {
 
 			// acceleration
 			if (findViewById(R.id.acceleration) != null) {
-				
+
 				// let's display last non-zero acceleration
-				if (trackRecorder.getTrack().getAcceleration()>0) {
+				if (trackRecorder.getTrack().getAcceleration() > 0) {
 					((TextView) findViewById(R.id.acceleration)).setText(
-							Utils.formatNumber(trackRecorder.getTrack().getAcceleration(),2));
-				} 
-						
+							Utils.formatNumber(trackRecorder.getTrack().getAcceleration(), 2));
+				}
+
 			}
-			
+
 			// average pace
 			if (findViewById(R.id.averagePace) != null) {
 				((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(
@@ -1201,6 +1205,21 @@ public class MainActivity extends Activity {
 						distanceUnit));
 			}
 
+		}
+
+		//sunrise/sunset
+		LatitudeLongitude ll = new LatitudeLongitude(myApp.getCurrentLocation().getLatitude(),
+														myApp.getCurrentLocation().getLongitude());
+		Calendar cal = Calendar.getInstance();
+		TimeZone gmt = TimeZone.getTimeZone(cal.getTimeZone().getID());
+		boolean dst = true;
+
+		if (findViewById(R.id.sunrise) != null) {
+			((TextView) findViewById(R.id.sunrise)).setText(Sun.sunriseTime(cal, ll, gmt, dst).toString());
+		}
+
+		if (findViewById(R.id.sunset) != null) {
+			((TextView) findViewById(R.id.sunset)).setText(Sun.sunsetTime(cal, ll, gmt, dst).toString());
 		}
 
 	}
@@ -1234,7 +1253,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1332,7 +1353,9 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
+		if (myApp.getPreferences().contains("famous_waypoints")) {
+			return;
+		}
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
@@ -1355,8 +1378,8 @@ public class MainActivity extends Activity {
 			ContentValues values = new ContentValues();
 			values.put("title", wp.getTitle());
 			values.put("descr", "");
-			values.put("lat", (int)(wp.getLatitude()*1E6));
-			values.put("lng", (int)(wp.getLongitude()*1E6));
+			values.put("lat", (int) (wp.getLatitude() * 1E6));
+			values.put("lng", (int) (wp.getLongitude() * 1E6));
 			values.put("time", wp.getTime());
 
 			myApp.getDatabase().insert("waypoints", null, values);

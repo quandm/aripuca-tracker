@@ -43,7 +43,6 @@ public class GpsService extends Service {
 			currentLocation = location;
 			
 			// let's broadcast compass data to any activity waiting for updates
-			// create intent for broadcating
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 			// broadcasting compass updates 
 			sendBroadcast(intent);
@@ -80,7 +79,6 @@ public class GpsService extends Service {
 			}
 			
 			// let's broadcast compass data to any activity waiting for updates
-			// create intent for broadcating
 			Intent intent = new Intent("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
 
 			// packing azimuth value into bundle  
