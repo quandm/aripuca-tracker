@@ -73,8 +73,7 @@
 				android:defaultValue="2"></ListPreference>
 			<EditTextPreference android:defaultValue="5"
 				android:key="segment_distance" android:summary="@string/segment_distance_summary" android:title="@string/segment_distance"></EditTextPreference>
-			<EditTextPreference android:defaultValue="5"
-				android:title="@string/segment_time" android:summary="@string/segment_time_summary" android:key="segment_time"></EditTextPreference>
+			<EditTextPreference android:title="@string/segment_time" android:summary="@string/segment_time_summary" android:key="segment_time" android:defaultValue="10"></EditTextPreference>
 			<EditTextPreference android:summary="@string/segment_custom_summary"
 				android:title="@string/segment_custom_1" android:key="segment_custom_1"
 				android:defaultValue="6,10,15,20,25"></EditTextPreference>

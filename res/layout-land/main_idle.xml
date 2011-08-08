@@ -36,6 +36,34 @@
 
 			</LinearLayout>
 
+			<!-- ELEVATION & COMPASS -->
+
+			<LinearLayout style="@style/TrackDetailsRow">
+
+				<LinearLayout style="@style/TrackDetailsLeftCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/elevation" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell"
+					android:background="@drawable/border1">
+
+					<TextView android:text="@string/azimuth" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/azimuth" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- LAST FIX TIME & ACCURACY -->
+
 			<LinearLayout style="@style/TrackDetailsRow">
 
 				<LinearLayout style="@style/TrackDetailsLeftCell"
@@ -60,6 +88,8 @@
 
 			</LinearLayout>
 
+			<!-- SPEED & PACE -->
+
 			<LinearLayout style="@style/TrackDetailsRow">
 
 				<LinearLayout style="@style/TrackDetailsLeftCell"
@@ -82,32 +112,6 @@
 
 				</LinearLayout>
 
-
-			</LinearLayout>
-
-			<!-- ELEVATION & COMPASS -->
-
-			<LinearLayout style="@style/TrackDetailsRow">
-
-				<LinearLayout style="@style/TrackDetailsLeftCell"
-					android:background="@drawable/border1">
-
-					<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
-
-					<TextView android:id="@+id/elevation" style="@style/SmallLabel2">
-					</TextView>
-
-				</LinearLayout>
-
-				<LinearLayout style="@style/TrackDetailsRightCell"
-					android:background="@drawable/border1">
-
-					<TextView android:text="@string/azimuth" style="@style/SmallHeader"></TextView>
-
-					<TextView android:id="@+id/azimuth" style="@style/SmallLabel2">
-					</TextView>
-
-				</LinearLayout>
 
 			</LinearLayout>
 

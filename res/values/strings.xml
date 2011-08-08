@@ -78,6 +78,9 @@
 	<string name="title">Title</string>
 	<string name="points">Points</string>
 
+	<string name="sunrise">Sunrise</string>
+	<string name="sunset">Sunset</string>
+
 	<string name="backup">Backup</string>
 	<string name="backup_db">Backup DB</string>
 
@@ -170,11 +173,11 @@
 	<string name="segment_distance_summary">Segment track every N km</string>
 
 	<string name="segment_time">By time</string>
-	<string name="segment_time_summary">Segment track every N min</string>
+	<string name="segment_time_summary">Segment track every N minutes</string>
 
 	<string name="segment_custom_1">Custom intervals 1</string>
 	<string name="segment_custom_2">Custom intervals 2</string>
-	<string name="segment_custom_summary">Segment by preset intervals</string>
+	<string name="segment_custom_summary">Segment by preset distances</string>
 
 	<string name="waypoint_default_description">Default description</string>
 	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as
