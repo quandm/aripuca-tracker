@@ -156,8 +156,24 @@ public class MyMapActivity extends MapActivity {
 
 				// populating path object
 				if (!pathStarted) {
-					path.moveTo(screenPts.x, screenPts.y);
+
+					// starting new segment
+					if (i>0) {
+						
+						// starting new segment at last segment's end point
+						projection.toPixels(points.get(i-1).getGeoPoint(), screenPts);
+						path.moveTo(screenPts.x, screenPts.y);
+						
+						projection.toPixels(points.get(i).getGeoPoint(), screenPts);
+						path.lineTo(screenPts.x, screenPts.y);
+						
+					} else {
+						// for the very first segment just move path pointer
+						path.moveTo(screenPts.x, screenPts.y);
+					}
+					
 					pathStarted = true;
+					
 				} else {
 					path.lineTo(screenPts.x, screenPts.y);
 				}

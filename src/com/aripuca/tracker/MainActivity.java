@@ -1,6 +1,7 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.util.ContainerCarousel;
+import com.aripuca.tracker.util.SunriseSunset;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
@@ -18,9 +19,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.io.*;
 import java.nio.channels.FileChannel;
-
-import uk.me.jstott.coordconv.LatitudeLongitude;
-import uk.me.jstott.sun.Sun;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1208,18 +1206,37 @@ public class MainActivity extends Activity {
 		}
 
 		//sunrise/sunset
-		LatitudeLongitude ll = new LatitudeLongitude(myApp.getCurrentLocation().getLatitude(),
-														myApp.getCurrentLocation().getLongitude());
 		Calendar cal = Calendar.getInstance();
-		TimeZone gmt = TimeZone.getTimeZone(cal.getTimeZone().getID());
-		boolean dst = true;
+		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
+
+		/*
+		 * LatitudeLongitude ll = new
+		 * LatitudeLongitude(myApp.getCurrentLocation().getLatitude(),
+		 * myApp.getCurrentLocation().getLongitude());
+		 * 
+		 * boolean dst = tz.inDaylightTime(cal.getTime());
+		 * 
+		 * if (findViewById(R.id.sunrise) != null) { ((TextView)
+		 * findViewById(R.id.sunrise)).setText(Sun.sunriseTime(cal, ll, tz,
+		 * dst).toString()); }
+		 * 
+		 * if (findViewById(R.id.sunset) != null) { ((TextView)
+		 * findViewById(R.id.sunset)).setText(Sun.sunsetTime(cal, ll, tz,
+		 * dst).toString()); }
+		 */
+
+		SunriseSunset ss = new SunriseSunset(myApp.getCurrentLocation().getLatitude(),
+				myApp.getCurrentLocation().getLongitude(), cal.getTime(),
+				tz.getOffset(cal.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
-			((TextView) findViewById(R.id.sunrise)).setText(Sun.sunriseTime(cal, ll, gmt, dst).toString());
+			String srise = (new SimpleDateFormat("H:mm")).format(ss.getSunrise());
+			((TextView) findViewById(R.id.sunrise)).setText(srise);
 		}
 
 		if (findViewById(R.id.sunset) != null) {
-			((TextView) findViewById(R.id.sunset)).setText(Sun.sunsetTime(cal, ll, gmt, dst).toString());
+			String sset = (new SimpleDateFormat("H:mm")).format(ss.getSunset());
+			((TextView) findViewById(R.id.sunset)).setText(sset);
 		}
 
 	}

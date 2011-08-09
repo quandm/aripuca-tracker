@@ -302,7 +302,7 @@ public class TrackDetailsActivity extends Activity {
 
 		float maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
 
-		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex + " (" + segmentId + ")");
+		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
 
 		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
 				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
