@@ -60,10 +60,10 @@
 		<PreferenceCategory android:title="@string/tracks">
 			<EditTextPreference android:title="@string/min_distance_title"
 				android:defaultValue="5" android:summary="@string/min_distance_summary"
-				android:key="min_distance"></EditTextPreference>
+				android:key="min_distance" android:inputType="number"></EditTextPreference>
 			<EditTextPreference android:summary="@string/min_accuracy_summary"
 				android:title="@string/min_accuracy_title" android:key="min_accuracy"
-				android:defaultValue="15"></EditTextPreference>
+				android:defaultValue="15" android:inputType="number"></EditTextPreference>
 		</PreferenceCategory>
 
 		<PreferenceCategory android:title="@string/segmenting">
@@ -72,8 +72,11 @@
 				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode"
 				android:defaultValue="2"></ListPreference>
 			<EditTextPreference android:defaultValue="5"
-				android:key="segment_distance" android:summary="@string/segment_distance_summary" android:title="@string/segment_distance"></EditTextPreference>
-			<EditTextPreference android:title="@string/segment_time" android:summary="@string/segment_time_summary" android:key="segment_time" android:defaultValue="10"></EditTextPreference>
+				android:key="segment_distance" android:summary="@string/segment_distance_summary"
+				android:title="@string/segment_distance" android:inputType="number"></EditTextPreference>
+			<EditTextPreference android:title="@string/segment_time"
+				android:summary="@string/segment_time_summary" android:key="segment_time"
+				android:defaultValue="10" android:inputType="number"></EditTextPreference>
 			<EditTextPreference android:summary="@string/segment_custom_summary"
 				android:title="@string/segment_custom_1" android:key="segment_custom_1"
 				android:defaultValue="6,10,15,20,25"></EditTextPreference>

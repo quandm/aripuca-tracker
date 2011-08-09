@@ -141,7 +141,7 @@ public class TrackRecorder {
 				case Constants.SEGMENT_DISTANCE:
 
 					// setting segment interval
-					this.setSegmentInterval();
+					segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
 					break;
 
 				case Constants.SEGMENT_TIME:
@@ -454,22 +454,6 @@ public class TrackRecorder {
 			}
 		}
 	}
-
-	/**
-	 * 
-	 */
-	private void setSegmentInterval() {
-
-		// if user entered invalid value - set default interval
-		try {
-			segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
-		} catch (NumberFormatException e) {
-			// default interval 5 km
-			segmentInterval = 5;
-		}
-
-	}
-
 	/**
 	 * 
 	 */
@@ -553,7 +537,6 @@ public class TrackRecorder {
 			case Constants.SEGMENT_CUSTOM_2:
 
 				// processing custom segment intervals
-
 				if (this.segmentIndex < segmentIntervals.length) {
 
 					return segmentIntervals[this.segmentIndex] * 1000;
