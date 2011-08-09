@@ -136,24 +136,26 @@ public class TrackRecorder {
 
 			this.segment = new Segment(myApp);
 
-			if (this.segmentingMode == Constants.SEGMENT_DISTANCE) {
+			switch (this.segmentingMode) {
 
-				// setting segment interval
-				this.setSegmentInterval();
-			}
+				case Constants.SEGMENT_DISTANCE:
 
-			if (this.segmentingMode == Constants.SEGMENT_DISTANCE) {
+					// setting segment interval
+					this.setSegmentInterval();
+					break;
 
-				// default time segmenting: 10 minutes
-				segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
-				
-			}
-			
-			
-			if (this.segmentingMode == Constants.SEGMENT_CUSTOM_1 ||
-					this.segmentingMode == Constants.SEGMENT_CUSTOM_2) {
+				case Constants.SEGMENT_TIME:
 
-				this.setSegmentIntervals();
+					// default time segmenting: 10 minutes
+					segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
+					break;
+
+				case Constants.SEGMENT_CUSTOM_1:
+				case Constants.SEGMENT_CUSTOM_2:
+
+					this.setSegmentIntervals();
+					break;
+
 			}
 
 		}
@@ -262,17 +264,23 @@ public class TrackRecorder {
 
 		// ---------------------------------------------------------------------
 		// SEGMENTING
-		// segmenting track by distance
-		if (this.segmentingMode != Constants.SEGMENT_NONE &&
-				this.segmentingMode != Constants.SEGMENT_PAUSE_RESUME) {
-			this.segmentTrack();
-		}
-		// segmenting track by time
-		if (this.segmentingMode != Constants.SEGMENT_TIME) {
-			
-			
-		}
+		switch (this.segmentingMode) {
 
+			// segmenting track by distance
+			case Constants.SEGMENT_DISTANCE:
+			case Constants.SEGMENT_CUSTOM_1:
+			case Constants.SEGMENT_CUSTOM_2:
+
+				this.segmentTrack();
+				break;
+				
+			// segmenting track by time
+			case Constants.SEGMENT_TIME:
+
+				this.segmentTrackByTime();
+				break;
+		}
+		
 		// updating segment statistics
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
@@ -505,7 +513,7 @@ public class TrackRecorder {
 		}
 
 	}
-	
+
 	public void segmentTrackByTime() {
 
 		if (this.track.getMovingTime() / this.getNextSegment() > 1) {
@@ -513,8 +521,9 @@ public class TrackRecorder {
 			this.addNewSegment();
 
 		}
-		
+
 	}
+
 	/**
 	 * Calculate interval where to start new segment
 	 */
@@ -531,7 +540,7 @@ public class TrackRecorder {
 				return nextSegment * 1000;
 
 			case Constants.SEGMENT_TIME:
-				
+
 				float nextSegment1 = 0;
 				for (int i = 0; i <= this.segmentIndex; i++) {
 					nextSegment1 += segmentTimeInterval;
@@ -539,8 +548,7 @@ public class TrackRecorder {
 
 				// minutes to milliseconds
 				return nextSegment1 * 1000 * 60;
-				
-				
+
 			case Constants.SEGMENT_CUSTOM_1:
 			case Constants.SEGMENT_CUSTOM_2:
 
