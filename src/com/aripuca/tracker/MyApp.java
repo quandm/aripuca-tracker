@@ -1,10 +1,13 @@
 package com.aripuca.tracker;
 
+import java.util.Locale;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
@@ -21,6 +24,8 @@ public class MyApp extends Application {
 	 * gps on/off flag
 	 */
 	private boolean gpsOn = false;
+
+	private Locale locale = null;
 
 	public void setGpsOn(boolean flag) {
 		this.gpsOn = flag;
@@ -57,29 +62,35 @@ public class MyApp extends Application {
 	}
 
 	/**
-	 * current gps location 
+	 * current gps location
 	 */
 	private Location currentLocation = null;
+
 	public void setCurrentLocation(Location cl) {
 		currentLocation = cl;
 	}
+
 	public Location getCurrentLocation() {
 		return currentLocation;
 	}
+
 	/**
-	 * database object 
+	 * database object
 	 */
 	private SQLiteDatabase db;
+
 	public SQLiteDatabase getDatabase() {
 		return db;
 	}
+
 	public void setDatabase() {
-		
+
 		OpenHelper openHelper = new OpenHelper(this);
-		
+
 		db = openHelper.getWritableDatabase();
-		
+
 	}
+
 	/**
 	 * is external storage available, ex: SD card
 	 */
@@ -88,37 +99,47 @@ public class MyApp extends Application {
 	public boolean getExternalStorageAvailable() {
 		return externalStorageAvailable;
 	}
+
 	/**
 	 * is external storage writable
 	 */
 	private boolean externalStorageWriteable = false;
+
 	public boolean getExternalStorageWriteable() {
 		return externalStorageWriteable;
 	}
+
 	/**
 	 * MainActivity object reference
 	 */
 	private static MainActivity mainActivity;
+
 	public void setMainActivity(MainActivity ma) {
 		mainActivity = ma;
 	}
+
 	public MainActivity getMainActivity() {
 		return mainActivity;
 	}
+
 	/**
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;
+
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}
+
 	/**
-	 * application directory 
+	 * application directory
 	 */
 	private String appDir;
+
 	public String getAppDir() {
 		return appDir;
 	}
+
 	/**
 	 * application database create/open helper class
 	 */
@@ -243,42 +264,41 @@ public class MyApp extends Application {
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
-			
+
 			onCreate(db);
 
 		}
 
 		// upgrading db example
-		/*public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-			Log.w(Constants.TAG, "Upgrading database from version " + oldVersion + " to "
-					+ newVersion);
-
-			if (oldVersion < 1) {
-
-				db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
-				db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
-				db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
-				db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
-				onCreate(db);
-
-			} else {
-
-				// adding "distance" field to track points table
-				if (oldVersion <= 1) {
-					Log.i(Constants.TAG, "distance field added to track_points table");
-					db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE + " ADD distance REAL");
-				}
-	
-				// adding segment stats table
-				if (oldVersion <= 1) {
-					Log.i(Constants.TAG, "Segments table added");
-					db.execSQL(SEGMENTS_TABLE_CREATE);
-				}
-
-			}
-
-		} */ 
+		/*
+		 * public void onUpgrade(SQLiteDatabase db, int oldVersion, int
+		 * newVersion) {
+		 * 
+		 * Log.w(Constants.TAG, "Upgrading database from version " + oldVersion
+		 * + " to " + newVersion);
+		 * 
+		 * if (oldVersion < 1) {
+		 * 
+		 * db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
+		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
+		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
+		 * db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE); onCreate(db);
+		 * 
+		 * } else {
+		 * 
+		 * // adding "distance" field to track points table if (oldVersion <= 1)
+		 * { Log.i(Constants.TAG, "distance field added to track_points table");
+		 * db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE +
+		 * " ADD distance REAL"); }
+		 * 
+		 * // adding segment stats table if (oldVersion <= 1) {
+		 * Log.i(Constants.TAG, "Segments table added");
+		 * db.execSQL(SEGMENTS_TABLE_CREATE); }
+		 * 
+		 * }
+		 * 
+		 * }
+		 */
 
 	}
 
@@ -288,11 +308,25 @@ public class MyApp extends Application {
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+		// setting locale
+		Configuration config = getBaseContext().getResources().getConfiguration();
+		String lang = preferences.getString("language", "en");
+		
+		String ttt = config.locale.getLanguage();
+		if (!config.locale.getLanguage().equals(lang)) {
+			locale = new Locale(lang);
+			Locale.setDefault(locale);
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+		}
+
+		// database helper
 		OpenHelper openHelper = new OpenHelper(this);
 
 		// SQLiteDatabase
 		db = openHelper.getWritableDatabase();
-		
+
 		setExternalStorageState();
 
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
@@ -300,6 +334,20 @@ public class MyApp extends Application {
 
 		super.onCreate();
 
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+
+		if (locale != null) {
+			newConfig.locale = locale;
+			Locale.setDefault(locale);
+			getBaseContext().getResources().updateConfiguration(newConfig,
+					getBaseContext().getResources().getDisplayMetrics());
+		}
+		
+		super.onConfigurationChanged(newConfig);
+		
 	}
 
 	/**

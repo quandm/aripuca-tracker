@@ -2,9 +2,9 @@
 <resources>
 
 	<string-array name="speed_units_labels">
-		<item>km/h</item>
-		<item>mph</item>
-		<item>knot</item>
+		<item>км/ч</item>
+		<item>миль/ч</item>
+		<item>узлов</item>
 	</string-array>
 
 	<string-array name="speed_units_values">
@@ -14,8 +14,8 @@
 	</string-array>
 
 	<string-array name="distance_units_labels">
-		<item>kilometers</item>
-		<item>miles</item>
+		<item>километры</item>
+		<item>мили</item>
 	</string-array>
 
 	<string-array name="distance_units_values">
@@ -24,8 +24,8 @@
 	</string-array>
 
 	<string-array name="elevation_units_labels">
-		<item>meters</item>
-		<item>feet</item>
+		<item>метры</item>
+		<item>футы</item>
 	</string-array>
 
 	<string-array name="elevation_units_values">
@@ -34,9 +34,9 @@
 	</string-array>
 
 	<string-array name="coord_units_labels">
-		<item>degrees (dd.dd°)</item>
-		<item>minutes (dd°mm.mm\')</item>
-		<item>seconds (dd°mm\'ss.ss\'\')</item>
+		<item>градусы (dd.dd°)</item>
+		<item>минуты (dd°mm.mm\')</item>
+		<item>секунды (dd°mm\'ss.ss\'\')</item>
 	</string-array>
 
 	<string-array name="coord_units_values">
@@ -46,12 +46,12 @@
 	</string-array>
 
     <string-array name="segmenting_modes_labels">
-        <item>None</item>
-        <item>Pause/Resume</item>
-        <item>By distance</item>
-        <item>By time</item>
-        <item>Custom intervals 1</item>
-        <item>Custom intervals 2</item>
+        <item>Нет</item>
+        <item>Остановить/Продолжить</item>
+        <item>По расстоянию</item>
+        <item>По времени</item>
+        <item>Интервалы пользователя 1</item>
+        <item>Интервалы пользователя 2</item>
     </string-array>
 
 	<string-array name="segmenting_modes_values">
@@ -64,8 +64,8 @@
 	</string-array>
 
 	<string-array name="language_labels">
-		<item>English</item>
-		<item>Russian</item>
+		<item>Английский</item>
+		<item>Русский</item>
 	</string-array>
 
 	<string-array name="language_values">
