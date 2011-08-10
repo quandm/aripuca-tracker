@@ -137,10 +137,6 @@
 	<string name="min_distance_summary">Minimum distance between 2 recorded points (meters)
 	</string>
 
-	<string name="max_distance_title">Maximum distance</string>
-	<string name="max_distance_summary">Maximum distance between 2 points on a straight
-		line</string>
-
 	<string name="min_accuracy_title">Minimum accuracy</string>
 	<string name="min_accuracy_summary">Minimum accuracy required for recording (meters)
 	</string>
@@ -182,6 +178,9 @@
 	<string name="waypoint_default_description">Default description</string>
 	<string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as
 		waypoint description</string>
+		
+	<string name="app_language">Application language</string>
+		
 		
 	<!-- COMPASS -->
 	<string name="compass">Compass</string>

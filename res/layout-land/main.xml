@@ -25,15 +25,15 @@
 		android:gravity="bottom">
 
 		<Button android:id="@+id/addWaypointButton" android:text="@string/waypoint"
-			style="@style/ControlButton">
+			style="@style/ControlButton_land">
 		</Button>
 
 		<Button android:id="@+id/trackRecordingButton" android:text="@string/record"
-			style="@style/ControlButton">
+			style="@style/ControlButton_land">
 		</Button>
 
 		<Button android:id="@+id/pauseResumeTrackButton" android:text="@string/pause"
-			style="@style/ControlButton">
+			style="@style/ControlButton_land">
 		</Button>
 
 	</LinearLayout>
