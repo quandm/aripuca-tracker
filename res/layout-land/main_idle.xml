@@ -10,29 +10,29 @@
 		<LinearLayout android:orientation="vertical"
 			android:layout_height="fill_parent" android:layout_width="match_parent">
 
-			<!-- COORDINATES -->
+			<!-- SPEED & PACE -->
 
-			<LinearLayout style="@style/TrackDetailsRow">
+			<LinearLayout style="@style/TrackDetailsRow"
+				android:background="@drawable/border1">
 
-				<LinearLayout style="@style/TrackDetailsLeftCell"
-					android:background="@drawable/border1">
+				<LinearLayout style="@style/TrackDetailsLeftCell">
 
-					<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
+					<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/lat" style="@style/SmallLabel2">
+					<TextView android:id="@+id/speed" style="@style/SmallLabel2">
 					</TextView>
 
 				</LinearLayout>
 
-				<LinearLayout style="@style/TrackDetailsRightCell"
-					android:background="@drawable/border1">
+				<LinearLayout style="@style/TrackDetailsRightCell">
 
-					<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
+					<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/lng" style="@style/SmallLabel2">
+					<TextView android:id="@+id/pace" style="@style/SmallLabel2">
 					</TextView>
 
 				</LinearLayout>
+
 
 			</LinearLayout>
 
@@ -62,22 +62,30 @@
 
 			</LinearLayout>
 
-			<!-- LAST FIX TIME & ACCURACY -->
+			<!-- COORDINATES -->
 
-			<LinearLayout style="@style/TrackDetailsRow">
+			<LinearLayout style="@style/TrackDetailsRow"
+				android:background="@drawable/border1">
 
-				<LinearLayout style="@style/TrackDetailsLeftCell"
-					android:background="@drawable/border1">
+				<LinearLayout style="@style/TrackDetailsLeftCell">
 
-					<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
+					<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/lastFix" style="@style/SmallLabel2">
+					<TextView android:id="@+id/lat" style="@style/SmallLabel2">
 					</TextView>
 
 				</LinearLayout>
 
-				<LinearLayout style="@style/TrackDetailsRightCell"
-					android:background="@drawable/border1">
+				<LinearLayout style="@style/TrackDetailsCell">
+
+					<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/lng" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell">
 
 					<TextView android:text="@string/accuracy" style="@style/SmallHeader"></TextView>
 
@@ -88,26 +96,34 @@
 
 			</LinearLayout>
 
-			<!-- SPEED & PACE -->
+			<!-- LAST FIX TIME & ACCURACY -->
 
-			<LinearLayout style="@style/TrackDetailsRow">
+			<LinearLayout style="@style/TrackDetailsRow"
+				android:background="@drawable/border1">
 
-				<LinearLayout style="@style/TrackDetailsLeftCell"
-					android:background="@drawable/border1">
+				<LinearLayout style="@style/TrackDetailsLeftCell">
 
-					<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
+					<TextView android:text="@string/sunrise" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/speed" style="@style/SmallLabel2">
+					<TextView android:id="@+id/sunrise" style="@style/SmallLabel2">
 					</TextView>
 
 				</LinearLayout>
 
-				<LinearLayout style="@style/TrackDetailsRightCell"
-					android:background="@drawable/border1">
+				<LinearLayout style="@style/TrackDetailsCell">
 
-					<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
+					<TextView android:text="@string/sunset" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/pace" style="@style/SmallLabel2">
+					<TextView android:id="@+id/sunset" style="@style/SmallLabel2">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRightCell">
+
+					<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
+
+					<TextView android:id="@+id/lastFix" style="@style/SmallLabel2">
 					</TextView>
 
 				</LinearLayout>
