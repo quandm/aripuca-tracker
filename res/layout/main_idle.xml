@@ -7,26 +7,25 @@
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
 
-		<!-- COORDINATES -->
+		<!-- SPEED & PACE -->
 
-		<LinearLayout style="@style/TrackDetailsRow">
+		<LinearLayout style="@style/TrackDetailsRow"
+			android:background="@drawable/border1">
 
-			<LinearLayout style="@style/TrackDetailsLeftCell"
-				android:background="@drawable/border1">
+			<LinearLayout style="@style/TrackDetailsLeftCell">
 
-				<TextView android:text="@string/lat" style="@style/SmallHeader1"></TextView>
+				<TextView android:text="@string/speed" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/lat" style="@style/SmallLabel4">
+				<TextView android:id="@+id/speed" style="@style/SmallLabel4">
 				</TextView>
 
 			</LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsRightCell"
-				android:background="@drawable/border1">
+			<LinearLayout style="@style/TrackDetailsRightCell">
 
-				<TextView android:text="@string/lng" style="@style/SmallHeader1"></TextView>
+				<TextView android:text="@string/pace" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/lng" style="@style/SmallLabel4">
+				<TextView android:id="@+id/pace" style="@style/SmallLabel4">
 				</TextView>
 
 			</LinearLayout>
@@ -59,26 +58,25 @@
 
 		</LinearLayout>
 
-		<!-- SPEED & PACE -->
+		<!-- COORDINATES -->
 
-		<LinearLayout style="@style/TrackDetailsRow">
+		<LinearLayout style="@style/TrackDetailsRow"
+			android:background="@drawable/border1">
 
-			<LinearLayout style="@style/TrackDetailsLeftCell"
-				android:background="@drawable/border1">
+			<LinearLayout style="@style/TrackDetailsLeftCell">
 
-				<TextView android:text="@string/speed" style="@style/SmallHeader1"></TextView>
+				<TextView android:text="@string/lat" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/speed" style="@style/SmallLabel4">
+				<TextView android:id="@+id/lat" style="@style/SmallLabel4">
 				</TextView>
 
 			</LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsRightCell"
-				android:background="@drawable/border1">
+			<LinearLayout style="@style/TrackDetailsRightCell">
 
-				<TextView android:text="@string/pace" style="@style/SmallHeader1"></TextView>
+				<TextView android:text="@string/lng" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/pace" style="@style/SmallLabel4">
+				<TextView android:id="@+id/lng" style="@style/SmallLabel4">
 				</TextView>
 
 			</LinearLayout>
@@ -92,16 +90,6 @@
 			<LinearLayout style="@style/TrackDetailsLeftCell"
 				android:background="@drawable/border1">
 
-				<TextView android:text="@string/last_fix" style="@style/SmallHeader1"></TextView>
-
-				<TextView android:id="@+id/lastFix" style="@style/SmallLabel4">
-				</TextView>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsRightCell"
-				android:background="@drawable/border1">
-
 				<TextView android:text="@string/accuracy" style="@style/SmallHeader1"></TextView>
 
 				<TextView android:id="@+id/accuracy" style="@style/SmallLabel4">
@@ -109,12 +97,24 @@
 
 			</LinearLayout>
 
+			<LinearLayout style="@style/TrackDetailsRightCell"
+				android:background="@drawable/border1">
+
+				<TextView android:text="@string/last_fix" style="@style/SmallHeader1"></TextView>
+
+				<TextView android:id="@+id/lastFix" style="@style/SmallLabel4">
+				</TextView>
+
+			</LinearLayout>
+
 		</LinearLayout>
 
-		<LinearLayout style="@style/TrackDetailsRow">
+		<!-- SUNRISE/SUNSET -->
 
-			<LinearLayout style="@style/TrackDetailsLeftCell"
-				android:background="@drawable/border1">
+		<LinearLayout style="@style/TrackDetailsRow"
+			android:background="@drawable/border1">
+
+			<LinearLayout style="@style/TrackDetailsLeftCell">
 
 				<TextView android:text="@string/sunrise" style="@style/SmallHeader1"></TextView>
 
@@ -123,8 +123,7 @@
 
 			</LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsRightCell"
-				android:background="@drawable/border1">
+			<LinearLayout style="@style/TrackDetailsRightCell">
 
 				<TextView android:text="@string/sunset" style="@style/SmallHeader1"></TextView>
 
@@ -136,5 +135,5 @@
 		</LinearLayout>
 
 	</LinearLayout>
-	
+
 </FrameLayout>
