@@ -198,11 +198,6 @@ public class TracksListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 
-		// update track list in case some settings changed 
-		if (cursorAdapter!=null) {
-			cursorAdapter.notifyDataSetChanged();
-		}
-		
 		super.onResume();
 	}
 	
@@ -265,12 +260,6 @@ public class TracksListActivity extends ListActivity {
 
 				return true;
 
-			case R.id.settingsMenuItem:
-				
-				startActivity(new Intent(this, SettingsActivity.class));
-
-				return true;
-				
 			default:
 
 				return super.onOptionsItemSelected(item);
@@ -292,7 +281,7 @@ public class TracksListActivity extends ListActivity {
 
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-		menu.setHeaderTitle("Track: " + info.id);
+		menu.setHeaderTitle(getString(R.string.track));
 		menu.add(Menu.NONE, 1, 1, R.string.view);
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);

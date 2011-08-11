@@ -157,11 +157,6 @@ public class TrackDetailsActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		// if user changes application settings (ex: measurement units) from
-		// this activity
-		// call of update here will display correct units
-		update();
-
 		super.onResume();
 	}
 
@@ -410,12 +405,6 @@ public class TrackDetailsActivity extends Activity {
 
 				i.putExtras(b);
 				startActivity(i);
-
-				return true;
-
-			case R.id.settingsMenuItem:
-
-				startActivity(new Intent(this, SettingsActivity.class));
 
 				return true;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="main_app_title">Арипука Трекер</string>
+	<string name="main_app_title">Aripuca Tracker</string>
 	<string name="main_app_title_code">AripucaTracker</string>
 	<string name="author_name">VitalNik</string>
 	<string name="company">Aripuca Apps</string>
@@ -29,6 +29,7 @@
 	<string name="waypoints">Путевые точки</string>
 	<string name="show_waypoint">Показать путевую точку</string>
 
+	<string name="track">Трек</string>
 	<string name="tracks">Треки</string>
 	<string name="record_track">Записать трек</string>
 	<string name="show_track">Показать трек</string>
@@ -83,7 +84,6 @@
 
 	<string name="backup">Backup</string>
 	<string name="backup_db">Сохранить БД</string>
-
 	<string name="restore_db">Восстановить БД</string>
 
 	<string name="file">Файл</string>
@@ -142,14 +142,13 @@
 	</string>
 
 	<string name="app_settings_title">Настройки приложения</string>
-	<string name="user_interface_title">Пользовательский интерфейс</string>
+	<string name="user_interface_title">Интерфейс пользователя</string>
 
 	<string name="wake_lock_title">Не гасить экран</string>
 	<string name="wake_lock_summary">Предотвратить засыпание устройства</string>
 
-	<string name="units">Units</string>
-	<string name="units_summary">Measurement units (coordinates, distance, speed,
-		etc)</string>
+	<string name="units">Единицы измерения</string>
+	<string name="units_summary">Выбор единиц измерения (координаты, расстояние, скорость и т.д.)</string>
 
 	<string name="tracking_title">Запись треков</string>
 
@@ -166,7 +165,7 @@
 	<string name="segmenting_mode">Режим сегментирования</string>
 
 	<string name="segment_distance">По расстоянию</string>
-	<string name="segment_distance_summary">Сегментировать трек каждые N км</string>
+	<string name="segment_distance_summary">Сегментировать трек равными дистанциями</string>
 
 	<string name="segment_time">По времени</string>
 	<string name="segment_time_summary">Сегментировать трек каждые N минут</string>
@@ -178,6 +177,8 @@
 	<string name="waypoint_default_description">Описание по умолчанию</string>
 	<string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание точки  
 		waypoint description</string>
+
+	<string name="app_language">Язык приложения</string>
 
 	<!-- COMPASS -->
 	<string name="compass">Компас</string>

@@ -82,16 +82,16 @@ public class WaypointsListActivity extends ListActivity {
 	private WaypointsArrayAdapter waypointsArrayAdapter;
 
 	private ArrayList<Waypoint> waypoints;
-	
+
 	/**
 	 * Location updates broadcast receiver
 	 */
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			Log.d(Constants.TAG, "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
-			
+
 			waypointsArrayAdapter.sortByDistance();
 			waypointsArrayAdapter.notifyDataSetChanged();
 		}
@@ -102,11 +102,11 @@ public class WaypointsListActivity extends ListActivity {
 	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			Log.d(Constants.TAG, "WaypointsListActivity: COMPASS BROADCAST MESSAGE RECEIVED");
-			
+
 			Bundle bundle = intent.getExtras();
-			
+
 			setAzimuth(bundle.getFloat("azimuth"));
 			waypointsArrayAdapter.notifyDataSetChanged();
 		}
@@ -214,7 +214,7 @@ public class WaypointsListActivity extends ListActivity {
 				if (text3 != null) {
 					text3.setText(distStr);
 				}
-				
+
 				// rotating small arrow pointing to waypoint
 				CompassImage im = (CompassImage) v.findViewById(R.id.compassImage);
 				im.setAngle(newAzimuth);
@@ -273,16 +273,16 @@ public class WaypointsListActivity extends ListActivity {
 		setListAdapter(waypointsArrayAdapter);
 
 	}
-	
+
 	@Override
 	public void onPause() {
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
-		
+
 		super.onPause();
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -306,23 +306,17 @@ public class WaypointsListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 
-		// update waypoints in case settings changed
-		if (waypointsArrayAdapter != null) {
-			waypointsArrayAdapter.notifyDataSetChanged();
-		}
-
 		// registering receiver for compass updates 
 		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
 		registerReceiver(compassBroadcastReceiver, filter);
-		
+
 		// registering receiver for location updates
 		IntentFilter filter2 = new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 		registerReceiver(locationBroadcastReceiver, filter2);
-		
+
 		super.onResume();
 	}
 
-	
 	/**
 	 * onCreateOptionsMenu handler
 	 */
@@ -385,12 +379,6 @@ public class WaypointsListActivity extends ListActivity {
 			case R.id.exportMenuItem:
 
 				exportWaypoints();
-				
-				return true;
-
-			case R.id.settingsMenuItem:
-
-				startActivity(new Intent(this, SettingsActivity.class));
 
 				return true;
 
@@ -414,11 +402,11 @@ public class WaypointsListActivity extends ListActivity {
 
 		final long waypointId = waypointsArrayAdapter.getItem((int) info.id).getId();
 
-		menu.setHeaderTitle("Waypoint: " + waypointId);
-		menu.add(Menu.NONE, 0, 0, "Edit");
-		menu.add(Menu.NONE, 1, 1, "Delete");
+		menu.setHeaderTitle(getString(R.string.waypoint));
+		menu.add(Menu.NONE, 0, 0, R.string.edit);
+		menu.add(Menu.NONE, 1, 1, R.string.delete);
 		// menu.add(Menu.NONE, 2, 2, "Online sync");
-		menu.add(Menu.NONE, 3, 3, "Show on map");
+		menu.add(Menu.NONE, 3, 3, R.string.show_on_map);
 
 	}
 
@@ -572,11 +560,11 @@ public class WaypointsListActivity extends ListActivity {
 		wpCursor.moveToFirst();
 
 		String title = wpCursor.getString(wpCursor.getColumnIndex("title"));
-		
+
 		String descr = wpCursor.getString(wpCursor.getColumnIndex("descr"));
-		
-		Double lat = wpCursor.getDouble(wpCursor.getColumnIndex("lat"))/1E6;
-		Double lng = wpCursor.getDouble(wpCursor.getColumnIndex("lng"))/1E6;
+
+		Double lat = wpCursor.getDouble(wpCursor.getColumnIndex("lat")) / 1E6;
+		Double lng = wpCursor.getDouble(wpCursor.getColumnIndex("lng")) / 1E6;
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.add_waypoint_dialog,
@@ -609,8 +597,8 @@ public class WaypointsListActivity extends ListActivity {
 				// waypoint title from input dialog
 				String titleStr = wpTitle.getText().toString().trim();
 				String descrStr = wpDescr.getText().toString().trim();
-				int latE6 = (int) (Double.parseDouble(wpLat.getText().toString())*1E6);
-				int lngE6 = (int) (Double.parseDouble(wpLng.getText().toString())*1E6);
+				int latE6 = (int) (Double.parseDouble(wpLat.getText().toString()) * 1E6);
+				int lngE6 = (int) (Double.parseDouble(wpLng.getText().toString()) * 1E6);
 
 				if (titleStr.equals("")) {
 					Toast.makeText(WaypointsListActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT)
@@ -652,53 +640,45 @@ public class WaypointsListActivity extends ListActivity {
 
 	}
 
-/*	protected void importFromTextFile() {
-
-		try {
-
-			BufferedReader br = new BufferedReader(new FileReader(myApp.getWaypointFile()));
-
-			String s = null;
-
-			while ((s = br.readLine()) != null) {
-
-				// parsing string from waypoints file
-				String[] tmpArr = s.split("\\|");
-				if (tmpArr.length < 5) {
-					continue;
-				}
-
-				ContentValues values = new ContentValues();
-				values.put("title", tmpArr[0]);
-				values.put("descr", "Exported from external source");
-				values.put("lat", tmpArr[2]);
-				values.put("lng", tmpArr[3]);
-				values.put("elevation", tmpArr[4]);
-				values.put("time", tmpArr[1]);
-
-				try {
-					myApp.getDatabase().insertOrThrow("waypoints", null, values);
-				} catch (SQLiteException e) {
-					Toast.makeText(WaypointsListActivity.this, "SQLiteException: " + e.getMessage(),
-							Toast.LENGTH_SHORT).show();
-					Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
-				}
-
-			}
-
-		} catch (IOException e) {
-
-			Toast.makeText(WaypointsListActivity.this, "IOException: " + e.getMessage(), Toast.LENGTH_SHORT)
-					.show();
-
-		}
-
-		updateWaypointsArray();
-		waypointsArrayAdapter.setItems(waypoints);
-		waypointsArrayAdapter.notifyDataSetChanged();
-
-	}
-	*/
+	/*
+	 * protected void importFromTextFile() {
+	 * 
+	 * try {
+	 * 
+	 * BufferedReader br = new BufferedReader(new
+	 * FileReader(myApp.getWaypointFile()));
+	 * 
+	 * String s = null;
+	 * 
+	 * while ((s = br.readLine()) != null) {
+	 * 
+	 * // parsing string from waypoints file String[] tmpArr = s.split("\\|");
+	 * if (tmpArr.length < 5) { continue; }
+	 * 
+	 * ContentValues values = new ContentValues(); values.put("title",
+	 * tmpArr[0]); values.put("descr", "Exported from external source");
+	 * values.put("lat", tmpArr[2]); values.put("lng", tmpArr[3]);
+	 * values.put("elevation", tmpArr[4]); values.put("time", tmpArr[1]);
+	 * 
+	 * try { myApp.getDatabase().insertOrThrow("waypoints", null, values); }
+	 * catch (SQLiteException e) { Toast.makeText(WaypointsListActivity.this,
+	 * "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+	 * Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e); }
+	 * 
+	 * }
+	 * 
+	 * } catch (IOException e) {
+	 * 
+	 * Toast.makeText(WaypointsListActivity.this, "IOException: " +
+	 * e.getMessage(), Toast.LENGTH_SHORT) .show();
+	 * 
+	 * }
+	 * 
+	 * updateWaypointsArray(); waypointsArrayAdapter.setItems(waypoints);
+	 * waypointsArrayAdapter.notifyDataSetChanged();
+	 * 
+	 * }
+	 */
 
 	private void updateWaypointsArray() {
 
@@ -715,8 +695,8 @@ public class WaypointsListActivity extends ListActivity {
 
 			Waypoint wp = new Waypoint(cursor.getString(cursor.getColumnIndex("title")),
 										cursor.getLong(cursor.getColumnIndex("time")),
-										cursor.getDouble(cursor.getColumnIndex("lat"))/1E6,
-										cursor.getDouble(cursor.getColumnIndex("lng"))/1E6,
+										cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
+										cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6,
 										cursor.getDouble(cursor.getColumnIndex("elevation")));
 
 			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
@@ -729,7 +709,7 @@ public class WaypointsListActivity extends ListActivity {
 		cursor.close();
 
 	}
-	
+
 	protected void importFromXMLFile() {
 
 		File importFolder = new File(myApp.getAppDir() + "/waypoints");
@@ -770,8 +750,8 @@ public class WaypointsListActivity extends ListActivity {
 
 					for (int i = 0; i < waypointsList.getLength(); i++) {
 
-						int latE6 = (int)(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lat"))*1E6);
-						int lngE6 = (int)(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lon"))*1E6);
+						int latE6 = (int) (Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lat")) * 1E6);
+						int lngE6 = (int) (Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lon")) * 1E6);
 						String title = "";
 						String desc = "";
 						double ele = 0;
@@ -902,7 +882,7 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	/**
-	 * Export waypoints to external file 
+	 * Export waypoints to external file
 	 */
 	private void exportWaypoints() {
 
@@ -917,8 +897,8 @@ public class WaypointsListActivity extends ListActivity {
 		builder.setTitle(R.string.export_waypoints);
 		builder.setView(layout);
 
-		final String defaultFilename = "wp_"+(new SimpleDateFormat("yyyy-MM-dd")).format((new Date()).getTime());  
-		
+		final String defaultFilename = "wp_" + (new SimpleDateFormat("yyyy-MM-dd")).format((new Date()).getTime());
+
 		// creating references to input fields in order to use them in
 		// onClick handler
 		final EditText filenameEditText = (EditText) layout.findViewById(R.id.filenameInputText);
@@ -956,6 +936,5 @@ public class WaypointsListActivity extends ListActivity {
 		dialog.show();
 
 	}
-	
-	
+
 }
