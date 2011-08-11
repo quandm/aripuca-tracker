@@ -25,8 +25,6 @@ public class MyApp extends Application {
 	 */
 	private boolean gpsOn = false;
 
-	private Locale locale = null;
-
 	public void setGpsOn(boolean flag) {
 		this.gpsOn = flag;
 	}
@@ -308,19 +306,6 @@ public class MyApp extends Application {
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		// setting locale
-		Configuration config = getBaseContext().getResources().getConfiguration();
-		String lang = preferences.getString("language", "en");
-		
-		String ttt = config.locale.getLanguage();
-		if (!config.locale.getLanguage().equals(lang)) {
-			locale = new Locale(lang);
-			Locale.setDefault(locale);
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-		}
-
 		// database helper
 		OpenHelper openHelper = new OpenHelper(this);
 
@@ -334,20 +319,6 @@ public class MyApp extends Application {
 
 		super.onCreate();
 
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-
-		if (locale != null) {
-			newConfig.locale = locale;
-			Locale.setDefault(locale);
-			getBaseContext().getResources().updateConfiguration(newConfig,
-					getBaseContext().getResources().getDisplayMetrics());
-		}
-		
-		super.onConfigurationChanged(newConfig);
-		
 	}
 
 	/**

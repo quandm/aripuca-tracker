@@ -20,10 +20,6 @@
 			android:title="@string/delete_tracks"
 			android:icon="@android:drawable/ic_menu_delete" />
 
-	<item android:id="@+id/settingsMenuItem" 
-			android:title="@string/settings"
-			android:icon="@android:drawable/ic_menu_preferences" />
-
 </menu>
     
     

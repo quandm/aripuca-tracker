@@ -71,13 +71,15 @@ public class MainActivity extends Activity {
 
 	private TrackRecorder trackRecorder;
 
+	private Locale locale = null;
+	
 	/**
 	 * location updates broadcast receiver
 	 */
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(Constants.TAG, "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+			//Log.d(Constants.TAG, "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
 			updateMainActivity();
 		}
 	};
@@ -88,7 +90,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(Constants.TAG, "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
+			//Log.d(Constants.TAG, "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
 			Bundle bundle = intent.getExtras();
 			updateCompass(bundle.getFloat("azimuth"));
 		}
@@ -280,17 +282,34 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
+		Log.v(Constants.TAG, "onCreate");
+		
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 		myApp.setMainActivity(this);
 
 		initializeHiddenPreferences();
 
-		// preparing UI -------------------------------------
+		//----------------------------------------------------------------------
+		// setting locale
+		Configuration config = getBaseContext().getResources().getConfiguration();
+		String lang = myApp.getPreferences().getString("language", "en");
+		
+		if (!config.locale.getLanguage().equals(lang)) {
+			
+			Log.v(Constants.TAG, "setting new locale: "+lang);
+			
+			locale = new Locale(lang);
+			Locale.setDefault(locale);
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+		}
+		
+		//----------------------------------------------------------------------
+		// preparing UI
 		// setting layout for main activity
 		setContentView(R.layout.main);
-
-		// ---------------------------------------------------
 
 		// restoring previous application state
 		if (savedInstanceState != null) {
@@ -318,8 +337,6 @@ public class MainActivity extends Activity {
 		// start gps only if stopped
 		// if gps was stopped before screen rotation - do not start
 		if (!myApp.isGpsOn() && myApp.getGpsStateBeforeRotation()) {
-
-			Log.v(Constants.TAG, "DEBUG: START GPS");
 
 			startGPSService();
 
@@ -359,6 +376,25 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+
+		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
+		
+		if (locale != null) {
+			
+			Log.v(Constants.TAG, "MainActivity: updating locale");
+			
+			newConfig.locale = locale;
+			Locale.setDefault(locale);
+			getBaseContext().getResources().updateConfiguration(newConfig,
+					getBaseContext().getResources().getDisplayMetrics());
+		}
+		
+		super.onConfigurationChanged(newConfig);
+		
+	}
+	
+	@Override
 	public Object onRetainNonConfigurationInstance() {
 
 		// setting a flag that activity is restarting and we will not
@@ -380,7 +416,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		Log.v(Constants.TAG, "onResume");
-
+		
 		// preventing phone from sleeping
 		if (findViewById(R.id.dynamicView) != null) {
 			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));

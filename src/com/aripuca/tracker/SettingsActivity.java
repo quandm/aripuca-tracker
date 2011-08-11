@@ -1,5 +1,6 @@
 package com.aripuca.tracker;
 
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -8,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+
+import android.preference.Preference.OnPreferenceChangeListener;
 
 import com.aripuca.tracker.util.ArrayUtils;
 
@@ -43,6 +46,35 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 		onSharedPreferenceChanged(preferences, "segmenting_mode");
 
+		// setting listener for distance units changes
+		ListPreference distanceUnitsPreference = (ListPreference) findPreference("distance_units");
+		distanceUnitsPreference.setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						updatePreferenceLists(newValue.toString());
+						return true;
+					}
+				});
+
+		// update preference lists dependent on distance units
+		String distanceUnit = distanceUnitsPreference.getValue();
+		updatePreferenceLists(distanceUnit);
+
+	}
+
+	/**
+	 * update preference lists dependent on distance units
+	 */
+	private void updatePreferenceLists(String distanceUnit) {
+
+		// changing labels for min_accuracy 
+		final ListPreference minAccuracy = (ListPreference) findPreference("min_accuracy");
+		minAccuracy.setEntries(distanceUnit.equals("km") ? R.array.min_accuracy_labels : R.array.min_accuracy_labels_ft);
+
+		// changing labels for min_distance 
+		final ListPreference minDistance = (ListPreference) findPreference("min_distance");
+		minDistance.setEntries(distanceUnit.equals("km") ? R.array.min_distance_labels : R.array.min_distance_labels_ft);
 	}
 
 	/**

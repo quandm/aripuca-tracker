@@ -5,8 +5,4 @@
 			android:title="@string/show_on_map"
 			android:icon="@android:drawable/ic_menu_mapmode" />
 
-	<item android:id="@+id/settingsMenuItem" 
-			android:title="@string/settings"
-			android:icon="@android:drawable/ic_menu_preferences" />
-
 </menu>

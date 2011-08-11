@@ -29,6 +29,7 @@
 	<string name="waypoints">Waypoints</string>
 	<string name="show_waypoint">Show waypoint</string>
 
+	<string name="track">Track</string>
 	<string name="tracks">Tracks</string>
 	<string name="record_track">Record track</string>
 	<string name="show_track">Show track</string>
@@ -134,15 +135,15 @@
 
 	<!-- SETTINGS -->
 	<string name="min_distance_title">Minimum distance</string>
-	<string name="min_distance_summary">Minimum distance between 2 recorded points (meters)
+	<string name="min_distance_summary">Minimum distance between 2 recorded points
 	</string>
 
 	<string name="min_accuracy_title">Minimum accuracy</string>
-	<string name="min_accuracy_summary">Minimum accuracy required for recording (meters)
+	<string name="min_accuracy_summary">Minimum accuracy required for recording
 	</string>
 
 	<string name="app_settings_title">Application settings</string>
-	<string name="user_interface_title">User inteface</string>
+	<string name="user_interface_title">User interface</string>
 
 	<string name="wake_lock_title">Stay awake</string>
 	<string name="wake_lock_summary">Prevents phone from sleeping</string>
@@ -166,7 +167,7 @@
 	<string name="segmenting_mode">Segmenting mode</string>
 
 	<string name="segment_distance">By distance</string>
-	<string name="segment_distance_summary">Segment track every N km</string>
+	<string name="segment_distance_summary">Segment track by equal distances</string>
 
 	<string name="segment_time">By time</string>
 	<string name="segment_time_summary">Segment track every N minutes</string>

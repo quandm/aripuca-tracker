@@ -36,9 +36,6 @@
 
 	<string name="no_segments">No segments created for this track</string>
 	
-	<string name="visit_blog">App blog:</string>
-	<string name="about_message">Open source GPS tracking app for Android</string>
-	
 	<string name="backup_completed">Application database copied to:</string>
 	<string name="backup_error">An error occurred copying application database.</string>
 

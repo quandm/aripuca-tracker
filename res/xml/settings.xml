@@ -58,12 +58,17 @@
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/track_recording">
 		<PreferenceCategory android:title="@string/tracks">
-			<EditTextPreference android:title="@string/min_distance_title"
-				android:defaultValue="5" android:summary="@string/min_distance_summary"
-				android:key="min_distance" android:inputType="number"></EditTextPreference>
-			<EditTextPreference android:summary="@string/min_accuracy_summary"
-				android:title="@string/min_accuracy_title" android:key="min_accuracy"
-				android:defaultValue="15" android:inputType="number"></EditTextPreference>
+
+			<ListPreference android:entries="@array/min_distance_labels" 
+				android:entryValues="@array/min_distance_values" android:title="@string/min_distance_title"
+				android:summary="@string/min_distance_summary"
+				android:key="min_distance" android:defaultValue="20" android:dialogTitle="@string/min_distance_title"></ListPreference>
+
+			<ListPreference android:entries="@array/min_accuracy_labels" 
+				android:entryValues="@array/min_accuracy_values" android:title="@string/min_accuracy_title"
+				android:summary="@string/min_accuracy_summary"
+				android:key="min_accuracy" android:defaultValue="10" android:dialogTitle="@string/min_accuracy_title"></ListPreference>
+
 		</PreferenceCategory>
 
 		<PreferenceCategory android:title="@string/segmenting">
