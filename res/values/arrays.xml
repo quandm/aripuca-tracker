@@ -7,20 +7,9 @@
 		<item>knot</item>
 	</string-array>
 
-	<string-array name="speed_units_values">
-		<item>kph</item>
-		<item>mph</item>
-		<item>kn</item>
-	</string-array>
-
 	<string-array name="distance_units_labels">
 		<item>kilometers</item>
 		<item>miles</item>
-	</string-array>
-
-	<string-array name="distance_units_values">
-		<item>km</item>
-		<item>mi</item>
 	</string-array>
 
 	<string-array name="elevation_units_labels">
@@ -28,21 +17,10 @@
 		<item>feet</item>
 	</string-array>
 
-	<string-array name="elevation_units_values">
-		<item>m</item>
-		<item>ft</item>
-	</string-array>
-
 	<string-array name="coord_units_labels">
 		<item>degrees (dd.dd°)</item>
 		<item>minutes (dd°mm.mm\')</item>
 		<item>seconds (dd°mm\'ss.ss\'\')</item>
-	</string-array>
-
-	<string-array name="coord_units_values">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
 	</string-array>
 
     <string-array name="segmenting_modes_labels">
@@ -54,25 +32,11 @@
         <item>Custom intervals 2</item>
     </string-array>
 
-	<string-array name="segmenting_modes_values">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-	</string-array>
-
 	<string-array name="language_labels">
 		<item>English</item>
 		<item>Russian</item>
 	</string-array>
 
-	<string-array name="language_values">
-		<item>en</item>
-		<item>ru</item>
-	</string-array>
-	
     <string-array name="min_accuracy_labels">
         <item>5 m</item>
         <item>10 m</item>
@@ -91,15 +55,6 @@
         <item>3000 ft</item>
     </string-array>
 
-	<string-array name="min_accuracy_values">
-		<item>5</item>
-		<item>10</item>
-		<item>20</item>
-		<item>50</item>
-		<item>100</item>
-		<item>1000</item>
-	</string-array>
-
     <string-array name="min_distance_labels">
         <item>5 m</item>
         <item>10 m</item>
@@ -117,14 +72,5 @@
         <item>150 ft</item>
         <item>300 ft</item>
     </string-array>
-
-	<string-array name="min_distance_values">
-		<item>5</item>
-		<item>10</item>
-		<item>20</item>
-		<item>30</item>
-		<item>50</item>
-		<item>100</item>
-	</string-array>
 
 </resources>
