@@ -138,11 +138,7 @@ public class TrackDetailsActivity extends Activity {
 		if (this.numberOfSegments != 0) {
 
 			while (cursor.isAfterLast() == false) {
-
 				segmentIds.add(cursor.getInt(cursor.getColumnIndex("_id")));
-
-				Log.d(Constants.TAG, "Segment id: " + cursor.getInt(cursor.getColumnIndex("_id")));
-
 				cursor.moveToNext();
 			}
 		}

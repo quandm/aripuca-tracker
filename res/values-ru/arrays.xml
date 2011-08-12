@@ -4,13 +4,7 @@
 	<string-array name="speed_units_labels">
 		<item>км/ч</item>
 		<item>миль/ч</item>
-		<item>узлов</item>
-	</string-array>
-
-	<string-array name="speed_units_values">
-		<item>kph</item>
-		<item>mph</item>
-		<item>kn</item>
+		<item>узел</item>
 	</string-array>
 
 	<string-array name="distance_units_labels">
@@ -18,31 +12,15 @@
 		<item>мили</item>
 	</string-array>
 
-	<string-array name="distance_units_values">
-		<item>km</item>
-		<item>mi</item>
-	</string-array>
-
 	<string-array name="elevation_units_labels">
 		<item>метры</item>
 		<item>футы</item>
-	</string-array>
-
-	<string-array name="elevation_units_values">
-		<item>m</item>
-		<item>ft</item>
 	</string-array>
 
 	<string-array name="coord_units_labels">
 		<item>градусы (dd.dd°)</item>
 		<item>минуты (dd°mm.mm\')</item>
 		<item>секунды (dd°mm\'ss.ss\'\')</item>
-	</string-array>
-
-	<string-array name="coord_units_values">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
 	</string-array>
 
     <string-array name="segmenting_modes_labels">
@@ -54,23 +32,46 @@
         <item>Интервалы пользователя 2</item>
     </string-array>
 
-	<string-array name="segmenting_modes_values">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-	</string-array>
-
 	<string-array name="language_labels">
 		<item>Английский</item>
 		<item>Русский</item>
 	</string-array>
+	
+    <string-array name="min_accuracy_labels">
+        <item>5 м</item>
+        <item>10 м</item>
+        <item>20 м ()</item>
+        <item>50 м</item>
+        <item>100 м</item>
+        <item>1000 м</item>
+    </string-array>
 
-	<string-array name="language_values">
-		<item>en</item>
-		<item>ru</item>
-	</string-array>
+    <string-array name="min_accuracy_labels_ft">
+        <item>15 футов</item>
+        <item>30 футов</item>
+        <item>60 футов (рекомендуется)</item>
+        <item>150 футов</item>
+        <item>300 футов</item>
+        <item>3000 футов</item>
+    </string-array>
+
+    <string-array name="min_distance_labels">
+        <item>5 м</item>
+        <item>10 м</item>
+        <item>20 м (рекомендуется)</item>
+        <item>30 м</item>
+        <item>50 м</item>
+        <item>100 м</item>
+    </string-array>
+
+    <string-array name="min_distance_labels_ft">
+        <item>15 футов</item>
+        <item>30 футов</item>
+        <item>60 футов (рекомендуется)</item>
+        <item>90 футов</item>
+        <item>150 футов</item>
+        <item>300 футов</item>
+    </string-array>
+	
 
 </resources>

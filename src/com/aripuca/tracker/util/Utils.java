@@ -3,7 +3,9 @@ package com.aripuca.tracker.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 import android.hardware.GeomagneticField;
 import android.location.Location;
@@ -25,7 +27,7 @@ public class Utils {
 
 	public static String formatNumber(Object value, int max, int min) {
 
-		NumberFormat f = NumberFormat.getInstance();
+		NumberFormat f = NumberFormat.getInstance(Locale.US);
 		f.setMaximumFractionDigits(max);
 		f.setMinimumFractionDigits(min);
 		f.setGroupingUsed(false);
@@ -226,6 +228,7 @@ public class Utils {
 	 */
 	public static String formatCoord(double coord) {
 		DecimalFormat df = new DecimalFormat("###.######");
+		df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
 		return df.format(coord);	
 	}
 	
