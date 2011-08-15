@@ -2,7 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/app_settings_title">
 
-	<PreferenceScreen android:title="@string/user_interface_title"><ListPreference android:entries="@array/language_labels" android:entryValues="@array/language_values" android:key="language" android:dialogTitle="@string/app_language" android:defaultValue="en" android:title="@string/app_language"></ListPreference><CheckBoxPreference android:defaultValue="true" android:key="wake_lock" android:title="@string/wake_lock_title" android:summary="@string/wake_lock_summary"></CheckBoxPreference>
+	<PreferenceScreen android:title="@string/user_interface_title"><ListPreference
+	android:entries="@array/language_labels" android:entryValues="@array/language_values"
+	android:key="language" android:dialogTitle="@string/app_language"
+	android:defaultValue="en-US" android:title="@string/app_language"></ListPreference><CheckBoxPreference android:defaultValue="true" android:key="wake_lock" android:title="@string/wake_lock_title" android:summary="@string/wake_lock_summary"></CheckBoxPreference>
 	
 </PreferenceScreen>
 

@@ -3,7 +3,10 @@ package com.aripuca.tracker;
 import java.util.Locale;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -24,6 +27,19 @@ public class MyApp extends Application {
 	 * gps on/off flag
 	 */
 	private boolean gpsOn = false;
+
+	private Locale locale = null;
+
+	/**
+	 * location updates broadcast receiver
+	 */
+	protected BroadcastReceiver languageUpdateBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(Constants.TAG, "languageUpdateBroadcastReceiver");
+			updateLocale();
+		}
+	};
 
 	public void setGpsOn(boolean flag) {
 		this.gpsOn = flag;
@@ -270,32 +286,19 @@ public class MyApp extends Application {
 		// upgrading db example
 		/*
 		 * public void onUpgrade(SQLiteDatabase db, int oldVersion, int
-		 * newVersion) {
-		 * 
-		 * Log.w(Constants.TAG, "Upgrading database from version " + oldVersion
-		 * + " to " + newVersion);
-		 * 
-		 * if (oldVersion < 1) {
-		 * 
+		 * newVersion) { Log.w(Constants.TAG, "Upgrading database from version "
+		 * + oldVersion + " to " + newVersion); if (oldVersion < 1) {
 		 * db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
-		 * db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE); onCreate(db);
-		 * 
-		 * } else {
-		 * 
-		 * // adding "distance" field to track points table if (oldVersion <= 1)
-		 * { Log.i(Constants.TAG, "distance field added to track_points table");
+		 * db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE); onCreate(db); }
+		 * else { // adding "distance" field to track points table if
+		 * (oldVersion <= 1) { Log.i(Constants.TAG,
+		 * "distance field added to track_points table");
 		 * db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE +
-		 * " ADD distance REAL"); }
-		 * 
-		 * // adding segment stats table if (oldVersion <= 1) {
-		 * Log.i(Constants.TAG, "Segments table added");
-		 * db.execSQL(SEGMENTS_TABLE_CREATE); }
-		 * 
-		 * }
-		 * 
-		 * }
+		 * " ADD distance REAL"); } // adding segment stats table if (oldVersion
+		 * <= 1) { Log.i(Constants.TAG, "Segments table added");
+		 * db.execSQL(SEGMENTS_TABLE_CREATE); } } }
 		 */
 
 	}
@@ -305,6 +308,12 @@ public class MyApp extends Application {
 
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		updateLocale();
+
+		// registering receiver for compass updates
+		registerReceiver(languageUpdateBroadcastReceiver, new IntentFilter(
+				"com.aripuca.tracker.LANGUAGE_UPDATES_ACTION"));
 
 		// database helper
 		OpenHelper openHelper = new OpenHelper(this);
@@ -318,6 +327,49 @@ public class MyApp extends Application {
 				+ getString(R.string.main_app_title_code);
 
 		super.onCreate();
+
+	}
+
+	/**
+	 * 
+	 */
+	protected void updateLocale() {
+
+		// ----------------------------------------------------------------------
+		// setting locale
+		Configuration config = getBaseContext().getResources().getConfiguration();
+		String lang = preferences.getString("language", "en-US");
+
+		Log.v(Constants.TAG, "MyApp: updateLocale: current locale :" + config.locale.getLanguage());
+
+		if (!config.locale.getLanguage().equals(lang)) {
+
+			Log.v(Constants.TAG, "MyApp: updateLocale: setting new locale: " + lang);
+
+			locale = new Locale(lang);
+			Locale.setDefault(locale);
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+			
+		}
+
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+
+		Log.v(Constants.TAG, "MyApp: onConfigurationChanged: " + newConfig.toString());
+
+		if (locale != null) {
+			Log.v(Constants.TAG, "MyApp: onConfigurationChanged: updating locale: " + locale.getLanguage());
+			newConfig.locale = locale;
+			Locale.setDefault(locale);
+			getBaseContext().getResources().updateConfiguration(newConfig,
+					getBaseContext().getResources().getDisplayMetrics());
+		}
+
+		super.onConfigurationChanged(newConfig);
 
 	}
 

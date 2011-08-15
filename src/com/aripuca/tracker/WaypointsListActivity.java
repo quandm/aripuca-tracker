@@ -90,7 +90,7 @@ public class WaypointsListActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			Log.d(Constants.TAG, "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+//			Log.d(Constants.TAG, "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
 
 			waypointsArrayAdapter.sortByDistance();
 			waypointsArrayAdapter.notifyDataSetChanged();
@@ -103,7 +103,7 @@ public class WaypointsListActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			Log.d(Constants.TAG, "WaypointsListActivity: COMPASS BROADCAST MESSAGE RECEIVED");
+//			Log.d(Constants.TAG, "WaypointsListActivity: COMPASS BROADCAST MESSAGE RECEIVED");
 
 			Bundle bundle = intent.getExtras();
 

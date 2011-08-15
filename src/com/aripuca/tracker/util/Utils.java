@@ -19,15 +19,21 @@ public class Utils {
 	protected static final double MI_TO_M = 1609.344;
 	protected static final double MI_TO_FEET = 5280.0;
 	protected static final double KMH_TO_MPH = 0.621371192;
-	protected static final double KMH_TO_KNOTS = 0.539957; // 1 knot = 1 nautical mile (1.852km) per hour
+	protected static final double KMH_TO_KNOTS = 0.539957; // 1 knot = 1
+															// nautical mile
+															// (1.852km) per
+															// hour
 
 	public static String formatNumber(Object value, int max) {
 		return Utils.formatNumber(value, max, 0);
 	}
 
+	/**
+	 * Number formatting according to default locale
+	 */
 	public static String formatNumber(Object value, int max, int min) {
 
-		NumberFormat f = NumberFormat.getInstance(Locale.US);
+		NumberFormat f = NumberFormat.getInstance();
 		f.setMaximumFractionDigits(max);
 		f.setMinimumFractionDigits(min);
 		f.setGroupingUsed(false);
@@ -35,7 +41,22 @@ public class Utils {
 		try {
 			return f.format(value);
 		} catch (IllegalArgumentException e) {
-			return "";
+			return "err";
+		}
+
+	}
+
+	/**
+	 * Number formatting according to US locale. Required for export to GPX
+	 */
+	public static String formatNumberUS(Object value, int max) {
+
+		NumberFormat f = NumberFormat.getInstance(Locale.US);
+		f.setMaximumFractionDigits(max);
+		try {
+			return f.format(value);
+		} catch (IllegalArgumentException e) {
+			return "err";
 		}
 
 	}
@@ -50,17 +71,11 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
-			if (value > 100000) {
-				return Utils.formatNumber(value / 1000, 0) + " km";
-			}
+			if (value > 100000) { return Utils.formatNumber(value / 1000, 0) + " km"; }
 
-			if (value > 10000) {
-				return Utils.formatNumber(value / 1000, 1) + " km";
-			}
+			if (value > 10000) { return Utils.formatNumber(value / 1000, 1) + " km"; }
 
-			if (value > 1000) {
-				return Utils.formatNumber(value / 1000, 2) + " km";
-			}
+			if (value > 1000) { return Utils.formatNumber(value / 1000, 2) + " km"; }
 
 			return Utils.formatNumber(value, 0) + " m";
 
@@ -68,17 +83,11 @@ public class Utils {
 
 		if (unit.equals("mi")) {
 
-			if (value > MI_TO_M * 100) {
-				return Utils.formatNumber(value / MI_TO_M, 0) + " mi";
-			}
+			if (value > MI_TO_M * 100) { return Utils.formatNumber(value / MI_TO_M, 0) + " mi"; }
 
-			if (value > MI_TO_M * 10) {
-				return Utils.formatNumber(value / MI_TO_M, 1) + " mi";
-			}
+			if (value > MI_TO_M * 10) { return Utils.formatNumber(value / MI_TO_M, 1) + " mi"; }
 
-			if (value > MI_TO_M) {
-				return Utils.formatNumber(value / MI_TO_M, 2) + " mi";
-			}
+			if (value > MI_TO_M) { return Utils.formatNumber(value / MI_TO_M, 2) + " mi"; }
 
 			return Utils.formatNumber(value * M_TO_FT, 0) + " ft";
 		}
@@ -89,13 +98,9 @@ public class Utils {
 
 	public static String formatElevation(float value, String unit) {
 
-		if (unit.equals("m")) {
-			return Utils.formatNumber(value, 0) + " m";
-		}
+		if (unit.equals("m")) { return Utils.formatNumber(value, 0) + " m"; }
 
-		if (unit.equals("ft")) {
-			return Utils.formatNumber(value * M_TO_FT, 0) + " ft";
-		}
+		if (unit.equals("ft")) { return Utils.formatNumber(value * M_TO_FT, 0) + " ft"; }
 
 		return "";
 	}
@@ -105,21 +110,18 @@ public class Utils {
 	 */
 	public static String formatSpeed(float value, String unit) {
 
-		if (value < 0.224) {
-			return "0.0";
+		if (value < 0.224) { return "0.0"; }
+
+		if (unit.equals("kph")) { return Utils.formatNumber(value * 3.6, 1) + " kph"; }
+
+		if (unit.equals("mph")) { return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1) + " mph"; // 1000
+																									// *
+																									// M_TO_FT
+																									// /
+																									// MI_TO_FEET;
 		}
 
-		if (unit.equals("kph")) {
-			return Utils.formatNumber(value * 3.6, 1) + " kph";
-		}
-
-		if (unit.equals("mph")) {
-			return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1) + " mph"; // 1000 * M_TO_FT / MI_TO_FEET;
-		}
-
-		if (unit.equals("kn")) {
-			return Utils.formatNumber(value * 3.6 * KMH_TO_KNOTS, 1) + " kn";
-		}
+		if (unit.equals("kn")) { return Utils.formatNumber(value * 3.6 * KMH_TO_KNOTS, 1) + " kn"; }
 
 		return "";
 
@@ -132,29 +134,21 @@ public class Utils {
 	 */
 	public static String formatPace(float value, String unit) {
 
-		if (value < 0.224) {
-			return "00:00";
-		}
+		if (value < 0.224) { return "00:00"; }
 
-		if (unit.equals("kph")) {
-			return formatInterval((long) (1000000 / value), false);
-		}
+		if (unit.equals("kph")) { return formatInterval((long) (1000000 / value), false); }
 
-		if (unit.equals("mph")) {
-			return formatInterval((long) (1000000 / (value * KMH_TO_MPH)), false);
-		}
+		if (unit.equals("mph")) { return formatInterval((long) (1000000 / (value * KMH_TO_MPH)), false); }
 
-		if (unit.equals("kn")) {
-			return formatInterval((long) (1000000 / (value * KMH_TO_KNOTS)), false);
-		}
+		if (unit.equals("kn")) { return formatInterval((long) (1000000 / (value * KMH_TO_KNOTS)), false); }
 
 		return "";
 
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FORMAT COORDINATES
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public static String formatLat(double lat, int outputType) {
 
@@ -188,23 +182,23 @@ public class Utils {
 
 		StringBuilder sb = new StringBuilder();
 		char endChar = DEGREE_CHAR;
-		
+
 		DecimalFormat df = new DecimalFormat("###.######");
 		if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
 
 			df = new DecimalFormat("##.###");
-			
+
 			int degrees = (int) Math.floor(coordinate);
 			sb.append(degrees);
 			sb.append(DEGREE_CHAR); // degrees sign
 			endChar = '\''; // minutes sign
 			coordinate -= degrees;
 			coordinate *= 60.0;
-			
+
 			if (outputType == Location.FORMAT_SECONDS) {
-			
+
 				df = new DecimalFormat("##.##");
-				
+
 				int minutes = (int) Math.floor(coordinate);
 				sb.append(minutes);
 				sb.append('\''); // minutes sign
@@ -229,18 +223,16 @@ public class Utils {
 	public static String formatCoord(double coord) {
 		DecimalFormat df = new DecimalFormat("###.######");
 		df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-		return df.format(coord);	
+		return df.format(coord);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public static String shortenStr(String s, int maxLength) {
 
-		if (s.length() > maxLength) {
-			return s.substring(0, maxLength) + "...";
-		}
+		if (s.length() > maxLength) { return s.substring(0, maxLength) + "..."; }
 
 		return s;
 	}
@@ -334,6 +326,5 @@ public class Utils {
 
 		return field.getDeclination();
 	}
-	
-	
+
 }

@@ -6,6 +6,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -46,6 +47,22 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 		onSharedPreferenceChanged(preferences, "segmenting_mode");
 
+		// setting listener for application language changes
+		ListPreference languagePreference = (ListPreference) findPreference("language");
+		languagePreference.setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						
+						// let's broadcast compass data to any activity waiting for updates
+						Intent intent = new Intent("com.aripuca.tracker.LANGUAGE_UPDATES_ACTION");
+						// broadcasting compass updates 
+						sendBroadcast(intent);
+						
+						return true;
+					}
+				});
+		
 		// setting listener for distance units changes
 		ListPreference distanceUnitsPreference = (ListPreference) findPreference("distance_units");
 		distanceUnitsPreference.setOnPreferenceChangeListener(

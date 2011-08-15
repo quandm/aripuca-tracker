@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 	/**
 	 * 
 	 */
-	private WakeLock wakeLock;
+//	private WakeLock wakeLock;
 
 	/**
 	 * Reference to Application object
@@ -71,8 +71,6 @@ public class MainActivity extends Activity {
 
 	private TrackRecorder trackRecorder;
 
-	private Locale locale = null;
-	
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -291,22 +289,6 @@ public class MainActivity extends Activity {
 		initializeHiddenPreferences();
 
 		//----------------------------------------------------------------------
-		// setting locale
-		Configuration config = getBaseContext().getResources().getConfiguration();
-		String lang = myApp.getPreferences().getString("language", "en");
-		
-		if (!config.locale.getLanguage().equals(lang)) {
-			
-			Log.v(Constants.TAG, "setting new locale: "+lang);
-			
-			locale = new Locale(lang);
-			Locale.setDefault(locale);
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-		}
-		
-		//----------------------------------------------------------------------
 		// preparing UI
 		// setting layout for main activity
 		setContentView(R.layout.main);
@@ -378,18 +360,7 @@ public class MainActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 
-		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
-		
-		if (locale != null) {
-			
-			Log.v(Constants.TAG, "MainActivity: updating locale");
-			
-			newConfig.locale = locale;
-			Locale.setDefault(locale);
-			getBaseContext().getResources().updateConfiguration(newConfig,
-					getBaseContext().getResources().getDisplayMetrics());
-		}
-		
+
 		super.onConfigurationChanged(newConfig);
 		
 	}
@@ -1382,23 +1353,15 @@ public class MainActivity extends Activity {
 	// -------------------------------------------------------------------------
 	// WAKE LOCK
 	// -------------------------------------------------------------------------
-
-	/**
-	 * 
-	 */
-	public void aquireWakeLock() {
+/*	public void aquireWakeLock() {
 		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE))
 				.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
 						| PowerManager.ON_AFTER_RELEASE, Constants.TAG);
 		wakeLock.acquire();
 	}
-
-	/**
-	 * 
-	 */
 	public void releaseWakeLock() {
 		wakeLock.release();
-	}
+	} */
 
 	/**
 	 * Create a list of famous waypoints and insert to db when application first
