@@ -13,7 +13,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
 		<EditText android:id="@+id/waypointTitleInputText"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:maxLines="1" android:maxLength="50" android:hint="enter title" />
+			android:maxLines="1" android:maxLength="50" android:hint="@string/enter_title" />
 
 		<!-- android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine" 
 			android:imeOptions="actionSend|flagNoEnterAction" -->
@@ -28,7 +28,7 @@
 					android:layout_height="wrap_content"></TextView>
 				<EditText android:id="@+id/waypointLatInputText"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:maxLines="1" android:maxLength="50" android:hint="enter latitude" />
+					android:maxLines="1" android:maxLength="50" android:hint="@string/lat" />
 			</LinearLayout>
 
 			<LinearLayout android:orientation="vertical"  android:layout_weight="1"
@@ -38,7 +38,7 @@
 					android:layout_height="wrap_content"></TextView>
 				<EditText android:id="@+id/waypointLngInputText"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:maxLines="1" android:maxLength="50" android:hint="enter longitude" />
+					android:maxLines="1" android:maxLength="50" android:hint="@string/lng" />
 
 			</LinearLayout>
 
@@ -50,7 +50,7 @@
 		<EditText android:id="@+id/waypointDescriptionInputText"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:lines="3" android:gravity="top" android:maxLength="200"
-			android:hint="waypoint description" />
+			android:hint="@string/enter_waypoint_description" />
 
 	</LinearLayout>
 

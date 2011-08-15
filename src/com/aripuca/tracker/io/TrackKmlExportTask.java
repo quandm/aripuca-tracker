@@ -51,7 +51,7 @@ public class TrackKmlExportTask extends TrackExportTask {
 		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
 		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
 		
-		pw.println(lng + "," + lat + "," + Utils.formatNumber(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + " ");
+		pw.println(lng + "," + lat + "," + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + " ");
 
 	}
 

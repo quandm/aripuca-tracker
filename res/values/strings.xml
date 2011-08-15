@@ -233,6 +233,12 @@
 	<string name="coming_soon">Coming soon...</string>
 	
 	<string name="export_completed">Export completed.</string>
+
+	<!-- HINTS -->
+	<string name="enter_title">Enter title</string>
+	<string name="enter_waypoint_description">Waypoint description</string>
+	<string name="enter_track_description">Enter track description</string>
+	
 		
 
 </resources>

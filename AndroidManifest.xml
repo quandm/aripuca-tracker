@@ -8,7 +8,7 @@
 
 		<uses-library android:name="com.google.android.maps" />
 
-		<activity android:name=".MainActivity" android:label="@string/main_app_title" android:configChanges="orientation">
+		<activity android:name=".MainActivity" android:label="@string/main_app_title">
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

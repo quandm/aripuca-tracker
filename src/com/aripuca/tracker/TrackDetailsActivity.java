@@ -153,7 +153,10 @@ public class TrackDetailsActivity extends Activity {
 	@Override
 	protected void onResume() {
 
+		this.update();
+
 		super.onResume();
+		
 	}
 
 	/**

@@ -82,7 +82,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
 		
 		pw.println("<wpt lat=\"" + lat + "\" lon=\"" + lng + "\">");
-		pw.println("<ele>" + Utils.formatNumber(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + "</ele>");
+		pw.println("<ele>" + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + "</ele>");
 		pw.println("<time>" + wpTime + "</time>");
 		pw.println("<name>" + tpCursor.getString(tpCursor.getColumnIndex("title")) + "</name>");
 		pw.println("<desc>" + tpCursor.getString(tpCursor.getColumnIndex("descr")) + "</desc>");
