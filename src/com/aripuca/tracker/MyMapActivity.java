@@ -34,6 +34,8 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private MyApp myApp;
 
+	private Utils utils;
+	
 	/**
 	 * 
 	 */
@@ -238,6 +240,8 @@ public class MyMapActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 
 		myApp = ((MyApp) getApplicationContext());
+		
+		utils = new Utils(this);
 
 		setContentView(R.layout.map_view);
 
@@ -288,7 +292,7 @@ public class MyMapActivity extends MapActivity {
 
 			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 
-			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
+			((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(
 					cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
 
 			cursor.close();

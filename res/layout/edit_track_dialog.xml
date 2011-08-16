@@ -3,23 +3,19 @@
 	android:layout_height="fill_parent" android:id="@+id/edit_track_dialog_layout_root"
 	android:padding="3dp">
 
-	<TextView android:text="@string/title" 
-		android:layout_width="fill_parent" android:layout_height="wrap_content"	></TextView>
-		
-	<EditText android:id="@+id/titleInputText"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:maxLines="1"
-		android:maxLength="50" android:hint="track title" />
+	<TextView android:text="@string/title" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"></TextView>
 
-	<TextView android:text="@string/description" 
-		android:layout_width="fill_parent" android:layout_height="wrap_content"	></TextView>
-		
+	<EditText android:id="@+id/titleInputText"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:maxLines="1" android:maxLength="50" />
+
+	<TextView android:text="@string/description"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+
 	<EditText android:id="@+id/descriptionInputText"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:lines="3"
-		android:gravity="top"
-		android:maxLength="100" 
-		android:hint="track description" />
+		android:lines="3" android:gravity="top" android:maxLength="100"
+		android:hint="@string/track_description" />
 
 </LinearLayout>

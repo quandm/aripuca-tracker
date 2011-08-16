@@ -54,9 +54,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 					@Override
 					public boolean onPreferenceChange(Preference preference, Object newValue) {
 						
-						// let's broadcast compass data to any activity waiting for updates
 						Intent intent = new Intent("com.aripuca.tracker.LANGUAGE_UPDATES_ACTION");
-						// broadcasting compass updates 
+						// broadcasting language updates 
 						sendBroadcast(intent);
 						
 						return true;

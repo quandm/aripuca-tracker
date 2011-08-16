@@ -7,6 +7,10 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import com.aripuca.tracker.R;
+
+import android.app.Application;
+import android.content.Context;
 import android.hardware.GeomagneticField;
 import android.location.Location;
 
@@ -24,6 +28,11 @@ public class Utils {
 															// (1.852km) per
 															// hour
 
+	private final Context context;
+	public Utils(Context context) {
+		this.context = context;
+	}
+	
 	public static String formatNumber(Object value, int max) {
 		return Utils.formatNumber(value, max, 0);
 	}
@@ -67,40 +76,40 @@ public class Utils {
 	 * @param float value
 	 * @return String
 	 */
-	public static String formatDistance(float value, String unit) {
+	public String formatDistance(float value, String unit) {
 
 		if (unit.equals("km")) {
 
-			if (value > 100000) { return Utils.formatNumber(value / 1000, 0) + " km"; }
+			if (value > 100000) { return Utils.formatNumber(value / 1000, 0) + " " + context.getString(R.string.km); }
 
-			if (value > 10000) { return Utils.formatNumber(value / 1000, 1) + " km"; }
+			if (value > 10000) { return Utils.formatNumber(value / 1000, 1) + " " + context.getString(R.string.km); }
 
-			if (value > 1000) { return Utils.formatNumber(value / 1000, 2) + " km"; }
+			if (value > 1000) { return Utils.formatNumber(value / 1000, 2) + " " + context.getString(R.string.km); }
 
-			return Utils.formatNumber(value, 0) + " m";
+			return Utils.formatNumber(value, 0) + " " + context.getString(R.string.m);
 
 		}
 
 		if (unit.equals("mi")) {
 
-			if (value > MI_TO_M * 100) { return Utils.formatNumber(value / MI_TO_M, 0) + " mi"; }
+			if (value > MI_TO_M * 100) { return Utils.formatNumber(value / MI_TO_M, 0) + " " + context.getString(R.string.mi); }
 
-			if (value > MI_TO_M * 10) { return Utils.formatNumber(value / MI_TO_M, 1) + " mi"; }
+			if (value > MI_TO_M * 10) { return Utils.formatNumber(value / MI_TO_M, 1) + " " + context.getString(R.string.mi); }
 
-			if (value > MI_TO_M) { return Utils.formatNumber(value / MI_TO_M, 2) + " mi"; }
+			if (value > MI_TO_M) { return Utils.formatNumber(value / MI_TO_M, 2) + " " + context.getString(R.string.mi); }
 
-			return Utils.formatNumber(value * M_TO_FT, 0) + " ft";
+			return Utils.formatNumber(value * M_TO_FT, 0) + " " + context.getString(R.string.ft);
 		}
 
 		return "";
 
 	}
 
-	public static String formatElevation(float value, String unit) {
+	public String formatElevation(float value, String unit) {
 
-		if (unit.equals("m")) { return Utils.formatNumber(value, 0) + " m"; }
+		if (unit.equals("m")) { return Utils.formatNumber(value, 0) + " " + context.getString(R.string.m); }
 
-		if (unit.equals("ft")) { return Utils.formatNumber(value * M_TO_FT, 0) + " ft"; }
+		if (unit.equals("ft")) { return Utils.formatNumber(value * M_TO_FT, 0) + " " + context.getString(R.string.ft); }
 
 		return "";
 	}
@@ -108,20 +117,20 @@ public class Utils {
 	/**
 	 * Format speed value (kph, mph or knots)
 	 */
-	public static String formatSpeed(float value, String unit) {
+	public String formatSpeed(float value, String unit) {
 
 		if (value < 0.224) { return "0.0"; }
 
-		if (unit.equals("kph")) { return Utils.formatNumber(value * 3.6, 1) + " kph"; }
+		if (unit.equals("kph")) { return Utils.formatNumber(value * 3.6, 1) + " " + context.getString(R.string.kph); }
 
-		if (unit.equals("mph")) { return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1) + " mph"; // 1000
+		if (unit.equals("mph")) { return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1) + " " + context.getString(R.string.mph);  // 1000
 																									// *
 																									// M_TO_FT
 																									// /
 																									// MI_TO_FEET;
 		}
 
-		if (unit.equals("kn")) { return Utils.formatNumber(value * 3.6 * KMH_TO_KNOTS, 1) + " kn"; }
+		if (unit.equals("kn")) { return Utils.formatNumber(value * 3.6 * KMH_TO_KNOTS, 1) + " " + context.getString(R.string.kn); }
 
 		return "";
 

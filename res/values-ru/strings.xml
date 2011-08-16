@@ -39,6 +39,13 @@
 	<string name="next_segment">Следующий сегмент</string>
 
 	<!-- SEPARATE WORDS -->
+	<string name="m">м</string>
+	<string name="ft">фт</string>
+	<string name="km">км</string>
+	<string name="mi">ми</string>
+	<string name="kn">уз</string>
+	<string name="kph">км/ч</string>
+	<string name="mph">ми/ч</string>
 
 	<string name="ver">v.</string>
 	<string name="ok">Ok</string>
@@ -232,6 +239,11 @@
 	
 	<string name="export_completed">Экспорт завершен</string>
 
+	<string name="restart_required">Чтобы изменения вступили в силу необходим перезапуск приложения</string>
+
+	<!-- HINTS -->
+	<string name="waypoint_description">Описание путевой точки</string>
+	<string name="track_description">Описание трека</string>
 
 
 </resources>

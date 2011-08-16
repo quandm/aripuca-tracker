@@ -13,7 +13,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
 		<EditText android:id="@+id/waypointTitleInputText"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:maxLines="1" android:maxLength="50" android:hint="@string/enter_title" />
+			android:maxLines="1" android:maxLength="50" />
 
 		<!-- android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine" 
 			android:imeOptions="actionSend|flagNoEnterAction" -->
@@ -50,7 +50,7 @@
 		<EditText android:id="@+id/waypointDescriptionInputText"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:lines="3" android:gravity="top" android:maxLength="200"
-			android:hint="@string/enter_waypoint_description" />
+			android:hint="@string/waypoint_description" />
 
 	</LinearLayout>
 

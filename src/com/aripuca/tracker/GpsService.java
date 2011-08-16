@@ -74,10 +74,6 @@ public class GpsService extends Service {
 		@Override
 		public void onSensorChanged(SensorEvent event) {
 
-			if (myApp == null) {
-				return;
-			}
-			
 			// let's broadcast compass data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
 
