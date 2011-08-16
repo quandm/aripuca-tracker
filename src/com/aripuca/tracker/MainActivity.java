@@ -69,6 +69,8 @@ public class MainActivity extends Activity {
 	 */
 	private MyApp myApp;
 
+	private Utils utils;
+	
 	private TrackRecorder trackRecorder;
 
 	/**
@@ -286,6 +288,8 @@ public class MainActivity extends Activity {
 		myApp = ((MyApp) getApplicationContext());
 		myApp.setMainActivity(this);
 
+		utils = new Utils(this);
+		
 		initializeHiddenPreferences();
 
 		//----------------------------------------------------------------------
@@ -1092,7 +1096,7 @@ public class MainActivity extends Activity {
 
 		if (myApp.getCurrentLocation().hasAccuracy()) {
 			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(Utils.formatDistance(myApp.getCurrentLocation()
+				((TextView) findViewById(R.id.accuracy)).setText(utils.formatDistance(myApp.getCurrentLocation()
 						.getAccuracy(), distanceUnit));
 			}
 		}
@@ -1104,7 +1108,7 @@ public class MainActivity extends Activity {
 
 		if (myApp.getCurrentLocation().hasAltitude()) {
 			if (findViewById(R.id.elevation) != null) {
-				((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation((float) myApp
+				((TextView) findViewById(R.id.elevation)).setText(utils.formatElevation((float) myApp
 						.getCurrentLocation().getAltitude(), elevationUnit));
 			}
 		}
@@ -1118,7 +1122,7 @@ public class MainActivity extends Activity {
 
 			// current speed (cycling, driving)
 			if (findViewById(R.id.speed) != null) {
-				((TextView) findViewById(R.id.speed)).setText(Utils.formatSpeed(speed, speedUnit));
+				((TextView) findViewById(R.id.speed)).setText(utils.formatSpeed(speed, speedUnit));
 			}
 
 			// current pace (running, hiking, walking)
@@ -1144,31 +1148,31 @@ public class MainActivity extends Activity {
 
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
-				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.elevationGain)).setText(utils.formatElevation(trackRecorder.getTrack()
 						.getElevationGain(), elevationUnit));
 			}
 
 			// elevation loss
 			if (findViewById(R.id.elevationLoss) != null) {
-				((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.elevationLoss)).setText(utils.formatElevation(trackRecorder.getTrack()
 						.getElevationLoss(), elevationUnit));
 			}
 
 			// average speed
 			if (findViewById(R.id.averageSpeed) != null) {
-				((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.averageSpeed)).setText(utils.formatSpeed(trackRecorder.getTrack()
 						.getAverageSpeed(), speedUnit));
 			}
 
 			// average moving speed
 			if (findViewById(R.id.averageMovingSpeed) != null) {
-				((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.averageMovingSpeed)).setText(utils.formatSpeed(trackRecorder.getTrack()
 						.getAverageMovingSpeed(), speedUnit));
 			}
 
 			// max speed
 			if (findViewById(R.id.maxSpeed) != null) {
-				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.maxSpeed)).setText(utils.formatSpeed(trackRecorder.getTrack()
 						.getMaxSpeed(),
 						speedUnit));
 			}
@@ -1206,7 +1210,7 @@ public class MainActivity extends Activity {
 
 			// total distance
 			if (findViewById(R.id.distance) != null) {
-				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(trackRecorder.getTrack()
 						.getDistance(),
 						distanceUnit));
 			}

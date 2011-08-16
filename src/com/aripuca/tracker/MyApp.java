@@ -17,6 +17,7 @@ import android.location.Location;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * 
@@ -36,8 +37,12 @@ public class MyApp extends Application {
 	protected BroadcastReceiver languageUpdateBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			
 			Log.d(Constants.TAG, "languageUpdateBroadcastReceiver");
 			updateLocale();
+			
+			Toast.makeText(context, getString(R.string.restart_required), Toast.LENGTH_LONG).show();
+			
 		}
 	};
 

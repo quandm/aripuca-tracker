@@ -172,8 +172,7 @@ public class WaypointsListActivity extends ListActivity {
 
 					float distanceTo = myApp.getCurrentLocation().distanceTo(wp.getLocation());
 
-					distStr = Utils
-							.formatDistance(distanceTo, myApp.getPreferences().getString("distance_units", "km"));
+					distStr = utils.formatDistance(distanceTo, myApp.getPreferences().getString("distance_units", "km"));
 
 					wp.setDistanceTo(distanceTo);
 
@@ -235,7 +234,6 @@ public class WaypointsListActivity extends ListActivity {
 			Waypoint curWp = (Waypoint) it.next();
 
 			if (curWp.getTitle().equals(title)) {
-				Log.v(Constants.TAG, "FOUND!!!!!!!!!!!!!!!!!!!!!!!!");
 				return true;
 			}
 		}
@@ -251,6 +249,8 @@ public class WaypointsListActivity extends ListActivity {
 	private final String sqlSelectAllWaypoints = "SELECT * FROM waypoints";
 
 	private WaypointGpxExportTask waypointToGpx;
+	
+	private Utils utils;
 
 	/**
 	 * Called when the activity is first created
@@ -262,6 +262,8 @@ public class WaypointsListActivity extends ListActivity {
 
 		myApp = ((MyApp) getApplicationContext());
 
+		utils = new Utils(this);
+		
 		registerForContextMenu(this.getListView());
 
 		updateWaypointsArray();
@@ -271,7 +273,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		// setListAdapter(cursorAdapter);
 		setListAdapter(waypointsArrayAdapter);
-
+		
 	}
 
 	@Override

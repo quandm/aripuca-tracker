@@ -27,6 +27,8 @@ public class TrackDetailsActivity extends Activity {
 	 * Reference to myApp object
 	 */
 	private MyApp myApp;
+	
+	private Utils utils;
 
 	private long trackId;
 
@@ -106,6 +108,8 @@ public class TrackDetailsActivity extends Activity {
 
 		myApp = ((MyApp) getApplicationContext());
 
+		utils = new Utils(this);
+		
 		setContentView(R.layout.track_details);
 
 		Bundle b = getIntent().getExtras();
@@ -195,7 +199,7 @@ public class TrackDetailsActivity extends Activity {
 
 		((TextView) findViewById(R.id.descr)).setText(cursor.getString(cursor.getColumnIndex("descr")));
 
-		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
+		((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(
 				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
 
 		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
@@ -212,11 +216,11 @@ public class TrackDetailsActivity extends Activity {
 
 		// --------------------------------------------------------
 
-		((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(averageSpeed, speedUnit));
+		((TextView) findViewById(R.id.averageSpeed)).setText(utils.formatSpeed(averageSpeed, speedUnit));
 
-		((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(averageMovingSpeed, speedUnit));
+		((TextView) findViewById(R.id.averageMovingSpeed)).setText(utils.formatSpeed(averageMovingSpeed, speedUnit));
 
-		((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed, speedUnit));
+		((TextView) findViewById(R.id.maxSpeed)).setText(utils.formatSpeed(maxSpeed, speedUnit));
 
 		// --------------------------------------------------------
 
@@ -236,18 +240,18 @@ public class TrackDetailsActivity extends Activity {
 
 		// --------------------------------------------------------
 
-		((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(
+		((TextView) findViewById(R.id.maxElevation)).setText(utils.formatElevation(
 				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit));
 
-		((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(
+		((TextView) findViewById(R.id.minElevation)).setText(utils.formatElevation(
 				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit));
 
 		((TextView) findViewById(R.id.elevationGain))
-				.setText(Utils.formatElevation(
+				.setText(utils.formatElevation(
 						cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit));
 
 		((TextView) findViewById(R.id.elevationLoss))
-				.setText(Utils.formatElevation(
+				.setText(utils.formatElevation(
 						cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit));
 
 		((TextView) findViewById(R.id.startTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
@@ -298,7 +302,7 @@ public class TrackDetailsActivity extends Activity {
 
 		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
 
-		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
+		((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(
 				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
 
 		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
@@ -315,11 +319,11 @@ public class TrackDetailsActivity extends Activity {
 
 		// --------------------------------------------------------
 
-		((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(averageSpeed, speedUnit));
+		((TextView) findViewById(R.id.averageSpeed)).setText(utils.formatSpeed(averageSpeed, speedUnit));
 
-		((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(averageMovingSpeed, speedUnit));
+		((TextView) findViewById(R.id.averageMovingSpeed)).setText(utils.formatSpeed(averageMovingSpeed, speedUnit));
 
-		((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed, speedUnit));
+		((TextView) findViewById(R.id.maxSpeed)).setText(utils.formatSpeed(maxSpeed, speedUnit));
 
 		// --------------------------------------------------------
 
@@ -339,18 +343,18 @@ public class TrackDetailsActivity extends Activity {
 
 		// --------------------------------------------------------
 
-		((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(
+		((TextView) findViewById(R.id.maxElevation)).setText(utils.formatElevation(
 				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit));
 
-		((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(
+		((TextView) findViewById(R.id.minElevation)).setText(utils.formatElevation(
 				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit));
 
 		((TextView) findViewById(R.id.elevationGain))
-				.setText(Utils.formatElevation(
+				.setText(utils.formatElevation(
 						cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit));
 
 		((TextView) findViewById(R.id.elevationLoss))
-				.setText(Utils.formatElevation(
+				.setText(utils.formatElevation(
 						cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit));
 
 		((TextView) findViewById(R.id.startTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor

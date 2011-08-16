@@ -39,6 +39,13 @@
 	<string name="next_segment">Next segment</string>
 
 	<!-- SEPARATE WORDS -->
+	<string name="m">m</string>
+	<string name="ft">ft</string>
+	<string name="km">km</string>
+	<string name="mi">mi</string>
+	<string name="kn">kn</string>
+	<string name="kph">kph</string>
+	<string name="mph">mph</string>
 
 	<string name="ver">v.</string>
 	<string name="ok">Ok</string>
@@ -234,10 +241,11 @@
 	
 	<string name="export_completed">Export completed.</string>
 
+	<string name="restart_required">Application restart required for the changes to take effect</string>
+
 	<!-- HINTS -->
-	<string name="enter_title">Enter title</string>
-	<string name="enter_waypoint_description">Waypoint description</string>
-	<string name="enter_track_description">Enter track description</string>
+	<string name="waypoint_description">Waypoint description</string>
+	<string name="track_description">Enter track description</string>
 	
 		
 

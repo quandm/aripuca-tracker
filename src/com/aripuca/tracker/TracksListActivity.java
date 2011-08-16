@@ -49,10 +49,13 @@ public class TracksListActivity extends ListActivity {
 	 */
 	protected MyApp myApp;
 
+	private Utils utils;
+
 	protected TracksCursorAdapter cursorAdapter;
 
 	protected Cursor cursor;
 
+	
 	/**
 	 * Select all tracks sql query
 	 */
@@ -138,13 +141,13 @@ public class TracksListActivity extends ListActivity {
 
 			text1.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
 
-			text2.setText(Utils.formatDistance(cursor.getFloat(cursor.getColumnIndex("distance")), myApp
+			text2.setText(utils.formatDistance(cursor.getFloat(cursor.getColumnIndex("distance")), myApp
 							.getPreferences().getString("distance_units", "km"))
 					+ " | "
-					+ Utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false) + " | +"
-					+ Utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_gain")), myApp
+					+ utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false) + " | +"
+					+ utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_gain")), myApp
 							.getPreferences().getString("elevation_units", "m")) + " | -"
-							+ Utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_loss")), myApp
+							+ utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_loss")), myApp
 									.getPreferences().getString("elevation_units", "m")));
 
 		}
@@ -161,12 +164,15 @@ public class TracksListActivity extends ListActivity {
 
 		myApp = ((MyApp) getApplicationContext());
 
+		utils = new Utils(this);
+		
 		registerForContextMenu(this.getListView());
 
 		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
 
 		cursorAdapter = new TracksCursorAdapter(this, cursor, false);
 		setListAdapter(cursorAdapter);
+		
 
 	}
 
