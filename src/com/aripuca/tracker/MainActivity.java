@@ -1036,11 +1036,8 @@ public class MainActivity extends Activity {
 		TextView messageView = (TextView) layout.findViewById(R.id.message);
 
 		String aboutStr = getString(R.string.about_dialog_message);
-
-		// i.e.: R.string.dialog_message =>
-		// "Test this dialog following the link to dtmilano.blogspot.com"
+		// adding links to "about" text
 		final SpannableString s = new SpannableString(aboutStr);
-
 		Linkify.addLinks(s, Linkify.ALL);
 
 		messageView.setText(s);

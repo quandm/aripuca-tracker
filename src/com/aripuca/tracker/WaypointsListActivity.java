@@ -90,7 +90,7 @@ public class WaypointsListActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-//			Log.d(Constants.TAG, "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+			//			Log.d(Constants.TAG, "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
 
 			waypointsArrayAdapter.sortByDistance();
 			waypointsArrayAdapter.notifyDataSetChanged();
@@ -103,11 +103,11 @@ public class WaypointsListActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-//			Log.d(Constants.TAG, "WaypointsListActivity: COMPASS BROADCAST MESSAGE RECEIVED");
-
 			Bundle bundle = intent.getExtras();
-
 			setAzimuth(bundle.getFloat("azimuth"));
+
+			//Log.d(Constants.TAG, "WaypointsListActivity: COMPASS BROADCAST MESSAGE RECEIVED: " + bundle.getFloat("azimuth"));
+
 			waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
@@ -172,7 +172,8 @@ public class WaypointsListActivity extends ListActivity {
 
 					float distanceTo = myApp.getCurrentLocation().distanceTo(wp.getLocation());
 
-					distStr = utils.formatDistance(distanceTo, myApp.getPreferences().getString("distance_units", "km"));
+					distStr = utils
+							.formatDistance(distanceTo, myApp.getPreferences().getString("distance_units", "km"));
 
 					wp.setDistanceTo(distanceTo);
 
@@ -218,6 +219,8 @@ public class WaypointsListActivity extends ListActivity {
 				CompassImage im = (CompassImage) v.findViewById(R.id.compassImage);
 				im.setAngle(newAzimuth);
 
+				//				Log.d(Constants.TAG, "WaypointsListActivity: getView: " + im.getId());
+
 			} else {
 
 			}
@@ -249,7 +252,7 @@ public class WaypointsListActivity extends ListActivity {
 	private final String sqlSelectAllWaypoints = "SELECT * FROM waypoints";
 
 	private WaypointGpxExportTask waypointToGpx;
-	
+
 	private Utils utils;
 
 	/**
@@ -263,7 +266,7 @@ public class WaypointsListActivity extends ListActivity {
 		myApp = ((MyApp) getApplicationContext());
 
 		utils = new Utils(this);
-		
+
 		registerForContextMenu(this.getListView());
 
 		updateWaypointsArray();
@@ -273,7 +276,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		// setListAdapter(cursorAdapter);
 		setListAdapter(waypointsArrayAdapter);
-		
+
 	}
 
 	@Override
@@ -309,12 +312,10 @@ public class WaypointsListActivity extends ListActivity {
 	protected void onResume() {
 
 		// registering receiver for compass updates 
-		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
-		registerReceiver(compassBroadcastReceiver, filter);
+		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 
 		// registering receiver for location updates
-		IntentFilter filter2 = new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
-		registerReceiver(locationBroadcastReceiver, filter2);
+		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
 
 		super.onResume();
 	}
@@ -871,7 +872,7 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	/**
-	 * 
+	 * azimuth (received from orientation sensor)
 	 */
 	private float azimuth = 0;
 

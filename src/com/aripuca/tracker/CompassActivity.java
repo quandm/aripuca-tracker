@@ -77,6 +77,7 @@ public class CompassActivity extends Activity {
 	public void updateCompass(float azimuth) {
 
 		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
+		boolean showMagnetic = myApp.getPreferences().getBoolean("show_magnetic", true);
 
 		float rotation = 0;
 
@@ -115,7 +116,7 @@ public class CompassActivity extends Activity {
 				// BitmapFactory.decodeResource(getResources(),
 				// R.drawable.windrose);
 				// BitmapDrawable bmd = new BitmapDrawable(arrowBitmap);
-				compassImage.setAngle(360 - rotation - getOrientationAdjustment());
+				compassImage.setAngle(360 - rotation);
 				// compassImage.setAlpha(230);
 				compassImage.invalidate();
 				// compassImage.setImageDrawable(bmd);
@@ -126,12 +127,19 @@ public class CompassActivity extends Activity {
 		if (findViewById(R.id.compassImage2) != null) {
 
 			CompassImage compassImage2 = (CompassImage) findViewById(R.id.compassImage2);
+			
+			if (showMagnetic) {
 
-			if (compassImage2.getVisibility() == View.VISIBLE) {
+				if (compassImage2.getVisibility() != View.VISIBLE) {
+					compassImage2.setVisibility(View.VISIBLE);
+				}
 
-				compassImage2.setAngle(360 - rotation + declination - getOrientationAdjustment());
+				compassImage2.setAngle(360 - rotation + declination);
 				compassImage2.setAlpha(50);
 				compassImage2.invalidate();
+				
+			} else {
+				compassImage2.setVisibility(View.INVISIBLE);
 			}
 
 		}

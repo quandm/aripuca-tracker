@@ -12,6 +12,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.util.Log;
 
 import com.aripuca.tracker.util.ArrayUtils;
 
@@ -48,6 +49,21 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		onSharedPreferenceChanged(preferences, "segmenting_mode");
 
 		// setting listener for application language changes
+		CheckBoxPreference trueNorthPreference = (CheckBoxPreference) findPreference("true_north");
+		trueNorthPreference.setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+						// enabling/disabling "show_magnetic" preference
+						CheckBoxPreference showMagnetic = (CheckBoxPreference) findPreference("show_magnetic");
+						showMagnetic.setEnabled(Boolean.parseBoolean(newValue.toString()));
+						
+						return true;
+					}
+				});
+		
+		// setting listener for application language changes
 		ListPreference languagePreference = (ListPreference) findPreference("language");
 		languagePreference.setOnPreferenceChangeListener(
 				new OnPreferenceChangeListener() {
@@ -76,6 +92,10 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		// update preference lists dependent on distance units
 		String distanceUnit = distanceUnitsPreference.getValue();
 		updatePreferenceLists(distanceUnit);
+
+		CheckBoxPreference trueNorth = (CheckBoxPreference) findPreference("true_north");
+		CheckBoxPreference showMagnetic = (CheckBoxPreference) findPreference("show_magnetic");
+		showMagnetic.setEnabled(trueNorth.isChecked());
 
 	}
 

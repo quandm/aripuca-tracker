@@ -51,6 +51,9 @@
 		<CheckBoxPreference android:summary="@string/true_north_summary"
 			android:title="@string/true_north" android:defaultValue="true"
 			android:key="true_north"></CheckBoxPreference>
+		<CheckBoxPreference android:summary="@string/show_magnetic_summary"
+			android:title="@string/show_magnetic" android:defaultValue="true"
+			android:key="show_magnetic" android:enabled="false"></CheckBoxPreference>
 
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/waypoints">

@@ -10,7 +10,7 @@
 			android:icon="@android:drawable/ic_menu_share" />
 
 	<item android:id="@+id/mapMode" 
-			android:title="@string/map_mode"
+			android:title="@string/satellite"
 			android:icon="@android:drawable/ic_menu_mapmode" />
 
 </menu>
