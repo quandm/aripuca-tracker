@@ -9,17 +9,15 @@
 	<string name="blog_url">tracker.aripuca.com/blog</string>
 	<string name="source_url">http://code.google.com/p/aripuca-tracker</string>
 
-	<string name="about_dialog_message">Приложение с открытым исходным кодом для платформы
-		Андроид.\n\nОфициальный сайт:\nhttp://tracker.aripuca.com/blog\n\n
-		Исходный код:\nhttp://code.google.com/p/aripuca-tracker</string>
+	<string name="about_dialog_message">GPS трекер с открытым исходным кодом для платформы
+		Андроид.\n\nОфициальный
+		блог:\nhttp://tracker.aripuca.com/blog\n\nИсходный
+		код:\nhttp://code.google.com/p/aripuca-tracker</string>
 
 	<string name="compass_activity_title">Компас</string>
 	<string name="waypoints_activity_title">Путевые точки</string>
 	<string name="tracks_activity_title">Треки</string>
 	<string name="track_details_activity_title">Трек</string>
-
-	<string name="gps_on">GPS On</string>
-	<string name="gps_off">GPS Off</string>
 
 	<string name="start_gps">Запустить GPS</string>
 	<string name="stop_gps">Остановить GPS</string>
@@ -79,10 +77,9 @@
 	<string name="lat">Широта</string>
 	<string name="lng">Долгота</string>
 	<string name="accuracy">Точность</string>
-	<string name="last_fix">Last fix</string>
+	<string name="last_fix">Посл. фикс</string>
 	<string name="about">О программе</string>
 	<string name="settings">Настройки</string>
-	<string name="options">Options</string>
 	<string name="title">Название</string>
 	<string name="points">Точки</string>
 
@@ -132,20 +129,18 @@
 	<string name="import_all">Импорт</string>
 	<string name="export_waypoints">Экспорт путевых точек</string>
 
-	<string name="debug_data">Debug</string>
-
-	<string name="map_mode">Спутник</string>
-
 	<string name="street">Улица</string>
 	<string name="satellite">Спутник</string>
 
 	<!-- SETTINGS -->
 	<string name="min_distance_title">Минимальная дистанция</string>
-	<string name="min_distance_summary">Минимальное расстояние между двумя записываемыми точками (метров)
+	<string name="min_distance_summary">Минимальное расстояние между двумя записываемыми
+		точками (метров)
 	</string>
 
 	<string name="min_accuracy_title">Минимальная точность</string>
-	<string name="min_accuracy_summary">Минимальная точность необходимая для записи точки (метров)
+	<string name="min_accuracy_summary">Минимальная точность необходимая для записи точки
+		(метров)
 	</string>
 
 	<string name="app_settings_title">Настройки приложения</string>
@@ -155,7 +150,8 @@
 	<string name="wake_lock_summary">Предотвратить засыпание устройства</string>
 
 	<string name="units">Единицы измерения</string>
-	<string name="units_summary">Выбор единиц измерения (координаты, расстояние, скорость и т.д.)</string>
+	<string name="units_summary">Выбор единиц измерения (координаты, расстояние,
+		скорость и т.д.)</string>
 
 	<string name="tracking_title">Запись треков</string>
 
@@ -182,7 +178,8 @@
 	<string name="segment_custom_summary">Сегментировать по заданным интервалам</string>
 
 	<string name="waypoint_default_description">Описание по умолчанию</string>
-	<string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание точки  
+	<string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание
+		точки
 		waypoint description</string>
 
 	<string name="app_language">Язык приложения</string>
@@ -190,8 +187,11 @@
 	<!-- COMPASS -->
 	<string name="compass">Компас</string>
 	<string name="true_north">Указывать на истинный север</string>
-	<string name="true_north_summary">Компас указывает на истинный север, а не на магнитный
+	<string name="true_north_summary">Компас указывает на истинный север, а не на
+		магнитный
 	</string>
+	<string name="show_magnetic">Показать магнитный север</string>
+	<string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное изображение</string>
 
 	<!-- MESSAGES -->
 
@@ -209,37 +209,41 @@
 	<string name="track_title_required">Track title required</string>
 	<string name="edit_track">Изменить трек</string>
 	<string name="track_updated">Трек обновлен</string>
-	<string name="track_deleted">Track deleted</string>
-	<string name="all_tracks_deleted">All tracks deleted</string>
+	<string name="track_deleted">Трек удален</string>
+	<string name="all_tracks_deleted">Все треки удалены</string>
 
 	<string name="select_file">Выберите файл</string>
 
 	<string name="memory_card_not_available">Карта памяти не доступна</string>
 	<string name="memory_card_not_writable">No write access to memory card</string>
-	
+
 	<string name="select_tracking_mode">Выберите режим записи трека</string>
-	
+
 	<string name="are_you_sure">Вы уверены?</string>
-	
+
 	<string name="username_or_password_required">User name and password required</string>
 	<string name="stop_track_recording">Please stop track recording</string>
 	<string name="click_again_to_exit">Нажмите еще раз чтобы выйти из приложения</string>
-	
-	<string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека</string>
-	<string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека</string>
+
+	<string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека
+	</string>
+	<string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека
+	</string>
 
 	<string name="no_segments">No segments created for this track</string>
-	
+
 	<string name="backup_completed">База данных приложения скопирована в:</string>
-	<string name="backup_error">An error occurred copying application database.</string>
+	<string name="backup_error">An error occurred copying application database.
+	</string>
 
 	<string name="restore_completed">База данных восстановлена</string>
-	
-	<string name="coming_soon">Coming soon...</string>
-	
+
+	<string name="coming_soon">Скоро будет...</string>
+
 	<string name="export_completed">Экспорт завершен</string>
 
-	<string name="restart_required">Чтобы изменения вступили в силу необходим перезапуск приложения</string>
+	<string name="restart_required">Чтобы изменения вступили в силу необходим
+		перезапуск приложения</string>
 
 	<!-- HINTS -->
 	<string name="waypoint_description">Описание путевой точки</string>
