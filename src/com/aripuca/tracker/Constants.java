@@ -34,5 +34,9 @@ public abstract class Constants {
 	public static final int SEGMENT_CUSTOM_1 = 4;
 	public static final int SEGMENT_CUSTOM_2 = 5;
 	
+	public static final int ORIENTATION_PORTRAIT = 1;
+	public static final int ORIENTATION_LANDSCAPE = 2;
+	public static final int ORIENTATION_REVERSE_LANDSCAPE = 10;
+	public static final int ORIENTATION_REVERSE_PORTRAIT = 20;
 	
 }
