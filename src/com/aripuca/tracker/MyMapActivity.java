@@ -116,6 +116,10 @@ public class MyMapActivity extends MapActivity {
 		 * @param canvas
 		 */
 		private void drawSegments(Projection projection, Canvas canvas) {
+			
+			if (points.size()<=1) {
+				return;				
+			}
 
 			Paint paint = new Paint();
 			paint.setStrokeWidth(3);

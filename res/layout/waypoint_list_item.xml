@@ -40,7 +40,7 @@
 
 		<com.aripuca.tracker.view.CompassImage 
 			android:id="@+id/compassImage"
-			android:src="@drawable/arrow16"
+			android:src="@drawable/arrow36"
 			android:layout_margin="5dp"
 			android:layout_width="20dp"
 			android:layout_height="20dp"

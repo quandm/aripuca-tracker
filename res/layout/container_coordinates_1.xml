@@ -12,7 +12,7 @@
 
 			<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/lat" style="@style/SmallLabel">
+			<TextView android:id="@+id/lat" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -21,7 +21,7 @@
 
 			<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/lng" style="@style/SmallLabel">
+			<TextView android:id="@+id/lng" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -34,7 +34,7 @@
 
 			<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/lastFix" style="@style/SmallLabel">
+			<TextView android:id="@+id/lastFix" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -43,8 +43,7 @@
 		<LinearLayout style="@style/TrackDetailsCell">
 
 			<TextView android:text="@string/accuracy" style="@style/SmallHeader"></TextView>
-
-			<TextView android:id="@+id/accuracy" style="@style/SmallLabel"
+			<TextView android:id="@+id/accuracy" style="@style/Label13"
 				android:layout_weight="0.5">
 			</TextView>
 

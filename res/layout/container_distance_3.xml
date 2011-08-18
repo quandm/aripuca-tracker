@@ -10,7 +10,7 @@
 
 			<TextView android:text="@string/distance" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/distance" style="@style/SmallLabel">
+			<TextView android:id="@+id/distance" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -19,7 +19,7 @@
 
 			<TextView android:text="@string/points" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/pointsCount" style="@style/SmallLabel">
+			<TextView android:id="@+id/pointsCount" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -28,7 +28,7 @@
 
 			<TextView android:text="@string/segments" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/segmentsCount" style="@style/SmallLabel">
+			<TextView android:id="@+id/segmentsCount" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>

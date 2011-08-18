@@ -21,7 +21,7 @@
 
 				<TextView android:text="@string/current" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/elevation" style="@style/SmallLabel">
+				<TextView android:id="@+id/elevation" style="@style/Label13">
 				</TextView>
 
 			</LinearLayout>
@@ -30,7 +30,7 @@
 
 				<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/maxElevation" style="@style/SmallLabel">
+				<TextView android:id="@+id/maxElevation" style="@style/Label13">
 				</TextView>
 
 			</LinearLayout>
@@ -39,7 +39,7 @@
 
 				<TextView android:text="@string/min" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/minElevation" style="@style/SmallLabel">
+				<TextView android:id="@+id/minElevation" style="@style/Label13">
 				</TextView>
 
 			</LinearLayout>
@@ -52,7 +52,7 @@
 
 				<TextView android:text="@string/gain" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/elevationGain" style="@style/SmallLabel">
+				<TextView android:id="@+id/elevationGain" style="@style/Label13">
 				</TextView>
 
 			</LinearLayout>
@@ -61,7 +61,7 @@
 
 				<TextView android:text="@string/loss" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/elevationLoss" style="@style/SmallLabel">
+				<TextView android:id="@+id/elevationLoss" style="@style/Label13">
 				</TextView>
 
 			</LinearLayout>

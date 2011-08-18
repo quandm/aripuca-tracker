@@ -11,7 +11,7 @@
 			<TextView android:text="@string/total_time" style="@style/SmallHeader">
 			</TextView>
 
-			<TextView android:id="@+id/totalTime" style="@style/SmallLabel">
+			<TextView android:id="@+id/totalTime" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -20,7 +20,7 @@
 
 			<TextView android:text="@string/moving_time" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/movingTime" style="@style/SmallLabel">
+			<TextView android:id="@+id/movingTime" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
