@@ -292,6 +292,10 @@ public class WaypointsListActivity extends ListActivity {
 
 	}
 
+	/**
+	 * reverse landscape orientation workaround
+	 * @param orientation
+	 */
 	private void setRealOrientation(int orientation) {
 
 		if (orientationValues == null) {
