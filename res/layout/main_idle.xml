@@ -16,7 +16,7 @@
 
 				<TextView android:text="@string/speed" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/speed" style="@style/SmallLabel4">
+				<TextView android:id="@+id/speed" style="@style/Label40">
 				</TextView>
 
 			</LinearLayout>
@@ -25,7 +25,7 @@
 
 				<TextView android:text="@string/pace" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/pace" style="@style/SmallLabel4">
+				<TextView android:id="@+id/pace" style="@style/Label40">
 				</TextView>
 
 			</LinearLayout>
@@ -41,7 +41,7 @@
 
 				<TextView android:text="@string/elevation" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/elevation" style="@style/SmallLabel4">
+				<TextView android:id="@+id/elevation" style="@style/Label30">
 				</TextView>
 
 			</LinearLayout>
@@ -51,7 +51,7 @@
 
 				<TextView android:text="@string/azimuth" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/azimuth" style="@style/SmallLabel4">
+				<TextView android:id="@+id/azimuth" style="@style/Label30">
 				</TextView>
 
 			</LinearLayout>
@@ -67,7 +67,7 @@
 
 				<TextView android:text="@string/lat" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/lat" style="@style/SmallLabel4">
+				<TextView android:id="@+id/lat" style="@style/Label17">
 				</TextView>
 
 			</LinearLayout>
@@ -76,7 +76,7 @@
 
 				<TextView android:text="@string/lng" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/lng" style="@style/SmallLabel4">
+				<TextView android:id="@+id/lng" style="@style/Label17">
 				</TextView>
 
 			</LinearLayout>
@@ -92,7 +92,7 @@
 
 				<TextView android:text="@string/accuracy" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/accuracy" style="@style/SmallLabel4">
+				<TextView android:id="@+id/accuracy" style="@style/Label17">
 				</TextView>
 
 			</LinearLayout>
@@ -102,7 +102,7 @@
 
 				<TextView android:text="@string/last_fix" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/lastFix" style="@style/SmallLabel4">
+				<TextView android:id="@+id/lastFix" style="@style/Label17">
 				</TextView>
 
 			</LinearLayout>
@@ -118,7 +118,7 @@
 
 				<TextView android:text="@string/sunrise" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/sunrise" style="@style/SmallLabel4">
+				<TextView android:id="@+id/sunrise" style="@style/Label17">
 				</TextView>
 
 			</LinearLayout>
@@ -127,7 +127,7 @@
 
 				<TextView android:text="@string/sunset" style="@style/SmallHeader1"></TextView>
 
-				<TextView android:id="@+id/sunset" style="@style/SmallLabel4">
+				<TextView android:id="@+id/sunset" style="@style/Label17">
 				</TextView>
 
 			</LinearLayout>

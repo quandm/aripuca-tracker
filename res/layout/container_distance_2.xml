@@ -12,7 +12,7 @@
 
 			<TextView android:text="@string/distance" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/distance" style="@style/SmallLabel">
+			<TextView android:id="@+id/distance" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>

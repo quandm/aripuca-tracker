@@ -78,24 +78,28 @@
         <item name="android:background">#0000</item>
     </style>
     
-    <style name="SmallLabel" parent="@style/AppLabel">
+    <style name="Label13" parent="@style/AppLabel">
         <item name="android:textSize">13sp</item>
     </style>
 
-    <style name="SmallLabel1" parent="@style/AppLabel">
-        <item name="android:textSize">15sp</item>
-    </style>
-
-    <style name="SmallLabel2" parent="@style/AppLabel">
+    <style name="Label17" parent="@style/AppLabel">
         <item name="android:textSize">17sp</item>
     </style>
 
-    <style name="SmallLabel3" parent="@style/AppLabel">
-        <item name="android:textSize">29sp</item>
+    <style name="Label20" parent="@style/AppLabel">
+        <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="SmallLabel4" parent="@style/AppLabel">
-        <item name="android:textSize">20sp</item>
+    <style name="Label30" parent="@style/AppLabel">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="Label40" parent="@style/AppLabel">
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="Label50" parent="@style/AppLabel">
+        <item name="android:textSize">50sp</item>
     </style>
 
     <!-- HEADERS -->

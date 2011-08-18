@@ -23,7 +23,7 @@
 
 			<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/averagePace" style="@style/SmallLabel">
+			<TextView android:id="@+id/averagePace" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -32,7 +32,7 @@
 
 			<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/averageMovingPace" style="@style/SmallLabel">
+			<TextView android:id="@+id/averageMovingPace" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
@@ -41,7 +41,7 @@
 
 			<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/maxPace" style="@style/SmallLabel">
+			<TextView android:id="@+id/maxPace" style="@style/Label13">
 			</TextView>
 
 		</LinearLayout>
