@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +32,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.io.WaypointGpxExportTask;
+import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
@@ -84,6 +86,13 @@ public class WaypointsListActivity extends ListActivity {
 
 	private ArrayList<Waypoint> waypoints;
 
+	private OrientationValues orientationValues;
+
+	/**
+	 * reverse landscape orientation workaround
+	 */
+	private int realOrientation;
+
 	/**
 	 * Location updates broadcast receiver
 	 */
@@ -107,7 +116,10 @@ public class WaypointsListActivity extends ListActivity {
 			Bundle bundle = intent.getExtras();
 			setAzimuth(bundle.getFloat("azimuth"));
 
-			//Log.d(Constants.TAG, "WaypointsListActivity: COMPASS BROADCAST MESSAGE RECEIVED: " + bundle.getFloat("azimuth"));
+			orientationValues = new OrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
+					bundle.getFloat("roll"));
+
+			setRealOrientation(getResources().getConfiguration().orientation);
 
 			waypointsArrayAdapter.notifyDataSetChanged();
 		}
@@ -184,7 +196,7 @@ public class WaypointsListActivity extends ListActivity {
 						newBearing = 360 - Math.abs((int) newBearing);
 					}
 
-					newAzimuth = newBearing - getAzimuth();
+					newAzimuth = newBearing - getAzimuth() - getOrientationAdjustment();
 					if ((int) newAzimuth < 0) {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}
@@ -277,6 +289,44 @@ public class WaypointsListActivity extends ListActivity {
 
 		// setListAdapter(cursorAdapter);
 		setListAdapter(waypointsArrayAdapter);
+
+	}
+
+	private void setRealOrientation(int orientation) {
+
+		if (orientationValues == null) {
+			return;
+		}
+
+		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
+
+			if (orientationValues.getRoll() >= 25
+					&& realOrientation != Constants.ORIENTATION_LANDSCAPE) {
+				realOrientation = Constants.ORIENTATION_LANDSCAPE;
+				Log.d(Constants.TAG, "WaypointsListActivity: ORIENTATION CHANGE ORIENTATION_LANDSCAPE: "
+						+ orientationValues.getRoll());
+			}
+			if (orientationValues.getRoll() <= -25
+					&& realOrientation != Constants.ORIENTATION_REVERSE_LANDSCAPE) {
+				realOrientation = Constants.ORIENTATION_REVERSE_LANDSCAPE;
+				Log.d(Constants.TAG, "WaypointsListActivity: ORIENTATION CHANGE ORIENTATION_REVERSE_LANDSCAPE: "
+						+ orientationValues.getRoll());
+			}
+		} else {
+			realOrientation = Constants.ORIENTATION_PORTRAIT;
+		}
+		
+		//		Log.d(Constants.TAG, "WaypointsListActivity: onConfigurationChanged: " + newConfig.toString());
+		Log.d(Constants.TAG, "WaypointsListActivity: REAL ORIENTATION: " + realOrientation);
+
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+
+		setRealOrientation(newConfig.orientation);
+
+		super.onConfigurationChanged(newConfig);
 
 	}
 
@@ -939,6 +989,29 @@ public class WaypointsListActivity extends ListActivity {
 		AlertDialog dialog = builder.create();
 		dialog.show();
 
+	}
+
+	/**
+	 * Returns compass rotation angle when orientation of the phone changes
+	 */
+	private int getOrientationAdjustment() {
+
+		if (orientationValues == null) {
+			return 0;
+		}
+
+		switch (realOrientation) {
+
+			case Constants.ORIENTATION_PORTRAIT:
+				return 0;
+			case Constants.ORIENTATION_LANDSCAPE:
+				return 90;
+			case Constants.ORIENTATION_REVERSE_LANDSCAPE:
+				return -90;
+
+		}
+
+		return 0;
 	}
 
 }

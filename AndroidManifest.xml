@@ -25,8 +25,7 @@
 		</activity>
 
 		<activity android:name=".WaypointsListActivity"
-			android:label="@string/waypoints_activity_title"
-			android:screenOrientation="portrait">
+			android:label="@string/waypoints_activity_title" android:configChanges="orientation">
 		</activity>
 
 		<activity android:name=".TracksListActivity" android:label="@string/tracks_activity_title">
@@ -53,10 +52,10 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
-	<!-- <uses-feature android:name="android.hardware.location.gps" android:required="true" 
-		/> -->
+	<uses-feature android:name="android.hardware.location.gps" android:required="true" 
+		/>
 
-	<!-- <uses-feature android:name="android.hardware.sensor.compass" android:required="true" 
-		/> -->
+	<uses-feature android:name="android.hardware.sensor.compass" android:required="true" 
+		/>
 
 </manifest> 

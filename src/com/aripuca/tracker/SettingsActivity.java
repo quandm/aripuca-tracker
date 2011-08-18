@@ -48,7 +48,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 		onSharedPreferenceChanged(preferences, "segmenting_mode");
 
-		// setting listener for application language changes
+		// setting listener for true north changes
 		CheckBoxPreference trueNorthPreference = (CheckBoxPreference) findPreference("true_north");
 		trueNorthPreference.setOnPreferenceChangeListener(
 				new OnPreferenceChangeListener() {

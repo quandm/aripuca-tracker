@@ -156,18 +156,4 @@ public class CompassActivity extends Activity {
 
 	}
 
-	/**
-	 * Returns compass rotation angle when orientation of the phone changes
-	 */
-	private int getOrientationAdjustment() {
-
-		switch (this.getResources().getConfiguration().orientation) {
-			case Configuration.ORIENTATION_PORTRAIT:
-				return 0;
-			case Configuration.ORIENTATION_LANDSCAPE:
-				return 90;
-		}
-
-		return 0;
-	}
 }

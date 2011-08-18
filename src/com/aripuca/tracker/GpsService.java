@@ -80,6 +80,8 @@ public class GpsService extends Service {
 			// packing azimuth value into bundle  
 			Bundle bundle = new Bundle();       
 			bundle.putFloat("azimuth", event.values[0]);
+			bundle.putFloat("pitch", event.values[1]);
+			bundle.putFloat("roll", event.values[2]);
 			
 			intent.putExtras(bundle);			
 			
