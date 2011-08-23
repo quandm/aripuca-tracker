@@ -68,6 +68,10 @@ public class Waypoint extends Object {
 		return longitude;
 	}
 
+	public double getElevation() {
+		return elevation;
+	}
+	
 	public long getTime() {
 		return time;
 	}

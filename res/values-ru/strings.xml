@@ -240,6 +240,7 @@
 
 	<string name="coming_soon">Скоро будет...</string>
 
+	<string name="import_completed">Импорт завершен</string>
 	<string name="export_completed">Экспорт завершен</string>
 
 	<string name="restart_required">Чтобы изменения вступили в силу необходим

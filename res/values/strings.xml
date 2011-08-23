@@ -236,7 +236,8 @@
 
 	<string name="coming_soon">Coming soon...</string>
 
-	<string name="export_completed">Export completed.</string>
+	<string name="import_completed">Import completed</string>
+	<string name="export_completed">Export completed</string>
 
 	<string name="restart_required">Application restart required for the changes to
 		take effect</string>

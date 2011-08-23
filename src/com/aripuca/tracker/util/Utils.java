@@ -62,6 +62,8 @@ public class Utils {
 
 		NumberFormat f = NumberFormat.getInstance(Locale.US);
 		f.setMaximumFractionDigits(max);
+		f.setGroupingUsed(false);
+		
 		try {
 			return f.format(value);
 		} catch (IllegalArgumentException e) {
