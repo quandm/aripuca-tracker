@@ -100,7 +100,8 @@ public class WaypointsListActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			//			Log.d(Constants.TAG, "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+			// Log.d(Constants.TAG,
+			// "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
 
 			waypointsArrayAdapter.sortByDistance();
 			waypointsArrayAdapter.notifyDataSetChanged();
@@ -218,10 +219,11 @@ public class WaypointsListActivity extends ListActivity {
 				if (text2 != null) {
 					text2.setText(Utils.formatLat(wp.getLocation().getLatitude(),
 							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
-								+ " | "
+								+ "|"
 								+ Utils.formatLng(wp.getLocation().getLongitude(),
 										Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
-								+ " | " + bearingStr);
+								+ "|" + Utils.formatNumber(wp.getLocation().getAltitude(), 0)
+								+ "|" + bearingStr);
 				}
 
 				if (text3 != null) {
@@ -232,7 +234,8 @@ public class WaypointsListActivity extends ListActivity {
 				CompassImage im = (CompassImage) v.findViewById(R.id.compassImage);
 				im.setAngle(newAzimuth);
 
-				//				Log.d(Constants.TAG, "WaypointsListActivity: getView: " + im.getId());
+				// Log.d(Constants.TAG, "WaypointsListActivity: getView: " +
+				// im.getId());
 
 			} else {
 
@@ -249,9 +252,7 @@ public class WaypointsListActivity extends ListActivity {
 
 			Waypoint curWp = (Waypoint) it.next();
 
-			if (curWp.getTitle().equals(title)) {
-				return true;
-			}
+			if (curWp.getTitle().equals(title)) { return true; }
 		}
 
 		return false;
@@ -294,34 +295,28 @@ public class WaypointsListActivity extends ListActivity {
 
 	/**
 	 * reverse landscape orientation workaround
+	 * 
 	 * @param orientation
 	 */
 	private void setRealOrientation(int orientation) {
 
-		if (orientationValues == null) {
-			return;
-		}
+		if (orientationValues == null) { return; }
 
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
 			if (orientationValues.getRoll() >= 25
 					&& realOrientation != Constants.ORIENTATION_LANDSCAPE) {
 				realOrientation = Constants.ORIENTATION_LANDSCAPE;
-				Log.d(Constants.TAG, "WaypointsListActivity: ORIENTATION CHANGE ORIENTATION_LANDSCAPE: "
-						+ orientationValues.getRoll());
 			}
+
 			if (orientationValues.getRoll() <= -25
 					&& realOrientation != Constants.ORIENTATION_REVERSE_LANDSCAPE) {
 				realOrientation = Constants.ORIENTATION_REVERSE_LANDSCAPE;
-				Log.d(Constants.TAG, "WaypointsListActivity: ORIENTATION CHANGE ORIENTATION_REVERSE_LANDSCAPE: "
-						+ orientationValues.getRoll());
 			}
+
 		} else {
 			realOrientation = Constants.ORIENTATION_PORTRAIT;
 		}
-		
-		//		Log.d(Constants.TAG, "WaypointsListActivity: onConfigurationChanged: " + newConfig.toString());
-		Log.d(Constants.TAG, "WaypointsListActivity: REAL ORIENTATION: " + realOrientation);
 
 	}
 
@@ -366,7 +361,7 @@ public class WaypointsListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 
-		// registering receiver for compass updates 
+		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 
 		// registering receiver for location updates
@@ -699,43 +694,22 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	/*
-	 * protected void importFromTextFile() {
-	 * 
-	 * try {
-	 * 
-	 * BufferedReader br = new BufferedReader(new
-	 * FileReader(myApp.getWaypointFile()));
-	 * 
-	 * String s = null;
-	 * 
-	 * while ((s = br.readLine()) != null) {
-	 * 
-	 * // parsing string from waypoints file String[] tmpArr = s.split("\\|");
-	 * if (tmpArr.length < 5) { continue; }
-	 * 
-	 * ContentValues values = new ContentValues(); values.put("title",
+	 * protected void importFromTextFile() { try { BufferedReader br = new
+	 * BufferedReader(new FileReader(myApp.getWaypointFile())); String s = null;
+	 * while ((s = br.readLine()) != null) { // parsing string from waypoints
+	 * file String[] tmpArr = s.split("\\|"); if (tmpArr.length < 5) { continue;
+	 * } ContentValues values = new ContentValues(); values.put("title",
 	 * tmpArr[0]); values.put("descr", "Exported from external source");
 	 * values.put("lat", tmpArr[2]); values.put("lng", tmpArr[3]);
-	 * values.put("elevation", tmpArr[4]); values.put("time", tmpArr[1]);
-	 * 
-	 * try { myApp.getDatabase().insertOrThrow("waypoints", null, values); }
-	 * catch (SQLiteException e) { Toast.makeText(WaypointsListActivity.this,
+	 * values.put("elevation", tmpArr[4]); values.put("time", tmpArr[1]); try {
+	 * myApp.getDatabase().insertOrThrow("waypoints", null, values); } catch
+	 * (SQLiteException e) { Toast.makeText(WaypointsListActivity.this,
 	 * "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-	 * Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e); }
-	 * 
-	 * }
-	 * 
-	 * } catch (IOException e) {
-	 * 
-	 * Toast.makeText(WaypointsListActivity.this, "IOException: " +
-	 * e.getMessage(), Toast.LENGTH_SHORT) .show();
-	 * 
-	 * }
-	 * 
+	 * Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e); } } }
+	 * catch (IOException e) { Toast.makeText(WaypointsListActivity.this,
+	 * "IOException: " + e.getMessage(), Toast.LENGTH_SHORT) .show(); }
 	 * updateWaypointsArray(); waypointsArrayAdapter.setItems(waypoints);
-	 * waypointsArrayAdapter.notifyDataSetChanged();
-	 * 
-	 * }
+	 * waypointsArrayAdapter.notifyDataSetChanged(); }
 	 */
 
 	private void updateWaypointsArray() {
@@ -871,6 +845,8 @@ public class WaypointsListActivity extends ListActivity {
 						waypointsArrayAdapter.notifyDataSetChanged();
 					}
 
+					Toast.makeText(WaypointsListActivity.this, R.string.import_completed, Toast.LENGTH_SHORT).show();
+
 				} catch (IOException e) {
 					Log.v(Constants.TAG, e.getMessage());
 				} catch (ParserConfigurationException e) {
@@ -1000,9 +976,7 @@ public class WaypointsListActivity extends ListActivity {
 	 */
 	private int getOrientationAdjustment() {
 
-		if (orientationValues == null) {
-			return 0;
-		}
+		if (orientationValues == null) { return 0; }
 
 		switch (realOrientation) {
 
