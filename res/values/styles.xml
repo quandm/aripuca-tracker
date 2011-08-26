@@ -2,116 +2,116 @@
 
 <resources>
 
-    <style name="SeparatorLine">
-        <item name="android:layout_height">2dip</item>
-        <item name="android:background">#333</item>
-    </style>
+	<style name="SeparatorLine">
+		<item name="android:layout_height">2dip</item>
+		<item name="android:background">#333</item>
+	</style>
 
 	<!-- BUTTONS -->
 
-    <style name="ControlButton" parent="@android:Widget.Button">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">54dp</item>
-        <item name="android:layout_weight">1</item>
-    </style>
+	<style name="ControlButton" parent="@android:Widget.Button">
+		<item name="android:layout_width">0dp</item>
+		<item name="android:layout_height">54dp</item>
+		<item name="android:layout_weight">1</item>
+	</style>
 
-    <style name="ControlButton_land" parent="@android:Widget.Button">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-    </style>
+	<style name="ControlButton_land" parent="@android:Widget.Button">
+		<item name="android:layout_width">0dp</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_weight">1</item>
+	</style>
 
 	<!-- TRACK DETAILS LAYOUT STYLES -->
 
-    <style name="TrackDetailsRow">
-        <item name="android:orientation">horizontal</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">1dp</item>
-        <item name="android:layout_marginBottom">1dp</item>
-    </style>
+	<style name="TrackDetailsRow">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginTop">1dp</item>
+		<item name="android:layout_marginBottom">1dp</item>
+	</style>
 
-    <style name="TrackDetailsRowOfRows">
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">1dp</item>
-        <item name="android:layout_marginBottom">1dp</item>
-    </style>
-    
-    <style name="TrackDetailsCell">
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-    </style>
-    
-    <style name="TrackDetailsLeftCell" parent ="@style/TrackDetailsCell">
-        <item name="android:layout_marginRight">1dp</item>
-    </style>
-    
-    <style name="TrackDetailsRightCell" parent ="@style/TrackDetailsCell">
-        <item name="android:layout_marginLeft">1dp</item>
-    </style>
+	<style name="TrackDetailsRowOfRows">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginTop">1dp</item>
+		<item name="android:layout_marginBottom">1dp</item>
+	</style>
 
-    <!-- LABELS -->
-    
-    <style name="AppLabel">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center</item>
-        <item name="android:background">#A222</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_margin">1dp</item>
-    </style>
+	<style name="TrackDetailsCell">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">0dp</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_weight">1</item>
+	</style>
 
-    <style name="BigLabel" parent="@style/AppLabel">
-        <item name="android:textSize">55sp</item>
-    </style>
+	<style name="TrackDetailsLeftCell" parent="@style/TrackDetailsCell">
+		<item name="android:layout_marginRight">1dp</item>
+	</style>
 
-    <style name="MediumLabel" parent="@style/AppLabel">
-        <item name="android:textSize">40sp</item>
-    </style>
+	<style name="TrackDetailsRightCell" parent="@style/TrackDetailsCell">
+		<item name="android:layout_marginLeft">1dp</item>
+	</style>
 
-    <style name="MediumLabel2" parent="@style/AppLabel">
-        <item name="android:textSize">30sp</item>
-        <item name="android:background">#0000</item>
-    </style>
-    
-    <style name="Label13" parent="@style/AppLabel">
-        <item name="android:textSize">13sp</item>
-    </style>
+	<!-- LABELS -->
 
-    <style name="Label17" parent="@style/AppLabel">
-        <item name="android:textSize">17sp</item>
-    </style>
+	<style name="AppLabel">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:gravity">center</item>
+		<item name="android:background">#A222</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:layout_margin">1dp</item>
+	</style>
 
-    <style name="Label20" parent="@style/AppLabel">
-        <item name="android:textSize">20sp</item>
-    </style>
+	<style name="BigLabel" parent="@style/AppLabel">
+		<item name="android:textSize">55sp</item>
+	</style>
 
-    <style name="Label30" parent="@style/AppLabel">
-        <item name="android:textSize">30sp</item>
-    </style>
+	<style name="MediumLabel" parent="@style/AppLabel">
+		<item name="android:textSize">40sp</item>
+	</style>
 
-    <style name="Label40" parent="@style/AppLabel">
-        <item name="android:textSize">40sp</item>
-    </style>
+	<style name="MediumLabel2" parent="@style/AppLabel">
+		<item name="android:textSize">30sp</item>
+		<item name="android:background">#0000</item>
+	</style>
 
-    <style name="Label50" parent="@style/AppLabel">
-        <item name="android:textSize">50sp</item>
-    </style>
+	<style name="Label13" parent="@style/AppLabel">
+		<item name="android:textSize">13sp</item>
+	</style>
 
-    <!-- HEADERS -->
+	<style name="Label17" parent="@style/AppLabel">
+		<item name="android:textSize">17sp</item>
+	</style>
 
-    <style name="SmallHeader" parent="@style/AppLabel">
-        <item name="android:textSize">13sp</item>
-        <item name="android:background">#0000</item>
-    </style>
+	<style name="Label20" parent="@style/AppLabel">
+		<item name="android:textSize">20sp</item>
+	</style>
 
-    <style name="SmallHeader1" parent="@style/AppLabel">
-        <item name="android:textSize">16sp</item>
-        <item name="android:background">#0000</item>
-    </style>
+	<style name="Label30" parent="@style/AppLabel">
+		<item name="android:textSize">30sp</item>
+	</style>
+
+	<style name="Label40" parent="@style/AppLabel">
+		<item name="android:textSize">40sp</item>
+	</style>
+
+	<style name="Label50" parent="@style/AppLabel">
+		<item name="android:textSize">50sp</item>
+	</style>
+
+	<!-- HEADERS -->
+
+	<style name="SmallHeader" parent="@style/AppLabel">
+		<item name="android:textSize">13sp</item>
+		<item name="android:background">#0000</item>
+	</style>
+
+	<style name="SmallHeader1" parent="@style/AppLabel">
+		<item name="android:textSize">16sp</item>
+		<item name="android:background">#0000</item>
+	</style>
 
 </resources>
