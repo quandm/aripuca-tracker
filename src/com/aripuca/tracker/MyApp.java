@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -419,4 +420,21 @@ public class MyApp extends Application {
 		}
 	}
 
+	/**
+	 * Checking if Internet connection exists
+	 */
+	private boolean checkInternetConnection() {
+
+		ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		if (conMgr.getActiveNetworkInfo() != null && conMgr.getActiveNetworkInfo().isAvailable()
+				&& conMgr.getActiveNetworkInfo().isConnected()) {
+			return true;
+		} else {
+			Log.v(Constants.TAG, "Internet Connection Not Present");
+			return false;
+		}
+
+	}
+	
 }
