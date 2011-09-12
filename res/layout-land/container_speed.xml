@@ -10,7 +10,7 @@
 
 			<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/speed" style="@style/MediumLabel">
+			<TextView android:id="@+id/speed" style="@style/Label30">
 			</TextView>
 
 		</LinearLayout>

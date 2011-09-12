@@ -11,7 +11,7 @@
 
 	<style name="ControlButton">
 		<item name="android:layout_width">0dp</item>
-		<item name="android:layout_height">54dp</item>
+		<item name="android:layout_height">46dp</item>
 		<item name="android:layout_weight">1</item>
 		<item name="android:background">@drawable/button_1</item>
 	</style>
@@ -65,19 +65,6 @@
 		<item name="android:background">#A222</item>
 		<item name="android:layout_weight">1</item>
 		<item name="android:layout_margin">1dp</item>
-	</style>
-
-	<style name="BigLabel" parent="@style/AppLabel">
-		<item name="android:textSize">55sp</item>
-	</style>
-
-	<style name="MediumLabel" parent="@style/AppLabel">
-		<item name="android:textSize">40sp</item>
-	</style>
-
-	<style name="MediumLabel2" parent="@style/AppLabel">
-		<item name="android:textSize">30sp</item>
-		<item name="android:background">#0000</item>
 	</style>
 
 	<style name="Label13" parent="@style/AppLabel">

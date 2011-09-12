@@ -11,7 +11,7 @@
 
 			<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/speed" style="@style/BigLabel">
+			<TextView android:id="@+id/speed" style="@style/Label50">
 			</TextView>
 
 		</LinearLayout>

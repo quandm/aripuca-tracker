@@ -4,6 +4,8 @@ public abstract class Constants {
 
 	public static final String TAG = "AripucaTracker";
 	
+	public static final String APP_NAME = "AripucaTracker";
+	
 	/**
 	 * map modes
 	 */

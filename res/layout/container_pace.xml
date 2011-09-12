@@ -10,7 +10,7 @@
 
 			<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/pace" style="@style/BigLabel">
+			<TextView android:id="@+id/pace" style="@style/Label50">
 			</TextView>
 
 		</LinearLayout>
