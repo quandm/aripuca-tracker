@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 	/**
 	 * 
 	 */
-//	private WakeLock wakeLock;
+	// private WakeLock wakeLock;
 
 	/**
 	 * Reference to Application object
@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 	private MyApp myApp;
 
 	private Utils utils;
-	
+
 	private TrackRecorder trackRecorder;
 
 	/**
@@ -79,7 +79,8 @@ public class MainActivity extends Activity {
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//Log.d(Constants.TAG, "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+			// Log.d(Constants.TAG,
+			// "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
 			updateMainActivity();
 		}
 	};
@@ -90,7 +91,8 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//Log.d(Constants.TAG, "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
+			// Log.d(Constants.TAG,
+			// "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
 			Bundle bundle = intent.getExtras();
 			updateCompass(bundle.getFloat("azimuth"));
 		}
@@ -283,16 +285,16 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Log.v(Constants.TAG, "onCreate");
-		
+
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 		myApp.setMainActivity(this);
 
 		utils = new Utils(this);
-		
+
 		initializeHiddenPreferences();
 
-		//----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 		// preparing UI
 		// setting layout for main activity
 		setContentView(R.layout.main);
@@ -364,11 +366,10 @@ public class MainActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 
-
 		super.onConfigurationChanged(newConfig);
-		
+
 	}
-	
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 
@@ -391,13 +392,13 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		Log.v(Constants.TAG, "onResume");
-		
+
 		// preventing phone from sleeping
 		if (findViewById(R.id.dynamicView) != null) {
 			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
 		}
 
-		// registering receiver for compass updates 
+		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 
 		// registering receiver for location updates
@@ -693,7 +694,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -1214,24 +1215,20 @@ public class MainActivity extends Activity {
 
 		}
 
-		//sunrise/sunset
+		// sunrise/sunset
 		Calendar cal = Calendar.getInstance();
 		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
 
 		/*
 		 * LatitudeLongitude ll = new
 		 * LatitudeLongitude(myApp.getCurrentLocation().getLatitude(),
-		 * myApp.getCurrentLocation().getLongitude());
-		 * 
-		 * boolean dst = tz.inDaylightTime(cal.getTime());
-		 * 
-		 * if (findViewById(R.id.sunrise) != null) { ((TextView)
+		 * myApp.getCurrentLocation().getLongitude()); boolean dst =
+		 * tz.inDaylightTime(cal.getTime()); if (findViewById(R.id.sunrise) !=
+		 * null) { ((TextView)
 		 * findViewById(R.id.sunrise)).setText(Sun.sunriseTime(cal, ll, tz,
-		 * dst).toString()); }
-		 * 
-		 * if (findViewById(R.id.sunset) != null) { ((TextView)
-		 * findViewById(R.id.sunset)).setText(Sun.sunsetTime(cal, ll, tz,
-		 * dst).toString()); }
+		 * dst).toString()); } if (findViewById(R.id.sunset) != null) {
+		 * ((TextView) findViewById(R.id.sunset)).setText(Sun.sunsetTime(cal,
+		 * ll, tz, dst).toString()); }
 		 */
 
 		SunriseSunset ss = new SunriseSunset(myApp.getCurrentLocation().getLatitude(),
@@ -1279,9 +1276,7 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1354,15 +1349,13 @@ public class MainActivity extends Activity {
 	// -------------------------------------------------------------------------
 	// WAKE LOCK
 	// -------------------------------------------------------------------------
-/*	public void aquireWakeLock() {
-		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE))
-				.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
-						| PowerManager.ON_AFTER_RELEASE, Constants.TAG);
-		wakeLock.acquire();
-	}
-	public void releaseWakeLock() {
-		wakeLock.release();
-	} */
+	/*
+	 * public void aquireWakeLock() { wakeLock = ((PowerManager)
+	 * getSystemService(Context.POWER_SERVICE))
+	 * .newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK |
+	 * PowerManager.ON_AFTER_RELEASE, Constants.TAG); wakeLock.acquire(); }
+	 * public void releaseWakeLock() { wakeLock.release(); }
+	 */
 
 	/**
 	 * Create a list of famous waypoints and insert to db when application first
@@ -1371,9 +1364,7 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) {
-			return;
-		}
+		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
@@ -1422,12 +1413,12 @@ public class MainActivity extends Activity {
 
 			if (myApp.getExternalStorageWriteable()) {
 
-				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\AripucaTracker.db";
+				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\" + Constants.APP_NAME + ".db";
 
 				String dateStr = (new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")).format(new Date());
 
 				File currentDB = new File(data, currentDBPath);
-				File backupDB = new File(myApp.getAppDir() + "/backup/AripucaTracker_" + dateStr + ".db");
+				File backupDB = new File(myApp.getAppDir() + "/backup/" + Constants.APP_NAME + "_" + dateStr + ".db");
 
 				if (currentDB.exists()) {
 					FileChannel src = new FileInputStream(currentDB).getChannel();

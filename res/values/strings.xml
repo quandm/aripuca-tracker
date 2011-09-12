@@ -2,7 +2,6 @@
 <resources>
 
 	<string name="main_app_title">Aripuca Tracker</string>
-	<string name="main_app_title_code">AripucaTracker</string>
 	<string name="author_name">VitalNik</string>
 	<string name="company">Aripuca Apps</string>
 	<string name="app_url">http://tracker.aripuca.com</string>

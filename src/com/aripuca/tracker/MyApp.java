@@ -168,7 +168,7 @@ public class MyApp extends Application {
 		/**
 		 * 
 		 */
-		private static final String DATABASE_NAME = "AripucaTracker.db";
+		private static final String DATABASE_NAME = Constants.APP_NAME + ".db";
 
 		private static final int DATABASE_VERSION = 1;
 
@@ -330,7 +330,7 @@ public class MyApp extends Application {
 		setExternalStorageState();
 
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
-				+ getString(R.string.main_app_title_code);
+				+ Constants.APP_NAME;
 
 		super.onCreate();
 
