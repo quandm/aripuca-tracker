@@ -135,12 +135,10 @@
 	<!-- SETTINGS -->
 	<string name="min_distance_title">Минимальная дистанция</string>
 	<string name="min_distance_summary">Минимальное расстояние между двумя записываемыми
-		точками (метров)
-	</string>
+		точками</string>
 
 	<string name="min_accuracy_title">Минимальная точность</string>
 	<string name="min_accuracy_summary">Минимальная точность необходимая для записи точки
-		(метров)
 	</string>
 
 	<string name="app_settings_title">Настройки приложения</string>
@@ -191,7 +189,8 @@
 		магнитный
 	</string>
 	<string name="show_magnetic">Показать магнитный север</string>
-	<string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное изображение</string>
+	<string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное
+		изображение</string>
 
 	<!-- MESSAGES -->
 
