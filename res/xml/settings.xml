@@ -73,7 +73,7 @@
 			<ListPreference android:entries="@array/min_accuracy_labels" 
 				android:entryValues="@array/min_accuracy_values" android:title="@string/min_accuracy_title"
 				android:summary="@string/min_accuracy_summary"
-				android:key="min_accuracy" android:defaultValue="10" android:dialogTitle="@string/min_accuracy_title"></ListPreference>
+				android:key="min_accuracy" android:dialogTitle="@string/min_accuracy_title" android:defaultValue="20"></ListPreference>
 
 		</PreferenceCategory>
 

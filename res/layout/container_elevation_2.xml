@@ -21,8 +21,17 @@
 
 				<TextView android:text="@string/current" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/elevation" style="@style/Label13">
-				</TextView>
+				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+
+					<TextView android:id="@+id/elevation" android:gravity="right"
+						style="@style/Label13">
+					</TextView>
+
+					<TextView android:id="@+id/elevationUnit" android:gravity="left"
+						style="@style/LabelUnit">
+					</TextView>
+
+				</LinearLayout>
 
 			</LinearLayout>
 
@@ -30,8 +39,10 @@
 
 				<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/maxElevation" style="@style/Label13">
-				</TextView>
+				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+					<TextView android:id="@+id/maxElevation" style="@style/Label13">
+					</TextView>
+				</LinearLayout>
 
 			</LinearLayout>
 
@@ -39,8 +50,10 @@
 
 				<TextView android:text="@string/min" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/minElevation" style="@style/Label13">
-				</TextView>
+				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+					<TextView android:id="@+id/minElevation" style="@style/Label13">
+					</TextView>
+				</LinearLayout>
 
 			</LinearLayout>
 
@@ -52,8 +65,10 @@
 
 				<TextView android:text="@string/gain" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/elevationGain" style="@style/Label13">
-				</TextView>
+				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+					<TextView android:id="@+id/elevationGain" style="@style/Label13">
+					</TextView>
+				</LinearLayout>
 
 			</LinearLayout>
 
@@ -61,8 +76,10 @@
 
 				<TextView android:text="@string/loss" style="@style/SmallHeader"></TextView>
 
-				<TextView android:id="@+id/elevationLoss" style="@style/Label13">
-				</TextView>
+				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+					<TextView android:id="@+id/elevationLoss" style="@style/Label13">
+					</TextView>
+				</LinearLayout>
 
 			</LinearLayout>
 

@@ -33,6 +33,14 @@
 		<item name="android:layout_marginBottom">1dp</item>
 	</style>
 
+	<style name="TrackDetailsRow_ValueUnits">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:background">#A222</item>
+		<item name="android:layout_gravity">center</item>
+	</style>
+
 	<style name="TrackDetailsRowOfRows">
 		<item name="android:orientation">vertical</item>
 		<item name="android:layout_width">fill_parent</item>
@@ -46,6 +54,7 @@
 		<item name="android:layout_width">0dp</item>
 		<item name="android:layout_height">wrap_content</item>
 		<item name="android:layout_weight">1</item>
+		<item name="android:gravity">center</item>
 	</style>
 
 	<style name="TrackDetailsLeftCell" parent="@style/TrackDetailsCell">
@@ -59,10 +68,18 @@
 	<!-- LABELS -->
 
 	<style name="AppLabel">
-		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_width">wrap_content</item>
 		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:layout_margin">1dp</item>
 		<item name="android:gravity">center</item>
-		<item name="android:background">#A222</item>
+	</style>
+
+	<!-- Small label for measurement units -->
+	<style name="LabelUnit">
+		<item name="android:textSize">13sp</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
 		<item name="android:layout_weight">1</item>
 		<item name="android:layout_margin">1dp</item>
 	</style>

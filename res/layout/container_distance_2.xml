@@ -12,8 +12,17 @@
 
 			<TextView android:text="@string/distance" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/distance" style="@style/Label13">
-			</TextView>
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+
+				<TextView android:id="@+id/distance" style="@style/Label13"
+					android:gravity="right">
+				</TextView>
+
+				<TextView android:id="@+id/distanceUnit" android:gravity="left"
+					style="@style/LabelUnit">
+				</TextView>
+
+			</LinearLayout>
 
 		</LinearLayout>
 

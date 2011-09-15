@@ -8,7 +8,7 @@
 		android:orientation="horizontal">
 
 		<LinearLayout android:orientation="vertical"
-			android:layout_height="fill_parent" android:layout_width="match_parent">
+			android:layout_height="fill_parent" android:layout_width="fill_parent">
 
 			<!-- SPEED & PACE -->
 
@@ -19,8 +19,17 @@
 
 					<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/speed" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+
+						<TextView android:id="@+id/speed" android:gravity="right"
+							style="@style/Label17">
+						</TextView>
+
+						<TextView android:id="@+id/speedUnit" android:gravity="left"
+							style="@style/LabelUnit">
+						</TextView>
+
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -28,8 +37,10 @@
 
 					<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/pace" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/pace" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -45,8 +56,17 @@
 
 					<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/elevation" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+
+						<TextView android:id="@+id/elevation" android:gravity="right"
+							style="@style/Label17">
+						</TextView>
+
+						<TextView android:id="@+id/elevationUnit"
+							android:gravity="left" style="@style/LabelUnit">
+						</TextView>
+
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -55,8 +75,10 @@
 
 					<TextView android:text="@string/azimuth" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/azimuth" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/azimuth" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -71,8 +93,10 @@
 
 					<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/lat" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/lat" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -80,8 +104,10 @@
 
 					<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/lng" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/lng" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -89,8 +115,18 @@
 
 					<TextView android:text="@string/accuracy" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/accuracy" style="@style/Label17">
-					</TextView>
+
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+
+						<TextView android:id="@+id/accuracy" style="@style/Label17"
+							android:gravity="right">
+						</TextView>
+
+						<TextView android:id="@+id/accuracyUnit" android:gravity="left"
+							style="@style/LabelUnit">
+						</TextView>
+
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -105,8 +141,10 @@
 
 					<TextView android:text="@string/sunrise" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/sunrise" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/sunrise" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -114,8 +152,10 @@
 
 					<TextView android:text="@string/sunset" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/sunset" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/sunset" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
@@ -123,8 +163,10 @@
 
 					<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
 
-					<TextView android:id="@+id/lastFix" style="@style/Label17">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+						<TextView android:id="@+id/lastFix" style="@style/Label17">
+						</TextView>
+					</LinearLayout>
 
 				</LinearLayout>
 
