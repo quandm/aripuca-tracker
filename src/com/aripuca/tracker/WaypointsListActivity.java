@@ -186,8 +186,11 @@ public class WaypointsListActivity extends ListActivity {
 
 					float distanceTo = myApp.getCurrentLocation().distanceTo(wp.getLocation());
 
+					String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+
 					distStr = utils
-							.formatDistance(distanceTo, myApp.getPreferences().getString("distance_units", "km"));
+							.formatDistance(distanceTo, distanceUnit) + " " +
+							utils.getLocalaziedDistanceUnit(distanceTo, distanceUnit);
 
 					wp.setDistanceTo(distanceTo);
 
@@ -252,7 +255,9 @@ public class WaypointsListActivity extends ListActivity {
 
 			Waypoint curWp = (Waypoint) it.next();
 
-			if (curWp.getTitle().equals(title)) { return true; }
+			if (curWp.getTitle().equals(title)) {
+				return true;
+			}
 		}
 
 		return false;
@@ -300,7 +305,9 @@ public class WaypointsListActivity extends ListActivity {
 	 */
 	private void setRealOrientation(int orientation) {
 
-		if (orientationValues == null) { return; }
+		if (orientationValues == null) {
+			return;
+		}
 
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
@@ -976,7 +983,9 @@ public class WaypointsListActivity extends ListActivity {
 	 */
 	private int getOrientationAdjustment() {
 
-		if (orientationValues == null) { return 0; }
+		if (orientationValues == null) {
+			return 0;
+		}
 
 		switch (realOrientation) {
 
