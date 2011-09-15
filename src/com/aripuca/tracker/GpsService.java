@@ -42,9 +42,8 @@ public class GpsService extends Service {
 
 			currentLocation = location;
 			
-			// let's broadcast compass data to any activity waiting for updates
+			// let's broadcast location data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
-			// broadcasting compass updates 
 			sendBroadcast(intent);
 			
 		}
@@ -59,6 +58,10 @@ public class GpsService extends Service {
 
 		@Override
 		public void onProviderDisabled(String provider) {
+			
+			// pause track
+			
+			
 			Toast.makeText(myApp.getMainActivity(), "GPS provider disabled", Toast.LENGTH_SHORT).show();
 		}
 

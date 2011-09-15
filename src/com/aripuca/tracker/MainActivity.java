@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 			containers.add(R.layout.container_speed);
 			containers.add(R.layout.container_pace);
 			containers.add(R.layout.container_speed_pace);
-			containers.add(R.layout.container_speed_acceleration);
+//			containers.add(R.layout.container_speed_acceleration);
 		}
 	};
 	private ContainerCarousel timeContainerCarousel = new ContainerCarousel() {
@@ -1093,9 +1093,14 @@ public class MainActivity extends Activity {
 		}
 
 		if (myApp.getCurrentLocation().hasAccuracy()) {
+			
+			float accuracy = myApp.getCurrentLocation().getAccuracy();
+			
 			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(utils.formatDistance(myApp.getCurrentLocation()
-						.getAccuracy(), distanceUnit));
+				((TextView) findViewById(R.id.accuracy)).setText(utils.formatDistance(accuracy, distanceUnit));
+			}
+			if (findViewById(R.id.accuracyUnit) != null) {
+				((TextView) findViewById(R.id.accuracyUnit)).setText(utils.getLocalaziedDistanceUnit(accuracy, distanceUnit));
 			}
 		}
 
@@ -1108,6 +1113,9 @@ public class MainActivity extends Activity {
 			if (findViewById(R.id.elevation) != null) {
 				((TextView) findViewById(R.id.elevation)).setText(utils.formatElevation((float) myApp
 						.getCurrentLocation().getAltitude(), elevationUnit));
+			}
+			if (findViewById(R.id.elevationUnit) != null) {
+				((TextView) findViewById(R.id.elevationUnit)).setText(utils.getLocalizedElevationUnit(elevationUnit));
 			}
 		}
 
@@ -1123,6 +1131,10 @@ public class MainActivity extends Activity {
 				((TextView) findViewById(R.id.speed)).setText(utils.formatSpeed(speed, speedUnit));
 			}
 
+			if (findViewById(R.id.speedUnit) != null) {
+				((TextView) findViewById(R.id.speedUnit)).setText(utils.getLocalizedSpeedUnit(speedUnit));
+			}
+			
 			// current pace (running, hiking, walking)
 			if (findViewById(R.id.pace) != null) {
 				((TextView) findViewById(R.id.pace)).setText(Utils.formatPace(speed, speedUnit));
@@ -1213,6 +1225,12 @@ public class MainActivity extends Activity {
 						distanceUnit));
 			}
 
+			if (findViewById(R.id.distanceUnit) != null) {
+				((TextView) findViewById(R.id.distanceUnit)).setText(utils.getLocalaziedDistanceUnit(trackRecorder.getTrack()
+						.getDistance(),
+						distanceUnit));
+			}
+			
 		}
 
 		// sunrise/sunset

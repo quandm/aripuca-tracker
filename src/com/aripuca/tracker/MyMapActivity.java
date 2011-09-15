@@ -230,7 +230,7 @@ public class MyMapActivity extends MapActivity {
 								R.drawable.map_pin);
 
 			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
-
+			
 		}
 
 	}

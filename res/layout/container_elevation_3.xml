@@ -12,8 +12,17 @@
 
 			<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
 
-			<TextView android:id="@+id/elevation" style="@style/Label30">
-			</TextView>
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+
+				<TextView android:id="@+id/elevation" android:gravity="right"
+					style="@style/Label30">
+				</TextView>
+
+				<TextView android:id="@+id/elevationUnit" android:gravity="left"
+					style="@style/LabelUnit">
+				</TextView>
+
+			</LinearLayout>
 
 		</LinearLayout>
 
