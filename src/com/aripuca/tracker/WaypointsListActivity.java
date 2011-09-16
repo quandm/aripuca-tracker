@@ -400,8 +400,8 @@ public class WaypointsListActivity extends ListActivity {
 
 				// clear all waypoints with confirmation dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Are you sure?").setCancelable(true)
-						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				builder.setMessage(R.string.are_you_sure).setCancelable(true)
+						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 
 								// delete all waypoints
@@ -416,7 +416,7 @@ public class WaypointsListActivity extends ListActivity {
 										Toast.LENGTH_SHORT).show();
 
 							}
-						}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+						}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
 							}

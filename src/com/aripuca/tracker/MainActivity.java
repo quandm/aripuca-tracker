@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 			containers.add(R.layout.container_speed);
 			containers.add(R.layout.container_pace);
 			containers.add(R.layout.container_speed_pace);
-//			containers.add(R.layout.container_speed_acceleration);
+			//			containers.add(R.layout.container_speed_acceleration);
 		}
 	};
 	private ContainerCarousel timeContainerCarousel = new ContainerCarousel() {
@@ -694,7 +694,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -1003,15 +1003,11 @@ public class MainActivity extends Activity {
 			case R.id.backupMenuItem:
 
 				backupDatabase();
-
 				return true;
 
 			case R.id.restoreMenuItem:
 
-				// TODO: restore db from external sqlite file
-
 				restoreDatabase();
-
 				return true;
 
 			default:
@@ -1093,14 +1089,15 @@ public class MainActivity extends Activity {
 		}
 
 		if (myApp.getCurrentLocation().hasAccuracy()) {
-			
+
 			float accuracy = myApp.getCurrentLocation().getAccuracy();
-			
+
 			if (findViewById(R.id.accuracy) != null) {
 				((TextView) findViewById(R.id.accuracy)).setText(utils.formatDistance(accuracy, distanceUnit));
 			}
 			if (findViewById(R.id.accuracyUnit) != null) {
-				((TextView) findViewById(R.id.accuracyUnit)).setText(utils.getLocalaziedDistanceUnit(accuracy, distanceUnit));
+				((TextView) findViewById(R.id.accuracyUnit)).setText(utils.getLocalaziedDistanceUnit(accuracy,
+						distanceUnit));
 			}
 		}
 
@@ -1134,7 +1131,7 @@ public class MainActivity extends Activity {
 			if (findViewById(R.id.speedUnit) != null) {
 				((TextView) findViewById(R.id.speedUnit)).setText(utils.getLocalizedSpeedUnit(speedUnit));
 			}
-			
+
 			// current pace (running, hiking, walking)
 			if (findViewById(R.id.pace) != null) {
 				((TextView) findViewById(R.id.pace)).setText(Utils.formatPace(speed, speedUnit));
@@ -1226,11 +1223,12 @@ public class MainActivity extends Activity {
 			}
 
 			if (findViewById(R.id.distanceUnit) != null) {
-				((TextView) findViewById(R.id.distanceUnit)).setText(utils.getLocalaziedDistanceUnit(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.distanceUnit)).setText(utils.getLocalaziedDistanceUnit(trackRecorder
+						.getTrack()
 						.getDistance(),
 						distanceUnit));
 			}
-			
+
 		}
 
 		// sunrise/sunset
@@ -1294,7 +1292,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1382,7 +1382,9 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
+		if (myApp.getPreferences().contains("famous_waypoints")) {
+			return;
+		}
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
@@ -1431,7 +1433,7 @@ public class MainActivity extends Activity {
 
 			if (myApp.getExternalStorageWriteable()) {
 
-				String currentDBPath = "\\data\\com.aripuca.tracker\\databases\\" + Constants.APP_NAME + ".db";
+				String currentDBPath = "/data/com.aripuca.tracker/databases/" + Constants.APP_NAME + ".db";
 
 				String dateStr = (new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")).format(new Date());
 
@@ -1444,10 +1446,17 @@ public class MainActivity extends Activity {
 					dst.transferFrom(src, 0, src.size());
 					src.close();
 					dst.close();
+					
+					Toast.makeText(MainActivity.this, getString(R.string.backup_completed) + " " + backupDB.getPath(),
+							Toast.LENGTH_LONG).show();
+					
+				} else {
+					
+					Toast.makeText(MainActivity.this, getString(R.string.backup_error) + ": DB file not found",
+							Toast.LENGTH_LONG).show();
+					
 				}
 
-				Toast.makeText(MainActivity.this, getString(R.string.backup_completed) + " " + backupDB.getPath(),
-						Toast.LENGTH_LONG).show();
 
 			}
 		}
@@ -1465,22 +1474,49 @@ public class MainActivity extends Activity {
 
 	private void restoreDatabase() {
 
-		Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+//		Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+/*
+		File importFolder = new
+				File("\\data\\data\\com.aripuca.tracker\\databases");
+		final String importFiles[] = importFolder.list();
+		if (importFiles == null ||
+				importFiles.length == 0) {
+			Toast.makeText(MainActivity.this,
+					"Import folder is empty", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setSingleChoiceItems(importFiles, 0, new
+				DialogInterface.OnClickListener() {
+					public void
+							onClick(DialogInterface dialog, int whichButton) {
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show(); */
 
-		/*
-		 * File importFolder = new
-		 * File("\\data\\data\\com.aripuca.tracker\\databases"); final String
-		 * importFiles[] = importFolder.list(); if (importFiles == null ||
-		 * importFiles.length == 0) { Toast.makeText(MainActivity.this,
-		 * "Import folder is empty", Toast.LENGTH_SHORT).show(); return; }
-		 * AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		 * builder.setSingleChoiceItems(importFiles, 0, new
-		 * DialogInterface.OnClickListener() { public void
-		 * onClick(DialogInterface dialog, int whichButton) { } }); AlertDialog
-		 * alert = builder.create(); alert.show();
-		 */
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.are_you_sure)
+				.setCancelable(true)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
 
-		// restoreDatabaseHandler.post(restoreDatabaseRunnable);
+						//TODO: select db file to restore
+						//TODO: check db version and schema 
+						
+						restoreDatabaseHandler.post(restoreDatabaseRunnable);
+
+					}
+				})
+				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		
+		AlertDialog alert = builder.create();
+
+		alert.show();
 
 	}
 
@@ -1497,18 +1533,17 @@ public class MainActivity extends Activity {
 
 				if (myApp.getExternalStorageWriteable()) {
 
-					String currentDBPath = myApp.getAppDir() + "/backup/AripucaTracker_2011-06-23.db";
+					String restoreDBPath = myApp.getAppDir() + "/backup/AripucaTracker2.db";
 
-					File currentDB = new File(currentDBPath);
-					File backupDB = new File(data, "\\data\\com.aripuca.tracker\\databases\\AripucaTracker.db");
-
-					if (currentDB.exists()) {
-						FileChannel src = new FileInputStream(currentDB).getChannel();
-						FileChannel dst = new FileOutputStream(backupDB).getChannel();
-						dst.transferFrom(src, 0, src.size());
-						src.close();
-						dst.close();
-					}
+					File restoreDB = new File(restoreDBPath);
+					File currentDB = new File(data, "/data/com.aripuca.tracker/databases/AripucaTracker.db");
+					
+					FileChannel src = new FileInputStream(restoreDB).getChannel();
+					FileChannel dst = new FileOutputStream(currentDB).getChannel();
+					
+					dst.transferFrom(src, 0, src.size());
+					src.close();
+					dst.close();
 
 					myApp.setDatabase();
 

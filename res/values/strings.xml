@@ -216,7 +216,7 @@
 	<string name="select_tracking_mode">Select tracking mode</string>
 
 	<string name="are_you_sure">Are you sure?</string>
-
+	
 	<string name="username_or_password_required">User name and password required</string>
 	<string name="stop_track_recording">Please stop track recording</string>
 	<string name="click_again_to_exit">Click again to exit</string>
