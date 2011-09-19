@@ -73,6 +73,10 @@ public class MainActivity extends Activity {
 
 	private TrackRecorder trackRecorder;
 
+	private String importDatabaseFileName;
+	
+	private Handler mainHandler = new Handler();
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -1345,7 +1349,7 @@ public class MainActivity extends Activity {
 		if (trackRecorder.isRecording() && backClickCount < 2) {
 			Toast.makeText(MainActivity.this, R.string.click_again_to_exit, Toast.LENGTH_SHORT).show();
 			// click count is cleared after 3 seconds
-			clearClickCountHandler.postDelayed(clearClickCountTask, 3000);
+			mainHandler.postDelayed(clearClickCountTask, 3000);
 		} else {
 			this.finish();
 		}
@@ -1354,7 +1358,6 @@ public class MainActivity extends Activity {
 	/**
 	 * Clear click count handler
 	 */
-	private Handler clearClickCountHandler = new Handler();
 	private Runnable clearClickCountTask = new Runnable() {
 		@Override
 		public void run() {
@@ -1438,7 +1441,7 @@ public class MainActivity extends Activity {
 				String dateStr = (new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")).format(new Date());
 
 				File currentDB = new File(data, currentDBPath);
-				File backupDB = new File(myApp.getAppDir() + "/backup/" + Constants.APP_NAME + "_" + dateStr + ".db");
+				File backupDB = new File(myApp.getAppDir() + "/backup/db_" + dateStr + ".db");
 
 				if (currentDB.exists()) {
 					FileChannel src = new FileInputStream(currentDB).getChannel();
@@ -1446,17 +1449,16 @@ public class MainActivity extends Activity {
 					dst.transferFrom(src, 0, src.size());
 					src.close();
 					dst.close();
-					
+
 					Toast.makeText(MainActivity.this, getString(R.string.backup_completed) + " " + backupDB.getPath(),
 							Toast.LENGTH_LONG).show();
-					
+
 				} else {
-					
+
 					Toast.makeText(MainActivity.this, getString(R.string.backup_error) + ": DB file not found",
 							Toast.LENGTH_LONG).show();
-					
-				}
 
+				}
 
 			}
 		}
@@ -1472,55 +1474,44 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Restoring database from previously saved copy
+	 */
 	private void restoreDatabase() {
 
-//		Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
-/*
-		File importFolder = new
-				File("\\data\\data\\com.aripuca.tracker\\databases");
+		// show "select a file" dialog
+		File importFolder = new	File(myApp.getAppDir() + "/backup/");
 		final String importFiles[] = importFolder.list();
+		
 		if (importFiles == null ||
 				importFiles.length == 0) {
 			Toast.makeText(MainActivity.this,
 					"Import folder is empty", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		
+		importDatabaseFileName = importFiles[0]; 
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(importFiles, 0, new
 				DialogInterface.OnClickListener() {
-					public void
-							onClick(DialogInterface dialog, int whichButton) {
-					}
-				});
-		AlertDialog alert = builder.create();
-		alert.show(); */
+					public void onClick(DialogInterface dialog, int whichButton) {
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.are_you_sure)
-				.setCancelable(true)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-
-						//TODO: select db file to restore
-						//TODO: check db version and schema 
+						//resoreDatabaseThread(importFiles[whichButton]);
 						
-						restoreDatabaseHandler.post(restoreDatabaseRunnable);
-
-					}
-				})
-				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
+						importDatabaseFileName = importFiles[whichButton];
+						mainHandler.post(restoreDatabaseRunnable);
+						
+						dialog.dismiss();
+						
 					}
 				});
-		
+
 		AlertDialog alert = builder.create();
-
 		alert.show();
-
+		
 	}
-
-	private Handler restoreDatabaseHandler = new Handler();
+	
 	private Runnable restoreDatabaseRunnable = new Runnable() {
 		@Override
 		public void run() {
@@ -1533,14 +1524,14 @@ public class MainActivity extends Activity {
 
 				if (myApp.getExternalStorageWriteable()) {
 
-					String restoreDBPath = myApp.getAppDir() + "/backup/AripucaTracker2.db";
+					String restoreDBPath = myApp.getAppDir() + "/backup/"+importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
 					File currentDB = new File(data, "/data/com.aripuca.tracker/databases/AripucaTracker.db");
-					
+
 					FileChannel src = new FileInputStream(restoreDB).getChannel();
 					FileChannel dst = new FileOutputStream(currentDB).getChannel();
-					
+
 					dst.transferFrom(src, 0, src.size());
 					src.close();
 					dst.close();
@@ -1548,7 +1539,7 @@ public class MainActivity extends Activity {
 					myApp.setDatabase();
 
 					Toast.makeText(MainActivity.this, getString(R.string.restore_completed),
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 
 				}
 
