@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.*;
 
@@ -74,7 +75,7 @@ public class MainActivity extends Activity {
 	private TrackRecorder trackRecorder;
 
 	private String importDatabaseFileName;
-	
+
 	private Handler mainHandler = new Handler();
 
 	/**
@@ -1347,7 +1348,7 @@ public class MainActivity extends Activity {
 		backClickCount++;
 
 		if (trackRecorder.isRecording() && backClickCount < 2) {
-			Toast.makeText(MainActivity.this, R.string.click_again_to_exit, Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, R.string.press_again_to_exit, Toast.LENGTH_SHORT).show();
 			// click count is cleared after 3 seconds
 			mainHandler.postDelayed(clearClickCountTask, 3000);
 		} else {
@@ -1430,6 +1431,11 @@ public class MainActivity extends Activity {
 	 */
 	private void backupDatabase() {
 
+		if (trackRecorder.isRecording()) {
+			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
+			return;
+		}
+
 		try {
 
 			File data = Environment.getDataDirectory();
@@ -1438,10 +1444,10 @@ public class MainActivity extends Activity {
 
 				String currentDBPath = "/data/com.aripuca.tracker/databases/" + Constants.APP_NAME + ".db";
 
-				String dateStr = (new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")).format(new Date());
+				String dateStr = (new SimpleDateFormat("yyyyMMdd_HHmmss")).format(new Date());
 
 				File currentDB = new File(data, currentDBPath);
-				File backupDB = new File(myApp.getAppDir() + "/backup/db_" + dateStr + ".db");
+				File backupDB = new File(myApp.getAppDir() + "/backup/" + dateStr + ".db");
 
 				if (currentDB.exists()) {
 					FileChannel src = new FileInputStream(currentDB).getChannel();
@@ -1454,10 +1460,8 @@ public class MainActivity extends Activity {
 							Toast.LENGTH_LONG).show();
 
 				} else {
-
-					Toast.makeText(MainActivity.this, getString(R.string.backup_error) + ": DB file not found",
+					Toast.makeText(MainActivity.this, getString(R.string.backup_error) + ": Source db file not found",
 							Toast.LENGTH_LONG).show();
-
 				}
 
 			}
@@ -1479,43 +1483,77 @@ public class MainActivity extends Activity {
 	 */
 	private void restoreDatabase() {
 
-		// show "select a file" dialog
-		File importFolder = new	File(myApp.getAppDir() + "/backup/");
-		final String importFiles[] = importFolder.list();
-		
-		if (importFiles == null ||
-				importFiles.length == 0) {
-			Toast.makeText(MainActivity.this,
-					"Import folder is empty", Toast.LENGTH_SHORT).show();
+		if (trackRecorder.isRecording()) {
+			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
-		importDatabaseFileName = importFiles[0]; 
-		
+
+		// show "select a file" dialog
+		File importFolder = new File(myApp.getAppDir() + "/backup/");
+		final String importFiles[] = importFolder.list();
+
+		if (importFiles == null ||
+				importFiles.length == 0) {
+			Toast.makeText(MainActivity.this, R.string.source_folder_empty, Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		importDatabaseFileName = importFiles[0];
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.select_file);
 		builder.setSingleChoiceItems(importFiles, 0, new
 				DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 
-						//resoreDatabaseThread(importFiles[whichButton]);
-						
 						importDatabaseFileName = importFiles[whichButton];
 						mainHandler.post(restoreDatabaseRunnable);
-						
+
 						dialog.dismiss();
-						
+
 					}
 				});
 
 		AlertDialog alert = builder.create();
 		alert.show();
-		
+
 	}
-	
+
+	/**
+	 * Runnable performing restoration of the application database from external
+	 * source
+	 */
 	private Runnable restoreDatabaseRunnable = new Runnable() {
 		@Override
 		public void run() {
 
+			try {
+
+				// open database in readonly mode
+				SQLiteDatabase db = SQLiteDatabase.openDatabase(
+						myApp.getAppDir() + "/backup/" + importDatabaseFileName,
+						null, SQLiteDatabase.OPEN_READONLY);
+
+				// check version compatibility
+				// only same version of the db can be restored
+				if (myApp.getDatabase().getVersion() != db.getVersion()) {
+					Toast.makeText(MainActivity.this, getString(R.string.restore_db_version_conflict),
+							Toast.LENGTH_LONG).show();
+					return;
+				}
+
+				db.close();
+
+			} catch (SQLiteException e) {
+
+				Toast.makeText(MainActivity.this, getString(R.string.restore_file_error) + ": " + e.getMessage(),
+						Toast.LENGTH_LONG).show();
+
+				return;
+			}
+
+			// closing current db
+			// track recording mode is always off at this point
 			myApp.getDatabase().close();
 
 			try {
@@ -1524,7 +1562,7 @@ public class MainActivity extends Activity {
 
 				if (myApp.getExternalStorageWriteable()) {
 
-					String restoreDBPath = myApp.getAppDir() + "/backup/"+importDatabaseFileName;
+					String restoreDBPath = myApp.getAppDir() + "/backup/" + importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
 					File currentDB = new File(data, "/data/com.aripuca.tracker/databases/AripucaTracker.db");
@@ -1550,7 +1588,7 @@ public class MainActivity extends Activity {
 
 				myApp.setDatabase();
 
-				Toast.makeText(MainActivity.this, getString(R.string.backup_error) + " " + e.getMessage(),
+				Toast.makeText(MainActivity.this, getString(R.string.restore_error) + ": " + e.getMessage(),
 						Toast.LENGTH_LONG).show();
 
 			}

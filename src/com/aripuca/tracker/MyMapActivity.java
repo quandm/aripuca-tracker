@@ -14,10 +14,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.view.CompassImage;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -35,7 +38,7 @@ public class MyMapActivity extends MapActivity {
 	private MyApp myApp;
 
 	private Utils utils;
-	
+
 	/**
 	 * 
 	 */
@@ -116,9 +119,9 @@ public class MyMapActivity extends MapActivity {
 		 * @param canvas
 		 */
 		private void drawSegments(Projection projection, Canvas canvas) {
-			
-			if (points.size()<=1) {
-				return;				
+
+			if (points.size() <= 1) {
+				return;
 			}
 
 			Paint paint = new Paint();
@@ -164,22 +167,22 @@ public class MyMapActivity extends MapActivity {
 				if (!pathStarted) {
 
 					// starting new segment
-					if (i>0) {
-						
+					if (i > 0) {
+
 						// starting new segment at last segment's end point
-						projection.toPixels(points.get(i-1).getGeoPoint(), screenPts);
+						projection.toPixels(points.get(i - 1).getGeoPoint(), screenPts);
 						path.moveTo(screenPts.x, screenPts.y);
-						
+
 						projection.toPixels(points.get(i).getGeoPoint(), screenPts);
 						path.lineTo(screenPts.x, screenPts.y);
-						
+
 					} else {
 						// for the very first segment just move path pointer
 						path.moveTo(screenPts.x, screenPts.y);
 					}
-					
+
 					pathStarted = true;
-					
+
 				} else {
 					path.lineTo(screenPts.x, screenPts.y);
 				}
@@ -206,7 +209,7 @@ public class MyMapActivity extends MapActivity {
 
 			// drawing start and end map pins
 			this.showMapPin(projection, canvas, points.get(0).getGeoPoint());
-			if (points.size()>1) {
+			if (points.size() > 1) {
 				this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint());
 			}
 
@@ -230,7 +233,7 @@ public class MyMapActivity extends MapActivity {
 								R.drawable.map_pin);
 
 			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
-			
+
 		}
 
 	}
@@ -244,7 +247,7 @@ public class MyMapActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 
 		myApp = ((MyApp) getApplicationContext());
-		
+
 		utils = new Utils(this);
 
 		setContentView(R.layout.map_view);
@@ -270,16 +273,20 @@ public class MyMapActivity extends MapActivity {
 
 			mapView.getController().setZoom(17);
 			mapView.getController().animateTo(waypoint);
+			
+			((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.INVISIBLE);
 
 		}
 
 		// show track
 		if (this.mode == Constants.SHOW_TRACK) {
 
+			((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
+			
 			this.trackId = b.getLong("track_id");
 
 			this.createPath(this.trackId);
-
+			
 			// zoom to track points span 
 			mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
 
@@ -295,9 +302,10 @@ public class MyMapActivity extends MapActivity {
 			cursor.moveToFirst();
 
 			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+			float distance = cursor.getInt(cursor.getColumnIndex("distance"));
 
-			((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(
-					cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
+			((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(distance, distanceUnit) +
+						utils.getLocalaziedDistanceUnit(distance, distanceUnit));
 
 			cursor.close();
 
@@ -348,7 +356,7 @@ public class MyMapActivity extends MapActivity {
 
 			tpCursor.moveToNext();
 		}
-		
+
 		tpCursor.close();
 	}
 
