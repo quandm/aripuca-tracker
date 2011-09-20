@@ -219,8 +219,8 @@
 
 	<string name="are_you_sure">Вы уверены?</string>
 
-	<string name="username_or_password_required">User name and password required</string>
-	<string name="stop_track_recording">Please stop track recording</string>
+	<string name="username_or_password_required">Требуются имя пользователя и пароль</string>
+	<string name="stop_track_recording">Остановите запись трека</string>
 	<string name="click_again_to_exit">Нажмите еще раз чтобы выйти из приложения</string>
 
 	<string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека
@@ -228,13 +228,16 @@
 	<string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека
 	</string>
 
-	<string name="no_segments">No segments created for this track</string>
+	<string name="no_segments">Для этого трека не было создано ни одного сегмента</string>
 
 	<string name="backup_completed">База данных приложения скопирована в:</string>
-	<string name="backup_error">An error occurred copying application database.
-	</string>
-
+	<string name="backup_error">Ошибка копирования базы данных</string>
+	<string name="restore_error">Ошибка восстановления базы данных</string>
+	<string name="restore_file_error">Открываемый файл не является базой данных SQLite</string>
+	<string name="restore_db_version_conflict">Восстанавливаемая база данных не совместима с текущей версией</string>
 	<string name="restore_completed">База данных восстановлена</string>
+
+	<string name="source_folder_empty">Нет файлов для импорта</string>
 
 	<string name="coming_soon">Скоро будет...</string>
 

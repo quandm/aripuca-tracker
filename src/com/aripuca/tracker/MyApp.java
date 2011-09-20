@@ -280,6 +280,8 @@ public class MyApp extends Application {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+			// recreate database if version changes (DATABASE_VERSION)
+			
 			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
@@ -346,11 +348,7 @@ public class MyApp extends Application {
 		Configuration config = getBaseContext().getResources().getConfiguration();
 		String lang = preferences.getString("language", "en-US");
 
-		Log.v(Constants.TAG, "MyApp: updateLocale: current locale :" + config.locale.getLanguage());
-
 		if (!config.locale.getLanguage().equals(lang)) {
-
-			Log.v(Constants.TAG, "MyApp: updateLocale: setting new locale: " + lang);
 
 			locale = new Locale(lang);
 			Locale.setDefault(locale);
@@ -364,8 +362,6 @@ public class MyApp extends Application {
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-
-		Log.v(Constants.TAG, "MyApp: onConfigurationChanged: " + newConfig.toString());
 
 		if (locale != null) {
 			Log.v(Constants.TAG, "MyApp: onConfigurationChanged: updating locale: " + locale.getLanguage());

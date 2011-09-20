@@ -54,6 +54,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -308,6 +309,11 @@ public class WaypointsListActivity extends ListActivity {
 		if (orientationValues == null) {
 			return;
 		}
+
+//		available Since API level 8		
+//		Display display = getWindowManager().getDefaultDisplay();
+//		int rotation = display.getRotation();
+//		Log.d(Constants.TAG, "Rotation: " + rotation);
 
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
