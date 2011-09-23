@@ -1,4 +1,4 @@
-package com.aripuca.tracker;
+package com.aripuca.tracker.map;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
-import com.aripuca.tracker.view.CompassImage;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -235,7 +237,7 @@ public class MyMapActivity extends MapActivity {
 			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
 
 		}
-
+		
 	}
 
 	/**
@@ -313,7 +315,7 @@ public class MyMapActivity extends MapActivity {
 
 		// ---Add a location marker---
 		MapOverlay mapOverlay = new MapOverlay();
-
+		
 		List<Overlay> listOfOverlays = mapView.getOverlays();
 		listOfOverlays.clear();
 		listOfOverlays.add(mapOverlay);

@@ -1,8 +1,15 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.R.id;
+import com.aripuca.tracker.R.layout;
+import com.aripuca.tracker.R.menu;
+import com.aripuca.tracker.R.string;
+import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
+import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.util.Utils;
 
 import android.app.AlertDialog;

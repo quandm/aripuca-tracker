@@ -1,5 +1,9 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.R.id;
+import com.aripuca.tracker.R.layout;
+import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 

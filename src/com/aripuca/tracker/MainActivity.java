@@ -1,5 +1,13 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.R.id;
+import com.aripuca.tracker.R.layout;
+import com.aripuca.tracker.R.menu;
+import com.aripuca.tracker.R.string;
+import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.service.GpsService;
+import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.SunriseSunset;
 import com.aripuca.tracker.util.Utils;
@@ -26,8 +34,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -77,6 +83,11 @@ public class MainActivity extends Activity {
 	private String importDatabaseFileName;
 
 	private Handler mainHandler = new Handler();
+	
+	/**
+	 * good fix received flag
+	 */
+	private boolean fixReceived = false;
 
 	/**
 	 * location updates broadcast receiver
@@ -86,7 +97,10 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			// Log.d(Constants.TAG,
 			// "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
-			updateMainActivity();
+
+			Bundle bundle = intent.getExtras();
+
+			updateMainActivity(bundle.getInt("location_provider"));
 		}
 	};
 	/**
@@ -323,6 +337,7 @@ public class MainActivity extends Activity {
 		// it will be processed in onRetainNonConfigurationInstance
 		myApp.setActivityRestarting(false);
 
+		// disable control buttons 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
@@ -343,7 +358,7 @@ public class MainActivity extends Activity {
 
 				((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
 
-				// enabling pause/resume button
+				// enabling control buttons
 				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
@@ -354,7 +369,7 @@ public class MainActivity extends Activity {
 
 		}
 
-		initializeControlButtons();
+		setControlButtonListeners();
 
 		// create all folders required by the application on external storage
 		if (myApp.getExternalStorageAvailable() && myApp.getExternalStorageWriteable()) {
@@ -494,7 +509,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Setting up listeners for application buttons
 	 */
-	private void initializeControlButtons() {
+	private void setControlButtonListeners() {
 
 		((Button) findViewById(R.id.addWaypointButton)).setOnClickListener(addWaypointListener);
 
@@ -573,14 +588,9 @@ public class MainActivity extends Activity {
 	private void startGPSService() {
 
 		// starting GPS listener service
-		Intent i = new Intent(this, GpsService.class);
-		startService(i);
-
-		// ((Button)
-		// findViewById(R.id.gpsServiceButton)).setText(getString(R.string.gps_on));
+		startService(new Intent(this, GpsService.class));
 
 		myApp.setGpsOn(true);
-
 	}
 
 	/**
@@ -588,6 +598,8 @@ public class MainActivity extends Activity {
 	 */
 	private void stopGPSService() {
 
+		fixReceived = false;
+		
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
@@ -600,11 +612,10 @@ public class MainActivity extends Activity {
 			stopTracking();
 		}
 
-		Intent i = new Intent(this, GpsService.class);
-		stopService(i);
+		stopService(new Intent(this, GpsService.class));
 
 		myApp.setGpsOn(false);
-
+		
 	}
 
 	/**
@@ -1070,12 +1081,22 @@ public class MainActivity extends Activity {
 	/**
 	 * Update main activity view
 	 */
-	public void updateMainActivity() {
+	public void updateMainActivity(int locationProvider) {
 
 		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
-		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+		// activate buttons if location updates come from GPS_ORI 
+		if (locationProvider == Constants.GPS_PROVIDER) {
+			
+			if (!fixReceived) {
+				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+				fixReceived = true;
+			}
+			
+		} else {
+			Toast.makeText(MainActivity.this, R.string.waiting_for_fix, Toast.LENGTH_SHORT).show();
+		}
 
 		// measuring units
 		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
@@ -1236,21 +1257,9 @@ public class MainActivity extends Activity {
 
 		}
 
-		// sunrise/sunset
+		// sunrise/sunset times
 		Calendar cal = Calendar.getInstance();
 		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
-
-		/*
-		 * LatitudeLongitude ll = new
-		 * LatitudeLongitude(myApp.getCurrentLocation().getLatitude(),
-		 * myApp.getCurrentLocation().getLongitude()); boolean dst =
-		 * tz.inDaylightTime(cal.getTime()); if (findViewById(R.id.sunrise) !=
-		 * null) { ((TextView)
-		 * findViewById(R.id.sunrise)).setText(Sun.sunriseTime(cal, ll, tz,
-		 * dst).toString()); } if (findViewById(R.id.sunset) != null) {
-		 * ((TextView) findViewById(R.id.sunset)).setText(Sun.sunsetTime(cal,
-		 * ll, tz, dst).toString()); }
-		 */
 
 		SunriseSunset ss = new SunriseSunset(myApp.getCurrentLocation().getLatitude(),
 				myApp.getCurrentLocation().getLongitude(), cal.getTime(),

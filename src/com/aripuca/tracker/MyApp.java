@@ -2,6 +2,10 @@ package com.aripuca.tracker;
 
 import java.util.Locale;
 
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.R.string;
+import com.aripuca.tracker.app.Constants;
+
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
