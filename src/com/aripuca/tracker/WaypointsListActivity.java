@@ -31,7 +31,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.R.id;
+import com.aripuca.tracker.R.layout;
+import com.aripuca.tracker.R.menu;
+import com.aripuca.tracker.R.string;
+import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
+import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;

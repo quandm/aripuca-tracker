@@ -242,6 +242,9 @@
 
 	<string name="restart_required">Application restart required for the changes to
 		take effect</string>
+		
+	<string name="waiting_for_fix">Waiting for a better fix</string>
+		
 
 	<!-- HINTS -->
 	<string name="waypoint_description">Waypoint description</string>

@@ -1,4 +1,4 @@
-package com.aripuca.tracker;
+package com.aripuca.tracker.app;
 
 public abstract class Constants {
 
@@ -40,5 +40,15 @@ public abstract class Constants {
 	public static final int ORIENTATION_LANDSCAPE = 2;
 	public static final int ORIENTATION_REVERSE_LANDSCAPE = 10;
 	public static final int ORIENTATION_REVERSE_PORTRAIT = 20;
+	
+	/**
+	 * location providers
+	 */
+	public static final int GPS_PROVIDER = 0;
+	public static final int GPS_PROVIDER_LAST = 1;
+	public static final int NETWORK_PROVIDER = 2;
+	public static final int NETWORK_PROVIDER_LAST = 3;
+	
+
 	
 }

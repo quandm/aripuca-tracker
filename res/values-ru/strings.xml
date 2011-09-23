@@ -247,6 +247,8 @@
 	<string name="restart_required">Чтобы изменения вступили в силу необходим
 		перезапуск приложения</string>
 
+	<string name="waiting_for_fix">Ожидание более точного фикса</string>
+
 	<!-- HINTS -->
 	<string name="waypoint_description">Описание путевой точки</string>
 	<string name="track_description">Описание трека</string>

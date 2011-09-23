@@ -14,6 +14,9 @@ import android.os.Bundle;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.util.Log;
 
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.R.array;
+import com.aripuca.tracker.R.xml;
 import com.aripuca.tracker.util.ArrayUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
