@@ -244,9 +244,6 @@ public class TrackRecorder {
 		// measure time intervals (idle, pause)
 		if (!this.measureTrackTimes(location)) { return; }
 
-		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) { return; }
-
 		// calculating total distance starting from 2nd update
 		// speed at last location should be non-zero
 		if (this.lastLocation != null && this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
@@ -276,14 +273,14 @@ public class TrackRecorder {
 
 				this.segmentTrack();
 				break;
-				
+
 			// segmenting track by time
 			case Constants.SEGMENT_TIME:
 
 				this.segmentTrackByTime();
 				break;
 		}
-		
+
 		// updating segment statistics
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
@@ -434,11 +431,13 @@ public class TrackRecorder {
 	 * Record new track point if it's not too close to previous recorded one
 	 */
 	private void recordTrackPoint(Location location) {
+		
+		// let's not record this update if accuracy is not acceptable
+		if (location.getAccuracy() > minAccuracy) { return; }
 
 		// record points only if distance between 2 consecutive points is
 		// greater than min_distance
 		// if new segment just started we may not add new points for it
-
 		if (this.lastRecordedLocation == null) {
 
 			this.track.recordTrackPoint(location, this.segmentIndex);
@@ -457,6 +456,7 @@ public class TrackRecorder {
 			}
 		}
 	}
+
 	/**
 	 * 
 	 */

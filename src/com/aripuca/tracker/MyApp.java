@@ -107,6 +107,9 @@ public class MyApp extends Application {
 		return db;
 	}
 
+	/**
+	 * 
+	 */
 	public void setDatabase() {
 
 		OpenHelper openHelper = new OpenHelper(this);
