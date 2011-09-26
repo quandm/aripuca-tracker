@@ -392,6 +392,8 @@ public class MainActivity extends Activity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
+		
+		Log.d(Constants.TAG, "onRetainNonConfigurationInstance");
 
 		// setting a flag that activity is restarting and we will not
 		// stop gps service in onDestroy when in track recording mode
@@ -434,7 +436,7 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.v(Constants.TAG, "onPause");
-
+		
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
