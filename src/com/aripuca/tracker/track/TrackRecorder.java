@@ -274,7 +274,7 @@ public class TrackRecorder {
 
 				// accumulate segment distance
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateDistance(this.lastLocation.distanceTo(location));
+					this.segment.updateDistance(distanceIncrement);
 				}
 			}
 		}
