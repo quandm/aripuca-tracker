@@ -41,10 +41,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
- 
 //TODO: compare 2 tracks on the map, select track to compare
 //TODO: show main parameters of the track and segments on the map 
-
 
 /**
  * Waypoints list activity
@@ -56,18 +54,15 @@ public class TracksListActivity extends ListActivity {
 	 */
 	protected MyApp myApp;
 
-	private Utils utils;
-
 	protected TracksCursorAdapter cursorAdapter;
 
 	protected Cursor cursor;
 
-	
 	/**
 	 * Select all tracks sql query
 	 */
 	protected final String sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0";
-//	protected final String sqlSelectAllTracks = "SELECT * FROM tracks";
+	//	protected final String sqlSelectAllTracks = "SELECT * FROM tracks";
 
 	/**
 	 * Workaround Issue 7139: MenuItem.getMenuInfo() returns null for sub-menu
@@ -91,13 +86,14 @@ public class TracksListActivity extends ListActivity {
 		this.viewTrackDetails(id);
 
 	}
-	
+
 	/**
 	 * Start the track details activity
+	 * 
 	 * @param id Track id
 	 */
 	private void viewTrackDetails(long id) {
-		
+
 		Intent intent = new Intent(this, TrackDetailsActivity.class);
 
 		// using Bundle to pass track id into new activity
@@ -107,8 +103,7 @@ public class TracksListActivity extends ListActivity {
 		intent.putExtras(b);
 
 		startActivity(intent);
-		
-		
+
 	}
 
 	protected class TracksCursorAdapter extends CursorAdapter {
@@ -143,19 +138,30 @@ public class TracksListActivity extends ListActivity {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 
+			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+
+			float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
+
+			String distanceStr = Utils.formatDistance(distance, distanceUnit) +
+									Utils.getLocalaziedDistanceUnit(TracksListActivity.this, distance, distanceUnit);
+
+			String elevationUnits = myApp.getPreferences().getString("elevation_units", "m");
+
+			String elevationGain = Utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_gain")),
+					elevationUnits) + Utils.getLocalizedElevationUnit(TracksListActivity.this, elevationUnits);
+
+			String elevationLoss = Utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_loss")),
+					elevationUnits) + Utils.getLocalizedElevationUnit(TracksListActivity.this, elevationUnits);
+
 			TextView text1 = (TextView) view.findViewById(R.id.text1);
 			TextView text2 = (TextView) view.findViewById(R.id.text2);
 
 			text1.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
 
-			text2.setText(utils.formatDistance(cursor.getFloat(cursor.getColumnIndex("distance")), myApp
-							.getPreferences().getString("distance_units", "km"))
-					+ " | "
-					+ utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false) + " | +"
-					+ utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_gain")), myApp
-							.getPreferences().getString("elevation_units", "m")) + " | -"
-							+ utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_loss")), myApp
-									.getPreferences().getString("elevation_units", "m")));
+			text2.setText(distanceStr
+					+ " | " + Utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false)
+					+ " | +" + elevationGain
+					+ " | -" + elevationLoss);
 
 		}
 
@@ -171,15 +177,12 @@ public class TracksListActivity extends ListActivity {
 
 		myApp = ((MyApp) getApplicationContext());
 
-		utils = new Utils(this);
-		
 		registerForContextMenu(this.getListView());
 
 		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
 
 		cursorAdapter = new TracksCursorAdapter(this, cursor, false);
 		setListAdapter(cursorAdapter);
-		
 
 	}
 
@@ -204,7 +207,7 @@ public class TracksListActivity extends ListActivity {
 		super.onDestroy();
 
 	}
-	
+
 	/**
 	 * onResume event handler
 	 */
@@ -213,17 +216,15 @@ public class TracksListActivity extends ListActivity {
 
 		super.onResume();
 	}
-	
+
 	/**
 	 * onPause event handler
 	 */
 	@Override
 	protected void onPause() {
 
-		
 		super.onPause();
 	}
-	
 
 	/**
 	 * onCreateOptionsMenu handler
@@ -331,7 +332,7 @@ public class TracksListActivity extends ListActivity {
 			case 1:
 				this.viewTrackDetails(info.id);
 			break;
-			
+
 			// edit track info
 			case 2:
 				this.updateTrack(info.id);
@@ -360,7 +361,7 @@ public class TracksListActivity extends ListActivity {
 			case 6:
 
 				this.showTrackOnMap(info.id);
-				
+
 			break;
 
 			default:
@@ -465,7 +466,7 @@ public class TracksListActivity extends ListActivity {
 						// delete track from db
 						sql = "DELETE FROM segments WHERE track_id=" + trackId + ";";
 						myApp.getDatabase().execSQL(sql);
-						
+
 						cursor.requery();
 
 						Toast.makeText(TracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT).show();
@@ -531,7 +532,7 @@ public class TracksListActivity extends ListActivity {
 
 		pd.setOnCancelListener(new OnCancelListener() {
 			@Override
-			public void onCancel(DialogInterface dialog) 	{
+			public void onCancel(DialogInterface dialog) {
 				Log.i(Constants.TAG, "AsyncTask: onCancel()");
 				// cancel exporting track task
 				trackExportTask.cancel(false);
@@ -602,5 +603,5 @@ public class TracksListActivity extends ListActivity {
 		startActivity(i);
 
 	}
-	
+
 }

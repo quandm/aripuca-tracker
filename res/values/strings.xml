@@ -57,6 +57,7 @@
 	<string name="export">Export</string>
 	<string name="export_to_gpx">Export to GPX</string>
 	<string name="export_to_kml">Export to KML</string>
+	<string name="email_to">Email to</string>
 	<string name="pause">Pause</string>
 	<string name="resume">Resume</string>
 	<string name="record">Record</string>

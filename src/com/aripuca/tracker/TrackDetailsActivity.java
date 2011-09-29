@@ -34,8 +34,6 @@ public class TrackDetailsActivity extends Activity {
 	 * Reference to myApp object
 	 */
 	private MyApp myApp;
-	
-	private Utils utils;
 
 	private long trackId;
 
@@ -72,7 +70,7 @@ public class TrackDetailsActivity extends Activity {
 			} else {
 
 				currentSegment = 0;
-				update();
+				updateTrack();
 
 			}
 
@@ -97,7 +95,7 @@ public class TrackDetailsActivity extends Activity {
 			} else {
 
 				currentSegment = 0;
-				update();
+				updateTrack();
 
 			}
 
@@ -115,8 +113,6 @@ public class TrackDetailsActivity extends Activity {
 
 		myApp = ((MyApp) getApplicationContext());
 
-		utils = new Utils(this);
-		
 		setContentView(R.layout.track_details);
 
 		Bundle b = getIntent().getExtras();
@@ -164,108 +160,135 @@ public class TrackDetailsActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		this.update();
+		this.updateTrack();
 
 		super.onResume();
-		
+
 	}
 
 	/**
 	 * Update track details view
 	 */
-	protected void update() {
-
-		// measuring units
-		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
-		String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
-		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+	protected void updateTrack() {
 
 		// get track data
-		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks, track_points WHERE "+
-					 " tracks._id=" + this.trackId +
-					 " AND tracks._id = track_points.track_id";
+		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks, track_points WHERE " +
+						" tracks._id=" + this.trackId +
+						" AND tracks._id = track_points.track_id";
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
-		float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
-
-		// average speed in meters per second
-		float averageSpeed = distance / (cursor.getLong(cursor.getColumnIndex("total_time")) / 1000f);
-
-		long movingTime = cursor.getLong(cursor.getColumnIndex("moving_time"));
-
-		float averageMovingSpeed = 0;
-		if (movingTime > 0 && distance > 0) {
-			averageMovingSpeed = distance / (movingTime / 1000f);
-		}
-
-		float maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
-
 		((TextView) findViewById(R.id.title)).setText(cursor.getString(cursor.getColumnIndex("title")));
-
 		((TextView) findViewById(R.id.descr)).setText(cursor.getString(cursor.getColumnIndex("descr")));
 
-		((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(
-				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
+		this.update(cursor);
 
-		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
-		
-		((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
-				cursor.getLong(cursor.getColumnIndex("total_time")), true));
-
-		((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(
-				cursor.getLong(cursor.getColumnIndex("moving_time")), true));
-
-		((TextView) findViewById(R.id.idleTime)).setText(Utils.formatInterval(
-				cursor.getLong(cursor.getColumnIndex("total_time"))
-						- cursor.getLong(cursor.getColumnIndex("moving_time")), true));
-
-		// --------------------------------------------------------
-
-		((TextView) findViewById(R.id.averageSpeed)).setText(utils.formatSpeed(averageSpeed, speedUnit));
-
-		((TextView) findViewById(R.id.averageMovingSpeed)).setText(utils.formatSpeed(averageMovingSpeed, speedUnit));
-
-		((TextView) findViewById(R.id.maxSpeed)).setText(utils.formatSpeed(maxSpeed, speedUnit));
-
-		// --------------------------------------------------------
-
-		if (averageSpeed != 0) {
-			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(averageSpeed, speedUnit));
-		}
-
-		if (averageMovingSpeed != 0) {
-			((TextView) findViewById(R.id.averageMovingPace)).setText(
-					Utils.formatPace(averageMovingSpeed, speedUnit));
-		}
-
-		if (maxSpeed != 0) {
-			((TextView) findViewById(R.id.maxPace)).setText(
-					Utils.formatPace(maxSpeed, speedUnit));
-		}
-
-		// --------------------------------------------------------
-
-		((TextView) findViewById(R.id.maxElevation)).setText(utils.formatElevation(
-				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit));
-
-		((TextView) findViewById(R.id.minElevation)).setText(utils.formatElevation(
-				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit));
-
-		((TextView) findViewById(R.id.elevationGain))
-				.setText(utils.formatElevation(
-						cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit));
-
-		((TextView) findViewById(R.id.elevationLoss))
-				.setText(utils.formatElevation(
-						cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit));
-
-		((TextView) findViewById(R.id.startTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
-				.getLong(cursor.getColumnIndex("start_time"))));
-
-		((TextView) findViewById(R.id.finishTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
-				.getLong(cursor.getColumnIndex("finish_time"))));
+		/*
+		 * float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
+		 * 
+		 * // average speed in meters per second
+		 * float averageSpeed = distance /
+		 * (cursor.getLong(cursor.getColumnIndex("total_time")) / 1000f);
+		 * 
+		 * long movingTime =
+		 * cursor.getLong(cursor.getColumnIndex("moving_time"));
+		 * 
+		 * float averageMovingSpeed = 0;
+		 * if (movingTime > 0 && distance > 0) {
+		 * averageMovingSpeed = distance / (movingTime / 1000f);
+		 * }
+		 * 
+		 * float maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.title)).setText(cursor.getString(cursor.
+		 * getColumnIndex("title")));
+		 * 
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.distance)).setText(Utils.formatDistance(
+		 * cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.pointsCount)).setText(cursor.getString(cursor
+		 * .getColumnIndex("count")));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.totalTime)).setText(Utils.formatInterval(
+		 * cursor.getLong(cursor.getColumnIndex("total_time")), true));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.movingTime)).setText(Utils.formatInterval(
+		 * cursor.getLong(cursor.getColumnIndex("moving_time")), true));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.idleTime)).setText(Utils.formatInterval(
+		 * cursor.getLong(cursor.getColumnIndex("total_time"))
+		 * - cursor.getLong(cursor.getColumnIndex("moving_time")), true));
+		 * 
+		 * // --------------------------------------------------------
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed
+		 * (averageSpeed, speedUnit));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed
+		 * (averageMovingSpeed, speedUnit));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed,
+		 * speedUnit));
+		 * 
+		 * // --------------------------------------------------------
+		 * 
+		 * if (averageSpeed != 0) {
+		 * ((TextView)
+		 * findViewById(R.id.averagePace)).setText(Utils.formatPace(averageSpeed
+		 * , speedUnit));
+		 * }
+		 * 
+		 * if (averageMovingSpeed != 0) {
+		 * ((TextView) findViewById(R.id.averageMovingPace)).setText(
+		 * Utils.formatPace(averageMovingSpeed, speedUnit));
+		 * }
+		 * 
+		 * if (maxSpeed != 0) {
+		 * ((TextView) findViewById(R.id.maxPace)).setText(
+		 * Utils.formatPace(maxSpeed, speedUnit));
+		 * }
+		 * 
+		 * // --------------------------------------------------------
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.maxElevation)).setText(Utils.formatElevation(
+		 * cursor.getFloat(cursor.getColumnIndex("max_elevation")),
+		 * elevationUnit));
+		 * 
+		 * ((TextView)
+		 * findViewById(R.id.minElevation)).setText(Utils.formatElevation(
+		 * cursor.getFloat(cursor.getColumnIndex("min_elevation")),
+		 * elevationUnit));
+		 * 
+		 * ((TextView) findViewById(R.id.elevationGain))
+		 * .setText(Utils.formatElevation(
+		 * cursor.getFloat(cursor.getColumnIndex("elevation_gain")),
+		 * elevationUnit));
+		 * 
+		 * ((TextView) findViewById(R.id.elevationLoss))
+		 * .setText(Utils.formatElevation(
+		 * cursor.getFloat(cursor.getColumnIndex("elevation_loss")),
+		 * elevationUnit));
+		 * 
+		 * ((TextView) findViewById(R.id.startTime)).setText((new
+		 * SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
+		 * .getLong(cursor.getColumnIndex("start_time"))));
+		 * 
+		 * ((TextView) findViewById(R.id.finishTime)).setText((new
+		 * SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
+		 * .getLong(cursor.getColumnIndex("finish_time"))));
+		 */
 
 		cursor.close();
 
@@ -276,22 +299,36 @@ public class TrackDetailsActivity extends Activity {
 	 */
 	protected void updateSegment(int segmentIndex) {
 
-		int segmentId = segmentIds.get(segmentIndex-1);
-
-		// measuring units
-		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
-		String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
-		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+		int segmentId = segmentIds.get(segmentIndex - 1);
 
 		// get track data
 		String sql = "SELECT segments.*, COUNT(track_points._id) AS count FROM segments, track_points WHERE" +
-				" segments._id=" + segmentId + 
+				" segments._id=" + segmentId +
 				" AND segments.track_id=" + this.trackId +
-				" AND track_points.segment_index=" + (segmentIndex-1) +
+				" AND track_points.segment_index=" + (segmentIndex - 1) +
 				" AND segments.track_id = track_points.track_id";
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
+
+		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
+
+		this.update(cursor);
+
+		cursor.close();
+
+	}
+
+	private void update(Cursor cursor) {
+
+		// measuring units
+		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
+		String speedUnitLocalized = Utils.getLocalizedSpeedUnit(TrackDetailsActivity.this, speedUnit);
+
+		String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+
+		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+		String elevationUnitLocalized = Utils.getLocalizedElevationUnit(TrackDetailsActivity.this, elevationUnit);
 
 		float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
@@ -307,13 +344,18 @@ public class TrackDetailsActivity extends Activity {
 
 		float maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
 
-		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
-
-		((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(
-				cursor.getInt(cursor.getColumnIndex("distance")), distanceUnit));
+		// --------------------------------------------------------
+		// distance
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
+				distance, distanceUnit) +
+				Utils.getLocalaziedDistanceUnit(TrackDetailsActivity.this, distance, distanceUnit));
 
 		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
 
+		// --------------------------------------------------------
+		// times
+		// --------------------------------------------------------
 		((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
 				cursor.getLong(cursor.getColumnIndex("total_time")), true));
 
@@ -324,16 +366,27 @@ public class TrackDetailsActivity extends Activity {
 				cursor.getLong(cursor.getColumnIndex("total_time"))
 						- cursor.getLong(cursor.getColumnIndex("moving_time")), true));
 
-		// --------------------------------------------------------
+		((TextView) findViewById(R.id.startTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
+				.getLong(cursor.getColumnIndex("start_time"))));
 
-		((TextView) findViewById(R.id.averageSpeed)).setText(utils.formatSpeed(averageSpeed, speedUnit));
-
-		((TextView) findViewById(R.id.averageMovingSpeed)).setText(utils.formatSpeed(averageMovingSpeed, speedUnit));
-
-		((TextView) findViewById(R.id.maxSpeed)).setText(utils.formatSpeed(maxSpeed, speedUnit));
+		((TextView) findViewById(R.id.finishTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
+				.getLong(cursor.getColumnIndex("finish_time"))));
 
 		// --------------------------------------------------------
+		// speed
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(averageSpeed, speedUnit)
+				+ speedUnitLocalized);
 
+		((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(averageMovingSpeed, speedUnit)
+				+ speedUnitLocalized);
+
+		((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed, speedUnit)
+				+ speedUnitLocalized);
+
+		// --------------------------------------------------------
+		// pace
+		// --------------------------------------------------------
 		if (averageSpeed != 0) {
 			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(averageSpeed, speedUnit));
 		}
@@ -349,28 +402,24 @@ public class TrackDetailsActivity extends Activity {
 		}
 
 		// --------------------------------------------------------
+		// elevation
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(
+				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit) +
+				elevationUnitLocalized);
 
-		((TextView) findViewById(R.id.maxElevation)).setText(utils.formatElevation(
-				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit));
-
-		((TextView) findViewById(R.id.minElevation)).setText(utils.formatElevation(
-				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit));
+		((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(
+				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit) + elevationUnitLocalized);
 
 		((TextView) findViewById(R.id.elevationGain))
-				.setText(utils.formatElevation(
-						cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit));
+				.setText(Utils.formatElevation(
+						cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit)
+						+ elevationUnitLocalized);
 
 		((TextView) findViewById(R.id.elevationLoss))
-				.setText(utils.formatElevation(
-						cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit));
-
-		((TextView) findViewById(R.id.startTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
-				.getLong(cursor.getColumnIndex("start_time"))));
-
-		((TextView) findViewById(R.id.finishTime)).setText((new SimpleDateFormat("yyyy-MM-dd H:mm")).format(cursor
-				.getLong(cursor.getColumnIndex("finish_time"))));
-
-		cursor.close();
+				.setText(Utils.formatElevation(
+						cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit)
+						+ elevationUnitLocalized);
 
 	}
 

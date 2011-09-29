@@ -256,9 +256,12 @@ public class TrackRecorder {
 			return;
 		}
 
+		// calculate maxSpeed and acceleration
+		boolean speedValid = this.track.isSpeedValid(this.lastLocation, location);
+		
 		// calculating total distance starting from 2nd update
-		// speed at last location should be non-zero
-		if (this.lastLocation != null && this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
+		if (this.lastLocation != null && speedValid) { 
+				//this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
 
 			// distance between current and last location
 			float distanceIncrement = this.lastLocation.distanceTo(location);
@@ -267,7 +270,7 @@ public class TrackRecorder {
 			this.distancePopulation.addValue(distanceIncrement);
 
 			// false readings should not affect distance calculation 
-			if (distanceIncrement < this.distancePopulation.getAverage() * 10) {
+			if (distanceIncrement < this.distancePopulation.getAverage() * 5) {
 
 				// accumulate track distance
 				this.track.updateDistance(distanceIncrement);
@@ -277,24 +280,25 @@ public class TrackRecorder {
 					this.segment.updateDistance(distanceIncrement);
 				}
 			}
+			
 		}
-
-		// calculate maxSpeed and acceleration
-		this.track.processSpeed(this.lastLocation, location);
-
-		this.track.processElevation(location);
-
-		this.processSegments(location);
-
-		// save current location once distance is incremented
-		this.lastLocation = location;
+		
+		if (speedValid) {
+			this.track.processSpeed(location.getSpeed());
+			this.track.processElevation(location);
+		}
+		
+		this.processSegments(location, speedValid);
 
 		// add new track point to db
 		this.recordTrackPoint(location);
 
+		// update new last location
+		this.lastLocation = location;
+		
 	}
 
-	private void processSegments(Location location) {
+	private void processSegments(Location location, boolean validSpeed) {
 
 		// SEGMENTING
 		switch (this.segmentingMode) {
@@ -317,8 +321,9 @@ public class TrackRecorder {
 		// updating segment statistics
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
-			this.segment.processElevation(location);
-			this.segment.processSpeed(this.lastLocation, location);
+			if (validSpeed) {
+				this.segment.processElevation(location);
+			}
 
 		}
 

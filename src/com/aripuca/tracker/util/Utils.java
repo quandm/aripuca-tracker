@@ -28,12 +28,6 @@ public class Utils {
 															// (1.852km) per
 															// hour
 
-	private final Context context;
-
-	public Utils(Context context) {
-		this.context = context;
-	}
-
 	public static String formatNumber(Object value, int max) {
 		return Utils.formatNumber(value, max, 0);
 	}
@@ -79,7 +73,7 @@ public class Utils {
 	 * @param float value
 	 * @return String
 	 */
-	public String formatDistance(float value, String unit) {
+	public static String formatDistance(float value, String unit) {
 
 		if (unit.equals("km")) {
 
@@ -88,11 +82,11 @@ public class Utils {
 			}
 
 			if (value > 10000) {
-				return Utils.formatNumber(value / 1000, 1);
+				return Utils.formatNumber(value / 1000, 1, 1);
 			}
 
 			if (value > 1000) {
-				return Utils.formatNumber(value / 1000, 2);
+				return Utils.formatNumber(value / 1000, 2, 2);
 			}
 
 			// value is in meters
@@ -107,11 +101,11 @@ public class Utils {
 			}
 
 			if (value > MI_TO_M * 10) {
-				return Utils.formatNumber(value / MI_TO_M, 1);
+				return Utils.formatNumber(value / MI_TO_M, 1, 1);
 			}
 
 			if (value > MI_TO_M) {
-				return Utils.formatNumber(value / MI_TO_M, 2);
+				return Utils.formatNumber(value / MI_TO_M, 2, 2);
 			}
 
 			// value is in feet
@@ -122,7 +116,7 @@ public class Utils {
 
 	}
 
-	public String getLocalaziedDistanceUnit(float value, String unit) {
+	public static String getLocalaziedDistanceUnit(Context context, float value, String unit) {
 
 		if (unit.equals("km")) {
 			if (value > 1000) {
@@ -142,7 +136,7 @@ public class Utils {
 
 	}
 	
-	public String formatElevation(float value, String unit) {
+	public static String formatElevation(float value, String unit) {
 
 		if (unit.equals("m")) {
 			return Utils.formatNumber(value, 0);
@@ -155,7 +149,7 @@ public class Utils {
 		return "";
 	}
 
-	public String getLocalizedElevationUnit(String unit) {
+	public static String getLocalizedElevationUnit(Context context, String unit) {
 		
 		if (unit.equals("m")) {
 			return context.getString(R.string.m);
@@ -171,18 +165,18 @@ public class Utils {
 	/**
 	 * Format speed value (kph, mph or knots)
 	 */
-	public String formatSpeed(float value, String unit) {
+	public static String formatSpeed(float value, String unit) {
 
 		if (value < 0.224) {
 			return "0";
 		}
 
 		if (unit.equals("kph")) {
-			return Utils.formatNumber(value * 3.6, 1);
+			return Utils.formatNumber(value * 3.6, 1, 1);
 		}
 
 		if (unit.equals("mph")) {
-			return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1);
+			return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1, 1);
 		}
 
 		if (unit.equals("kn")) {
@@ -193,7 +187,7 @@ public class Utils {
 
 	}
 
-	public String getLocalizedSpeedUnit(String unit) {
+	public static String getLocalizedSpeedUnit(Context context, String unit) {
 
 		if (unit.equals("kph")) {
 			return context.getString(R.string.kph);
@@ -210,7 +204,7 @@ public class Utils {
 		return "";
 
 	}
-
+	
 	/**
 	 * @param value Speed value is in meters per second
 	 * @param unit kph or mph

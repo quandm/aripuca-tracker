@@ -7,6 +7,7 @@ import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Population;
 
 import android.location.Location;
+import android.util.Log;
 
 public abstract class AbstractTrack {
 
@@ -23,11 +24,12 @@ public abstract class AbstractTrack {
 
 	protected float maxSpeed = 0;
 
-	protected double currentElevation = 0;
+	protected double oldElevation = Double.NEGATIVE_INFINITY;
+	protected double currentElevation = Double.NEGATIVE_INFINITY;
 
-	protected double minElevation = 8848;
+	protected double minElevation = Double.POSITIVE_INFINITY;
 
-	protected double maxElevation = -10971;
+	protected double maxElevation = Double.NEGATIVE_INFINITY;
 
 	protected double elevationGain = 0;
 
@@ -36,6 +38,8 @@ public abstract class AbstractTrack {
 	protected int trackPointsCount = 0;
 
 	protected Population speedPopulation;
+
+	protected Population elevationPopulation;
 
 	/**
 	 * real time of the track start
@@ -55,6 +59,8 @@ public abstract class AbstractTrack {
 		this.trackTimeStart = (new Date()).getTime();
 
 		this.speedPopulation = new Population(10);
+
+		this.elevationPopulation = new Population(25);
 
 	}
 
@@ -141,55 +147,81 @@ public abstract class AbstractTrack {
 	protected void processElevation(Location location) {
 
 		// processing elevation data
-		if (location.hasAltitude()) {
-			double e = location.getAltitude();
-			// max elevation
-			if (this.maxElevation < e) {
-				this.maxElevation = e;
-			}
-			// min elevation
-			if (e < this.minElevation) {
-				this.minElevation = e;
-			}
-			// if current elevation not set yet
-			if (this.currentElevation == 0) {
-				this.currentElevation = e;
-			} else {
-				// elevation gain/loss
-				if (e > this.currentElevation) {
-					this.elevationGain += e - this.currentElevation;
-				} else {
-					this.elevationLoss += this.currentElevation - e;
-				}
-				this.currentElevation = e;
-			}
+		if (!location.hasAltitude()) {
+			return;
 		}
+
+		// add current elevation to buffer
+		this.elevationPopulation.addValue(location.getAltitude());
+
+		this.currentElevation = this.elevationPopulation.getAverage();
+
+		Log.d(Constants.TAG, "Current elevation: " + location.getAltitude() + " Current everage elevation: "
+				+ this.currentElevation);
+
+		// max elevation
+		if (this.maxElevation < this.currentElevation) {
+			this.maxElevation = this.currentElevation;
+		}
+		// min elevation
+		if (this.currentElevation < this.minElevation) {
+			this.minElevation = this.currentElevation;
+		}
+
+		// on very first update old elevation is not initialized
+		// so we can't calculate the difference
+		if (this.oldElevation != Double.NEGATIVE_INFINITY) {
+
+			if (this.elevationPopulation.isFull()) {
+				// elevation gain/loss
+				if (this.currentElevation > this.oldElevation) {
+					this.elevationGain += this.currentElevation - this.oldElevation;
+				} else {
+					this.elevationLoss += this.oldElevation - this.currentElevation;
+				}
+			} else {
+
+			}
+
+		}
+
+		this.oldElevation = this.currentElevation;
+
 	}
 
-	protected void processSpeed(Location lastLocation, Location currentLocation) {
+	protected boolean isSpeedValid(Location lastLocation, Location currentLocation) {
 
-		if (lastLocation == null) {
-			return;
+		if (lastLocation == null || currentLocation == null) {
+			return false;
 		}
 
-		long timeInterval = 0;
+		if (!lastLocation.hasSpeed() || !currentLocation.hasSpeed()) {
+			return false;
+		}
+
 		float currentSpeed = currentLocation.getSpeed();
 
-		if (!lastLocation.hasSpeed() || !currentLocation.hasSpeed()) {
-			return;
+		if (currentSpeed == 0) {
+			return false;
+		}
+
+		// check from MyTracks
+		if (Math.abs(currentSpeed - 128) < 1) {
+			return false;
 		}
 
 		// calculate acceleration
 		this.acceleration = 0;
 
-		timeInterval = Math.abs(currentLocation.getTime() - lastLocation.getTime()) / 1000;
+		long timeInterval = Math.abs(currentLocation.getTime() - lastLocation.getTime()) / 1000;
 		if (timeInterval > 0) {
 			this.acceleration = Math.abs(lastLocation.getSpeed() - currentSpeed) / timeInterval;
 		}
 
 		// abnormal accelerations will not affect max speed
 		if (this.acceleration > Constants.MAX_ACCELERATION) {
-			return;
+			Log.d(Constants.TAG, "this.acceleration > Constants.MAX_ACCELERATION");
+			return false;
 		}
 
 		this.speedPopulation.addValue(currentSpeed);
@@ -197,17 +229,26 @@ public abstract class AbstractTrack {
 		if (this.speedPopulation.isFull()) {
 
 			double averageSpeed = this.speedPopulation.getAverage();
-//			double smoothedDiff = Math.abs(averageSpeed - currentSpeed);
 
 			if (currentSpeed > averageSpeed * 10) {
-				return;
+				return false;
 			}
 
-			// calculating max speed
-			if (currentSpeed > this.maxSpeed) {
-				this.maxSpeed = currentSpeed;
-			}
+		} else {
 
+			return false;
+
+		}
+
+		return true;
+
+	}
+
+	protected void processSpeed(float currentSpeed) {
+
+		// calculating max speed
+		if (currentSpeed > this.maxSpeed) {
+			this.maxSpeed = currentSpeed;
 		}
 
 	}
