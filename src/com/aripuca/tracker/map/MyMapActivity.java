@@ -39,8 +39,6 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private MyApp myApp;
 
-	private Utils utils;
-
 	/**
 	 * 
 	 */
@@ -250,8 +248,6 @@ public class MyMapActivity extends MapActivity {
 
 		myApp = ((MyApp) getApplicationContext());
 
-		utils = new Utils(this);
-
 		setContentView(R.layout.map_view);
 
 		mapView = (MapView) findViewById(R.id.mapview);
@@ -306,8 +302,9 @@ public class MyMapActivity extends MapActivity {
 			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 			float distance = cursor.getInt(cursor.getColumnIndex("distance"));
 
-			((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(distance, distanceUnit) +
-						utils.getLocalaziedDistanceUnit(distance, distanceUnit));
+			// track distance
+			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit) +
+						Utils.getLocalaziedDistanceUnit(this, distance, distanceUnit));
 
 			cursor.close();
 

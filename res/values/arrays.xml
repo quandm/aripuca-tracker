@@ -40,7 +40,8 @@
     <string-array name="min_accuracy_labels">
         <item>5 m</item>
         <item>10 m</item>
-        <item>20 m (recommended)</item>
+        <item>20 m</item>
+        <item>30 m (recommended)</item>
         <item>50 m</item>
         <item>100 m</item>
         <item>1000 m</item>
@@ -49,7 +50,8 @@
     <string-array name="min_accuracy_labels_ft">
         <item>15 ft</item>
         <item>30 ft</item>
-        <item>60 ft (recommended)</item>
+        <item>60 ft</item>
+        <item>90 ft (recommended)</item>
         <item>150 ft</item>
         <item>300 ft</item>
         <item>3000 ft</item>

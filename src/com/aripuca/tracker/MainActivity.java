@@ -30,6 +30,9 @@ import java.nio.channels.FileChannel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -76,8 +79,6 @@ public class MainActivity extends Activity {
 	 */
 	private MyApp myApp;
 
-	private Utils utils;
-
 	private TrackRecorder trackRecorder;
 
 	private String importDatabaseFileName;
@@ -89,6 +90,8 @@ public class MainActivity extends Activity {
 	 */
 	private boolean fixReceived = false;
 
+	private static final int HELLO_ID = 1;
+	
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -126,7 +129,7 @@ public class MainActivity extends Activity {
 			containers.add(R.layout.container_speed);
 			containers.add(R.layout.container_pace);
 			containers.add(R.layout.container_speed_pace);
-			//			containers.add(R.layout.container_speed_acceleration);
+			containers.add(R.layout.container_speed_acceleration);
 		}
 	};
 	private ContainerCarousel timeContainerCarousel = new ContainerCarousel() {
@@ -308,8 +311,6 @@ public class MainActivity extends Activity {
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 		myApp.setMainActivity(this);
-
-		utils = new Utils(this);
 
 		initializeHiddenPreferences();
 
@@ -624,6 +625,29 @@ public class MainActivity extends Activity {
 	 * 
 	 */
 	private void startTracking() {
+		
+		//TODO: add notification icon in track recording mode
+		
+		// --------------------------------------------------------------------------------
+/*		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);		
+		
+		int icon = R.drawable.arrow36;
+		long when = System.currentTimeMillis();
+
+		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
+		
+		CharSequence contentTitle = "Aripuca Tracker";
+		CharSequence contentText = "Recording track";
+		
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);	
+		
+		mNotificationManager.notify(HELLO_ID, notification); */		
+		
+		// --------------------------------------------------------------------------------
 
 		// Change button label from Record to Stop
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
@@ -1121,10 +1145,10 @@ public class MainActivity extends Activity {
 			float accuracy = myApp.getCurrentLocation().getAccuracy();
 
 			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(utils.formatDistance(accuracy, distanceUnit));
+				((TextView) findViewById(R.id.accuracy)).setText(Utils.formatDistance(accuracy, distanceUnit));
 			}
 			if (findViewById(R.id.accuracyUnit) != null) {
-				((TextView) findViewById(R.id.accuracyUnit)).setText(utils.getLocalaziedDistanceUnit(accuracy,
+				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalaziedDistanceUnit(this, accuracy,
 						distanceUnit));
 			}
 		}
@@ -1136,11 +1160,11 @@ public class MainActivity extends Activity {
 
 		if (myApp.getCurrentLocation().hasAltitude()) {
 			if (findViewById(R.id.elevation) != null) {
-				((TextView) findViewById(R.id.elevation)).setText(utils.formatElevation((float) myApp
+				((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation((float) myApp
 						.getCurrentLocation().getAltitude(), elevationUnit));
 			}
 			if (findViewById(R.id.elevationUnit) != null) {
-				((TextView) findViewById(R.id.elevationUnit)).setText(utils.getLocalizedElevationUnit(elevationUnit));
+				((TextView) findViewById(R.id.elevationUnit)).setText(Utils.getLocalizedElevationUnit(this, elevationUnit));
 			}
 		}
 
@@ -1153,11 +1177,11 @@ public class MainActivity extends Activity {
 
 			// current speed (cycling, driving)
 			if (findViewById(R.id.speed) != null) {
-				((TextView) findViewById(R.id.speed)).setText(utils.formatSpeed(speed, speedUnit));
+				((TextView) findViewById(R.id.speed)).setText(Utils.formatSpeed(speed, speedUnit));
 			}
 
 			if (findViewById(R.id.speedUnit) != null) {
-				((TextView) findViewById(R.id.speedUnit)).setText(utils.getLocalizedSpeedUnit(speedUnit));
+				((TextView) findViewById(R.id.speedUnit)).setText(Utils.getLocalizedSpeedUnit(this, speedUnit));
 			}
 
 			// current pace (running, hiking, walking)
@@ -1183,31 +1207,31 @@ public class MainActivity extends Activity {
 
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
-				((TextView) findViewById(R.id.elevationGain)).setText(utils.formatElevation(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()
 						.getElevationGain(), elevationUnit));
 			}
 
 			// elevation loss
 			if (findViewById(R.id.elevationLoss) != null) {
-				((TextView) findViewById(R.id.elevationLoss)).setText(utils.formatElevation(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(trackRecorder.getTrack()
 						.getElevationLoss(), elevationUnit));
 			}
 
 			// average speed
 			if (findViewById(R.id.averageSpeed) != null) {
-				((TextView) findViewById(R.id.averageSpeed)).setText(utils.formatSpeed(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
 						.getAverageSpeed(), speedUnit));
 			}
 
 			// average moving speed
 			if (findViewById(R.id.averageMovingSpeed) != null) {
-				((TextView) findViewById(R.id.averageMovingSpeed)).setText(utils.formatSpeed(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
 						.getAverageMovingSpeed(), speedUnit));
 			}
 
 			// max speed
 			if (findViewById(R.id.maxSpeed) != null) {
-				((TextView) findViewById(R.id.maxSpeed)).setText(utils.formatSpeed(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
 						.getMaxSpeed(),
 						speedUnit));
 			}
@@ -1216,10 +1240,8 @@ public class MainActivity extends Activity {
 			if (findViewById(R.id.acceleration) != null) {
 
 				// let's display last non-zero acceleration
-				if (trackRecorder.getTrack().getAcceleration() > 0) {
-					((TextView) findViewById(R.id.acceleration)).setText(
+				((TextView) findViewById(R.id.acceleration)).setText(
 							Utils.formatNumber(trackRecorder.getTrack().getAcceleration(), 2));
-				}
 
 			}
 
@@ -1245,13 +1267,13 @@ public class MainActivity extends Activity {
 
 			// total distance
 			if (findViewById(R.id.distance) != null) {
-				((TextView) findViewById(R.id.distance)).setText(utils.formatDistance(trackRecorder.getTrack()
+				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackRecorder.getTrack()
 						.getDistance(),
 						distanceUnit));
 			}
 
 			if (findViewById(R.id.distanceUnit) != null) {
-				((TextView) findViewById(R.id.distanceUnit)).setText(utils.getLocalaziedDistanceUnit(trackRecorder
+				((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalaziedDistanceUnit(this, trackRecorder
 						.getTrack()
 						.getDistance(),
 						distanceUnit));

@@ -197,9 +197,9 @@ public class WaypointsListActivity extends ListActivity {
 
 					String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 
-					distStr = utils
+					distStr = Utils
 							.formatDistance(distanceTo, distanceUnit) + " " +
-							utils.getLocalaziedDistanceUnit(distanceTo, distanceUnit);
+							Utils.getLocalaziedDistanceUnit(WaypointsListActivity.this, distanceTo, distanceUnit);
 
 					wp.setDistanceTo(distanceTo);
 
@@ -293,8 +293,6 @@ public class WaypointsListActivity extends ListActivity {
 
 		myApp = ((MyApp) getApplicationContext());
 
-		utils = new Utils(this);
-
 		registerForContextMenu(this.getListView());
 
 		updateWaypointsArray();
@@ -318,10 +316,10 @@ public class WaypointsListActivity extends ListActivity {
 			return;
 		}
 
-//		available Since API level 8		
-//		Display display = getWindowManager().getDefaultDisplay();
-//		int rotation = display.getRotation();
-//		Log.d(Constants.TAG, "Rotation: " + rotation);
+		//		available Since API level 8		
+		//		Display display = getWindowManager().getDefaultDisplay();
+		//		int rotation = display.getRotation();
+		//		Log.d(Constants.TAG, "Rotation: " + rotation);
 
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
@@ -479,7 +477,7 @@ public class WaypointsListActivity extends ListActivity {
 		menu.setHeaderTitle(getString(R.string.waypoint));
 		menu.add(Menu.NONE, 0, 0, R.string.edit);
 		menu.add(Menu.NONE, 1, 1, R.string.delete);
-		// menu.add(Menu.NONE, 2, 2, "Online sync");
+		menu.add(Menu.NONE, 2, 2, R.string.email_to);
 		menu.add(Menu.NONE, 3, 3, R.string.show_on_map);
 
 	}
@@ -537,6 +535,48 @@ public class WaypointsListActivity extends ListActivity {
 				return true;
 
 			case 2:
+				
+				// email waypoint data using default email client
+				
+				String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+				String elevationUnitLocalized = Utils.getLocalizedElevationUnit(this, elevationUnit);
+				
+				sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
+				tmpCursor = myApp.getDatabase().rawQuery(sql, null);
+				tmpCursor.moveToFirst();
+				
+				double lat1 = tmpCursor.getDouble(tmpCursor.getColumnIndex("lat"))/1E6;
+				double lng1 = tmpCursor.getDouble(tmpCursor.getColumnIndex("lng"))/1E6;
+
+				String messageBody = "Title: " + tmpCursor.getString(tmpCursor.getColumnIndex("title")) + 
+					"\n\n" +
+					"Latitude: "+ Utils.formatLat(lat1, 0) + "\n"+
+					"Longitude: "+ Utils.formatLng(lng1, 0) + "\n"+
+					"Altitude: "+ Utils.formatElevation(tmpCursor.getFloat(tmpCursor.getColumnIndex("elevation")), elevationUnit)
+							+ elevationUnitLocalized + "\n\n" + 
+					"Go to: http://maps.google.com/?ll="+lat1+","+lng1+"&z=10";
+
+				tmpCursor.close();
+				
+				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+				 
+				emailIntent.setType("plain/text");
+//				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"aripucatracker@gmail.com"});
+				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Waypoint from Aripuca Tracker");
+				emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, messageBody);
+				
+				this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+
+				return true;
+
+			case 3:
+
+				// showing waypoint on the google map
+				showOnMap(waypointId);
+
+				return true;
+
+			case 4:
 
 				// TODO: use a thread for online sync
 
@@ -601,12 +641,6 @@ public class WaypointsListActivity extends ListActivity {
 					Toast.makeText(WaypointsListActivity.this, "JSONException " + e.getMessage(), Toast.LENGTH_SHORT)
 							.show();
 				}
-
-				return true;
-			case 3:
-
-				// showing waypoint on the google map
-				showOnMap(waypointId);
 
 				return true;
 
