@@ -155,19 +155,19 @@ public class TrackRecorder {
 
 					// setting segment interval
 					segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
-				break;
+					break;
 
 				case Constants.SEGMENT_TIME:
 
 					// default time segmenting: 10 minutes
 					segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
-				break;
+					break;
 
 				case Constants.SEGMENT_CUSTOM_1:
 				case Constants.SEGMENT_CUSTOM_2:
 
 					this.setSegmentIntervals();
-				break;
+					break;
 
 			}
 
@@ -252,16 +252,11 @@ public class TrackRecorder {
 
 		// set interval start time
 		// measure time intervals (idle, pause)
-		if (!this.measureTrackTimes(location)) {
-			return;
-		}
+		if (!this.measureTrackTimes(location)) { return; }
 
-		// calculate maxSpeed and acceleration
-		boolean speedValid = this.track.isSpeedValid(this.lastLocation, location);
-		
 		// calculating total distance starting from 2nd update
-		if (this.lastLocation != null && speedValid) { 
-				//this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
+		if (this.lastLocation != null && this.lastLocation.hasSpeed()
+				&& this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
 
 			// distance between current and last location
 			float distanceIncrement = this.lastLocation.distanceTo(location);
@@ -269,7 +264,7 @@ public class TrackRecorder {
 			// adding distance increment to buffer
 			this.distancePopulation.addValue(distanceIncrement);
 
-			// false readings should not affect distance calculation 
+			// false readings should not affect distance calculation
 			if (distanceIncrement < this.distancePopulation.getAverage() * 5) {
 
 				// accumulate track distance
@@ -280,14 +275,17 @@ public class TrackRecorder {
 					this.segment.updateDistance(distanceIncrement);
 				}
 			}
-			
+
 		}
+
+		// calculate maxSpeed and acceleration
+		boolean speedValid = this.track.isSpeedValid(this.lastLocation, location);
 		
 		if (speedValid) {
 			this.track.processSpeed(location.getSpeed());
 			this.track.processElevation(location);
 		}
-		
+
 		this.processSegments(location, speedValid);
 
 		// add new track point to db
@@ -295,7 +293,7 @@ public class TrackRecorder {
 
 		// update new last location
 		this.lastLocation = location;
-		
+
 	}
 
 	private void processSegments(Location location, boolean validSpeed) {
@@ -309,13 +307,13 @@ public class TrackRecorder {
 			case Constants.SEGMENT_CUSTOM_2:
 
 				this.segmentTrack();
-			break;
+				break;
 
 			// segmenting track by time
 			case Constants.SEGMENT_TIME:
 
 				this.segmentTrackByTime();
-			break;
+				break;
 		}
 
 		// updating segment statistics
@@ -464,9 +462,7 @@ public class TrackRecorder {
 	private void recordTrackPoint(Location location) {
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) {
-			return;
-		}
+		if (location.getAccuracy() > minAccuracy) { return; }
 
 		// record points only if distance between 2 consecutive points is
 		// greater than min_distance
