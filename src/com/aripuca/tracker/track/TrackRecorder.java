@@ -255,8 +255,7 @@ public class TrackRecorder {
 		if (!this.measureTrackTimes(location)) { return; }
 
 		// calculating total distance starting from 2nd update
-		if (this.lastLocation != null && this.lastLocation.hasSpeed()
-				&& this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
+		if (this.lastLocation != null && this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
 
 			// distance between current and last location
 			float distanceIncrement = this.lastLocation.distanceTo(location);
@@ -280,12 +279,13 @@ public class TrackRecorder {
 
 		// calculate maxSpeed and acceleration
 		boolean speedValid = this.track.isSpeedValid(this.lastLocation, location);
-		
+
 		if (speedValid) {
 			this.track.processSpeed(location.getSpeed());
-			this.track.processElevation(location);
 		}
 
+		this.track.processElevation(location);
+		
 		this.processSegments(location, speedValid);
 
 		// add new track point to db
@@ -320,8 +320,10 @@ public class TrackRecorder {
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
 			if (validSpeed) {
-				this.segment.processElevation(location);
+				this.segment.processSpeed(location.getSpeed());
 			}
+			
+			this.segment.processElevation(location);
 
 		}
 
