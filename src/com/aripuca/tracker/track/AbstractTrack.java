@@ -191,10 +191,6 @@ public abstract class AbstractTrack {
 
 	protected boolean isSpeedValid(Location lastLocation, Location currentLocation) {
 
-		if (lastLocation == null || currentLocation == null) {
-			return false;
-		}
-
 		if (!lastLocation.hasSpeed() || !currentLocation.hasSpeed()) {
 			return false;
 		}

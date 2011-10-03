@@ -1,5 +1,9 @@
 package com.aripuca.tracker.util;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -17,6 +21,7 @@ import android.location.Location;
 public class Utils {
 
 	public static final char DEGREE_CHAR = (char) 0x00B0;
+	public static final char PLUSMINUS_CHAR = (char) 0x00B1;
 
 	protected static final double KM_TO_MI = 0.621371192;
 	protected static final double M_TO_FT = 3.2808399;
@@ -135,7 +140,7 @@ public class Utils {
 		return "";
 
 	}
-	
+
 	public static String formatElevation(float value, String unit) {
 
 		if (unit.equals("m")) {
@@ -150,7 +155,7 @@ public class Utils {
 	}
 
 	public static String getLocalizedElevationUnit(Context context, String unit) {
-		
+
 		if (unit.equals("m")) {
 			return context.getString(R.string.m);
 		}
@@ -161,7 +166,7 @@ public class Utils {
 
 		return "";
 	}
-	
+
 	/**
 	 * Format speed value (kph, mph or knots)
 	 */
@@ -200,11 +205,11 @@ public class Utils {
 		if (unit.equals("kn")) {
 			return context.getString(R.string.kn);
 		}
-		
+
 		return "";
 
 	}
-	
+
 	/**
 	 * @param value Speed value is in meters per second
 	 * @param unit kph or mph

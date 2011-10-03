@@ -84,14 +84,14 @@ public class MainActivity extends Activity {
 	private String importDatabaseFileName;
 
 	private Handler mainHandler = new Handler();
-	
+
 	/**
 	 * good fix received flag
 	 */
 	private boolean fixReceived = false;
 
 	private static final int HELLO_ID = 1;
-	
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -393,7 +393,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		
+
 		Log.d(Constants.TAG, "onRetainNonConfigurationInstance");
 
 		// setting a flag that activity is restarting and we will not
@@ -437,7 +437,7 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.v(Constants.TAG, "onPause");
-		
+
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
@@ -602,7 +602,7 @@ public class MainActivity extends Activity {
 	private void stopGPSService() {
 
 		fixReceived = false;
-		
+
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
@@ -618,35 +618,41 @@ public class MainActivity extends Activity {
 		stopService(new Intent(this, GpsService.class));
 
 		myApp.setGpsOn(false);
-		
+
 	}
 
 	/**
 	 * 
 	 */
 	private void startTracking() {
-		
+
 		//TODO: add notification icon in track recording mode
-		
+
 		// --------------------------------------------------------------------------------
-/*		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);		
-		
-		int icon = R.drawable.arrow36;
-		long when = System.currentTimeMillis();
+		/*
+		 * String ns = Context.NOTIFICATION_SERVICE;
+		 * NotificationManager mNotificationManager = (NotificationManager)
+		 * getSystemService(ns);
+		 * 
+		 * int icon = R.drawable.arrow36;
+		 * long when = System.currentTimeMillis();
+		 * 
+		 * Notification notification = new Notification(icon,
+		 * getString(R.string.recording_started), when);
+		 * 
+		 * CharSequence contentTitle = "Aripuca Tracker";
+		 * CharSequence contentText = "Recording track";
+		 * 
+		 * Intent notificationIntent = new Intent(this, MainActivity.class);
+		 * PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+		 * notificationIntent, 0);
+		 * 
+		 * notification.setLatestEventInfo(myApp, contentTitle, contentText,
+		 * contentIntent);
+		 * 
+		 * mNotificationManager.notify(HELLO_ID, notification);
+		 */
 
-		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
-		
-		CharSequence contentTitle = "Aripuca Tracker";
-		CharSequence contentText = "Recording track";
-		
-		Intent notificationIntent = new Intent(this, MainActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);	
-		
-		mNotificationManager.notify(HELLO_ID, notification); */		
-		
 		// --------------------------------------------------------------------------------
 
 		// Change button label from Record to Stop
@@ -940,6 +946,7 @@ public class MainActivity extends Activity {
 		createFolder(myApp.getAppDir() + "/tracks");
 		createFolder(myApp.getAppDir() + "/waypoints");
 		createFolder(myApp.getAppDir() + "/backup");
+		createFolder(myApp.getAppDir() + "/debug");
 	}
 
 	/**
@@ -1108,6 +1115,12 @@ public class MainActivity extends Activity {
 	 * Update main activity view
 	 */
 	public void updateMainActivity(int locationProvider) {
+		
+		Location location = myApp.getCurrentLocation();
+		
+//		myApp.log("Lat: " + location.getLatitude()+" | Lng: " + location.getLongitude()+
+//					" | Accuracy: "+location.getAccuracy() + 
+//					" | Speed: "+location.getSpeed());
 
 		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
@@ -1131,21 +1144,21 @@ public class MainActivity extends Activity {
 		int coordUnit = Integer.parseInt(myApp.getPreferences().getString("coord_units", "0"));
 
 		if (findViewById(R.id.lat) != null) {
-			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(myApp.getCurrentLocation().getLatitude(),
+			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(location.getLatitude(),
 					coordUnit));
 		}
 
 		if (findViewById(R.id.lng) != null) {
-			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(myApp.getCurrentLocation().getLongitude(),
+			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(location.getLongitude(),
 					coordUnit));
 		}
 
-		if (myApp.getCurrentLocation().hasAccuracy()) {
+		if (location.hasAccuracy()) {
 
-			float accuracy = myApp.getCurrentLocation().getAccuracy();
+			float accuracy = location.getAccuracy();
 
 			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(Utils.formatDistance(accuracy, distanceUnit));
+				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR+" "+Utils.formatDistance(accuracy, distanceUnit));
 			}
 			if (findViewById(R.id.accuracyUnit) != null) {
 				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalaziedDistanceUnit(this, accuracy,
@@ -1154,11 +1167,11 @@ public class MainActivity extends Activity {
 		}
 
 		if (findViewById(R.id.lastFix) != null) {
-			String lastFix = (new SimpleDateFormat("H:mm:ss")).format(myApp.getCurrentLocation().getTime());
+			String lastFix = (new SimpleDateFormat("H:mm:ss")).format(location.getTime());
 			((TextView) findViewById(R.id.lastFix)).setText(lastFix);
 		}
 
-		if (myApp.getCurrentLocation().hasAltitude()) {
+		if (location.hasAltitude()) {
 			if (findViewById(R.id.elevation) != null) {
 				((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation((float) myApp
 						.getCurrentLocation().getAltitude(), elevationUnit));
@@ -1170,10 +1183,10 @@ public class MainActivity extends Activity {
 
 		// current speed and pace
 		float speed = 0;
-		if (myApp.getCurrentLocation().hasSpeed()) {
+		if (location.hasSpeed()) {
 
 			// speed is in meters per second
-			speed = myApp.getCurrentLocation().getSpeed();
+			speed = location.getSpeed();
 
 			// current speed (cycling, driving)
 			if (findViewById(R.id.speed) != null) {
@@ -1285,8 +1298,8 @@ public class MainActivity extends Activity {
 		Calendar cal = Calendar.getInstance();
 		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
 
-		SunriseSunset ss = new SunriseSunset(myApp.getCurrentLocation().getLatitude(),
-				myApp.getCurrentLocation().getLongitude(), cal.getTime(),
+		SunriseSunset ss = new SunriseSunset(location.getLatitude(),
+				location.getLongitude(), cal.getTime(),
 				tz.getOffset(cal.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {

@@ -28,11 +28,6 @@ public class TrackRecorder {
 	protected Location lastRecordedLocation;
 
 	/**
-	 * distance increments buffer
-	 */
-	protected Population distancePopulation;
-
-	/**
 	 * track being recorded
 	 */
 	private Track track;
@@ -114,8 +109,6 @@ public class TrackRecorder {
 
 		this.myApp = myApp;
 
-		this.distancePopulation = new Population(10);
-
 	}
 
 	/**
@@ -135,8 +128,6 @@ public class TrackRecorder {
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("min_distance", "15"));
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("min_accuracy", "15"));
 
-		this.distancePopulation.reset();
-
 		// create new track statistics object
 		this.track = new Track(myApp);
 
@@ -155,19 +146,19 @@ public class TrackRecorder {
 
 					// setting segment interval
 					segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
-					break;
+				break;
 
 				case Constants.SEGMENT_TIME:
 
 					// default time segmenting: 10 minutes
 					segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
-					break;
+				break;
 
 				case Constants.SEGMENT_CUSTOM_1:
 				case Constants.SEGMENT_CUSTOM_2:
 
 					this.setSegmentIntervals();
-					break;
+				break;
 
 			}
 
@@ -252,29 +243,35 @@ public class TrackRecorder {
 
 		// set interval start time
 		// measure time intervals (idle, pause)
-		if (!this.measureTrackTimes(location)) { return; }
+		if (!this.measureTrackTimes(location)) {
+			return;
+		}
 
 		// calculating total distance starting from 2nd update
-		if (this.lastLocation != null && this.lastLocation.getSpeed() > Constants.MIN_SPEED) {
+		if (this.lastLocation != null) {
 
 			// distance between current and last location
 			float distanceIncrement = this.lastLocation.distanceTo(location);
 
-			// adding distance increment to buffer
-			this.distancePopulation.addValue(distanceIncrement);
-
-			// false readings should not affect distance calculation
-			if (distanceIncrement < this.distancePopulation.getAverage() * 5) {
-
-				// accumulate track distance
-				this.track.updateDistance(distanceIncrement);
-
-				// accumulate segment distance
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateDistance(distanceIncrement);
-				}
+			if (distanceIncrement < Constants.MIN_DISTANCE &&
+					location.getSpeed() < Constants.MIN_SPEED) {
+				// update new last location
+				this.lastLocation = location;
+				return;
 			}
 
+			// accumulate track distance
+			this.track.updateDistance(distanceIncrement);
+
+			// accumulate segment distance
+			if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				this.segment.updateDistance(distanceIncrement);
+			}
+
+		} else {
+			// update new last location
+			this.lastLocation = location;
+			return;
 		}
 
 		// calculate maxSpeed and acceleration
@@ -285,7 +282,7 @@ public class TrackRecorder {
 		}
 
 		this.track.processElevation(location);
-		
+
 		this.processSegments(location, speedValid);
 
 		// add new track point to db
@@ -307,13 +304,13 @@ public class TrackRecorder {
 			case Constants.SEGMENT_CUSTOM_2:
 
 				this.segmentTrack();
-				break;
+			break;
 
 			// segmenting track by time
 			case Constants.SEGMENT_TIME:
 
 				this.segmentTrackByTime();
-				break;
+			break;
 		}
 
 		// updating segment statistics
@@ -322,7 +319,7 @@ public class TrackRecorder {
 			if (validSpeed) {
 				this.segment.processSpeed(location.getSpeed());
 			}
-			
+
 			this.segment.processElevation(location);
 
 		}
@@ -464,7 +461,9 @@ public class TrackRecorder {
 	private void recordTrackPoint(Location location) {
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) { return; }
+		if (location.getAccuracy() > minAccuracy) {
+			return;
+		}
 
 		// record points only if distance between 2 consecutive points is
 		// greater than min_distance
