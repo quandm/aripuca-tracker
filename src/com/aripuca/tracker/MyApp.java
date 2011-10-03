@@ -1,5 +1,12 @@
 package com.aripuca.tracker;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import com.aripuca.tracker.R;
@@ -42,12 +49,12 @@ public class MyApp extends Application {
 	protected BroadcastReceiver languageUpdateBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			Log.d(Constants.TAG, "languageUpdateBroadcastReceiver");
 			updateLocale();
-			
+
 			Toast.makeText(context, getString(R.string.restart_required), Toast.LENGTH_LONG).show();
-			
+
 		}
 	};
 
@@ -288,7 +295,7 @@ public class MyApp extends Application {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 			// recreate database if version changes (DATABASE_VERSION)
-			
+
 			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
@@ -362,7 +369,7 @@ public class MyApp extends Application {
 			config.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
-			
+
 		}
 
 	}
@@ -439,5 +446,40 @@ public class MyApp extends Application {
 		}
 
 	}
-	
+
+	/**
+	 * Append application debug log file
+	 * 
+	 * @param text
+	 */
+	public void log(String message) {
+
+		String fileName = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date()) + ".log";
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append((new SimpleDateFormat("yyyy-MM-dd HH-mm-ss")).format(new Date()));
+		sb.append(" | ");
+		sb.append(message);
+
+		File logFile = new File(this.getAppDir() + "/debug/" + fileName);
+
+		if (!logFile.exists()) {
+			try {
+				logFile.createNewFile();
+			} catch (IOException e) {
+				Toast.makeText(this, "IOException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			}
+		}
+
+		try {
+			BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+			buf.append(sb.toString());
+			buf.newLine();
+			buf.close();
+		} catch (IOException e) {
+			Toast.makeText(this, "IOException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
 }

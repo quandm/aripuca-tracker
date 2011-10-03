@@ -19,7 +19,7 @@ public abstract class Constants {
 	public static final int MAP_SATELLITE = 1;
 	
 	/**
-	 * Minimum distance between 2 consecutive track points to be recorded
+	 * Minimum distance between 2 consecutive track points
 	 */
 	public static final int MIN_DISTANCE = 5; // meters
 	
@@ -27,8 +27,6 @@ public abstract class Constants {
 	
 	public static final float MIN_SPEED = 0.224F; // meters per second
 
-	public static final int MAX_SEGMENT_DISTANCE = 5000; //meters
-	
 	public static final int SEGMENT_NONE = 0;
 	public static final int SEGMENT_PAUSE_RESUME = 1;
 	public static final int SEGMENT_DISTANCE = 2;
