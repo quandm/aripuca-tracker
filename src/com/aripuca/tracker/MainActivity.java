@@ -98,8 +98,6 @@ public class MainActivity extends Activity {
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// Log.d(Constants.TAG,
-			// "MainActivity: LOCATION BROADCAST MESSAGE RECEIVED");
 
 			Bundle bundle = intent.getExtras();
 
@@ -1124,7 +1122,7 @@ public class MainActivity extends Activity {
 
 		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
-		// activate buttons if location updates come from GPS_ORI 
+		// activate buttons if location updates come from GPS 
 		if (locationProvider == Constants.GPS_PROVIDER) {
 			
 			if (!fixReceived) {
@@ -1218,6 +1216,7 @@ public class MainActivity extends Activity {
 						.setText(Integer.toString(trackRecorder.getSegmentsCount()));
 			}
 
+			// ------------------------------------------------------------------
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
 				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackRecorder.getTrack()
@@ -1230,6 +1229,19 @@ public class MainActivity extends Activity {
 						.getElevationLoss(), elevationUnit));
 			}
 
+			// max elevation
+			if (findViewById(R.id.maxElevation) != null) {
+				((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(trackRecorder.getTrack()
+						.getMaxElevation(), elevationUnit));
+			}
+
+			// min elevation
+			if (findViewById(R.id.minElevation) != null) {
+				((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(trackRecorder.getTrack()
+						.getMinElevation(), elevationUnit));
+			}
+			// ------------------------------------------------------------------
+			
 			// average speed
 			if (findViewById(R.id.averageSpeed) != null) {
 				((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()

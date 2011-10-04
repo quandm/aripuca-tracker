@@ -116,6 +116,8 @@ public class TrackRecorder {
 	 */
 	public void start() {
 
+		this.lastLocation = null;
+
 		currentSystemTime = 0;
 		startTime = 0;
 		pauseTimeStart = 0;
@@ -146,19 +148,19 @@ public class TrackRecorder {
 
 					// setting segment interval
 					segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
-				break;
+					break;
 
 				case Constants.SEGMENT_TIME:
 
 					// default time segmenting: 10 minutes
 					segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
-				break;
+					break;
 
 				case Constants.SEGMENT_CUSTOM_1:
 				case Constants.SEGMENT_CUSTOM_2:
 
 					this.setSegmentIntervals();
-				break;
+					break;
 
 			}
 
@@ -244,6 +246,7 @@ public class TrackRecorder {
 		// set interval start time
 		// measure time intervals (idle, pause)
 		if (!this.measureTrackTimes(location)) {
+			// recording paused
 			return;
 		}
 
@@ -304,13 +307,13 @@ public class TrackRecorder {
 			case Constants.SEGMENT_CUSTOM_2:
 
 				this.segmentTrack();
-			break;
+				break;
 
 			// segmenting track by time
 			case Constants.SEGMENT_TIME:
 
 				this.segmentTrackByTime();
-			break;
+				break;
 		}
 
 		// updating segment statistics
@@ -461,9 +464,7 @@ public class TrackRecorder {
 	private void recordTrackPoint(Location location) {
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.getAccuracy() > minAccuracy) {
-			return;
-		}
+		if (location.hasAccuracy() && location.getAccuracy() > minAccuracy) { return; }
 
 		// record points only if distance between 2 consecutive points is
 		// greater than min_distance

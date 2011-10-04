@@ -141,7 +141,7 @@ public class Utils {
 
 	}
 
-	public static String formatElevation(float value, String unit) {
+	public static String formatElevation(double value, String unit) {
 
 		if (unit.equals("m")) {
 			return Utils.formatNumber(value, 0);
