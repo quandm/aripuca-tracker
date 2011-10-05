@@ -329,7 +329,7 @@ public class MainActivity extends Activity {
 		if (trackRecorder.isRecording()) {
 			this.replaceDynamicView(R.layout.main_tracking);
 		} else {
-			this.replaceDynamicView(R.layout.main_idle);
+			this.replaceDynamicView(R.layout.main_idle2);
 		}
 
 		// once activity is started set restarting flag to false
@@ -564,7 +564,7 @@ public class MainActivity extends Activity {
 		dynamicView.removeAllViews();
 		dynamicView.addView(tmpView, 0);
 
-		if (resourceId == R.layout.main_idle) {
+		if (resourceId == R.layout.main_idle2) {
 			// show/hide compass
 			if (myApp.getPreferences().getBoolean("show_compass", true)) {
 				showCompass();
@@ -685,7 +685,7 @@ public class MainActivity extends Activity {
 		TrackRecorder.getInstance(myApp).stop();
 
 		// switching to initial layout
-		this.replaceDynamicView(R.layout.main_idle);
+		this.replaceDynamicView(R.layout.main_idle2);
 
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
 
