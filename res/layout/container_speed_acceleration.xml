@@ -30,7 +30,7 @@
 
 			<TextView android:text="@string/acceleration" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/acceleration" style="@style/Label30">
 				</TextView>
 			</LinearLayout>

@@ -10,7 +10,7 @@
 
 			<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/pace" style="@style/Label50">
 				</TextView>
 			</LinearLayout>
@@ -25,7 +25,7 @@
 
 			<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/averagePace" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
@@ -36,7 +36,7 @@
 
 			<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/averageMovingPace" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
@@ -47,7 +47,7 @@
 
 			<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/maxPace" style="@style/Label13">
 				</TextView>
 			</LinearLayout>

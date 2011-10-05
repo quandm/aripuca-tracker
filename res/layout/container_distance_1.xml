@@ -14,12 +14,10 @@
 
 			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
 
-				<TextView android:id="@+id/distance" style="@style/Label50"
-					android:gravity="right">
+				<TextView android:id="@+id/distance" style="@style/Label50" android:text="0">
 				</TextView>
 
-				<TextView android:id="@+id/distanceUnit" android:gravity="left"
-					style="@style/LabelUnit">
+				<TextView android:id="@+id/distanceUnit" style="@style/LabelUnit"  android:text="km">
 				</TextView>
 
 			</LinearLayout>

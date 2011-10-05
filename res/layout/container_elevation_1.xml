@@ -12,13 +12,13 @@
 
 			<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 
-				<TextView android:id="@+id/elevation" android:gravity="right"
+				<TextView android:id="@+id/elevation"
 					style="@style/Label13">
 				</TextView>
 
-				<TextView android:id="@+id/elevationUnit" android:gravity="left"
+				<TextView android:id="@+id/elevationUnit"
 					style="@style/LabelUnit">
 				</TextView>
 
@@ -30,7 +30,7 @@
 
 			<TextView android:text="@string/gain" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/elevationGain" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
@@ -41,7 +41,7 @@
 
 			<TextView android:text="@string/loss" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/elevationLoss" style="@style/Label13">
 				</TextView>
 			</LinearLayout>

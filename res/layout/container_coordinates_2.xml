@@ -12,7 +12,7 @@
 
 			<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/lat" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
@@ -23,7 +23,7 @@
 
 			<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/lng" style="@style/Label13">
 				</TextView>
 			</LinearLayout>

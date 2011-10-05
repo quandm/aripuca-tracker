@@ -11,7 +11,7 @@
 			<TextView android:text="@string/total_time" style="@style/SmallHeader">
 			</TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/totalTime" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
@@ -22,7 +22,7 @@
 
 			<TextView android:text="@string/moving_time" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/movingTime" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
