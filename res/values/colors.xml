@@ -11,4 +11,7 @@
   <color name="stat_label_background">#FFF0F0F0</color>
   <color name="stat_label_text">#FF0F0F0F</color>
   <color name="white">#FFFFFFFF</color>
+  
+  <color name="label">#FFFFA000</color>
+  
 </resources>

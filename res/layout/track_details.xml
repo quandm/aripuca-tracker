@@ -137,8 +137,10 @@
 				android:background="@drawable/border1">
 
 				<LinearLayout style="@style/TrackDetailsRow">
-					<TextView android:text="@string/speed" style="@style/SmallHeader">
-					</TextView>
+					<LinearLayout style="@style/TrackDetailsCell">
+						<TextView android:text="@string/speed" style="@style/SmallHeader">
+						</TextView>
+					</LinearLayout>
 				</LinearLayout>
 
 				<LinearLayout style="@style/TrackDetailsRow">

@@ -10,7 +10,7 @@
 
 			<TextView android:text="@string/distance" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 
 				<TextView android:id="@+id/distance" style="@style/Label13"
 					android:gravity="right">
@@ -28,7 +28,7 @@
 
 			<TextView android:text="@string/points" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/pointsCount" style="@style/Label13">
 				</TextView>
 			</LinearLayout>
@@ -39,7 +39,7 @@
 
 			<TextView android:text="@string/segments" style="@style/SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+			<LinearLayout style="@style/TrackDetailsRow_Value">
 				<TextView android:id="@+id/segmentsCount" style="@style/Label13">
 				</TextView>
 			</LinearLayout>

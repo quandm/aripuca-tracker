@@ -256,9 +256,11 @@ public class TrackRecorder {
 			// distance between current and last location
 			float distanceIncrement = this.lastLocation.distanceTo(location);
 
+			// check for standing still
 			if (distanceIncrement < Constants.MIN_DISTANCE &&
 					location.getSpeed() < Constants.MIN_SPEED) {
-				// update new last location
+
+				// update last location and wait for next update
 				this.lastLocation = location;
 				return;
 			}
@@ -272,7 +274,7 @@ public class TrackRecorder {
 			}
 
 		} else {
-			// update new last location
+			// update last location and wait for next update
 			this.lastLocation = location;
 			return;
 		}

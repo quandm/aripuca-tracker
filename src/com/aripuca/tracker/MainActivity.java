@@ -9,6 +9,8 @@ import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.ContainerCarousel;
+import com.aripuca.tracker.util.OrientationHelper;
+import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.SunriseSunset;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -92,6 +94,8 @@ public class MainActivity extends Activity {
 
 	private static final int HELLO_ID = 1;
 
+	private OrientationHelper orientationHelper;
+	
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -114,7 +118,12 @@ public class MainActivity extends Activity {
 			// Log.d(Constants.TAG,
 			// "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
 			Bundle bundle = intent.getExtras();
+			
+			orientationHelper = new OrientationHelper(MainActivity.this, bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
+					bundle.getFloat("roll"));
+			
 			updateCompass(bundle.getFloat("azimuth"));
+			
 		}
 	};
 
@@ -385,6 +394,10 @@ public class MainActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 
+		if (orientationHelper!=null) {
+			orientationHelper.setRealOrientation(newConfig.orientation);
+		}
+		
 		super.onConfigurationChanged(newConfig);
 
 	}
@@ -1156,7 +1169,7 @@ public class MainActivity extends Activity {
 			float accuracy = location.getAccuracy();
 
 			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR+" "+Utils.formatDistance(accuracy, distanceUnit));
+				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR+Utils.formatDistance(accuracy, distanceUnit));
 			}
 			if (findViewById(R.id.accuracyUnit) != null) {
 				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalaziedDistanceUnit(this, accuracy,
@@ -1344,13 +1357,25 @@ public class MainActivity extends Activity {
 
 		// magnetic north to true north
 		rotation = getAzimuth(azimuth + declination);
-
+		
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0)
 					+ Utils.DEGREE_CHAR + " "
 					+ Utils.getDirectionCode(rotation));
 		}
 
+		int orientationAdjustment=0;
+		if (orientationHelper!=null) {
+			orientationAdjustment = orientationHelper.getOrientationAdjustment();
+		}
+		
+		// update compass image
+		if (findViewById(R.id.compassImage) != null) {
+			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
+			compassImage.setAngle(360 - rotation - orientationAdjustment);
+			compassImage.invalidate();
+		}
+		
 	}
 
 	protected float getAzimuth(float az) {
@@ -1653,5 +1678,6 @@ public class MainActivity extends Activity {
 
 		}
 	};
+
 
 }
