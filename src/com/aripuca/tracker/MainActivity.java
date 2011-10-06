@@ -1125,10 +1125,11 @@ public class MainActivity extends Activity {
 		if (locationProvider == Constants.GPS_PROVIDER) {
 			
 			if (!myApp.isFixReceived()) {
-				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 				myApp.setFixReceived(true);
 			}
+			
+			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			
 		} else {
 			// save last known location for updates until new fix received
