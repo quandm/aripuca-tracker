@@ -106,6 +106,19 @@ public class MyApp extends Application {
 	}
 
 	/**
+	 * current gps location
+	 */
+	private Location lastKnownLocation = null;
+
+	public void setLastKnownLocation(Location l) {
+		lastKnownLocation = l;
+	}
+
+	public Location getLastKnownLocation() {
+		return lastKnownLocation;
+	}
+	
+	/**
 	 * database object
 	 */
 	private SQLiteDatabase db;

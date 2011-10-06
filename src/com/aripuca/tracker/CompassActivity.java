@@ -26,7 +26,6 @@ public class CompassActivity extends Activity {
 	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(Constants.TAG, "CompassActivity: BROADCAST MESSAGE RECEIVED");
 			Bundle bundle = intent.getExtras();
 			updateCompass(bundle.getFloat("azimuth"));
 		}
