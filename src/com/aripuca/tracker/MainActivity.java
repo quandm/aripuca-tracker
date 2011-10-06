@@ -87,11 +87,6 @@ public class MainActivity extends Activity {
 
 	private Handler mainHandler = new Handler();
 
-	/**
-	 * good fix received flag
-	 */
-	private boolean fixReceived = false;
-	
 	private OrientationHelper orientationHelper;
 	
 	/**
@@ -420,7 +415,11 @@ public class MainActivity extends Activity {
 		}
 
 		if (myApp.getCurrentLocation()!=null) {
-			this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
+			if (myApp.isFixReceived()) {
+				this.updateMainActivity(Constants.GPS_PROVIDER);
+			} else {
+				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
+			}
 		}
 		
 		// registering receiver for compass updates
@@ -603,7 +602,7 @@ public class MainActivity extends Activity {
 	 */
 	private void stopGPSService() {
 
-		fixReceived = false;
+		myApp.setFixReceived(false);
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
@@ -1125,10 +1124,10 @@ public class MainActivity extends Activity {
 		// activate buttons if location updates come from GPS 
 		if (locationProvider == Constants.GPS_PROVIDER) {
 			
-			if (!fixReceived) {
+			if (!myApp.isFixReceived()) {
 				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
-				fixReceived = true;
+				myApp.setFixReceived(true);
 			}
 			
 		} else {

@@ -40,9 +40,49 @@ public class MyApp extends Application {
 	 * gps on/off flag
 	 */
 	private boolean gpsOn = false;
-
+	
+	private boolean fixReceived = false;
+	
 	private Locale locale = null;
 
+	/**
+	 * Android shared preferences
+	 */
+	private SharedPreferences preferences;
+	/**
+	 * application directory
+	 */
+	private String appDir;
+
+	/**
+	 * is external storage writable
+	 */
+	private boolean externalStorageWriteable = false;
+	/**
+	 * MainActivity object reference
+	 */
+	private static MainActivity mainActivity;
+	
+	/**
+	 * is external storage available, ex: SD card
+	 */
+	private boolean externalStorageAvailable = false;
+	
+	/**
+	 * current gps location
+	 */
+	private Location currentLocation = null;
+	
+	/**
+	 * 
+	 */
+	private boolean gpsStateBeforeRotation = true;
+	
+	/**
+	 * database object
+	 */
+	private SQLiteDatabase db;
+	
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -66,11 +106,6 @@ public class MyApp extends Application {
 		return this.gpsOn;
 	}
 
-	/**
-	 * 
-	 */
-	private boolean gpsStateBeforeRotation = true;
-
 	public void setGpsStateBeforeRotation() {
 		gpsStateBeforeRotation = this.gpsOn;
 	}
@@ -92,11 +127,6 @@ public class MyApp extends Application {
 		this.activityRestarting = activityRestarting;
 	}
 
-	/**
-	 * current gps location
-	 */
-	private Location currentLocation = null;
-
 	public void setCurrentLocation(Location cl) {
 		currentLocation = cl;
 	}
@@ -104,24 +134,6 @@ public class MyApp extends Application {
 	public Location getCurrentLocation() {
 		return currentLocation;
 	}
-
-	/**
-	 * current gps location
-	 */
-	private Location lastKnownLocation = null;
-
-	public void setLastKnownLocation(Location l) {
-		lastKnownLocation = l;
-	}
-
-	public Location getLastKnownLocation() {
-		return lastKnownLocation;
-	}
-	
-	/**
-	 * database object
-	 */
-	private SQLiteDatabase db;
 
 	public SQLiteDatabase getDatabase() {
 		return db;
@@ -138,28 +150,13 @@ public class MyApp extends Application {
 
 	}
 
-	/**
-	 * is external storage available, ex: SD card
-	 */
-	private boolean externalStorageAvailable = false;
-
 	public boolean getExternalStorageAvailable() {
 		return externalStorageAvailable;
 	}
 
-	/**
-	 * is external storage writable
-	 */
-	private boolean externalStorageWriteable = false;
-
 	public boolean getExternalStorageWriteable() {
 		return externalStorageWriteable;
 	}
-
-	/**
-	 * MainActivity object reference
-	 */
-	private static MainActivity mainActivity;
 
 	public void setMainActivity(MainActivity ma) {
 		mainActivity = ma;
@@ -169,19 +166,9 @@ public class MyApp extends Application {
 		return mainActivity;
 	}
 
-	/**
-	 * Android shared preferences
-	 */
-	private SharedPreferences preferences;
-
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}
-
-	/**
-	 * application directory
-	 */
-	private String appDir;
 
 	public String getAppDir() {
 		return appDir;
@@ -494,5 +481,14 @@ public class MyApp extends Application {
 		}
 
 	}
+	
+	public boolean isFixReceived() {
+		return this.fixReceived;
+	}
+	
+	public void setFixReceived(boolean f) {
+		this.fixReceived  = f;
+	}
+	
 
 }
