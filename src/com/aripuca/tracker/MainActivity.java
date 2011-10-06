@@ -91,9 +91,7 @@ public class MainActivity extends Activity {
 	 * good fix received flag
 	 */
 	private boolean fixReceived = false;
-
-	private static final int HELLO_ID = 1;
-
+	
 	private OrientationHelper orientationHelper;
 	
 	/**
@@ -102,9 +100,9 @@ public class MainActivity extends Activity {
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
 			Bundle bundle = intent.getExtras();
-
+			
+			// update MainActivity UI
 			updateMainActivity(bundle.getInt("location_provider"));
 		}
 	};
@@ -392,17 +390,6 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-
-		if (orientationHelper!=null) {
-			orientationHelper.setRealOrientation(newConfig.orientation);
-		}
-		
-		super.onConfigurationChanged(newConfig);
-
-	}
-
-	@Override
 	public Object onRetainNonConfigurationInstance() {
 
 		Log.d(Constants.TAG, "onRetainNonConfigurationInstance");
@@ -426,12 +413,16 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		Log.v(Constants.TAG, "onResume");
-
+		
 		// preventing phone from sleeping
 		if (findViewById(R.id.dynamicView) != null) {
 			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
 		}
 
+		if (myApp.getCurrentLocation()!=null) {
+			this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
+		}
+		
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 
@@ -1129,10 +1120,6 @@ public class MainActivity extends Activity {
 		
 		Location location = myApp.getCurrentLocation();
 		
-//		myApp.log("Lat: " + location.getLatitude()+" | Lng: " + location.getLongitude()+
-//					" | Accuracy: "+location.getAccuracy() + 
-//					" | Speed: "+location.getSpeed());
-
 		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
 		// activate buttons if location updates come from GPS 
@@ -1145,7 +1132,8 @@ public class MainActivity extends Activity {
 			}
 			
 		} else {
-			Toast.makeText(MainActivity.this, R.string.waiting_for_fix, Toast.LENGTH_SHORT).show();
+			// save last known location for updates until new fix received
+			Toast.makeText(MainActivity.this, R.string.last_known_location_received, Toast.LENGTH_SHORT).show();
 		}
 
 		// measuring units
