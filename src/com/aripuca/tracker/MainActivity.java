@@ -1133,9 +1133,14 @@ public class MainActivity extends Activity {
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			
+			((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.INVISIBLE);
+			
 		} else {
 			// save last known location for updates until new fix received
-			Toast.makeText(MainActivity.this, R.string.last_known_location_received, Toast.LENGTH_SHORT).show();
+			//Toast.makeText(MainActivity.this, R.string.last_known_location_received, Toast.LENGTH_SHORT).show();
+			
+			((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.VISIBLE);
+			
 		}
 
 		// measuring units
@@ -1483,7 +1488,6 @@ public class MainActivity extends Activity {
 
 			ContentValues values = new ContentValues();
 			values.put("title", wp.getTitle());
-			//values.put("descr", "");
 			values.put("lat", (int) (wp.getLatitude() * 1E6));
 			values.put("lng", (int) (wp.getLongitude() * 1E6));
 			values.put("time", wp.getTime());
