@@ -122,7 +122,7 @@ public class WaypointsListActivity extends ListActivity {
 			Bundle bundle = intent.getExtras();
 			setAzimuth(bundle.getFloat("azimuth"));
 
-			orientationHelper = new OrientationHelper(WaypointsListActivity.this, bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
+			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
 					bundle.getFloat("roll"));
 			
 			waypointsArrayAdapter.notifyDataSetChanged();
@@ -296,16 +296,18 @@ public class WaypointsListActivity extends ListActivity {
 
 		updateWaypointsArray();
 
+		orientationHelper = new OrientationHelper(this);
+		
 		// cursorAdapter = new WaypointsCursorAdapter(this, cursor);
 		waypointsArrayAdapter = new WaypointsArrayAdapter(this, R.layout.waypoint_list_item, waypoints);
 
+		
 		// setListAdapter(cursorAdapter);
 		setListAdapter(waypointsArrayAdapter);
 
 	}
 
-
-	@Override
+/*	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 
 		if (orientationHelper!=null) {
@@ -313,8 +315,7 @@ public class WaypointsListActivity extends ListActivity {
 		}
 
 		super.onConfigurationChanged(newConfig);
-
-	}
+	}*/
 
 	@Override
 	public void onPause() {

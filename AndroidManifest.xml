@@ -25,7 +25,7 @@
 		<activity android:name=".TrackDetailsActivity" android:label="@string/track_details_activity_title">
 		</activity>
 
-		<activity android:name=".WaypointsListActivity" android:label="@string/waypoints_activity_title" android:configChanges="orientation">
+		<activity android:name=".WaypointsListActivity" android:label="@string/waypoints_activity_title">
 		</activity>
 
 		<activity android:name=".TracksListActivity" android:label="@string/tracks_activity_title">
