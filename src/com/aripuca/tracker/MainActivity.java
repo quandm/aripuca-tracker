@@ -849,7 +849,7 @@ public class MainActivity extends Activity {
 		wpTitle.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((new Date()).getTime()));
 
 		final EditText wpDescr = (EditText) layout.findViewById(R.id.waypointDescriptionInputText);
-		if (address != null) {
+		if (!address.equals(null)) {
 			wpDescr.setText(address);
 		}
 

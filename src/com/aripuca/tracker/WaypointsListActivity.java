@@ -75,6 +75,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -307,6 +308,18 @@ public class WaypointsListActivity extends ListActivity {
 
 	}
 
+	/**
+	 * Edit waypoint
+	 */
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+
+		final long waypointId = waypointsArrayAdapter.getItem((int) id).getId();
+		
+		this.updateWaypoint(waypointId);
+
+	}
+	
 /*	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 
