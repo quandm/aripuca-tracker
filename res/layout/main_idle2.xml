@@ -74,7 +74,7 @@
 					<com.aripuca.tracker.view.CompassImage
 						android:id="@+id/compassImage" android:src="@drawable/arrow36"
 						android:layout_margin="5dp" android:layout_width="20dp"
-						android:layout_height="20dp" android:layout_gravity="right"/>
+						android:layout_height="20dp" android:layout_gravity="right" />
 				</FrameLayout>
 
 			</LinearLayout>
@@ -169,5 +169,21 @@
 		</LinearLayout>
 
 	</LinearLayout>
+
+	<LinearLayout android:id="@+id/messageBox" style="@style/FillParent"
+		android:gravity="center">
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="100dp" android:background="@drawable/border2"
+			android:layout_margin="20dp" android:padding="5dp" >
+
+			<TextView style="@style/FillParent" android:textSize="16sp" android:text="Waiting for the new fix"
+				android:textColor="#F000" android:id="@+id/messageText" android:gravity="center">
+			</TextView>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
 
 </FrameLayout>
