@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
 			// "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
 			Bundle bundle = intent.getExtras();
 			
-			orientationHelper = new OrientationHelper(MainActivity.this, bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
+			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
 					bundle.getFloat("roll"));
 			
 			updateCompass(bundle.getFloat("azimuth"));
@@ -326,6 +326,8 @@ public class MainActivity extends Activity {
 
 		// get instance of TrackRecorder class for fast access from MainActivity
 		trackRecorder = TrackRecorder.getInstance(myApp);
+		
+		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		// attaching default middle layout
 		if (trackRecorder.isRecording()) {
@@ -464,7 +466,7 @@ public class MainActivity extends Activity {
 		}
 
 		myApp.setMainActivity(null);
-
+		
 		super.onDestroy();
 	}
 
@@ -1481,7 +1483,7 @@ public class MainActivity extends Activity {
 
 			ContentValues values = new ContentValues();
 			values.put("title", wp.getTitle());
-			values.put("descr", "");
+			//values.put("descr", "");
 			values.put("lat", (int) (wp.getLatitude() * 1E6));
 			values.put("lng", (int) (wp.getLongitude() * 1E6));
 			values.put("time", wp.getTime());

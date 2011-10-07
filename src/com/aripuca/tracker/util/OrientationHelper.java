@@ -2,6 +2,7 @@ package com.aripuca.tracker.util;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.util.Log;
 
 import com.aripuca.tracker.app.Constants;
 
@@ -13,11 +14,19 @@ public class OrientationHelper {
 	 */
 	private int realOrientation;
 	
-	public OrientationHelper(Context context, float azimuth, float pitch, float roll) {
+	private Context context;
+	
+	public OrientationHelper(Context context) {
+		
+		this.context = context;
+
+	}
+	
+	public void setOrientationValues(float azimuth, float pitch, float roll) {
 		
 		orientationValues = new OrientationValues(azimuth, pitch, roll);
 
-		setRealOrientation(context.getResources().getConfiguration().orientation);
+		setRealOrientation(this.context.getResources().getConfiguration().orientation);
 		
 	}
 	
@@ -50,21 +59,25 @@ public class OrientationHelper {
 	 * 
 	 * @param orientation
 	 */
-	public void setRealOrientation(int orientation) {
+	private void setRealOrientation(int orientation) {
 
 		if (orientationValues == null) {
 			return;
 		}
 
+//		Log.d(Constants.TAG, "getRoll(): "+orientationValues.getRoll());
+		
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
 			if (orientationValues.getRoll() >= 25
 					&& realOrientation != Constants.ORIENTATION_LANDSCAPE) {
+				
 				realOrientation = Constants.ORIENTATION_LANDSCAPE;
 			}
 
 			if (orientationValues.getRoll() <= -25
 					&& realOrientation != Constants.ORIENTATION_REVERSE_LANDSCAPE) {
+
 				realOrientation = Constants.ORIENTATION_REVERSE_LANDSCAPE;
 			}
 
