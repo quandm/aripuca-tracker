@@ -37,5 +37,21 @@
 		</Button>
 
 	</LinearLayout>
+	
+	<LinearLayout android:id="@+id/messageBox" style="@style/FillParent"
+		android:gravity="center">
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="100dp" android:background="@drawable/border2"
+			android:layout_margin="20dp" android:padding="5dp" >
+
+			<TextView style="@style/FillParent" android:textSize="16sp" android:text="@string/waiting_for_fix2"
+				android:textColor="#F000" android:id="@+id/messageText" android:gravity="center">
+			</TextView>
+
+		</LinearLayout>
+
+	</LinearLayout>
+	
 
 </FrameLayout>
