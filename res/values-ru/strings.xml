@@ -254,6 +254,7 @@
 	<!-- HINTS -->
 	<string name="waypoint_description">Описание путевой точки</string>
 	<string name="track_description">Описание трека</string>
+	<string name="waiting_for_fix2">Ожидание нового фикса. Обеспечьте видимость неба.</string>
 
 
 </resources>

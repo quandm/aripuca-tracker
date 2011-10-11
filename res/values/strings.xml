@@ -249,6 +249,7 @@
 		
 	<string name="waiting_for_fix">Waiting for a better fix</string>
 	<string name="last_known_location_received">Last known location received</string>
+	<string name="waiting_for_fix2">Waiting for a better fix. Make sure the sky is visible.</string>
 
 	<!-- HINTS -->
 	<string name="waypoint_description">Waypoint description</string>
