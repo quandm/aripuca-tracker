@@ -12,6 +12,7 @@ import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.SunriseSunset;
+import com.aripuca.tracker.util.TimeUtils;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
@@ -39,6 +40,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -1138,11 +1140,19 @@ public class MainActivity extends Activity {
 			}
 			
 		} else {
+			
 			// save last known location for updates until new fix received
 			//Toast.makeText(MainActivity.this, R.string.last_known_location_received, Toast.LENGTH_SHORT).show();
 			
 			if (findViewById(R.id.messageBox)!=null) {
 				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.VISIBLE);
+			}
+			
+			// calculating gps fix age
+			if (findViewById(R.id.fixAge)!=null) {
+				long fixAge = System.currentTimeMillis() - location.getTime();
+				String t = TimeUtils.toHumanReadableString(fixAge);
+				((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
 			}
 			
 		}
