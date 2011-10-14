@@ -44,8 +44,14 @@
 	<string name="kph">км/ч</string>
 	<string name="mph">ми/ч</string>
 
+	<string name="days">дн.</string>
+	<string name="hours">час.</string>
+	<string name="minutes">мин.</string>
+	<string name="seconds">сек.</string>
+
 	<string name="ver">v.</string>
 	<string name="ok">Ok</string>
+	<string name="and">и</string>
 	<string name="yes">Да</string>
 	<string name="no">Нет</string>
 	<string name="cancel">Отмена</string>

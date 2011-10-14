@@ -5,6 +5,7 @@ import com.aripuca.tracker.R.layout;
 import com.aripuca.tracker.R.menu;
 import com.aripuca.tracker.R.string;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.map.OverlaysMapActivity;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.track.Waypoint;
@@ -1064,6 +1065,12 @@ public class MainActivity extends Activity {
 				restoreDatabase();
 				return true;
 
+			case R.id.testLabMenuItem:
+
+				startActivity(new Intent(this, OverlaysMapActivity.class));
+				
+				return true;
+				
 			default:
 
 				return super.onOptionsItemSelected(item);
@@ -1151,7 +1158,7 @@ public class MainActivity extends Activity {
 			// calculating gps fix age
 			if (findViewById(R.id.fixAge)!=null) {
 				long fixAge = System.currentTimeMillis() - location.getTime();
-				String t = TimeUtils.toHumanReadableString(fixAge);
+				String t = Utils.timeToHumanReadableString(this, fixAge);
 				((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
 			}
 			

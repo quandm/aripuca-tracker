@@ -33,4 +33,8 @@
 			android:title="@string/restore_db"
 			android:icon="@android:drawable/ic_menu_revert" />
 
+	<item android:id="@+id/testLabMenuItem" 
+			android:title="Test Lab"
+			android:icon="@android:drawable/ic_menu_manage" />
+
 </menu>
