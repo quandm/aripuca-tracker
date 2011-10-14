@@ -45,7 +45,7 @@
 			android:layout_height="100dp" android:background="@drawable/border2"
 			android:layout_margin="20dp" android:padding="5dp" android:gravity="center" >
 
-			<TextView android:id="@+id/messageText" style="@style/FillWidth" android:textSize="16sp" android:text="@string/waiting_for_fix2"
+			<TextView android:id="@+id/messageText" style="@style/FillWidth" android:textSize="16sp" android:text="@string/waiting_new_fix"
 				android:textColor="#F000" android:gravity="center">
 			</TextView>
 
