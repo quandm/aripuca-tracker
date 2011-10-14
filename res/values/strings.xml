@@ -47,8 +47,14 @@
 	<string name="kph">kph</string>
 	<string name="mph">mph</string>
 
+	<string name="days">day(s)</string>
+	<string name="hours">hour(s)</string>
+	<string name="minutes">minute(s)</string>
+	<string name="seconds">second(s)</string>
+
 	<string name="ver">v</string>
 	<string name="ok">Ok</string>
+	<string name="and">and</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 	<string name="cancel">Cancel</string>

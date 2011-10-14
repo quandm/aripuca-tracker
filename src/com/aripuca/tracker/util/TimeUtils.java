@@ -1,5 +1,7 @@
 package com.aripuca.tracker.util;
 
+import android.content.Context;
+
 public class TimeUtils {
 
 	public final static long ONE_SECOND = 1000;
@@ -62,4 +64,5 @@ public class TimeUtils {
 			return "0 second";
 		}
 	}
+	
 }

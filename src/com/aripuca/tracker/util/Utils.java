@@ -20,6 +20,14 @@ import android.location.Location;
 
 public class Utils {
 
+	public final static long ONE_SECOND = 1000;
+	public final static long SECONDS = 60;
+	public final static long ONE_MINUTE = ONE_SECOND * 60;
+	public final static long MINUTES = 60;
+	public final static long ONE_HOUR = ONE_MINUTE * 60;
+	public final static long HOURS = 24;
+	public final static long ONE_DAY = ONE_HOUR * 24;
+	
 	public static final char DEGREE_CHAR = (char) 0x00B0;
 	public static final char PLUSMINUS_CHAR = (char) 0x00B1;
 
@@ -419,5 +427,107 @@ public class Utils {
 
 		return field.getDeclination();
 	}
+	
+	/**
+	 * Converts time (in milliseconds) to human-readable format
+	 * "<w> days, <x> hours, <y> minutes and (z) seconds"
+	 */
+	public static String timeToHumanReadableString(long duration) {
+
+		StringBuffer res = new StringBuffer();
+
+		long temp = 0;
+
+		if (duration >= ONE_SECOND) {
+			
+			temp = duration / ONE_DAY;
+			
+			if (temp > 0) {
+				duration -= temp * ONE_DAY;
+				res.append(temp).append(" day").append(temp > 1 ? "s" : "")
+						.append(duration >= ONE_MINUTE ? ", " : "");
+			}
+
+			temp = duration / ONE_HOUR;
+			if (temp > 0) {
+				duration -= temp * ONE_HOUR;
+				res.append(temp).append(" hour").append(temp > 1 ? "s" : "")
+						.append(duration >= ONE_MINUTE ? ", " : "");
+			}
+
+			temp = duration / ONE_MINUTE;
+			if (temp > 0) {
+				duration -= temp * ONE_MINUTE;
+				res.append(temp).append(" minute").append(temp > 1 ? "s" : "");
+			}
+
+			if (!res.toString().equals("") && duration >= ONE_SECOND) {
+				res.append(" and ");
+			}
+
+			temp = duration / ONE_SECOND;
+			if (temp > 0) {
+				res.append(temp).append(" second").append(temp > 1 ? "s" : "");
+			}
+			
+			return res.toString();
+			
+		} else {
+			
+			return "0 second";
+		}
+	}
+	
+	/**
+	 * Converts time (in milliseconds) to human-readable format (localized)
+	 * "<w> days, <x> hours, <y> minutes and (z) seconds"
+	 */
+	public static String timeToHumanReadableString(Context context, long duration) {
+
+		StringBuffer res = new StringBuffer();
+
+		long temp = 0;
+
+		if (duration >= ONE_SECOND) {
+			
+			temp = duration / ONE_DAY;
+			
+			if (temp > 0) {
+				duration -= temp * ONE_DAY;
+				res.append(temp).append(" ").append(context.getString(R.string.days))
+						.append(duration >= ONE_MINUTE ? ", " : "");
+			}
+
+			temp = duration / ONE_HOUR;
+			if (temp > 0) {
+				duration -= temp * ONE_HOUR;
+				res.append(temp).append(" ").append(context.getString(R.string.hours))
+						.append(duration >= ONE_MINUTE ? ", " : "");
+			}
+
+			temp = duration / ONE_MINUTE;
+			if (temp > 0) {
+				duration -= temp * ONE_MINUTE;
+				res.append(temp).append(" ").append(context.getString(R.string.minutes));
+			}
+
+			if (!res.toString().equals("") && duration >= ONE_SECOND) {
+				res.append(" ").append(context.getString(R.string.and)).append(" ");
+			}
+
+			temp = duration / ONE_SECOND;
+			if (temp > 0) {
+				res.append(temp).append(" ").append(context.getString(R.string.seconds));
+			}
+			
+			return res.toString();
+			
+		} else {
+			
+			return "0 "+context.getString(R.string.seconds);
+		}
+	}
+	
+	
 
 }
