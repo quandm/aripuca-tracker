@@ -249,12 +249,12 @@
 		перезапуск приложения</string>
 
 	<string name="waiting_for_fix">Ожидание более точного сигнала</string>
+	<string name="waiting_new_fix">Ожидание нового фикса. Обеспечьте видимость неба.</string>
 	<string name="last_known_location_received">Последний известный сигнал GPS получен</string>
+	<string name="fix_age">Последний фикс был получен %s назад</string>
 
 	<!-- HINTS -->
 	<string name="waypoint_description">Описание путевой точки</string>
 	<string name="track_description">Описание трека</string>
-	<string name="waiting_for_fix2">Ожидание нового фикса. Обеспечьте видимость неба.</string>
-
 
 </resources>
