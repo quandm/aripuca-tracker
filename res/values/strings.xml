@@ -5,7 +5,7 @@
 	<string name="author_name">VitalNik</string>
 	<string name="company">Aripuca Apps</string>
 	
-	<string name="build_date">Build date: 2011-10-05</string>
+	<string name="build_date">Build date: 2011-10-17</string>
 	
 	<string name="app_url">http://tracker.aripuca.com</string>
 	<string name="blog_url">tracker.aripuca.com/blog</string>
@@ -32,6 +32,7 @@
 	<string name="track">Track</string>
 	<string name="tracks">Tracks</string>
 	<string name="record_track">Record track</string>
+	<string name="recording_track">Recording track</string>
 	<string name="show_track">Show track</string>
 
 	<string name="segments">Segments</string>
