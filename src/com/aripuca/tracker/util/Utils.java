@@ -90,35 +90,21 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
-			if (value > 100000) {
-				return Utils.formatNumber(value / 1000, 0);
-			}
-
-			if (value > 10000) {
-				return Utils.formatNumber(value / 1000, 1, 1);
-			}
-
+			// convert to km
 			if (value > 1000) {
-				return Utils.formatNumber(value / 1000, 2, 2);
+				return Utils.formatNumber(value / 1000, 2, 1);
 			}
 
-			// value is in meters
+			// leave value in meters
 			return Utils.formatNumber(value, 0);
 
 		}
 
 		if (unit.equals("mi")) {
 
-			if (value > MI_TO_M * 100) {
-				return Utils.formatNumber(value / MI_TO_M, 0);
-			}
-
-			if (value > MI_TO_M * 10) {
-				return Utils.formatNumber(value / MI_TO_M, 1, 1);
-			}
-
+			// convert to miles
 			if (value > MI_TO_M) {
-				return Utils.formatNumber(value / MI_TO_M, 2, 2);
+				return Utils.formatNumber(value / MI_TO_M, 2, 1);
 			}
 
 			// value is in feet
