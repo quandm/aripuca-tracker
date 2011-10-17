@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
 	private Handler mainHandler = new Handler();
 
 	private OrientationHelper orientationHelper;
-	
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle bundle = intent.getExtras();
-			
+
 			// update MainActivity UI
 			updateMainActivity(bundle.getInt("location_provider"));
 		}
@@ -113,12 +113,12 @@ public class MainActivity extends Activity {
 			// Log.d(Constants.TAG,
 			// "MainActivity: COMPASS BROADCAST MESSAGE RECEIVED");
 			Bundle bundle = intent.getExtras();
-			
+
 			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
 					bundle.getFloat("roll"));
-			
+
 			updateCompass(bundle.getFloat("azimuth"));
-			
+
 		}
 	};
 
@@ -328,7 +328,7 @@ public class MainActivity extends Activity {
 
 		// get instance of TrackRecorder class for fast access from MainActivity
 		trackRecorder = TrackRecorder.getInstance(myApp);
-		
+
 		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		// attaching default middle layout
@@ -342,7 +342,7 @@ public class MainActivity extends Activity {
 		// it will be processed in onRetainNonConfigurationInstance
 		myApp.setActivityRestarting(false);
 
-		// disable control buttons 
+		// disable control buttons
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
@@ -412,20 +412,20 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		Log.v(Constants.TAG, "onResume");
-		
+
 		// preventing phone from sleeping
 		if (findViewById(R.id.dynamicView) != null) {
 			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
 		}
 
-		if (myApp.getCurrentLocation()!=null) {
+		if (myApp.getCurrentLocation() != null) {
 			if (myApp.isFixReceived()) {
 				this.updateMainActivity(Constants.GPS_PROVIDER);
 			} else {
 				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
 			}
 		}
-		
+
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 
@@ -468,7 +468,7 @@ public class MainActivity extends Activity {
 		}
 
 		myApp.setMainActivity(null);
-		
+
 		super.onDestroy();
 	}
 
@@ -537,19 +537,17 @@ public class MainActivity extends Activity {
 			final int resourceId = carousel.getResourceId();
 			final ContainerCarousel car = carousel;
 
-			containerView.setOnClickListener(
-					new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							ViewGroup containerView = (ViewGroup) findViewById(resourceId);
+			containerView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					ViewGroup containerView = (ViewGroup) findViewById(resourceId);
 
-							// attaching default layout
-							View tmpView1 = getLayoutInflater().inflate(car.getNextContainer(), containerView, false);
-							containerView.removeAllViews();
-							containerView.addView(tmpView1, 0);
-						}
-					}
-					);
+					// attaching default layout
+					View tmpView1 = getLayoutInflater().inflate(car.getNextContainer(), containerView, false);
+					containerView.removeAllViews();
+					containerView.addView(tmpView1, 0);
+				}
+			});
 
 			// attaching default layout
 			View tmpView1 = getLayoutInflater().inflate(carousel.getCurrentContainer(), containerView, false);
@@ -631,32 +629,26 @@ public class MainActivity extends Activity {
 	 */
 	private void startTracking() {
 
-		//TODO: add notification icon in track recording mode
+		// TODO: add notification icon in track recording mode
 
 		// --------------------------------------------------------------------------------
-		/*
-		 * String ns = Context.NOTIFICATION_SERVICE;
-		 * NotificationManager mNotificationManager = (NotificationManager)
-		 * getSystemService(ns);
-		 * 
-		 * int icon = R.drawable.arrow36;
-		 * long when = System.currentTimeMillis();
-		 * 
-		 * Notification notification = new Notification(icon,
-		 * getString(R.string.recording_started), when);
-		 * 
-		 * CharSequence contentTitle = "Aripuca Tracker";
-		 * CharSequence contentText = "Recording track";
-		 * 
-		 * Intent notificationIntent = new Intent(this, MainActivity.class);
-		 * PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-		 * notificationIntent, 0);
-		 * 
-		 * notification.setLatestEventInfo(myApp, contentTitle, contentText,
-		 * contentIntent);
-		 * 
-		 * mNotificationManager.notify(HELLO_ID, notification);
-		 */
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+
+		int icon = R.drawable.arrow36;
+		long when = System.currentTimeMillis();
+
+		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
+
+		CharSequence contentTitle = "Aripuca Tracker";
+		CharSequence contentText = "Recording track";
+
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);
+
+		mNotificationManager.notify(Constants.NOTIFICATION_ID, notification);
 
 		// --------------------------------------------------------------------------------
 
@@ -682,6 +674,11 @@ public class MainActivity extends Activity {
 	 */
 	private void stopTracking() {
 
+		// remove all notifications
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+		mNotificationManager.cancelAll();
+		
 		// disabling pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
@@ -747,7 +744,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -793,8 +790,7 @@ public class MainActivity extends Activity {
 						}
 					}
 
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 
 					Log.e(Constants.TAG, "Impossible to connect to Geocoder", e);
 
@@ -1067,9 +1063,9 @@ public class MainActivity extends Activity {
 			case R.id.testLabMenuItem:
 
 				startActivity(new Intent(this, OverlaysMapActivity.class));
-				
+
 				return true;
-				
+
 			default:
 
 				return super.onOptionsItemSelected(item);
@@ -1126,41 +1122,43 @@ public class MainActivity extends Activity {
 	 * Update main activity view
 	 */
 	public void updateMainActivity(int locationProvider) {
-		
+
 		Location location = myApp.getCurrentLocation();
-		
+
 		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
 
-		// activate buttons if location updates come from GPS 
+		// activate buttons if location updates come from GPS
 		if (locationProvider == Constants.GPS_PROVIDER) {
-			
+
 			if (!myApp.isFixReceived()) {
 				myApp.setFixReceived(true);
 			}
-			
+
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
-			
-			if (findViewById(R.id.messageBox)!=null) {
+
+			if (findViewById(R.id.messageBox) != null) {
 				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.INVISIBLE);
 			}
-			
+
 		} else {
-			
+
 			// save last known location for updates until new fix received
-			//Toast.makeText(MainActivity.this, R.string.last_known_location_received, Toast.LENGTH_SHORT).show();
-			
-			if (findViewById(R.id.messageBox)!=null) {
+			// Toast.makeText(MainActivity.this,
+			// R.string.last_known_location_received,
+			// Toast.LENGTH_SHORT).show();
+
+			if (findViewById(R.id.messageBox) != null) {
 				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.VISIBLE);
 			}
-			
+
 			// calculating gps fix age
-			if (findViewById(R.id.fixAge)!=null) {
+			if (findViewById(R.id.fixAge) != null) {
 				long fixAge = System.currentTimeMillis() - location.getTime();
 				String t = Utils.timeToHumanReadableString(this, fixAge);
 				((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
 			}
-			
+
 		}
 
 		// measuring units
@@ -1170,13 +1168,11 @@ public class MainActivity extends Activity {
 		int coordUnit = Integer.parseInt(myApp.getPreferences().getString("coord_units", "0"));
 
 		if (findViewById(R.id.lat) != null) {
-			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(location.getLatitude(),
-					coordUnit));
+			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(location.getLatitude(), coordUnit));
 		}
 
 		if (findViewById(R.id.lng) != null) {
-			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(location.getLongitude(),
-					coordUnit));
+			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(location.getLongitude(), coordUnit));
 		}
 
 		if (location.hasAccuracy()) {
@@ -1184,7 +1180,8 @@ public class MainActivity extends Activity {
 			float accuracy = location.getAccuracy();
 
 			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR+Utils.formatDistance(accuracy, distanceUnit));
+				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR
+						+ Utils.formatDistance(accuracy, distanceUnit));
 			}
 			if (findViewById(R.id.accuracyUnit) != null) {
 				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalaziedDistanceUnit(this, accuracy,
@@ -1203,7 +1200,8 @@ public class MainActivity extends Activity {
 						.getCurrentLocation().getAltitude(), elevationUnit));
 			}
 			if (findViewById(R.id.elevationUnit) != null) {
-				((TextView) findViewById(R.id.elevationUnit)).setText(Utils.getLocalizedElevationUnit(this, elevationUnit));
+				((TextView) findViewById(R.id.elevationUnit)).setText(Utils.getLocalizedElevationUnit(this,
+						elevationUnit));
 			}
 		}
 
@@ -1269,7 +1267,7 @@ public class MainActivity extends Activity {
 						.getMinElevation(), elevationUnit));
 			}
 			// ------------------------------------------------------------------
-			
+
 			// average speed
 			if (findViewById(R.id.averageSpeed) != null) {
 				((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
@@ -1285,24 +1283,22 @@ public class MainActivity extends Activity {
 			// max speed
 			if (findViewById(R.id.maxSpeed) != null) {
 				((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackRecorder.getTrack()
-						.getMaxSpeed(),
-						speedUnit));
+						.getMaxSpeed(), speedUnit));
 			}
 
 			// acceleration
 			if (findViewById(R.id.acceleration) != null) {
 
 				// let's display last non-zero acceleration
-				((TextView) findViewById(R.id.acceleration)).setText(
-							Utils.formatNumber(trackRecorder.getTrack().getAcceleration(), 2));
+				((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(trackRecorder.getTrack()
+						.getAcceleration(), 2));
 
 			}
 
 			// average pace
 			if (findViewById(R.id.averagePace) != null) {
-				((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(
-						trackRecorder.getTrack().getAverageSpeed(),
-						speedUnit));
+				((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(trackRecorder.getTrack()
+						.getAverageSpeed(), speedUnit));
 			}
 
 			// average moving pace
@@ -1314,22 +1310,18 @@ public class MainActivity extends Activity {
 			// max pace
 			if (findViewById(R.id.maxPace) != null) {
 				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(
-						trackRecorder.getTrack().getMaxSpeed(),
-						speedUnit));
+						trackRecorder.getTrack().getMaxSpeed(), speedUnit));
 			}
 
 			// total distance
 			if (findViewById(R.id.distance) != null) {
 				((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackRecorder.getTrack()
-						.getDistance(),
-						distanceUnit));
+						.getDistance(), distanceUnit));
 			}
 
 			if (findViewById(R.id.distanceUnit) != null) {
-				((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalaziedDistanceUnit(this, trackRecorder
-						.getTrack()
-						.getDistance(),
-						distanceUnit));
+				((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalaziedDistanceUnit(this,
+						trackRecorder.getTrack().getDistance(), distanceUnit));
 			}
 
 		}
@@ -1338,8 +1330,7 @@ public class MainActivity extends Activity {
 		Calendar cal = Calendar.getInstance();
 		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
 
-		SunriseSunset ss = new SunriseSunset(location.getLatitude(),
-				location.getLongitude(), cal.getTime(),
+		SunriseSunset ss = new SunriseSunset(location.getLatitude(), location.getLongitude(), cal.getTime(),
 				tz.getOffset(cal.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
@@ -1372,32 +1363,29 @@ public class MainActivity extends Activity {
 
 		// magnetic north to true north
 		rotation = getAzimuth(azimuth + declination);
-		
+
 		if (findViewById(R.id.azimuth) != null) {
-			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0)
-					+ Utils.DEGREE_CHAR + " "
+			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0) + Utils.DEGREE_CHAR + " "
 					+ Utils.getDirectionCode(rotation));
 		}
 
-		int orientationAdjustment=0;
-		if (orientationHelper!=null) {
+		int orientationAdjustment = 0;
+		if (orientationHelper != null) {
 			orientationAdjustment = orientationHelper.getOrientationAdjustment();
 		}
-		
+
 		// update compass image
 		if (findViewById(R.id.compassImage) != null) {
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
 			compassImage.setAngle(360 - rotation - orientationAdjustment);
 			compassImage.invalidate();
 		}
-		
+
 	}
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1415,13 +1403,13 @@ public class MainActivity extends Activity {
 		if (trackRecorder.isRecording()) {
 
 			if (findViewById(R.id.totalTime) != null) {
-				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
-						trackRecorder.getTrack().getTotalTime(), false));
+				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(trackRecorder.getTrack()
+						.getTotalTime(), false));
 			}
 
 			if (findViewById(R.id.movingTime) != null) {
-				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(
-						trackRecorder.getTrack().getMovingTime(), false));
+				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(trackRecorder.getTrack()
+						.getMovingTime(), false));
 			}
 
 		}
@@ -1484,9 +1472,7 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) {
-			return;
-		}
+		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
@@ -1589,8 +1575,7 @@ public class MainActivity extends Activity {
 		File importFolder = new File(myApp.getAppDir() + "/backup/");
 		final String importFiles[] = importFolder.list();
 
-		if (importFiles == null ||
-				importFiles.length == 0) {
+		if (importFiles == null || importFiles.length == 0) {
 			Toast.makeText(MainActivity.this, R.string.source_folder_empty, Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -1599,17 +1584,16 @@ public class MainActivity extends Activity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.select_file);
-		builder.setSingleChoiceItems(importFiles, 0, new
-				DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
+		builder.setSingleChoiceItems(importFiles, 0, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
 
-						importDatabaseFileName = importFiles[whichButton];
-						mainHandler.post(restoreDatabaseRunnable);
+				importDatabaseFileName = importFiles[whichButton];
+				mainHandler.post(restoreDatabaseRunnable);
 
-						dialog.dismiss();
+				dialog.dismiss();
 
-					}
-				});
+			}
+		});
 
 		AlertDialog alert = builder.create();
 		alert.show();
@@ -1628,8 +1612,7 @@ public class MainActivity extends Activity {
 
 				// open database in readonly mode
 				SQLiteDatabase db = SQLiteDatabase.openDatabase(
-						myApp.getAppDir() + "/backup/" + importDatabaseFileName,
-						null, SQLiteDatabase.OPEN_READONLY);
+						myApp.getAppDir() + "/backup/" + importDatabaseFileName, null, SQLiteDatabase.OPEN_READONLY);
 
 				// check version compatibility
 				// only same version of the db can be restored
@@ -1673,13 +1656,11 @@ public class MainActivity extends Activity {
 
 					myApp.setDatabase();
 
-					Toast.makeText(MainActivity.this, getString(R.string.restore_completed),
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, getString(R.string.restore_completed), Toast.LENGTH_SHORT).show();
 
 				}
 
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 
 				Log.e(Constants.TAG, e.getMessage());
 
@@ -1692,6 +1673,5 @@ public class MainActivity extends Activity {
 
 		}
 	};
-
 
 }

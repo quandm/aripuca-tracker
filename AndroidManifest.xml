@@ -8,12 +8,12 @@
 
 		<uses-library android:name="com.google.android.maps" />
 
-		<activity android:name=".MainActivity" android:label="@string/main_app_title">
+		<activity android:name=".MainActivity" android:label="@string/main_app_title" android:launchMode="singleTask">
 			<!-- android:configChanges="orientation" -->
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
+				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 
 		</activity>
