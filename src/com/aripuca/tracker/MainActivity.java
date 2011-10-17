@@ -625,32 +625,36 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * 
+	 * Show ongoing notification
 	 */
-	private void startTracking() {
+	private void showOngoingNotification() {
 
-		// TODO: add notification icon in track recording mode
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		// --------------------------------------------------------------------------------
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-
-		int icon = R.drawable.arrow36;
+		int icon = R.drawable.aripuca;
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
+		
+		// show notification under ongoing title 
+		notification.flags = Notification.FLAG_ONGOING_EVENT;
 
-		CharSequence contentTitle = "Aripuca Tracker";
-		CharSequence contentText = "Recording track";
+		CharSequence contentTitle = getString(R.string.main_app_title);
+		CharSequence contentText = getString(R.string.recording_track);
 
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);
 
-		mNotificationManager.notify(Constants.NOTIFICATION_ID, notification);
+		mNotificationManager.notify(Constants.NOTIFICATION_RECORDING_TRACK, notification);
 
-		// --------------------------------------------------------------------------------
+	}
+
+	/**
+	 * 
+	 */
+	private void startTracking() {
 
 		// Change button label from Record to Stop
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
@@ -665,6 +669,9 @@ public class MainActivity extends Activity {
 
 		trackRecorder.start();
 
+		// add notification icon in track recording mode
+		this.showOngoingNotification();
+		
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
 	}
@@ -674,11 +681,6 @@ public class MainActivity extends Activity {
 	 */
 	private void stopTracking() {
 
-		// remove all notifications
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		mNotificationManager.cancelAll();
-		
 		// disabling pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
@@ -686,11 +688,16 @@ public class MainActivity extends Activity {
 		// Change button label from Stop to Record
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record));
 
-		TrackRecorder.getInstance(myApp).stop();
+		trackRecorder.stop();
 
 		// switching to initial layout
 		this.replaceDynamicView(R.layout.main_idle2);
 
+		// remove all notifications
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		//mNotificationManager.cancelAll();
+		mNotificationManager.cancel(Constants.NOTIFICATION_RECORDING_TRACK);
+		
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
 
 	}
@@ -744,7 +751,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -1385,7 +1392,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1472,7 +1481,9 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
+		if (myApp.getPreferences().contains("famous_waypoints")) {
+			return;
+		}
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();

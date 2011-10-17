@@ -19,7 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 
 public class CompassActivity extends Activity {
-	
+
 	/**
 	 * Compass updates broadcast receiver
 	 */
@@ -28,9 +28,10 @@ public class CompassActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			Bundle bundle = intent.getExtras();
 			updateCompass(bundle.getFloat("azimuth"));
+			//Log.d(Constants.TAG, "Compass update: " + bundle.getFloat("azimuth"));
 		}
 	};
-	
+
 	/**
 	 * Reference to Application object
 	 */
@@ -59,10 +60,10 @@ public class CompassActivity extends Activity {
 	public void onPause() {
 
 		unregisterReceiver(compassBroadcastReceiver);
-		
+
 		super.onPause();
 	}
-	
+
 	@Override
 	public void onResume() {
 
@@ -71,9 +72,9 @@ public class CompassActivity extends Activity {
 		registerReceiver(compassBroadcastReceiver, filter);
 
 		super.onResume();
-		
+
 	}
-	
+
 	/**
 	 * Update compass image and azimuth text
 	 */
@@ -130,7 +131,7 @@ public class CompassActivity extends Activity {
 		if (findViewById(R.id.compassImage2) != null) {
 
 			CompassImage compassImage2 = (CompassImage) findViewById(R.id.compassImage2);
-			
+
 			if (showMagnetic) {
 
 				if (compassImage2.getVisibility() != View.VISIBLE) {
@@ -140,7 +141,7 @@ public class CompassActivity extends Activity {
 				compassImage2.setAngle(360 - rotation + declination);
 				compassImage2.setAlpha(50);
 				compassImage2.invalidate();
-				
+
 			} else {
 				compassImage2.setVisibility(View.INVISIBLE);
 			}
