@@ -120,9 +120,7 @@ public class MyMapActivity extends MapActivity {
 		 */
 		private void drawSegments(Projection projection, Canvas canvas) {
 
-			if (points.size() <= 1) {
-				return;
-			}
+			if (points.size() <= 1) { return; }
 
 			Paint paint = new Paint();
 			paint.setStrokeWidth(3);
@@ -132,7 +130,7 @@ public class MyMapActivity extends MapActivity {
 			boolean pathStarted = false;
 			Point screenPts = new Point();
 
-			// 
+			//
 			int currentSegmentIndex = -1;
 
 			Path path = null;
@@ -166,21 +164,19 @@ public class MyMapActivity extends MapActivity {
 				// populating path object
 				if (!pathStarted) {
 
+					/*
+					 * if (i > 0) { // starting new segment at last segment's
+					 * end point projection.toPixels(points.get(i -
+					 * 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x,
+					 * screenPts.y);
+					 * projection.toPixels(points.get(i).getGeoPoint(),
+					 * screenPts); path.lineTo(screenPts.x, screenPts.y); } else
+					 * { // for the very first segment just move path pointer
+					 * path.moveTo(screenPts.x, screenPts.y); }
+					 */
+
 					// starting new segment
-					if (i > 0) {
-
-						// starting new segment at last segment's end point
-						projection.toPixels(points.get(i - 1).getGeoPoint(), screenPts);
-						path.moveTo(screenPts.x, screenPts.y);
-
-						projection.toPixels(points.get(i).getGeoPoint(), screenPts);
-						path.lineTo(screenPts.x, screenPts.y);
-
-					} else {
-						// for the very first segment just move path pointer
-						path.moveTo(screenPts.x, screenPts.y);
-					}
-
+					path.moveTo(screenPts.x, screenPts.y);
 					pathStarted = true;
 
 				} else {
@@ -229,13 +225,12 @@ public class MyMapActivity extends MapActivity {
 			projection.toPixels(point, screenPts);
 
 			// add the marker
-			Bitmap bmp = BitmapFactory.decodeResource(getResources(),
-								R.drawable.map_pin);
+			Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.map_pin);
 
 			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
 
 		}
-		
+
 	}
 
 	/**
@@ -271,7 +266,7 @@ public class MyMapActivity extends MapActivity {
 
 			mapView.getController().setZoom(17);
 			mapView.getController().animateTo(waypoint);
-			
+
 			((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.INVISIBLE);
 
 		}
@@ -280,17 +275,16 @@ public class MyMapActivity extends MapActivity {
 		if (this.mode == Constants.SHOW_TRACK) {
 
 			((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
-			
+
 			this.trackId = b.getLong("track_id");
 
 			this.createPath(this.trackId);
-			
-			// zoom to track points span 
+
+			// zoom to track points span
 			mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
 
 			// pan to the center of track occupied area
-			mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2,
-															(maxLng + minLng) / 2));
+			mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
 
 			// get track data
 			String sql = "SELECT tracks.*, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
@@ -303,8 +297,8 @@ public class MyMapActivity extends MapActivity {
 			float distance = cursor.getInt(cursor.getColumnIndex("distance"));
 
 			// track distance
-			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit) +
-						Utils.getLocalaziedDistanceUnit(this, distance, distanceUnit));
+			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit)
+					+ Utils.getLocalaziedDistanceUnit(this, distance, distanceUnit));
 
 			cursor.close();
 
@@ -312,7 +306,7 @@ public class MyMapActivity extends MapActivity {
 
 		// ---Add a location marker---
 		MapOverlay mapOverlay = new MapOverlay();
-		
+
 		List<Overlay> listOfOverlays = mapView.getOverlays();
 		listOfOverlays.clear();
 		listOfOverlays.add(mapOverlay);
@@ -445,12 +439,11 @@ public class MyMapActivity extends MapActivity {
 
 			case R.id.showTrack:
 
-				// zoom to track points span 
+				// zoom to track points span
 				mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
 
 				// pan to the center of track occupied area
-				mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2,
-																(maxLng + minLng) / 2));
+				mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
 
 				return true;
 

@@ -13,7 +13,6 @@ import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.SunriseSunset;
-import com.aripuca.tracker.util.TimeUtils;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
