@@ -6,6 +6,8 @@ public abstract class Constants {
 	
 	public static final String APP_NAME = "AripucaTracker";
 	
+	public static final int NOTIFICATION_ID = 1;
+	
 	/**
 	 * map modes
 	 */
