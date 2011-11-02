@@ -90,6 +90,10 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
+			if (value > 100000) {
+				return Utils.formatNumber(value / 1000, 1);
+			}
+			
 			// convert to km
 			if (value > 1000) {
 				return Utils.formatNumber(value / 1000, 2, 1);
@@ -102,6 +106,10 @@ public class Utils {
 
 		if (unit.equals("mi")) {
 
+			if (value > 100 * MI_TO_M) {
+				return Utils.formatNumber(value / 1000, 1);
+			}
+			
 			// convert to miles
 			if (value > MI_TO_M) {
 				return Utils.formatNumber(value / MI_TO_M, 2, 1);
@@ -118,6 +126,7 @@ public class Utils {
 	public static String getLocalaziedDistanceUnit(Context context, float value, String unit) {
 
 		if (unit.equals("km")) {
+			
 			if (value > 1000) {
 				return context.getString(R.string.km);
 			}

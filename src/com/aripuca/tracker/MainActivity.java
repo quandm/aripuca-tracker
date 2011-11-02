@@ -997,6 +997,10 @@ public class MainActivity extends Activity {
 			mi.setTitle(R.string.start_gps);
 		}
 
+		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
+		testLabMenuItem.setVisible(false);
+		
+		
 		return true;
 	}
 
@@ -1068,9 +1072,7 @@ public class MainActivity extends Activity {
 				return true;
 
 			case R.id.testLabMenuItem:
-
 				startActivity(new Intent(this, OverlaysMapActivity.class));
-
 				return true;
 
 			default:
