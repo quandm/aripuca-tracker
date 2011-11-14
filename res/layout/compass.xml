@@ -8,14 +8,14 @@
 
 	<LinearLayout style="@style/FillParent" android:paddingBottom="25dp"
 		android:orientation="vertical" android:gravity="center">
-		<ImageView android:src="@drawable/circle420" android:id="@+id/circleImage"
+		<ImageView android:src="@drawable/compass" android:id="@+id/compass"
 			android:layout_width="300dip" android:layout_height="300dip" />
 	</LinearLayout>
 
 	<LinearLayout style="@style/FillParent" android:paddingBottom="25dp"
 		android:orientation="vertical" android:gravity="center">
 		<com.aripuca.tracker.view.CompassImage
-			android:id="@+id/compassImage2" android:src="@drawable/windrose420"
+			android:id="@+id/compassImage2" android:src="@drawable/compass_arrow"
 			android:layout_width="300dip" android:layout_height="300dip"
 			android:visibility="invisible" />
 	</LinearLayout>
@@ -23,7 +23,7 @@
 	<LinearLayout style="@style/FillParent" android:paddingBottom="25dp"
 		android:orientation="vertical" android:gravity="center">
 		<com.aripuca.tracker.view.CompassImage
-			android:id="@+id/compassImage" android:src="@drawable/windrose420"
+			android:id="@+id/compassImage" android:src="@drawable/compass_arrow"
 			android:layout_width="300dip" android:layout_height="300dip" />
 	</LinearLayout>
 
