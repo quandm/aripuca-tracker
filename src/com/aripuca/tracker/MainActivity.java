@@ -997,9 +997,9 @@ public class MainActivity extends Activity {
 			mi.setTitle(R.string.start_gps);
 		}
 
+		//TODO: test lab
 		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
-		testLabMenuItem.setVisible(false);
-		
+		testLabMenuItem.setVisible(true);
 		
 		return true;
 	}
