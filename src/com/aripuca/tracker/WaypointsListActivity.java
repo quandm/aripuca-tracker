@@ -39,6 +39,8 @@ import com.aripuca.tracker.R.string;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.map.OverlaysMapActivity;
+import com.aripuca.tracker.map.WaypointsMapActivity;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.OrientationValues;
@@ -436,6 +438,12 @@ public class WaypointsListActivity extends ListActivity {
 
 				return true;
 
+			case R.id.showMapMenuItem:
+
+				startActivity(new Intent(this, WaypointsMapActivity.class));
+				
+				return true;
+				
 			default:
 
 				return super.onOptionsItemSelected(item);

@@ -18,5 +18,9 @@
 	<item android:id="@+id/deleteWaypointsMenuItem" 
 			android:title="@string/delete_waypoints"
 			android:icon="@android:drawable/ic_menu_delete" />
+	
+	<item android:id="@+id/showMapMenuItem" 
+			android:title="@string/show_on_map"
+			android:icon="@android:drawable/ic_menu_mapmode" />
 			
 </menu>

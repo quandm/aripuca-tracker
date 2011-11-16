@@ -854,7 +854,7 @@ public class MainActivity extends Activity {
 		wpTitle.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((new Date()).getTime()));
 
 		final EditText wpDescr = (EditText) layout.findViewById(R.id.waypointDescriptionInputText);
-		if (!address.equals(null)) {
+		if (address!=null) {
 			wpDescr.setText(address);
 		}
 
@@ -999,7 +999,7 @@ public class MainActivity extends Activity {
 
 		//TODO: test lab
 		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
-		testLabMenuItem.setVisible(true);
+		testLabMenuItem.setVisible(false);
 		
 		return true;
 	}

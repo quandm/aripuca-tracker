@@ -25,6 +25,7 @@ import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.map.MyMapActivity.MapOverlay;
+import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
@@ -37,7 +38,7 @@ import com.google.android.maps.Projection;
 /**
  * Map activity
  */
-public class OverlaysMapActivity extends MapActivity {
+public class WaypointsMapActivity extends MapActivity {
 
 	/**
 	 * 
@@ -49,6 +50,8 @@ public class OverlaysMapActivity extends MapActivity {
 	 */
 	private MapView mapView;
 
+	private int mapMode;
+	
 	/**
 	 * Track span values
 	 */
@@ -58,7 +61,7 @@ public class OverlaysMapActivity extends MapActivity {
 	private int maxLng = (int) (-180 * 1E6);
 
 	/**
-	 * ItemizedOverlay class
+	 * Map overlay class
 	 */
 	class MyItemizedOverlay extends com.google.android.maps.ItemizedOverlay<OverlayItem> {
 
@@ -69,6 +72,10 @@ public class OverlaysMapActivity extends MapActivity {
 		public MyItemizedOverlay(Drawable defaultMarker, Context context) {
 			super(boundCenterBottom(defaultMarker));
 			mContext = context;
+		}
+
+		public MyItemizedOverlay(Drawable defaultMarker) {
+			super(boundCenterBottom(defaultMarker));
 		}
 
 		public void addOverlay(OverlayItem overlay) {
@@ -122,23 +129,48 @@ public class OverlaysMapActivity extends MapActivity {
 		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
 		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 		
-		MyItemizedOverlay itemizedoverlay = new MyItemizedOverlay(drawable, this);
+		MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
 		
-		GeoPoint point = new GeoPoint(19240000,-99120000);
-		OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
+		loadWaypoints(itemizedOverlay);
 		
-		GeoPoint point2 = new GeoPoint(35410000, 139460000);
-		OverlayItem overlayitem2 = new OverlayItem(point2, "Sekai, konichiwa!", "I'm in Japan!");		
-		
-		itemizedoverlay.addOverlay(overlayitem);
-		itemizedoverlay.addOverlay(overlayitem2);
-		
-		mapOverlays.add(itemizedoverlay);	
+		mapOverlays.add(itemizedOverlay);	
 		
 		mapView.invalidate();
 		
 	}
 
+	protected void loadWaypoints(MyItemizedOverlay itemizedOverlay) {
+		
+		Cursor cursor = myApp.getDatabase().rawQuery("SELECT * FROM waypoints", null);
+		cursor.moveToFirst();
+
+		while (cursor.isAfterLast() == false) {
+
+			GeoPoint point = new GeoPoint(cursor.getInt(cursor.getColumnIndex("lat")), cursor.getInt(cursor.getColumnIndex("lng")));
+			
+			String snippet = Utils.formatLat(cursor.getDouble(cursor.getColumnIndex("lat"))/1E6,
+					Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
+					+ "\n"
+					+ Utils.formatLng(cursor.getDouble(cursor.getColumnIndex("lng"))/1E6,
+							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")));
+			
+			if (cursor.getString(cursor.getColumnIndex("descr"))!=null) {
+				
+				snippet=cursor.getString(cursor.getColumnIndex("descr"))+"\n"+snippet;
+				
+			}
+			
+			OverlayItem overlayitem = new OverlayItem(point, cursor.getString(cursor.getColumnIndex("title")), snippet);
+			
+			itemizedOverlay.addOverlay(overlayitem);
+			
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		
+	}
+	
 	/**
 	 * 
 	 */
@@ -146,5 +178,66 @@ public class OverlaysMapActivity extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
+	
+	/**
+	 * onCreateOptionsMenu handler
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
+		// options menu only in track mode
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.waypoints_map_menu, menu);
+
+		return true;
+
+	}
+
+	/**
+	 * Changes activity menu on the fly
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+
+		MenuItem mapMenuItem = menu.findItem(R.id.mapMode);
+		if (mapMode == Constants.MAP_STREET) {
+			mapMenuItem.setTitle(R.string.satellite);
+		} else {
+			mapMenuItem.setTitle(R.string.street);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Process main activity menu
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		// Handle item selection
+		switch (item.getItemId()) {
+
+			case R.id.mapMode:
+
+				if (mapMode == Constants.MAP_STREET) {
+					mapView.setStreetView(false);
+					mapView.setSatellite(true);
+					mapMode = Constants.MAP_SATELLITE;
+				} else {
+					mapView.setSatellite(false);
+					mapView.setStreetView(true);
+					mapMode = Constants.MAP_STREET;
+				}
+
+				return true;
+
+			default:
+
+				return super.onOptionsItemSelected(item);
+
+		}
+	}	
+	
 }

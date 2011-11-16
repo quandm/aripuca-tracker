@@ -40,6 +40,10 @@
 			android:label="@string/main_app_title">
 		</activity>
 
+		<activity android:name=".map.WaypointsMapActivity"
+			android:label="@string/main_app_title">
+		</activity>
+		    		    
 		<activity android:label="@string/main_app_title"
 			android:name=".SettingsActivity" />
 
