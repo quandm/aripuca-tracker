@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.aripuca.tracker" android:versionCode="2"
-	android:versionName="1.0.2" android:installLocation="preferExternal">
+	package="com.aripuca.tracker" android:versionCode="3"
+	android:versionName="1.0.3" android:installLocation="preferExternal">
 
 	<application android:icon="@drawable/icon" android:label="@string/main_app_title"
 		android:debuggable="true" android:name=".MyApp">
@@ -58,6 +58,7 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
 	<uses-feature android:name="android.hardware.location.gps"
