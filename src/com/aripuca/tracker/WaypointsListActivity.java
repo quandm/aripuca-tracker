@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Locale;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,18 +30,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.R.id;
-import com.aripuca.tracker.R.layout;
-import com.aripuca.tracker.R.menu;
-import com.aripuca.tracker.R.string;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.map.OverlaysMapActivity;
 import com.aripuca.tracker.map.WaypointsMapActivity;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.OrientationHelper;
-import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
@@ -55,7 +47,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
@@ -65,7 +56,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,7 +63,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import android.widget.EditText;
@@ -283,8 +272,6 @@ public class WaypointsListActivity extends ListActivity {
 
 	private WaypointGpxExportTask waypointToGpx;
 
-	private Utils utils;
-
 	/**
 	 * Called when the activity is first created
 	 */
@@ -460,9 +447,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-
-		final long waypointId = waypointsArrayAdapter.getItem((int) info.id).getId();
+		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.waypoint));
 		menu.add(Menu.NONE, 0, 0, R.string.edit);
@@ -538,24 +523,23 @@ public class WaypointsListActivity extends ListActivity {
 				double lat1 = tmpCursor.getDouble(tmpCursor.getColumnIndex("lat"))/1E6;
 				double lng1 = tmpCursor.getDouble(tmpCursor.getColumnIndex("lng"))/1E6;
 
-				String messageBody = "Title: " + tmpCursor.getString(tmpCursor.getColumnIndex("title")) + 
+				String messageBody = getString(R.string.title)+": " + tmpCursor.getString(tmpCursor.getColumnIndex("title")) + 
 					"\n\n" +
-					"Latitude: "+ Utils.formatLat(lat1, 0) + "\n"+
-					"Longitude: "+ Utils.formatLng(lng1, 0) + "\n"+
-					"Altitude: "+ Utils.formatElevation(tmpCursor.getFloat(tmpCursor.getColumnIndex("elevation")), elevationUnit)
+					getString(R.string.lat)+": "+ Utils.formatLat(lat1, 0) + "\n"+
+					getString(R.string.lng)+": "+ Utils.formatLng(lng1, 0) + "\n"+
+					getString(R.string.elevation)+": "+ Utils.formatElevation(tmpCursor.getFloat(tmpCursor.getColumnIndex("elevation")), elevationUnit)
 							+ elevationUnitLocalized + "\n\n" + 
-					"Go to: http://maps.google.com/?ll="+lat1+","+lng1+"&z=10";
+					"http://maps.google.com/?ll="+lat1+","+lng1+"&z=10";
 
 				tmpCursor.close();
 				
 				final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 				 
 				emailIntent.setType("plain/text");
-//				emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"aripucatracker@gmail.com"});
-				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Waypoint from Aripuca Tracker");
+				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject_waypoint));
 				emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, messageBody);
 				
-				this.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+				this.startActivity(Intent.createChooser(emailIntent, getString(R.string.sending_email)));
 
 				return true;
 

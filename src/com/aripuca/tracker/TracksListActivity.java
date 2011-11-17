@@ -1,10 +1,6 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.R.id;
-import com.aripuca.tracker.R.layout;
-import com.aripuca.tracker.R.menu;
-import com.aripuca.tracker.R.string;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
@@ -33,7 +29,6 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -293,10 +288,10 @@ public class TracksListActivity extends ListActivity {
 		// MenuInflater inflater = getMenuInflater();
 		// inflater.inflate(R.menu.context_menu, menu);
 
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.track));
-		menu.add(Menu.NONE, 1, 1, R.string.view);
+//		menu.add(Menu.NONE, 1, 1, R.string.view);
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
@@ -304,6 +299,10 @@ public class TracksListActivity extends ListActivity {
 		exportSubMenu.add(Menu.NONE, 41, 1, R.string.export_to_gpx);
 		exportSubMenu.add(Menu.NONE, 42, 2, R.string.export_to_kml);
 
+		SubMenu exportSubMenu2 = menu.addSubMenu(Menu.NONE, 5, 5, R.string.send_as_attachment);
+		exportSubMenu2.add(Menu.NONE, 51, 1, R.string.send_as_gpx);
+		exportSubMenu2.add(Menu.NONE, 52, 2, R.string.send_as_kml);
+		
 		// menu.add(Menu.NONE, 5, 5, R.string.online_sync);
 
 		menu.add(Menu.NONE, 6, 6, R.string.show_on_map);
@@ -345,14 +344,24 @@ public class TracksListActivity extends ListActivity {
 
 			// export to GPX
 			case 41:
-				this.exportTrackToGpx(info.id);
+				this.exportTrackToGpx(info.id, false);
 			break;
 
 			// export to KML
 			case 42:
-				this.exportTrackToKml(info.id);
+				this.exportTrackToKml(info.id, false);
 			break;
 
+			// export to GPX and send as attachment
+			case 51:
+				this.exportTrackToGpx(info.id, true);
+			break;
+
+			// export to KML and send as attachment
+			case 52:
+				this.exportTrackToKml(info.id, true);
+			break;
+			
 			// sync track online
 			case 5:
 
@@ -546,7 +555,7 @@ public class TracksListActivity extends ListActivity {
 	/**
 	 * 
 	 */
-	private void exportTrackToGpx(long trackId) {
+	private void exportTrackToGpx(long trackId, boolean sendAttachment) {
 
 		// lock orientation of the screen during progress
 		this.lockOrientationChange();
@@ -558,6 +567,7 @@ public class TracksListActivity extends ListActivity {
 
 		// starting track exporting in separate thread
 		trackExportTask = new TrackGpxExportTask(this);
+		trackExportTask.setSendAttachment(sendAttachment);
 		trackExportTask.setApp(myApp);
 		trackExportTask.setProgressDialog(progressDialog);
 
@@ -568,7 +578,7 @@ public class TracksListActivity extends ListActivity {
 	/**
 	 * 
 	 */
-	private void exportTrackToKml(long trackId) {
+	private void exportTrackToKml(long trackId, boolean sendAttachment) {
 
 		// lock orientation of the screen during progress
 		this.lockOrientationChange();
@@ -581,6 +591,7 @@ public class TracksListActivity extends ListActivity {
 		// starting track exporting in separate thread
 		trackExportTask = new TrackKmlExportTask(this);
 		trackExportTask.setApp(myApp);
+		trackExportTask.setSendAttachment(sendAttachment);
 		trackExportTask.setProgressDialog(progressDialog);
 
 		trackExportTask.execute(trackId);

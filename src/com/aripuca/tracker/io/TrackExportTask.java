@@ -9,29 +9,45 @@ import java.text.SimpleDateFormat;
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.TracksListActivity;
+import com.aripuca.tracker.app.Constants;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
-	
+
 	protected MyApp myApp;
-	
+
 	protected Context context;
-	
+
 	protected ProgressDialog progressDialog;
-	
+
 	protected long trackId;
 
+	/**
+	 * tracks table cursor
+	 */
 	protected Cursor tCursor = null;
 
+	/**
+	 * track points or waypoints table cursor
+	 */
 	protected Cursor tpCursor = null;
 
+	/**
+	 * destination file
+	 */
 	protected File file;
 
+	/**
+	 * print writer
+	 */
 	protected PrintWriter pw;
 
 	abstract protected void writeHeader();
@@ -39,42 +55,53 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	abstract protected void writeTrackPoint();
 
 	abstract protected void writeFooter();
-	
+
 	protected String extension;
-	
+
 	protected boolean segmentOpen = false;
 	protected int prevSegmentIndex = 0;
 	protected int curSegmentIndex = 0;
-	
+
+	/**
+	 * has email to be sent with file attached
+	 */
+	protected boolean sendAttachment = false;
+
 	public TrackExportTask(Context c) {
-		
+
 		super();
-		
+
 		context = c;
-		
+
 	}
-	
+
 	public void setApp(MyApp m) {
-		
+
 		myApp = m;
-		
+
 	}
-	
+
 	public void setProgressDialog(ProgressDialog pd) {
-		
+
 		progressDialog = pd;
-				
+
 	}
-	
+
+	public void setSendAttachment(boolean sa) {
+
+		this.sendAttachment = sa;
+
+	}
+
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
 		File outputFolder = new File(myApp.getAppDir() + "/tracks");
 
 		String fileName = (new SimpleDateFormat("yyyy-MM-dd_HH-mm")).format(tCursor.getLong(tCursor
-					.getColumnIndex("start_time")));
+				.getColumnIndex("start_time")));
 
-		file = new File(outputFolder, "tr_" + fileName + "."+extension);
+		file = new File(outputFolder, "tr_" + fileName + "." + extension);
 
 		if (!file.exists()) {
 			file.createNewFile();
@@ -84,7 +111,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		pw = new PrintWriter(new FileWriter(file, false));
 
 	}
-	
+
 	/**
 	 * Creates database cursors
 	 */
@@ -111,16 +138,15 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		pw.close();
 		pw = null;
 
-		if (tCursor!=null) {
+		if (tCursor != null) {
 			tCursor.close();
 		}
-		
-		if (tpCursor!=null) {
+
+		if (tpCursor != null) {
 			tpCursor.close();
 		}
 
 	}
-	
 
 	@Override
 	protected String doInBackground(Long... params) {
@@ -180,21 +206,23 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		super.onPreExecute();
 
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	protected void onCancelled() {
 		super.onCancelled();
-		
+
 		Toast.makeText(context, R.string.cancelled, Toast.LENGTH_SHORT).show();
-		
+
+		Log.d(Constants.TAG, "onCancelled");
+
 		myApp = null;
 		progressDialog = null;
 
 	}
-	
+
 	/**
 	 * Update UI thread safely
 	 * 
@@ -207,9 +235,9 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		if (progressDialog != null) {
 			progressDialog.incrementProgressBy(5);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Update UI thread from here
 	 */
@@ -226,10 +254,25 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		if (context instanceof TracksListActivity) {
 			((TracksListActivity) context).unlockOrientationChange();
 		}
-		
+
+		// send email with file attached
+		if (this.sendAttachment) {
+
+			String messageBody = context.getString(R.string.email_body_track) + "\n\n"
+					+ context.getString(R.string.market_url);
+
+			final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+			emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			emailIntent.setType("plain/text");
+			emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject_track));
+			emailIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
+			emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file.getAbsolutePath()));
+			context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.sending_email)));
+		}
+
 		myApp = null;
 		progressDialog = null;
 
 	}
-	
+
 }

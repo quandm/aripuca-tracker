@@ -1,9 +1,5 @@
 package com.aripuca.tracker.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -13,7 +9,6 @@ import java.util.Locale;
 
 import com.aripuca.tracker.R;
 
-import android.app.Application;
 import android.content.Context;
 import android.hardware.GeomagneticField;
 import android.location.Location;

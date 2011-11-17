@@ -1,17 +1,11 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.R.id;
-import com.aripuca.tracker.R.layout;
-import com.aripuca.tracker.R.menu;
-import com.aripuca.tracker.R.string;
 import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.map.OverlaysMapActivity;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.OrientationHelper;
-import com.aripuca.tracker.util.OrientationValues;
 import com.aripuca.tracker.util.SunriseSunset;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -40,7 +34,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,7 +41,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.*;
@@ -91,6 +83,8 @@ public class MainActivity extends Activity {
 
 	private OrientationHelper orientationHelper;
 
+	private long declinationLastUpdate = 0;
+	
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -1082,7 +1076,6 @@ public class MainActivity extends Activity {
 				return true;
 
 			case R.id.testLabMenuItem:
-				startActivity(new Intent(this, OverlaysMapActivity.class));
 				return true;
 
 			default:
@@ -1101,6 +1094,9 @@ public class MainActivity extends Activity {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.about_dialog, null);
 
+		TextView buildDate = (TextView) layout.findViewById(R.id.build_date);
+		buildDate.setText(getString(R.string.build_date) + " " + getString(R.string.app_build_date));
+		
 		TextView versionView = (TextView) layout.findViewById(R.id.version);
 		versionView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
 				+ MyApp.getVersionName(this));
@@ -1373,11 +1369,15 @@ public class MainActivity extends Activity {
 
 		float rotation = 0;
 
-		// TODO: let's not request declination on every compass update
+		// let's not request declination on every compass update
 		float declination = 0;
 		if (trueNorth && myApp.getCurrentLocation() != null) {
 			long now = System.currentTimeMillis();
-			declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
+			// let's request declination every 15 minutes, not every compass update
+			if (now - declinationLastUpdate > 15 * 60 * 1000) {
+				declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
+				declinationLastUpdate = now;
+			}
 		}
 
 		// magnetic north to true north

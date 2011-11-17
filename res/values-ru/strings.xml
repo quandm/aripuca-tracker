@@ -1,267 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="main_app_title">Aripuca Tracker</string>
-	<string name="author_name">VitalNik</string>
-	<string name="company">Aripuca Apps</string>
-	<string name="app_url">http://tracker.aripuca.com</string>
-	<string name="blog_url">tracker.aripuca.com/blog</string>
-	<string name="source_url">http://code.google.com/p/aripuca-tracker</string>
-
-	<string name="about_dialog_message">GPS трекер с открытым исходным кодом для платформы
+    <string name="build_date">Дата сборки:</string>
+    <string name="about_dialog_message">GPS трекер с открытым исходным кодом для платформы
 		Андроид.\n\nОфициальный
 		блог:\nhttp://tracker.aripuca.com/blog\n\nИсходный
 		код:\nhttp://code.google.com/p/aripuca-tracker</string>
+    <string name="compass_activity_title">Компас</string>
+    <string name="waypoints_activity_title">Путевые точки</string>
+    <string name="tracks_activity_title">Треки</string>
+    <string name="track_details_activity_title">Трек</string>
+    <string name="start_gps">Запустить GPS</string>
+    <string name="stop_gps">Остановить GPS</string>
+    <string name="waypoint">Путевая точка</string>
+    <string name="add_waypoint">Добавить путевую точку</string>
+    <string name="waypoints">Путевые точки</string>
+    <string name="show_waypoint">Показать путевую точку</string>
+    <string name="track">Трек</string>
+    <string name="tracks">Треки</string>
+    <string name="record_track">Записать трек</string>
+    <string name="recording_track">Идет запись трека</string>
+    <string name="show_track">Показать трек</string>
+    <string name="segments">Сегменты</string>
+    <string name="prev_segment">Предыдущий сегмент</string>
+    <string name="next_segment">Следующий сегмент</string>
 
-	<string name="compass_activity_title">Компас</string>
-	<string name="waypoints_activity_title">Путевые точки</string>
-	<string name="tracks_activity_title">Треки</string>
-	<string name="track_details_activity_title">Трек</string>
+    <!-- SEPARATE WORDS -->
+    <string name="m">м</string>
+    <string name="ft">фт</string>
+    <string name="km">км</string>
+    <string name="mi">ми</string>
+    <string name="kn">уз</string>
+    <string name="kph">км/ч</string>
+    <string name="mph">ми/ч</string>
+    <string name="days">дн.</string>
+    <string name="hours">час.</string>
+    <string name="minutes">мин.</string>
+    <string name="seconds">сек.</string>
+    <string name="ver">v.</string>
+    <string name="ok">Ok</string>
+    <string name="and">и</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="cancel">Отмена</string>
+    <string name="cancelled">Отменено</string>
+    <string name="view">Просмотр</string>
+    <string name="edit">Изменить</string>
+    <string name="delete">Удалить</string>
+    <string name="import1">Импорт</string>
+    <string name="export">Экспорт</string>
+    <string name="export_to_gpx">Экспорт в GPX</string>
+    <string name="export_to_kml">Экспорт в KML</string>
+    <string name="send_as_gpx">GPX файл</string>
+    <string name="send_as_kml">KML файл</string>
+    <string name="send_as_attachment">Послать как вложение</string>
+    <string name="sending_email">Отправка Email</string>
+    <string name="email_to">Отправить по Email</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Продолжить</string>
+    <string name="record">Записать трек</string>
+    <string name="stop">Стоп</string>
+    <string name="description">Описание</string>
+    <string name="time">Время</string>
+    <string name="max">Макс</string>
+    <string name="min">Мин</string>
+    <string name="average">Среднее</string>
+    <string name="moving">В движении</string>
+    <string name="total">Всего</string>
+    <string name="idle">Простой</string>
+    <string name="current">Текущий</string>
+    <string name="azimuth">Азимут</string>
+    <string name="distance">Расстояние</string>
+    <string name="coordinates">Координаты</string>
+    <string name="lat">Широта</string>
+    <string name="lng">Долгота</string>
+    <string name="accuracy">Точность</string>
+    <string name="last_fix">Посл. фикс</string>
+    <string name="about">О программе</string>
+    <string name="settings">Настройки</string>
+    <string name="title">Название</string>
+    <string name="points">Точки</string>
+    <string name="sunrise">Рассвет</string>
+    <string name="sunset">Закат</string>
+    <string name="backup">Backup</string>
+    <string name="backup_db">Сохранить БД</string>
+    <string name="restore_db">Восстановить БД</string>
+    <string name="file">Файл</string>
+    <string name="filename">Имя файла</string>
+    <string name="show_on_map">Показать на карте</string>
+    <string name="online_sync">Online sync</string>
+    <string name="elevation">Высота</string>
+    <string name="gain">Набор</string>
+    <string name="loss">Потеря</string>
+    <string name="elevation_gain_loss">Набор/Потеря</string>
+    <string name="elevation_gain">Набор высоты</string>
+    <string name="elevation_loss">Потеря высоты</string>
+    <string name="speed">Скорость</string>
+    <string name="average_speed">Средняя скорость</string>
+    <string name="average_moving_speed">Скорость в движении</string>
+    <string name="max_speed">Макс. скорость</string>
+    <string name="acceleration">Ускорение</string>
+    <string name="pace">Темп</string>
+    <string name="average_pace">Средний темп</string>
+    <string name="max_pace">Макс. темп</string>
+    <string name="speed_and_pace">Скорость и темп</string>
+    <string name="total_time">Общее время</string>
+    <string name="moving_time">Время в движении</string>
+    <string name="idle_time">Время простоя</string>
+    <string name="start_time">Начало</string>
+    <string name="finish_time">Конец</string>
+    <string name="delete_waypoints">Очистить</string>
+    <string name="delete_tracks">Очистить</string>
+    <string name="sync_all">Синхронизация</string>
+    <string name="export_all">Экспорт</string>
+    <string name="import_all">Импорт</string>
+    <string name="export_waypoints">Экспорт путевых точек</string>
+    <string name="street">Улица</string>
+    <string name="satellite">Спутник</string>
 
-	<string name="start_gps">Запустить GPS</string>
-	<string name="stop_gps">Остановить GPS</string>
-
-	<string name="waypoint">Путевая точка</string>
-	<string name="add_waypoint">Добавить путевую точку</string>
-	<string name="waypoints">Путевые точки</string>
-	<string name="show_waypoint">Показать путевую точку</string>
-
-	<string name="track">Трек</string>
-	<string name="tracks">Треки</string>
-	<string name="record_track">Записать трек</string>
-	<string name="recording_track">Идет запись трека</string>
-	<string name="show_track">Показать трек</string>
-
-	<string name="segments">Сегменты</string>
-	<string name="prev_segment">Предыдущий сегмент</string>
-	<string name="next_segment">Следующий сегмент</string>
-
-	<!-- SEPARATE WORDS -->
-	<string name="m">м</string>
-	<string name="ft">фт</string>
-	<string name="km">км</string>
-	<string name="mi">ми</string>
-	<string name="kn">уз</string>
-	<string name="kph">км/ч</string>
-	<string name="mph">ми/ч</string>
-
-	<string name="days">дн.</string>
-	<string name="hours">час.</string>
-	<string name="minutes">мин.</string>
-	<string name="seconds">сек.</string>
-
-	<string name="ver">v.</string>
-	<string name="ok">Ok</string>
-	<string name="and">и</string>
-	<string name="yes">Да</string>
-	<string name="no">Нет</string>
-	<string name="cancel">Отмена</string>
-	<string name="cancelled">Отменено</string>
-	<string name="view">Просмотр</string>
-	<string name="edit">Изменить</string>
-	<string name="delete">Удалить</string>
-	<string name="import1">Импорт</string>
-	<string name="export">Экспорт</string>
-	<string name="export_to_gpx">Экспорт в GPX</string>
-	<string name="export_to_kml">Экспорт в KML</string>
-	<string name="email_to">Отправить по Email</string>
-	<string name="pause">Пауза</string>
-	<string name="resume">Продолжить</string>
-	<string name="record">Записать трек</string>
-	<string name="stop">Стоп</string>
-	<string name="description">Описание</string>
-	<string name="time">Время</string>
-	<string name="max">Макс</string>
-	<string name="min">Мин</string>
-	<string name="average">Среднее</string>
-	<string name="moving">В движении</string>
-	<string name="total">Всего</string>
-	<string name="idle">Простой</string>
-	<string name="current">Текущий</string>
-	<string name="azimuth">Азимут</string>
-	<string name="distance">Расстояние</string>
-	<string name="coordinates">Координаты</string>
-	<string name="lat">Широта</string>
-	<string name="lng">Долгота</string>
-	<string name="accuracy">Точность</string>
-	<string name="last_fix">Посл. фикс</string>
-	<string name="about">О программе</string>
-	<string name="settings">Настройки</string>
-	<string name="title">Название</string>
-	<string name="points">Точки</string>
-
-	<string name="sunrise">Рассвет</string>
-	<string name="sunset">Закат</string>
-
-	<string name="backup">Backup</string>
-	<string name="backup_db">Сохранить БД</string>
-	<string name="restore_db">Восстановить БД</string>
-
-	<string name="file">Файл</string>
-	<string name="filename">Имя файла</string>
-
-	<string name="show_on_map">Показать на карте</string>
-	<string name="online_sync">Online sync</string>
-
-	<string name="elevation">Высота</string>
-	<string name="gain">Набор</string>
-	<string name="loss">Потеря</string>
-	<string name="elevation_gain_loss">Набор/Потеря</string>
-	<string name="elevation_gain">Набор высоты</string>
-	<string name="elevation_loss">Потеря высоты</string>
-
-	<string name="speed">Скорость</string>
-	<string name="average_speed">Средняя скорость</string>
-	<string name="average_moving_speed">Скорость в движении</string>
-	<string name="max_speed">Макс. скорость</string>
-	<string name="acceleration">Ускорение</string>
-
-	<string name="pace">Темп</string>
-	<string name="average_pace">Средний темп</string>
-	<string name="max_pace">Макс. темп</string>
-
-	<string name="speed_and_pace">Скорость и темп</string>
-
-	<string name="total_time">Общее время</string>
-	<string name="moving_time">Время в движении</string>
-	<string name="idle_time">Время простоя</string>
-	<string name="start_time">Начало</string>
-	<string name="finish_time">Конец</string>
-
-	<string name="delete_waypoints">Очистить</string>
-	<string name="delete_tracks">Очистить</string>
-
-	<string name="sync_all">Синхронизация</string>
-	<string name="export_all">Экспорт</string>
-	<string name="import_all">Импорт</string>
-	<string name="export_waypoints">Экспорт путевых точек</string>
-
-	<string name="street">Улица</string>
-	<string name="satellite">Спутник</string>
-
-	<!-- SETTINGS -->
-	<string name="min_distance_title">Минимальная дистанция</string>
-	<string name="min_distance_summary">Минимальное расстояние между двумя записываемыми
+    <!-- SETTINGS -->
+    <string name="min_distance_title">Минимальная дистанция</string>
+    <string name="min_distance_summary">Минимальное расстояние между двумя записываемыми
 		точками</string>
-
-	<string name="min_accuracy_title">Минимальная точность</string>
-	<string name="min_accuracy_summary">Минимальная точность необходимая для записи точки
+    <string name="min_accuracy_title">Минимальная точность</string>
+    <string name="min_accuracy_summary">Минимальная точность необходимая для записи точки
 	</string>
-
-	<string name="app_settings_title">Настройки приложения</string>
-	<string name="user_interface_title">Интерфейс пользователя</string>
-
-	<string name="wake_lock_title">Не гасить экран</string>
-	<string name="wake_lock_summary">Предотвратить засыпание устройства</string>
-
-	<string name="units">Единицы измерения</string>
-	<string name="units_summary">Выбор единиц измерения (координаты, расстояние,
+    <string name="app_settings_title">Настройки приложения</string>
+    <string name="user_interface_title">Интерфейс пользователя</string>
+    <string name="wake_lock_title">Не гасить экран</string>
+    <string name="wake_lock_summary">Предотвратить засыпание устройства</string>
+    <string name="units">Единицы измерения</string>
+    <string name="units_summary">Выбор единиц измерения (координаты, расстояние,
 		скорость и т.д.)</string>
-
-	<string name="tracking_title">Запись треков</string>
-
-	<string name="online_sync_title">Online sync</string>
-	<string name="online_sync_summary">Synchronize your data with online resource</string>
-
-	<string name="online_sync_url">Sync URL</string>
-	<string name="user_name">Login name</string>
-	<string name="user_password">Password</string>
-
-	<string name="track_recording">Запись трека</string>
-
-	<string name="segmenting">Сегментирование</string>
-	<string name="segmenting_mode">Режим сегментирования</string>
-
-	<string name="segment_distance">По расстоянию</string>
-	<string name="segment_distance_summary">Сегментировать трек равными дистанциями</string>
-
-	<string name="segment_time">По времени</string>
-	<string name="segment_time_summary">Сегментировать трек каждые N минут</string>
-
-	<string name="segment_custom_1">Интервалы пользователя 1</string>
-	<string name="segment_custom_2">Интервалы пользователя 2</string>
-	<string name="segment_custom_summary">Сегментировать по заданным интервалам</string>
-
-	<string name="waypoint_default_description">Описание по умолчанию</string>
-	<string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание
+    <string name="tracking_title">Запись треков</string>
+    <string name="online_sync_title">Online sync</string>
+    <string name="online_sync_summary">Synchronize your data with online resource</string>
+    <string name="online_sync_url">Sync URL</string>
+    <string name="user_name">Login name</string>
+    <string name="user_password">Password</string>
+    <string name="track_recording">Запись трека</string>
+    <string name="segmenting">Сегментирование</string>
+    <string name="segmenting_mode">Режим сегментирования</string>
+    <string name="segment_distance">По расстоянию</string>
+    <string name="segment_distance_summary">Сегментировать трек равными дистанциями</string>
+    <string name="segment_time">По времени</string>
+    <string name="segment_time_summary">Сегментировать трек каждые N минут</string>
+    <string name="segment_custom_1">Интервалы пользователя 1</string>
+    <string name="segment_custom_2">Интервалы пользователя 2</string>
+    <string name="segment_custom_summary">Сегментировать по заданным интервалам</string>
+    <string name="waypoint_default_description">Описание по умолчанию</string>
+    <string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание
 		точки
 		waypoint description</string>
+    <string name="app_language">Язык приложения</string>
 
-	<string name="app_language">Язык приложения</string>
-
-	<!-- COMPASS -->
-	<string name="compass">Компас</string>
-	<string name="true_north">Указывать на истинный север</string>
-	<string name="true_north_summary">Компас указывает на истинный север, а не на
+    <!-- COMPASS -->
+    <string name="compass">Компас</string>
+    <string name="true_north">Указывать на истинный север</string>
+    <string name="true_north_summary">Компас указывает на истинный север, а не на
 		магнитный
 	</string>
-	<string name="show_magnetic">Показать магнитный север</string>
-	<string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное
+    <string name="show_magnetic">Показать магнитный север</string>
+    <string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное
 		изображение</string>
 
-	<!-- MESSAGES -->
+    <!-- MESSAGES -->
 
-	<string name="recording_started">Начата запись трека</string>
-	<string name="recording_paused">Запись трека приостановлена</string>
-	<string name="recording_resumed">Запись трека возобновлена</string>
-	<string name="recording_finished">Трек сохранен</string>
-
-	<string name="waypoint_title_required">Имя путевой точки обязательно</string>
-	<string name="waypoint_saved">Путевая точка добавлена</string>
-	<string name="waypoint_updated">Путевая точка сохранена</string>
-	<string name="waypoint_deleted">Путевая точка удалена</string>
-	<string name="all_waypoints_deleted">Все путевые точки удалены</string>
-
-	<string name="track_title_required">Track title required</string>
-	<string name="edit_track">Изменить трек</string>
-	<string name="track_updated">Трек обновлен</string>
-	<string name="track_deleted">Трек удален</string>
-	<string name="all_tracks_deleted">Все треки удалены</string>
-
-	<string name="select_file">Выберите файл</string>
-
-	<string name="memory_card_not_available">Карта памяти не доступна</string>
-	<string name="memory_card_not_writable">No write access to memory card</string>
-
-	<string name="select_tracking_mode">Выберите режим записи трека</string>
-
-	<string name="are_you_sure">Вы уверены?</string>
-
-	<string name="username_or_password_required">Требуются имя пользователя и пароль</string>
-	<string name="stop_track_recording">Остановите запись трека</string>
-	<string name="click_again_to_exit">Нажмите еще раз чтобы выйти из приложения</string>
-
-	<string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека
+    <string name="recording_started">Начата запись трека</string>
+    <string name="recording_paused">Запись трека приостановлена</string>
+    <string name="recording_resumed">Запись трека возобновлена</string>
+    <string name="recording_finished">Трек сохранен</string>
+    <string name="waypoint_title_required">Имя путевой точки обязательно</string>
+    <string name="waypoint_saved">Путевая точка добавлена</string>
+    <string name="waypoint_updated">Путевая точка сохранена</string>
+    <string name="waypoint_deleted">Путевая точка удалена</string>
+    <string name="all_waypoints_deleted">Все путевые точки удалены</string>
+    <string name="track_title_required">Track title required</string>
+    <string name="edit_track">Изменить трек</string>
+    <string name="track_updated">Трек обновлен</string>
+    <string name="track_deleted">Трек удален</string>
+    <string name="all_tracks_deleted">Все треки удалены</string>
+    <string name="select_file">Выберите файл</string>
+    <string name="memory_card_not_available">Карта памяти не доступна</string>
+    <string name="memory_card_not_writable">No write access to memory card</string>
+    <string name="select_tracking_mode">Выберите режим записи трека</string>
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="username_or_password_required">Требуются имя пользователя и пароль</string>
+    <string name="stop_track_recording">Остановите запись трека</string>
+    <string name="click_again_to_exit">Нажмите еще раз чтобы выйти из приложения</string>
+    <string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека
 	</string>
-	<string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека
+    <string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека
 	</string>
-
-	<string name="no_segments">Для этого трека не было создано ни одного сегмента</string>
-
-	<string name="backup_completed">База данных приложения скопирована в:</string>
-	<string name="backup_error">Ошибка копирования базы данных</string>
-	<string name="restore_error">Ошибка восстановления базы данных</string>
-	<string name="restore_file_error">Открываемый файл не является базой данных SQLite</string>
-	<string name="restore_db_version_conflict">Восстанавливаемая база данных не совместима с текущей версией</string>
-	<string name="restore_completed">База данных восстановлена</string>
-
-	<string name="source_folder_empty">Нет файлов для импорта</string>
-
-	<string name="coming_soon">Скоро будет...</string>
-
-	<string name="import_completed">Импорт завершен</string>
-	<string name="export_completed">Экспорт завершен</string>
-
-	<string name="restart_required">Чтобы изменения вступили в силу необходим
+    <string name="no_segments">Для этого трека не было создано ни одного сегмента</string>
+    <string name="backup_completed">База данных приложения скопирована в:</string>
+    <string name="backup_error">Ошибка копирования базы данных</string>
+    <string name="restore_error">Ошибка восстановления базы данных</string>
+    <string name="restore_file_error">Открываемый файл не является базой данных SQLite</string>
+    <string name="restore_db_version_conflict">Восстанавливаемая база данных не совместима с текущей версией</string>
+    <string name="restore_completed">База данных восстановлена</string>
+    <string name="source_folder_empty">Нет файлов для импорта</string>
+    <string name="coming_soon">Скоро будет...</string>
+    <string name="import_completed">Импорт завершен</string>
+    <string name="export_completed">Экспорт завершен</string>
+    <string name="restart_required">Чтобы изменения вступили в силу необходим
 		перезапуск приложения</string>
+    <string name="waiting_for_fix">Ожидание более точного сигнала</string>
+    <string name="waiting_new_fix">Ожидание нового фикса. Обеспечьте видимость неба.</string>
+    <string name="last_known_location_received">Последний известный сигнал GPS получен</string>
+    <string name="fix_age">Последний фикс был получен %s назад</string>
 
-	<string name="waiting_for_fix">Ожидание более точного сигнала</string>
-	<string name="waiting_new_fix">Ожидание нового фикса. Обеспечьте видимость неба.</string>
-	<string name="last_known_location_received">Последний известный сигнал GPS получен</string>
-	<string name="fix_age">Последний фикс был получен %s назад</string>
+    <!-- HINTS -->
+    <string name="waypoint_description">Описание путевой точки</string>
+    <string name="track_description">Описание трека</string>
 
-	<!-- HINTS -->
-	<string name="waypoint_description">Описание путевой точки</string>
-	<string name="track_description">Описание трека</string>
+    <!-- EMAILS -->
+    <string name="email_subject_waypoint">Путевая точка от Aripuca Tracker</string>
+    <string name="email_subject_track">Трек от Aripuca Tracker</string>
+    <string name="email_body_track">Трек записан приложением Aripuca Tracker для операционной системы Андроид\n\nhttps://market.android.com/details?id=com.aripuca.tracker</string>
 
 </resources>

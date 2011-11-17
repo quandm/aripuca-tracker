@@ -103,7 +103,6 @@ public class TrackGpxExportTask extends TrackExportTask {
 	 */
 	protected void writeSegments() {
 
-		int i = 0;
 		while (segCursor.isAfterLast() == false) {
 
 			String startTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(segCursor.getLong(segCursor
@@ -136,8 +135,6 @@ public class TrackGpxExportTask extends TrackExportTask {
 			pw.println("</segment>");
 
 			segCursor.moveToNext();
-
-			i++;
 
 		}
 
