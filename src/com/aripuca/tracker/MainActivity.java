@@ -1095,7 +1095,7 @@ public class MainActivity extends Activity {
 		View layout = inflater.inflate(R.layout.about_dialog, null);
 
 		TextView buildDate = (TextView) layout.findViewById(R.id.build_date);
-		buildDate.setText(getString(R.string.build_date) + " " + getString(R.string.app_build_date));
+		buildDate.setText(getString(R.string.build_date) + ": " + getString(R.string.app_build_date));
 		
 		TextView versionView = (TextView) layout.findViewById(R.id.version);
 		versionView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
