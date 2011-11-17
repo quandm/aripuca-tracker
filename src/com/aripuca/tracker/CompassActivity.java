@@ -1,8 +1,6 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.R.id;
-import com.aripuca.tracker.R.layout;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -12,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -115,15 +112,8 @@ public class CompassActivity extends Activity {
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
 
 			if (compassImage.getVisibility() == View.VISIBLE) {
-
-				// Bitmap arrowBitmap =
-				// BitmapFactory.decodeResource(getResources(),
-				// R.drawable.windrose);
-				// BitmapDrawable bmd = new BitmapDrawable(arrowBitmap);
 				compassImage.setAngle(360 - rotation);
-				// compassImage.setAlpha(230);
 				compassImage.invalidate();
-				// compassImage.setImageDrawable(bmd);
 			}
 		}
 

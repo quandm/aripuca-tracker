@@ -12,11 +12,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.util.Log;
-
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.R.array;
-import com.aripuca.tracker.R.xml;
 import com.aripuca.tracker.util.ArrayUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -146,7 +142,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 							}
 						} else {
 							// check number format only
-							double d = Double.parseDouble(tmpArr[i]);
+							Double.parseDouble(tmpArr[i]);
 						}
 
 					} catch (NumberFormatException e) {

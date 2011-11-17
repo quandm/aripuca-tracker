@@ -2,8 +2,6 @@ package com.aripuca.tracker.util;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.util.Log;
-
 import com.aripuca.tracker.app.Constants;
 
 public class OrientationHelper {

@@ -6,34 +6,20 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.map.MyMapActivity.MapOverlay;
-import com.aripuca.tracker.track.Waypoint;
-import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-import com.google.android.maps.Projection;
 
 /**
  * Map activity
@@ -52,14 +38,6 @@ public class WaypointsMapActivity extends MapActivity {
 
 	private int mapMode;
 	
-	/**
-	 * Track span values
-	 */
-	private int minLat = (int) (180 * 1E6);
-	private int maxLat = (int) (-180 * 1E6);
-	private int minLng = (int) (180 * 1E6);
-	private int maxLng = (int) (-180 * 1E6);
-
 	/**
 	 * Map overlay class
 	 */
