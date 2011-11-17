@@ -7,8 +7,10 @@
 		android:id="@+id/mapview" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:clickable="true"
 		android:apiKey="0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ" />
-		<!-- Debug keystore MD5 footprint: 37:C0:95:E3:AD:DC:00:4C:55:0C:13:61:0B:EB:1E:6E MAP -->
+	
 		<!-- REPLACE WITH RELEASE KEY -->
+		<!-- Debug Map API Key: 0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ -->
+		<!-- Debug keystore MD5 footprint: 37:C0:95:E3:AD:DC:00:4C:55:0C:13:61:0B:EB:1E:6E MAP -->
 
 	<LinearLayout android:id="@+id/infoPanel" android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:orientation="vertical"

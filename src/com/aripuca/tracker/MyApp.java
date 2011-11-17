@@ -433,7 +433,7 @@ public class MyApp extends Application {
 	/**
 	 * Checking if Internet connection exists
 	 */
-	private boolean checkInternetConnection() {
+	public boolean checkInternetConnection() {
 
 		ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 

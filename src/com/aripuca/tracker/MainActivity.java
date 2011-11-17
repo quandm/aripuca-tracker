@@ -635,8 +635,8 @@ public class MainActivity extends Activity {
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
-		
-		// show notification under ongoing title 
+
+		// show notification under ongoing title
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
 
 		CharSequence contentTitle = getString(R.string.main_app_title);
@@ -671,7 +671,7 @@ public class MainActivity extends Activity {
 
 		// add notification icon in track recording mode
 		this.showOngoingNotification();
-		
+
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
 	}
@@ -695,9 +695,9 @@ public class MainActivity extends Activity {
 
 		// remove all notifications
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		//mNotificationManager.cancelAll();
+		// mNotificationManager.cancelAll();
 		mNotificationManager.cancel(Constants.NOTIFICATION_RECORDING_TRACK);
-		
+
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
 
 	}
@@ -724,8 +724,14 @@ public class MainActivity extends Activity {
 			// address will be inserted as default description for this waypoint
 			// processing is done in separate thread
 
-			if (myApp.getPreferences().getBoolean("waypoint_default_description", true)) {
+			// disable "add waypoint" button for the time of request
+			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+
+			if (myApp.checkInternetConnection()
+					&& myApp.getPreferences().getBoolean("waypoint_default_description", false)) {
+
 				geocodeLocation(myApp.getCurrentLocation(), MainActivity.this, new GeocoderHandler());
+
 			} else {
 				showAddWaypointDialog(null);
 			}
@@ -751,7 +757,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -854,7 +860,7 @@ public class MainActivity extends Activity {
 		wpTitle.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((new Date()).getTime()));
 
 		final EditText wpDescr = (EditText) layout.findViewById(R.id.waypointDescriptionInputText);
-		if (address!=null) {
+		if (address != null) {
 			wpDescr.setText(address);
 		}
 
@@ -907,6 +913,8 @@ public class MainActivity extends Activity {
 
 				Toast.makeText(MainActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
 
+				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+
 				dialog.dismiss();
 
 			}
@@ -915,7 +923,9 @@ public class MainActivity extends Activity {
 		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
-				// dialog.dismiss();
+
+				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+				dialog.dismiss();
 			}
 		});
 
@@ -997,10 +1007,10 @@ public class MainActivity extends Activity {
 			mi.setTitle(R.string.start_gps);
 		}
 
-		//TODO: test lab
+		// TODO: test lab
 		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
 		testLabMenuItem.setVisible(false);
-		
+
 		return true;
 	}
 
@@ -1394,9 +1404,7 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1483,9 +1491,7 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) {
-			return;
-		}
+		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
