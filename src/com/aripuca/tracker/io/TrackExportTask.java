@@ -1,10 +1,17 @@
 package com.aripuca.tracker.io;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.R;
@@ -192,7 +199,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 			writeFooter();
 
 			closeWriter();
-
+			
 		} catch (IOException e) {
 			cancel(true);
 			return e.getMessage();
@@ -257,6 +264,47 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 		// send email with file attached
 		if (this.sendAttachment) {
+			
+			Log.d(Constants.TAG, "ZIP ZIP ZIP");
+
+			// let's compress file before attaching
+
+			File outputFolder = new File(myApp.getAppDir() + "/tracks");
+			File zipFile = new File(outputFolder, file.getName() + ".zip");
+
+			try {
+
+				final int BUFFER = 2048;
+
+				BufferedInputStream origin = null;
+				FileOutputStream dest = new FileOutputStream(zipFile);
+
+				ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+				out.setMethod(ZipOutputStream.DEFLATED);
+				out.setLevel(5);
+
+				byte data[] = new byte[BUFFER];
+
+				FileInputStream fi = new FileInputStream(file);
+				
+				origin = new BufferedInputStream(fi, BUFFER);
+
+				ZipEntry entry = new ZipEntry(file.getName());
+				out.putNextEntry(entry);
+
+				int count;
+				while ((count = origin.read(data, 0, BUFFER)) != -1) {
+					out.write(data, 0, count);
+				}
+
+				out.closeEntry();
+
+				origin.close();
+				out.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			String messageBody = context.getString(R.string.email_body_track) + "\n\n"
 					+ context.getString(R.string.market_url);
@@ -266,7 +314,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 			emailIntent.setType("plain/text");
 			emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject_track));
 			emailIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
-			emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file.getAbsolutePath()));
+			emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + zipFile.getAbsolutePath()));
 			context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.sending_email)));
 		}
 
