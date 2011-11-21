@@ -334,7 +334,7 @@ public class MainActivity extends Activity {
 
 		// once activity is started set restarting flag to false
 		// it will be processed in onRetainNonConfigurationInstance
-//		myApp.setActivityRestarting(false);
+		//		myApp.setActivityRestarting(false);
 
 		// disable control buttons
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
@@ -389,7 +389,7 @@ public class MainActivity extends Activity {
 
 		// setting a flag that activity is restarting and we will not
 		// stop gps service in onDestroy when in track recording mode
-//		myApp.setActivityRestarting(true);
+		//		myApp.setActivityRestarting(true);
 
 		// save gps state before rotation
 		// if gps stopped, let's not start it after rotation
@@ -436,7 +436,7 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.v(Constants.TAG, "onPause");
-		
+
 		super.onPause();
 
 		unregisterReceiver(compassBroadcastReceiver);
@@ -450,24 +450,28 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 
-		Log.v(Constants.TAG, "DEBUG: onDestroy");
+		Log.v(Constants.TAG, "onDestroy");
 
 		if (this.isFinishing()) {
-			
+
+			Log.v(Constants.TAG, "isFinishing");
+
 			// turn off GPS when not recording and going to background
 			if (myApp.isGpsOn()) {
 				stopGPSService();
 			}
-			
+
 			this.saveHiddenPreferences();
 		}
-		
-/*		if (!myApp.isActivityRestarting()) {
-			// stop gps service if application is going to be destroyed
-			if (myApp.isGpsOn()) {
-				stopGPSService();
-			}
-		}*/
+
+		/*
+		 * if (!myApp.isActivityRestarting()) {
+		 * // stop gps service if application is going to be destroyed
+		 * if (myApp.isGpsOn()) {
+		 * stopGPSService();
+		 * }
+		 * }
+		 */
 
 		myApp.setMainActivity(null);
 
@@ -621,7 +625,7 @@ public class MainActivity extends Activity {
 		}
 
 		stopService(new Intent(this, GpsService.class));
-		
+
 		Log.v(Constants.TAG, "stopGPSService");
 
 		myApp.setGpsOn(false);
@@ -632,13 +636,16 @@ public class MainActivity extends Activity {
 	 * Show ongoing notification
 	 */
 	private void showOngoingNotification() {
-		
+
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		int icon = R.drawable.aripuca;
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
+
+		// activity launchMode is set to singleTask so new instance of MainActivity will not be created  
+		// when returning to the app by clicking on notification icon
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -647,6 +654,7 @@ public class MainActivity extends Activity {
 		CharSequence contentText = getString(R.string.recording_track);
 
 		Intent notificationIntent = new Intent(this, MainActivity.class);
+
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);
@@ -654,17 +662,17 @@ public class MainActivity extends Activity {
 		mNotificationManager.notify(Constants.NOTIFICATION_RECORDING_TRACK, notification);
 
 	}
-	
+
 	private void clearNotification() {
-		
+
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		// remove all notifications
 		// mNotificationManager.cancelAll();
 		mNotificationManager.cancel(Constants.NOTIFICATION_RECORDING_TRACK);
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -712,7 +720,7 @@ public class MainActivity extends Activity {
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
 
 	}
-	
+
 	/**
 	 * add waypoint button listener
 	 */
@@ -768,7 +776,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -1422,7 +1430,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1509,7 +1519,9 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
+		if (myApp.getPreferences().contains("famous_waypoints")) {
+			return;
+		}
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
