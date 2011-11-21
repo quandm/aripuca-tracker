@@ -168,6 +168,8 @@ public class TracksListActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
+		Log.v(Constants.TAG, "TrackListActivity onCreate");
+
 		super.onCreate(savedInstanceState);
 
 		myApp = ((MyApp) getApplicationContext());
@@ -178,14 +180,7 @@ public class TracksListActivity extends ListActivity {
 
 		cursorAdapter = new TracksCursorAdapter(this, cursor, false);
 		setListAdapter(cursorAdapter);
-
-	}
-
-	@Override
-	public Object onRetainNonConfigurationInstance() {
-
-		return super.onRetainNonConfigurationInstance();
-
+		
 	}
 
 	/**
@@ -194,13 +189,16 @@ public class TracksListActivity extends ListActivity {
 	@Override
 	protected void onDestroy() {
 
+		Log.v(Constants.TAG, "TrackListActivity onDestroy");
+		
 		cursor.close();
 		cursor = null;
 
 		myApp = null;
 
+		
 		super.onDestroy();
-
+		
 	}
 
 	/**
@@ -209,6 +207,8 @@ public class TracksListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 
+		Log.v(Constants.TAG, "TrackListActivity onResume");
+		
 		super.onResume();
 	}
 
@@ -217,6 +217,8 @@ public class TracksListActivity extends ListActivity {
 	 */
 	@Override
 	protected void onPause() {
+		
+		Log.v(Constants.TAG, "TrackListActivity onPause");
 
 		super.onPause();
 	}

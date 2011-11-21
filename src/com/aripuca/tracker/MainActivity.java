@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
 	private OrientationHelper orientationHelper;
 
 	private long declinationLastUpdate = 0;
-	
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -334,7 +334,7 @@ public class MainActivity extends Activity {
 
 		// once activity is started set restarting flag to false
 		// it will be processed in onRetainNonConfigurationInstance
-		myApp.setActivityRestarting(false);
+//		myApp.setActivityRestarting(false);
 
 		// disable control buttons
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
@@ -385,11 +385,11 @@ public class MainActivity extends Activity {
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 
-		Log.d(Constants.TAG, "onRetainNonConfigurationInstance");
+		Log.v(Constants.TAG, "onRetainNonConfigurationInstance");
 
 		// setting a flag that activity is restarting and we will not
 		// stop gps service in onDestroy when in track recording mode
-		myApp.setActivityRestarting(true);
+//		myApp.setActivityRestarting(true);
 
 		// save gps state before rotation
 		// if gps stopped, let's not start it after rotation
@@ -436,11 +436,12 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.v(Constants.TAG, "onPause");
+		
+		super.onPause();
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
-		super.onPause();
 	}
 
 	/**
@@ -451,15 +452,22 @@ public class MainActivity extends Activity {
 
 		Log.v(Constants.TAG, "DEBUG: onDestroy");
 
-		if (!myApp.isActivityRestarting()) {
-
+		if (this.isFinishing()) {
+			
+			// turn off GPS when not recording and going to background
+			if (myApp.isGpsOn()) {
+				stopGPSService();
+			}
+			
+			this.saveHiddenPreferences();
+		}
+		
+/*		if (!myApp.isActivityRestarting()) {
 			// stop gps service if application is going to be destroyed
 			if (myApp.isGpsOn()) {
 				stopGPSService();
 			}
-
-			this.saveHiddenPreferences();
-		}
+		}*/
 
 		myApp.setMainActivity(null);
 
@@ -613,6 +621,8 @@ public class MainActivity extends Activity {
 		}
 
 		stopService(new Intent(this, GpsService.class));
+		
+		Log.v(Constants.TAG, "stopGPSService");
 
 		myApp.setGpsOn(false);
 
@@ -622,7 +632,7 @@ public class MainActivity extends Activity {
 	 * Show ongoing notification
 	 */
 	private void showOngoingNotification() {
-
+		
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		int icon = R.drawable.aripuca;
@@ -631,7 +641,7 @@ public class MainActivity extends Activity {
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
-		notification.flags = Notification.FLAG_ONGOING_EVENT;
+		notification.flags += Notification.FLAG_ONGOING_EVENT;
 
 		CharSequence contentTitle = getString(R.string.main_app_title);
 		CharSequence contentText = getString(R.string.recording_track);
@@ -644,7 +654,17 @@ public class MainActivity extends Activity {
 		mNotificationManager.notify(Constants.NOTIFICATION_RECORDING_TRACK, notification);
 
 	}
+	
+	private void clearNotification() {
+		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+		// remove all notifications
+		// mNotificationManager.cancelAll();
+		mNotificationManager.cancel(Constants.NOTIFICATION_RECORDING_TRACK);
+		
+	}
+	
 	/**
 	 * 
 	 */
@@ -687,15 +707,12 @@ public class MainActivity extends Activity {
 		// switching to initial layout
 		this.replaceDynamicView(R.layout.main_idle2);
 
-		// remove all notifications
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mNotificationManager.cancelAll();
-		mNotificationManager.cancel(Constants.NOTIFICATION_RECORDING_TRACK);
+		this.clearNotification();
 
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
 
 	}
-
+	
 	/**
 	 * add waypoint button listener
 	 */
@@ -1096,7 +1113,7 @@ public class MainActivity extends Activity {
 
 		TextView buildDate = (TextView) layout.findViewById(R.id.build_date);
 		buildDate.setText(getString(R.string.build_date) + ": " + getString(R.string.app_build_date));
-		
+
 		TextView versionView = (TextView) layout.findViewById(R.id.version);
 		versionView.setText(getString(R.string.main_app_title) + " " + getString(R.string.ver)
 				+ MyApp.getVersionName(this));
@@ -1373,7 +1390,8 @@ public class MainActivity extends Activity {
 		float declination = 0;
 		if (trueNorth && myApp.getCurrentLocation() != null) {
 			long now = System.currentTimeMillis();
-			// let's request declination every 15 minutes, not every compass update
+			// let's request declination every 15 minutes, not every compass
+			// update
 			if (now - declinationLastUpdate > 15 * 60 * 1000) {
 				declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
 				declinationLastUpdate = now;
