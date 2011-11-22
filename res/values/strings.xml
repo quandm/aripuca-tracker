@@ -65,7 +65,9 @@
     <string name="export_to_gpx">Export to GPX</string>
     <string name="export_to_kml">Export to KML</string>
     <string name="send_as_gpx">Attach GPX file</string>
+    <string name="creating_gpx">Creating GPX file...</string>
     <string name="send_as_kml">Attach KML file</string>
+    <string name="creating_kml">Creating KML file...</string>
     <string name="send_as_attachment">Send as attachment</string>
     <string name="sending_email">Sending email</string>
     <string name="email_to">Email to</string>
@@ -221,10 +223,10 @@
     <!-- HINTS -->
     <string name="waypoint_description">Waypoint description</string>
     <string name="track_description">Enter track description</string>
-    
+
     <!-- EMAILS -->
     <string name="email_subject_waypoint">Aripuca Tracker Waypoint</string>
-    <string name="email_subject_track">Aripuca Tracker Track</string>
+    <string name="email_subject_track">Aripuca Tracker GPS Track</string>
     <string name="email_body_track">This track has been recorded by Aripuca Tracker</string>
 
 </resources>
