@@ -564,7 +564,7 @@ public class TracksListActivity extends ListActivity {
 
 		int totalPoints = getTotalTrackPoints(trackId);
 
-		progressDialog = createProgressDialog(totalPoints, "Exporting to GPX...");
+		progressDialog = createProgressDialog(totalPoints, getString(R.string.creating_gpx));
 		progressDialog.show();
 
 		// starting track exporting in separate thread
@@ -587,7 +587,7 @@ public class TracksListActivity extends ListActivity {
 
 		int totalPoints = getTotalTrackPoints(trackId);
 
-		progressDialog = createProgressDialog(totalPoints, "Exporting to KML...");
+		progressDialog = createProgressDialog(totalPoints, getString(R.string.creating_gpx));
 		progressDialog.show();
 
 		// starting track exporting in separate thread

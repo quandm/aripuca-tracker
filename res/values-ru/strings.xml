@@ -52,8 +52,10 @@
     <string name="export_to_gpx">Экспорт в GPX</string>
     <string name="export_to_kml">Экспорт в KML</string>
     <string name="send_as_gpx">GPX файл</string>
+    <string name="creating_gpx">Создание файла GPX...</string>
     <string name="send_as_kml">KML файл</string>
-    <string name="send_as_attachment">Послать как вложение</string>
+    <string name="creating_kml">Создание файла KML...</string>
+    <string name="send_as_attachment">Отправить как вложение</string>
     <string name="sending_email">Отправка Email</string>
     <string name="email_to">Отправить по Email</string>
     <string name="pause">Пауза</string>
@@ -216,7 +218,7 @@
 
     <!-- EMAILS -->
     <string name="email_subject_waypoint">Путевая точка от Aripuca Tracker</string>
-    <string name="email_subject_track">Трек от Aripuca Tracker</string>
-    <string name="email_body_track">Трек записан приложением Aripuca Tracker для операционной системы Андроид\n\nhttps://market.android.com/details?id=com.aripuca.tracker</string>
+    <string name="email_subject_track">ГПС трек от Aripuca Tracker</string>
+    <string name="email_body_track">Трек записан приложением Aripuca Tracker для операционной системы Андроид</string>
 
 </resources>
