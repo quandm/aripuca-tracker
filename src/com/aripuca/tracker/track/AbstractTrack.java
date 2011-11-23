@@ -69,7 +69,9 @@ public abstract class AbstractTrack {
 	 */
 	public float getAverageSpeed() {
 
-		if (this.getTotalTime() < 1000) { return 0; }
+		if (this.getTotalTime() < 1000) {
+			return 0;
+		}
 
 		return this.getDistance() / (this.getTotalTime() / 1000.0f);
 	}
@@ -79,7 +81,9 @@ public abstract class AbstractTrack {
 	 */
 	public float getAverageMovingSpeed() {
 
-		if (this.getMovingTime() < 1000) { return 0; }
+		if (this.getMovingTime() < 1000) {
+			return 0;
+		}
 
 		return this.getDistance() / (this.getMovingTime() / 1000.0f);
 	}
@@ -148,7 +152,10 @@ public abstract class AbstractTrack {
 	protected void processElevation(Location location) {
 
 		// processing elevation data
-		if (!location.hasAltitude()) { return; }
+		if (!location.hasAltitude()) {
+			Log.v(Constants.TAG, "isSpeedValid: No elevation info");
+			return;
+		}
 
 		// add current elevation to buffer
 		this.elevationPopulation.addValue(location.getAltitude());
@@ -189,15 +196,20 @@ public abstract class AbstractTrack {
 
 		if (!lastLocation.hasSpeed() || !currentLocation.hasSpeed()) {
 			// location does not have speed information 
+			Log.v(Constants.TAG, "isSpeedValid: No speed info");
 			return false;
 		}
 
 		float currentSpeed = currentLocation.getSpeed();
 
-		if (currentSpeed == 0) { return false; }
+		if (currentSpeed == 0) {
+			return false;
+		}
 
 		// check from MyTracks
-		if (Math.abs(currentSpeed - 128) < 1) { return false; }
+		if (Math.abs(currentSpeed - 128) < 1) {
+			return false;
+		}
 
 		// calculate acceleration
 		this.acceleration = 0;
@@ -219,7 +231,9 @@ public abstract class AbstractTrack {
 
 			double averageSpeed = this.speedPopulation.getAverage();
 
-			if (currentSpeed > averageSpeed * 10) { return false; }
+			if (currentSpeed > averageSpeed * 10) {
+				return false;
+			}
 
 		} else {
 
