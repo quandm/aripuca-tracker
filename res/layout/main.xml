@@ -6,7 +6,7 @@
 
 	<ScrollView android:layout_width="fill_parent" android:id="@+id/dynamicView"
 		android:layout_height="fill_parent" android:scrollbars="none"
-		android:layout_marginBottom="52dp" android:paddingTop="2dp">
+		android:layout_marginBottom="45dp" android:paddingTop="2dp">
 
 		<!-- This scroll view will be dynamically populated by the required layout 
 			in runtime -->

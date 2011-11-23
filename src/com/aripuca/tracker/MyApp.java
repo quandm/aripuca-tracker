@@ -1,5 +1,7 @@
 package com.aripuca.tracker;
 
+//TODO: help window with check box
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
