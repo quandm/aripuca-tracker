@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="150dp"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/helpText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title" >
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/dontShowNextTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/show_next_time" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:padding="5dp" >
+            <Button
+                android:id="@+id/closeButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Close" />
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Next" />
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+
+</LinearLayout>

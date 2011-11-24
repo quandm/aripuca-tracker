@@ -49,6 +49,11 @@ public abstract class Constants {
 	public static final int NETWORK_PROVIDER = 2;
 	public static final int NETWORK_PROVIDER_LAST = 3;
 	
+	
+	/**
+	 * Custom dialogs
+	 */
+	public static final int QUICK_HELP_DIALOG_ID = 1;
 
 	
 }

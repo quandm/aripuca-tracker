@@ -15,7 +15,7 @@
     <!-- NOT TRANSLATABLE END -->
 
     <string name="build_date">Build date</string>
-    <string name="about_dialog_message">Open source GPS tracking app for
+        <string name="about_dialog_message">Open source GPS tracking app for
 		Android.\n\nOfficial
 		blog:\nhttp://tracker.aripuca.com/blog\n\nSource
 		code:\nhttp://code.google.com/p/aripuca-tracker</string>
@@ -37,7 +37,9 @@
     <string name="segments">Segments</string>
     <string name="prev_segment">Prev segment</string>
     <string name="next_segment">Next segment</string>
-
+    <string name="do_you_know">Do you know?</string>
+    <string name="show_next_time">Show next time</string>
+        
     <!-- SEPARATE WORDS -->
     <string name="m">m</string>
     <string name="ft">ft</string>
@@ -132,7 +134,8 @@
     <string name="export_waypoints">Export waypoints</string>
     <string name="street">Street</string>
     <string name="satellite">Satellite</string>
-
+    <string name="next">Next</string>
+        
     <!-- SETTINGS -->
     <string name="min_distance_title">Minimum distance</string>
     <string name="min_distance_summary">Minimum distance between 2 recorded points
@@ -144,7 +147,9 @@
     <string name="user_interface_title">User interface</string>
     <string name="wake_lock_title">Stay awake</string>
     <string name="wake_lock_summary">Prevents phone from sleeping</string>
-    <string name="units">Units</string>
+    <string name="quick_help_title">Quick help</string>
+    <string name="quick_help_summary">Show quick help every time I start the application</string>
+        <string name="units">Units</string>
     <string name="units_summary">Measurement units (coordinates, distance, speed,
 		etc)</string>
     <string name="tracking_title">Tracking</string>
