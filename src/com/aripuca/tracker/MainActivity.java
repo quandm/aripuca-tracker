@@ -1,6 +1,7 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.track.Waypoint;
@@ -381,7 +382,7 @@ public class MainActivity extends Activity {
 		// adding famous waypoints
 		processFamousWaypoints();
 
-		//showQuickHelp();
+		showQuickHelp();
 
 	}
 
@@ -964,13 +965,7 @@ public class MainActivity extends Activity {
 
 			case Constants.QUICK_HELP_DIALOG_ID:
 
-				dialog = new Dialog(mContext);
-
-				dialog.setContentView(R.layout.quick_help_dialog);
-				dialog.setTitle(R.string.do_you_know);
-
-				TextView text = (TextView) dialog.findViewById(R.id.helpText);
-				text.setText("Hello, this is a custom dialog!");
+				dialog = new QuickHelpDialog(mContext);
 				
 				break;
 

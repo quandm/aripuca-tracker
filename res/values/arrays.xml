@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string-array name="speed_units_labels">
-		<item>km/h</item>
-		<item>mph</item>
-		<item>knot</item>
-	</string-array>
-
-	<string-array name="distance_units_labels">
-		<item>kilometers</item>
-		<item>miles</item>
-	</string-array>
-
-	<string-array name="elevation_units_labels">
-		<item>meters</item>
-		<item>feet</item>
-	</string-array>
-
-	<string-array name="coord_units_labels">
-		<item>degrees (dd.dd°)</item>
-		<item>minutes (dd°mm.mm\')</item>
-		<item>seconds (dd°mm\'ss.ss\'\')</item>
-	</string-array>
-
+    <string-array name="speed_units_labels">
+        <item>km/h</item>
+        <item>mph</item>
+        <item>knot</item>
+    </string-array>
+    <string-array name="distance_units_labels">
+        <item>kilometers</item>
+        <item>miles</item>
+    </string-array>
+    <string-array name="elevation_units_labels">
+        <item>meters</item>
+        <item>feet</item>
+    </string-array>
+    <string-array name="coord_units_labels">
+        <item>degrees (dd.dd°)</item>
+        <item>minutes (dd°mm.mm\')</item>
+        <item>seconds (dd°mm\'ss.ss\'\')</item>
+    </string-array>
     <string-array name="segmenting_modes_labels">
         <item>None</item>
         <item>Pause/Resume</item>
@@ -31,12 +27,10 @@
         <item>Custom intervals 1</item>
         <item>Custom intervals 2</item>
     </string-array>
-
-	<string-array name="language_labels">
-		<item>English</item>
-		<item>Russian</item>
-	</string-array>
-
+    <string-array name="language_labels">
+        <item>English</item>
+        <item>Russian</item>
+    </string-array>
     <string-array name="min_accuracy_labels">
         <item>5 m</item>
         <item>10 m</item>
@@ -46,7 +40,6 @@
         <item>100 m</item>
         <item>1000 m</item>
     </string-array>
-
     <string-array name="min_accuracy_labels_ft">
         <item>15 ft</item>
         <item>30 ft</item>
@@ -56,7 +49,6 @@
         <item>300 ft</item>
         <item>3000 ft</item>
     </string-array>
-
     <string-array name="min_distance_labels">
         <item>5 m</item>
         <item>10 m</item>
@@ -65,7 +57,6 @@
         <item>50 m</item>
         <item>100 m</item>
     </string-array>
-
     <string-array name="min_distance_labels_ft">
         <item>15 ft</item>
         <item>30 ft</item>
@@ -74,9 +65,13 @@
         <item>150 ft</item>
         <item>300 ft</item>
     </string-array>
-
     <string-array name="quick_help">
-        <item>Tap on any control in track recording mode to change its view</item>
+        <item>Tap on any control in track recording mode to change its view.</item>
+        <item>You can export recorded tracks to GPX and KML formats.</item>
+        <item>Built-in compass displays two arrows pointing to True and Magnetic North.</item>
+        <item>Tracks can be automatically segmented by distance, time and custom intervals.</item>
+        <item>Track segments are displayed on a map with different colors.</item>
+        <item>The entire application database can be backed up and restored in SQLite format. Go to Menu->More.</item>
     </string-array>
-        
+
 </resources>
