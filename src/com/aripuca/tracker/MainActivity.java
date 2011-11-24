@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -334,7 +335,7 @@ public class MainActivity extends Activity {
 
 		// once activity is started set restarting flag to false
 		// it will be processed in onRetainNonConfigurationInstance
-		//		myApp.setActivityRestarting(false);
+		// myApp.setActivityRestarting(false);
 
 		// disable control buttons
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
@@ -380,6 +381,8 @@ public class MainActivity extends Activity {
 		// adding famous waypoints
 		processFamousWaypoints();
 
+		//showQuickHelp();
+
 	}
 
 	@Override
@@ -389,7 +392,7 @@ public class MainActivity extends Activity {
 
 		// setting a flag that activity is restarting and we will not
 		// stop gps service in onDestroy when in track recording mode
-		//		myApp.setActivityRestarting(true);
+		// myApp.setActivityRestarting(true);
 
 		// save gps state before rotation
 		// if gps stopped, let's not start it after rotation
@@ -465,12 +468,9 @@ public class MainActivity extends Activity {
 		}
 
 		/*
-		 * if (!myApp.isActivityRestarting()) {
-		 * // stop gps service if application is going to be destroyed
-		 * if (myApp.isGpsOn()) {
-		 * stopGPSService();
-		 * }
-		 * }
+		 * if (!myApp.isActivityRestarting()) { // stop gps service if
+		 * application is going to be destroyed if (myApp.isGpsOn()) {
+		 * stopGPSService(); } }
 		 */
 
 		myApp.setMainActivity(null);
@@ -644,7 +644,8 @@ public class MainActivity extends Activity {
 
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
 
-		// activity launchMode is set to singleTask so new instance of MainActivity will not be created  
+		// activity launchMode is set to singleTask so new instance of
+		// MainActivity will not be created
 		// when returning to the app by clicking on notification icon
 
 		// show notification under ongoing title
@@ -776,7 +777,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -950,6 +951,46 @@ public class MainActivity extends Activity {
 
 		AlertDialog dialog = builder.create();
 		dialog.show();
+
+	}
+
+	protected Dialog onCreateDialog(int id) {
+
+		Context mContext = this;
+
+		Dialog dialog;
+
+		switch (id) {
+
+			case Constants.QUICK_HELP_DIALOG_ID:
+
+				dialog = new Dialog(mContext);
+
+				dialog.setContentView(R.layout.quick_help_dialog);
+				dialog.setTitle(R.string.do_you_know);
+
+				TextView text = (TextView) dialog.findViewById(R.id.helpText);
+				text.setText("Hello, this is a custom dialog!");
+				
+				break;
+
+			default:
+				dialog = null;
+		}
+
+		return dialog;
+	}
+
+	/**
+	 * Show quick help
+	 */
+	private void showQuickHelp() {
+
+		if (myApp.getPreferences().getBoolean("quick_help", true)) {
+
+			showDialog(Constants.QUICK_HELP_DIALOG_ID);
+
+		}
 
 	}
 
@@ -1430,9 +1471,7 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1519,9 +1558,7 @@ public class MainActivity extends Activity {
 	public void processFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) {
-			return;
-		}
+		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();

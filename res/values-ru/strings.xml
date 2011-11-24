@@ -24,7 +24,9 @@
     <string name="segments">Сегменты</string>
     <string name="prev_segment">Предыдущий сегмент</string>
     <string name="next_segment">Следующий сегмент</string>
-
+    <string name="do_you_know">Знаете ли вы?</string>
+    <string name="show_next_time">Показывать при запуске</string>
+        
     <!-- SEPARATE WORDS -->
     <string name="m">м</string>
     <string name="ft">фт</string>
@@ -119,7 +121,8 @@
     <string name="export_waypoints">Экспорт путевых точек</string>
     <string name="street">Улица</string>
     <string name="satellite">Спутник</string>
-
+    <string name="next">Следующий</string>
+        
     <!-- SETTINGS -->
     <string name="min_distance_title">Минимальная дистанция</string>
     <string name="min_distance_summary">Минимальное расстояние между двумя записываемыми
@@ -131,7 +134,9 @@
     <string name="user_interface_title">Интерфейс пользователя</string>
     <string name="wake_lock_title">Не гасить экран</string>
     <string name="wake_lock_summary">Предотвратить засыпание устройства</string>
-    <string name="units">Единицы измерения</string>
+    <string name="quick_help_title">Быстрая справка</string>
+    <string name="quick_help_summary">Показывать быструю справку при запуске</string>
+        <string name="units">Единицы измерения</string>
     <string name="units_summary">Выбор единиц измерения (координаты, расстояние,
 		скорость и т.д.)</string>
     <string name="tracking_title">Запись треков</string>

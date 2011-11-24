@@ -6,6 +6,7 @@
 	android:entries="@array/language_labels" android:entryValues="@array/language_values"
 	android:key="language" android:dialogTitle="@string/app_language"
 	android:defaultValue="en-US" android:title="@string/app_language"></ListPreference><CheckBoxPreference android:defaultValue="true" android:key="wake_lock" android:title="@string/wake_lock_title" android:summary="@string/wake_lock_summary"></CheckBoxPreference>
+	<CheckBoxPreference android:key="quick_help" android:title="@string/quick_help_title" android:summary="@string/quick_help_summary" android:defaultValue="true"/>
 	
 </PreferenceScreen>
 
