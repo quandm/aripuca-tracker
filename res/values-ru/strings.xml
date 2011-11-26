@@ -194,7 +194,7 @@
     <string name="are_you_sure">Вы уверены?</string>
     <string name="username_or_password_required">Требуются имя пользователя и пароль</string>
     <string name="stop_track_recording">Остановите запись трека</string>
-    <string name="click_again_to_exit">Нажмите еще раз чтобы выйти из приложения</string>
+    <string name="press_again_to_exit">Нажмите еще раз чтобы остановить запись и выйти из приложения</string>
     <string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека
 	</string>
     <string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека

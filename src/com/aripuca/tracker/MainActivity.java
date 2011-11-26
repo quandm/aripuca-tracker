@@ -43,6 +43,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.*;
@@ -304,7 +305,7 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		Log.v(Constants.TAG, "onCreate");
+		Log.v(Constants.TAG, "MainActivity: onCreate");
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
@@ -333,10 +334,6 @@ public class MainActivity extends Activity {
 		} else {
 			this.replaceDynamicView(R.layout.main_idle2);
 		}
-
-		// once activity is started set restarting flag to false
-		// it will be processed in onRetainNonConfigurationInstance
-		// myApp.setActivityRestarting(false);
 
 		// disable control buttons
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
@@ -372,24 +369,23 @@ public class MainActivity extends Activity {
 
 		setControlButtonListeners();
 
-		// create all folders required by the application on external storage
-		if (myApp.getExternalStorageAvailable() && myApp.getExternalStorageWriteable()) {
-			createFolderStructure();
-		} else {
-			Toast.makeText(MainActivity.this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
-		}
-
-		// adding famous waypoints
-		processFamousWaypoints();
-
 		showQuickHelp();
 
 	}
 
 	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+
+		super.onConfigurationChanged(newConfig);
+
+		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
+		
+	}
+
+	@Override
 	public Object onRetainNonConfigurationInstance() {
 
-		Log.v(Constants.TAG, "onRetainNonConfigurationInstance");
+		Log.v(Constants.TAG, "MainActivity: onRetainNonConfigurationInstance");
 
 		// setting a flag that activity is restarting and we will not
 		// stop gps service in onDestroy when in track recording mode
@@ -409,7 +405,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		Log.v(Constants.TAG, "onResume");
+		Log.v(Constants.TAG, "MainActivity: onResume");
 
 		// preventing phone from sleeping
 		if (findViewById(R.id.dynamicView) != null) {
@@ -439,7 +435,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 
-		Log.v(Constants.TAG, "onPause");
+		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		super.onPause();
 
@@ -454,11 +450,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 
-		Log.v(Constants.TAG, "onDestroy");
+		Log.v(Constants.TAG, "MainActivity: onDestroy");
 
 		if (this.isFinishing()) {
-
-			Log.v(Constants.TAG, "isFinishing");
 
 			// turn off GPS when not recording and going to background
 			if (myApp.isGpsOn()) {
@@ -655,7 +649,7 @@ public class MainActivity extends Activity {
 		CharSequence contentTitle = getString(R.string.main_app_title);
 		CharSequence contentText = getString(R.string.recording_track);
 
-		Intent notificationIntent = new Intent(this, MainActivity.class);
+		Intent notificationIntent = new Intent(this, NotificationActivity.class);
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
@@ -743,7 +737,6 @@ public class MainActivity extends Activity {
 			// let's make reverse geocoder request and then show Add Waypoint
 			// dialog
 			// address will be inserted as default description for this waypoint
-			// processing is done in separate thread
 
 			// disable "add waypoint" button for the time of request
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
@@ -751,6 +744,7 @@ public class MainActivity extends Activity {
 			if (myApp.checkInternetConnection()
 					&& myApp.getPreferences().getBoolean("waypoint_default_description", false)) {
 
+				// processing is done in separate thread
 				geocodeLocation(myApp.getCurrentLocation(), MainActivity.this, new GeocoderHandler());
 
 			} else {
@@ -920,7 +914,7 @@ public class MainActivity extends Activity {
 				values.put("elevation", Utils.formatNumber(myApp.getCurrentLocation().getAltitude(), 1));
 				values.put("time", myApp.getCurrentLocation().getTime());
 
-				// if track recording started save track_id as
+				// if track recording started assign track_id
 				if (trackRecorder.isRecording()) {
 					values.put("track_id", trackRecorder.getTrack().getTrackId());
 				}
@@ -966,7 +960,7 @@ public class MainActivity extends Activity {
 			case Constants.QUICK_HELP_DIALOG_ID:
 
 				dialog = new QuickHelpDialog(mContext);
-				
+
 				break;
 
 			default:
@@ -1007,33 +1001,6 @@ public class MainActivity extends Activity {
 
 		if (findViewById(R.id.compassImage) != null) {
 			((CompassImage) findViewById(R.id.compassImage)).setVisibility(View.GONE);
-		}
-
-	}
-
-	/**
-	 * Create application folders
-	 */
-	private void createFolderStructure() {
-		createFolder(myApp.getAppDir());
-		createFolder(myApp.getAppDir() + "/tracks");
-		createFolder(myApp.getAppDir() + "/waypoints");
-		createFolder(myApp.getAppDir() + "/backup");
-		createFolder(myApp.getAppDir() + "/debug");
-	}
-
-	/**
-	 * Create folder if not exists
-	 * 
-	 * @param folderName
-	 */
-	private void createFolder(String folderName) {
-
-		File folder = new File(folderName);
-
-		// create output folder
-		if (!folder.exists()) {
-			folder.mkdir();
 		}
 
 	}
@@ -1545,50 +1512,6 @@ public class MainActivity extends Activity {
 	 * PowerManager.ON_AFTER_RELEASE, Constants.TAG); wakeLock.acquire(); }
 	 * public void releaseWakeLock() { wakeLock.release(); }
 	 */
-
-	/**
-	 * Create a list of famous waypoints and insert to db when application first
-	 * installed
-	 */
-	public void processFamousWaypoints() {
-
-		// adding famous waypoints only once
-		if (myApp.getPreferences().contains("famous_waypoints")) { return; }
-
-		// create array of waypoints
-		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
-		famousWaypoints.add(new Waypoint("Aripuca", 50.12457, 8.6555));
-		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
-		famousWaypoints.add(new Waypoint("Niagara Falls", 43.08, -79.071));
-		famousWaypoints.add(new Waypoint("Golden Gate Bridge", 37.819722, -122.478611));
-		famousWaypoints.add(new Waypoint("Stonehenge", 51.178844, -1.826189));
-		famousWaypoints.add(new Waypoint("Mount Everest", 27.988056, 86.925278));
-		famousWaypoints.add(new Waypoint("Colosseum", 41.890169, 12.492269));
-		famousWaypoints.add(new Waypoint("Red Square", 55.754167, 37.62));
-		famousWaypoints.add(new Waypoint("Charles Bridge", 50.086447, 14.411856));
-
-		// insert waypoints to db
-		Iterator<Waypoint> itr = famousWaypoints.iterator();
-		while (itr.hasNext()) {
-
-			Waypoint wp = itr.next();
-
-			ContentValues values = new ContentValues();
-			values.put("title", wp.getTitle());
-			values.put("lat", (int) (wp.getLatitude() * 1E6));
-			values.put("lng", (int) (wp.getLongitude() * 1E6));
-			values.put("time", wp.getTime());
-
-			myApp.getDatabase().insert("waypoints", null, values);
-
-		}
-
-		// switch flag of famous locations added to true
-		SharedPreferences.Editor editor = myApp.getPreferences().edit();
-		editor.putInt("famous_waypoints", 1);
-		editor.commit();
-
-	}
 
 	/**
 	 * Copy application database to sd card

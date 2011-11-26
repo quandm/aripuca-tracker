@@ -66,12 +66,18 @@
         <item>300 ft</item>
     </string-array>
     <string-array name="quick_help">
-        <item>Tap on any control in track recording mode to change its view.</item>
-        <item>You can export recorded tracks to GPX and KML formats.</item>
+        <item>Tap on any control in track recording mode to change its view. The created layout will be saved for next session.</item>
+        <item>Recorded tracks can be exported to GPX and KML formats.</item>
         <item>Built-in compass displays two arrows pointing to True and Magnetic North.</item>
         <item>Tracks can be automatically segmented by distance, time and custom intervals.</item>
         <item>Track segments are displayed on a map with different colors.</item>
-        <item>The entire application database can be backed up and restored in SQLite format. Go to Menu->More.</item>
+        <item>The entire application database can be backed up and restored in SQLite format. Go to Menu->More</item>
+        <item>Complete source code of this app is available for download at http://code.google.com/p/aripuca-tracker/</item>
+        <item>For more information please visit our blog at http://tracker.aripuca.com/blog</item>
+        <item>The word \'Aripuca\' derives from the name of a trap made by the Guaraní natives and used to catch animals without hurting them</item>
+        <item>Aripuca Tracker supports many languages. Refer to Menu->Settings->User Interface->Application Language</item>
+        <item>Learn more about application functionality by looking through its Settings menu</item>
+        <item>Please send all your questions and concerns to tracker@aripuca.com</item>
     </string-array>
 
 </resources>
