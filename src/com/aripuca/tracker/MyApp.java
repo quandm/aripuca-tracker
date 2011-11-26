@@ -5,14 +5,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.track.Waypoint;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -110,19 +114,6 @@ public class MyApp extends Application {
 
 	public boolean getGpsStateBeforeRotation() {
 		return gpsStateBeforeRotation;
-	}
-
-	/**
-	 * activity is being restarted flag
-	 */
-	private boolean activityRestarting = false;
-
-	public boolean isActivityRestarting() {
-		return activityRestarting;
-	}
-
-	public void setActivityRestarting(boolean activityRestarting) {
-		this.activityRestarting = activityRestarting;
 	}
 
 	public void setCurrentLocation(Location cl) {
@@ -326,6 +317,8 @@ public class MyApp extends Application {
 	@Override
 	public void onCreate() {
 
+		super.onCreate();
+		
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -345,8 +338,16 @@ public class MyApp extends Application {
 
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
 				+ Constants.APP_NAME;
-
-		super.onCreate();
+		
+		// create all folders required by the application on external storage
+		if (getExternalStorageAvailable() && getExternalStorageWriteable()) {
+			createFolderStructure();
+		} else {
+			//Toast.makeText(this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
+		}
+		
+		// adding famous waypoints
+		insertFamousWaypoints();
 
 	}
 
@@ -487,6 +488,76 @@ public class MyApp extends Application {
 	public void setFixReceived(boolean f) {
 		this.fixReceived  = f;
 	}
+
+	/**
+	 * Create application folders
+	 */
+	private void createFolderStructure() {
+		createFolder(getAppDir());
+		createFolder(getAppDir() + "/tracks");
+		createFolder(getAppDir() + "/waypoints");
+		createFolder(getAppDir() + "/backup");
+		createFolder(getAppDir() + "/debug");
+	}
+
+	/**
+	 * Create folder if not exists
+	 * 
+	 * @param folderName
+	 */
+	private void createFolder(String folderName) {
+
+		File folder = new File(folderName);
+
+		// create output folder
+		if (!folder.exists()) {
+			folder.mkdir();
+		}
+
+	}
 	
+	/**
+	 * Create a list of famous waypoints and insert to db when application first
+	 * installed
+	 */
+	private void insertFamousWaypoints() {
+
+		// adding famous waypoints only once
+		if (getPreferences().contains("famous_waypoints")) { return; }
+
+		// create array of waypoints
+		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
+		famousWaypoints.add(new Waypoint("Aripuca", 50.12457, 8.6555));
+		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
+		famousWaypoints.add(new Waypoint("Niagara Falls", 43.08, -79.071));
+		famousWaypoints.add(new Waypoint("Golden Gate Bridge", 37.819722, -122.478611));
+		famousWaypoints.add(new Waypoint("Stonehenge", 51.178844, -1.826189));
+		famousWaypoints.add(new Waypoint("Mount Everest", 27.988056, 86.925278));
+		famousWaypoints.add(new Waypoint("Colosseum", 41.890169, 12.492269));
+		famousWaypoints.add(new Waypoint("Red Square", 55.754167, 37.62));
+		famousWaypoints.add(new Waypoint("Charles Bridge", 50.086447, 14.411856));
+
+		// insert waypoints to db
+		Iterator<Waypoint> itr = famousWaypoints.iterator();
+		while (itr.hasNext()) {
+
+			Waypoint wp = itr.next();
+
+			ContentValues values = new ContentValues();
+			values.put("title", wp.getTitle());
+			values.put("lat", (int) (wp.getLatitude() * 1E6));
+			values.put("lng", (int) (wp.getLongitude() * 1E6));
+			values.put("time", wp.getTime());
+
+			getDatabase().insert("waypoints", null, values);
+
+		}
+
+		// switch flag of famous locations added to true
+		SharedPreferences.Editor editor = getPreferences().edit();
+		editor.putInt("famous_waypoints", 1);
+		editor.commit();
+
+	}
 
 }

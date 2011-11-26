@@ -128,7 +128,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		tCursor = myApp.getDatabase().rawQuery(sql, null);
 		tCursor.moveToFirst();
 
-		// track points table  cursor
+		// track points table cursor
 		sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 		tpCursor = myApp.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
@@ -198,7 +198,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 			writeFooter();
 
 			closeWriter();
-			
+
 		} catch (IOException e) {
 			cancel(true);
 			return e.getMessage();
@@ -264,61 +264,69 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		// send email with file attached
 		if (this.sendAttachment) {
 			
-			Log.d(Constants.TAG, "ZIP ZIP ZIP");
-
-			// let's compress file before attaching
-
-			File outputFolder = new File(myApp.getAppDir() + "/tracks");
-			File zipFile = new File(outputFolder, file.getName() + ".zip");
-
-			try {
-
-				final int BUFFER = 2048;
-
-				BufferedInputStream origin = null;
-				FileOutputStream dest = new FileOutputStream(zipFile);
-
-				ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
-				out.setMethod(ZipOutputStream.DEFLATED);
-				out.setLevel(5);
-
-				byte data[] = new byte[BUFFER];
-
-				FileInputStream fi = new FileInputStream(file);
-				
-				origin = new BufferedInputStream(fi, BUFFER);
-
-				ZipEntry entry = new ZipEntry(file.getName());
-				out.putNextEntry(entry);
-
-				int count;
-				while ((count = origin.read(data, 0, BUFFER)) != -1) {
-					out.write(data, 0, count);
-				}
-
-				out.closeEntry();
-
-				origin.close();
-				out.close();
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			String messageBody = context.getString(R.string.email_body_track) + "\n\n"
-					+ context.getString(R.string.market_url);
-
-			final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-			emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			emailIntent.setType("plain/text");
-			emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject_track));
-			emailIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
-			emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + zipFile.getAbsolutePath()));
-			context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.sending_email)));
+			this.zipAndSendAttachment();
+			
 		}
 
 		myApp = null;
 		progressDialog = null;
+
+	}
+
+	/**
+	 * 
+	 */
+	protected void zipAndSendAttachment() {
+
+		// let's compress file before attaching
+		File outputFolder = new File(myApp.getAppDir() + "/tracks");
+		File zipFile = new File(outputFolder, file.getName() + ".zip");
+
+		//TODO: bug: zip file created incorrectly
+		try {
+
+			final int BUFFER = 2048;
+
+			BufferedInputStream origin = null;
+			FileOutputStream dest = new FileOutputStream(zipFile);
+
+			ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+			out.setMethod(ZipOutputStream.DEFLATED);
+			out.setLevel(5);
+
+			byte data[] = new byte[BUFFER];
+
+			FileInputStream fi = new FileInputStream(file);
+
+			origin = new BufferedInputStream(fi, BUFFER);
+
+			ZipEntry entry = new ZipEntry(file.getName());
+			out.putNextEntry(entry);
+
+			int count;
+			while ((count = origin.read(data, 0, BUFFER)) != -1) {
+				out.write(data, 0, count);
+			}
+
+			out.closeEntry();
+
+			origin.close();
+			out.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String messageBody = context.getString(R.string.email_body_track) + "\n\n"
+				+ context.getString(R.string.market_url);
+
+		final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+		emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		emailIntent.setType("plain/text");
+		emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject_track));
+		emailIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
+		emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + zipFile.getAbsolutePath()));
+		context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.sending_email)));
 
 	}
 

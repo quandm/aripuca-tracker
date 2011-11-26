@@ -148,7 +148,7 @@
     <string name="wake_lock_title">Stay awake</string>
     <string name="wake_lock_summary">Prevents phone from sleeping</string>
     <string name="quick_help_title">Quick help</string>
-    <string name="quick_help_summary">Show quick help every time I start the application</string>
+    <string name="quick_help_summary">Show quick help every time application is started</string>
         <string name="units">Units</string>
     <string name="units_summary">Measurement units (coordinates, distance, speed,
 		etc)</string>
@@ -204,7 +204,7 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="username_or_password_required">User name and password required</string>
     <string name="stop_track_recording">Stop track recording</string>
-    <string name="press_again_to_exit">Press again to exit</string>
+    <string name="press_again_to_exit">Press again to stop track recording and exit</string>
     <string name="press_and_hold_to_stop">Press and hold to stop track recording</string>
     <string name="press_and_hold_to_start">Press and hold to start track recording</string>
     <string name="no_segments">No segments created for this track</string>

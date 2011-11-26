@@ -203,7 +203,7 @@ public class GpsService extends Service {
 	@Override
 	public void onDestroy() {
 
-		Log.v(Constants.TAG, "DEBUG: GPS onDestroy");
+		Log.v(Constants.TAG, "GpsService: onDestroy");
 
 		updateTimeHandler.removeCallbacks(updateTimeTask);
 

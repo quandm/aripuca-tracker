@@ -3,15 +3,15 @@
 	package="com.aripuca.tracker" android:versionCode="3"
 	android:versionName="1.0.3" android:installLocation="preferExternal">
 
-	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4" />
+	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="7" />
     
 	<application android:icon="@drawable/icon" android:label="@string/main_app_title"
 		android:debuggable="true" android:name=".MyApp">
 
 		<uses-library android:name="com.google.android.maps" />
 
-		<activity android:name=".MainActivity" android:label="@string/main_app_title" android:launchMode="singleTask">
-			<!-- android:configChanges="orientation" -->
+		<activity android:name=".MainActivity" android:label="@string/main_app_title" android:configChanges="keyboardHidden|orientation">
+			<!-- android:configChanges="orientation"  android:launchMode="singleTask" -->
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -20,6 +20,9 @@
 
 		</activity>
 
+		<activity android:name=".NotificationActivity" android:label="Notify">
+		</activity>
+		    		    
 		<activity android:name=".CompassActivity" android:label="@string/compass_activity_title"
 			android:screenOrientation="portrait">
 		</activity>
