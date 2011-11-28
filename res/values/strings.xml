@@ -6,7 +6,7 @@
     <string name="main_app_title">Aripuca Tracker</string>
     <string name="author_name">VitalNik</string>
     <string name="company">Aripuca Apps</string>
-    <string name="app_build_date">2011-11-24</string>
+    <string name="app_build_date">2011-11-26</string>
     <string name="app_url">http://tracker.aripuca.com</string>
     <string name="blog_url">http://tracker.aripuca.com/blog</string>
     <string name="market_url">https://market.android.com/details?id=com.aripuca.tracker</string>
@@ -38,7 +38,7 @@
     <string name="prev_segment">Prev segment</string>
     <string name="next_segment">Next segment</string>
     <string name="do_you_know">Do you know?</string>
-    <string name="show_next_time">Show next time</string>
+    <string name="show_on_startup">Show on startup</string>
         
     <!-- SEPARATE WORDS -->
     <string name="m">m</string>

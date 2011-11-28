@@ -35,13 +35,16 @@ import android.app.PendingIntent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -369,7 +372,9 @@ public class MainActivity extends Activity {
 
 		setControlButtonListeners();
 
-		showQuickHelp();
+		if (myApp.getPreferences().getBoolean("quick_help", true)) {
+			showQuickHelp();
+		}
 
 	}
 
@@ -379,7 +384,7 @@ public class MainActivity extends Activity {
 		super.onConfigurationChanged(newConfig);
 
 		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
-		
+
 	}
 
 	@Override
@@ -405,6 +410,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 
+		super.onResume();
+		
 		Log.v(Constants.TAG, "MainActivity: onResume");
 
 		// preventing phone from sleeping
@@ -426,7 +433,8 @@ public class MainActivity extends Activity {
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
 
-		super.onResume();
+		// bind to GPS service
+		doBindService();
 	}
 
 	/**
@@ -435,13 +443,15 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 
-		Log.v(Constants.TAG, "MainActivity: onPause");
-
 		super.onPause();
+		
+		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
+		doUnbindService();		
+		
 	}
 
 	/**
@@ -451,7 +461,7 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 
 		Log.v(Constants.TAG, "MainActivity: onDestroy");
-
+		
 		if (this.isFinishing()) {
 
 			// turn off GPS when not recording and going to background
@@ -737,7 +747,7 @@ public class MainActivity extends Activity {
 			// let's make reverse geocoder request and then show Add Waypoint
 			// dialog
 			// address will be inserted as default description for this waypoint
-
+			
 			// disable "add waypoint" button for the time of request
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 
@@ -975,11 +985,7 @@ public class MainActivity extends Activity {
 	 */
 	private void showQuickHelp() {
 
-		if (myApp.getPreferences().getBoolean("quick_help", true)) {
-
-			showDialog(Constants.QUICK_HELP_DIALOG_ID);
-
-		}
+		showDialog(Constants.QUICK_HELP_DIALOG_ID);
 
 	}
 
@@ -1021,17 +1027,16 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
-		MenuItem mi = menu.findItem(R.id.gpsOnOff);
-
-		if (myApp.isGpsOn()) {
-			mi.setTitle(R.string.stop_gps);
-		} else {
-			mi.setTitle(R.string.start_gps);
-		}
+		/*
+		 * MenuItem mi = menu.findItem(R.id.gpsOnOff); if (myApp.isGpsOn()) {
+		 * mi.setTitle(R.string.stop_gps); } else {
+		 * mi.setTitle(R.string.start_gps); }
+		 */
 
 		// TODO: test lab
-		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
-		testLabMenuItem.setVisible(false);
+		// MenuItem testLabMenuItem = (MenuItem)
+		// menu.findItem(R.id.testLabMenuItem);
+		// testLabMenuItem.setVisible(false);
 
 		return true;
 	}
@@ -1075,7 +1080,7 @@ public class MainActivity extends Activity {
 
 				return true;
 
-			case R.id.gpsOnOff:
+/*			case R.id.gpsOnOff:
 
 				if (myApp.isGpsOn()) {
 
@@ -1091,6 +1096,12 @@ public class MainActivity extends Activity {
 					startGPSService();
 				}
 
+				return true; */
+				
+			case R.id.quickHelp :
+				
+				showQuickHelp();
+				
 				return true;
 
 			case R.id.backupMenuItem:
@@ -1103,8 +1114,8 @@ public class MainActivity extends Activity {
 				restoreDatabase();
 				return true;
 
-			case R.id.testLabMenuItem:
-				return true;
+//			case R.id.testLabMenuItem:
+//				return true;
 
 			default:
 
@@ -1678,4 +1689,31 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	/**
+	 * GPS service connection
+	 */
+	private GpsService gpsService;
+	private boolean mIsBound = false;
+	private ServiceConnection mConnection = new ServiceConnection() {
+	    public void onServiceConnected(ComponentName className, IBinder service) {
+	    	gpsService = ((GpsService.LocalBinder)service).getService();
+	    }
+	    public void onServiceDisconnected(ComponentName className) {
+	    	gpsService = null;
+	    }
+	};
+	private void doBindService() {
+	    bindService(new Intent(MainActivity.this, 
+	            GpsService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    mIsBound = true;
+	}
+	private void doUnbindService() {
+	    if (mIsBound) {
+	        // Detach our existing connection.
+	        unbindService(mConnection);
+	        mIsBound = false;
+	    }
+	}	
+	
+	
 }
