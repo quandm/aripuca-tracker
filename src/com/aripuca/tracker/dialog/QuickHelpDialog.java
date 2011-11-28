@@ -51,6 +51,10 @@ public class QuickHelpDialog extends Dialog {
 		params.width = LayoutParams.FILL_PARENT;
 
 		getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+		
+		// setting "showNextTime" initial value
+		CheckBox checkBox = (CheckBox) findViewById(R.id.showNextTime);
+		checkBox.setChecked(myApp.getPreferences().getBoolean("quick_help", true));
 
 		TextView text = (TextView) findViewById(R.id.helpText);
 		text.setText(getNextHelpAdvice());

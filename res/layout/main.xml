@@ -34,7 +34,7 @@
 	</LinearLayout>
 	
 	<LinearLayout android:id="@+id/messageBox" style="@style/FillParent"
-		android:gravity="center">
+		android:gravity="bottom" android:layout_marginBottom="45dp">
 
 		<LinearLayout android:layout_width="fill_parent" android:orientation="vertical"
 			android:layout_height="100dp" android:background="@drawable/border2"

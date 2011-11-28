@@ -25,7 +25,7 @@
     <string name="prev_segment">Предыдущий сегмент</string>
     <string name="next_segment">Следующий сегмент</string>
     <string name="do_you_know">Знаете ли вы?</string>
-    <string name="show_next_time">Показывать при запуске</string>
+    <string name="show_on_startup">Показывать при запуске</string>
         
     <!-- SEPARATE WORDS -->
     <string name="m">м</string>
