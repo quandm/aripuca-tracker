@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,22 @@ import android.widget.TextView;
 
 public class CompassActivity extends Activity {
 
+	private Location currentLocation;
+
+	/**
+	 * Location updates broadcast receiver
+	 */
+	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			Bundle bundle = intent.getExtras();
+			
+			currentLocation = (Location) bundle.getParcelable("location");
+
+		}
+	};
+	
 	/**
 	 * Compass updates broadcast receiver
 	 */
@@ -25,7 +42,6 @@ public class CompassActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			Bundle bundle = intent.getExtras();
 			updateCompass(bundle.getFloat("azimuth"));
-			//Log.d(Constants.TAG, "Compass update: " + bundle.getFloat("azimuth"));
 		}
 	};
 
@@ -57,6 +73,7 @@ public class CompassActivity extends Activity {
 	public void onPause() {
 
 		unregisterReceiver(compassBroadcastReceiver);
+		unregisterReceiver(locationBroadcastReceiver);
 
 		super.onPause();
 	}
@@ -64,10 +81,12 @@ public class CompassActivity extends Activity {
 	@Override
 	public void onResume() {
 
-		// registering receiver for compass updates 
-		IntentFilter filter = new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
-		registerReceiver(compassBroadcastReceiver, filter);
-
+		// registering receiver for compass updates
+		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
+		
+		// registering receiver for location updates
+		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
+		
 		super.onResume();
 
 	}
@@ -82,13 +101,13 @@ public class CompassActivity extends Activity {
 
 		float rotation = 0;
 
-		if (trueNorth && myApp.getCurrentLocation() != null) {
+		if (trueNorth && currentLocation != null) {
 
 			long now = System.currentTimeMillis();
 
 			// let's request declination every 15 minutes, not every compass update
 			if (now - declinationLastUpdate > 15 * 60 * 1000) {
-				declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
+				declination = Utils.getDeclination(currentLocation, now);
 				Log.d(Constants.TAG, "declination update: " + declination);
 				declinationLastUpdate = now;
 			}

@@ -4,7 +4,6 @@ import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.TrackRecorder;
-import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.SunriseSunset;
@@ -16,10 +15,8 @@ import java.io.File;
 import java.io.IOException;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -91,16 +88,24 @@ public class MainActivity extends Activity {
 
 	private long declinationLastUpdate = 0;
 
+	private Location currentLocation;
+
 	/**
 	 * location updates broadcast receiver
 	 */
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+
 			Bundle bundle = intent.getExtras();
+			
+			currentLocation = (Location) bundle.getParcelable("location");
+
+			//Log.v(Constants.TAG, "locationBroadcastReceiver: updateMainActivity");
 
 			// update MainActivity UI
 			updateMainActivity(bundle.getInt("location_provider"));
+
 		}
 	};
 	/**
@@ -314,6 +319,11 @@ public class MainActivity extends Activity {
 		myApp = ((MyApp) getApplicationContext());
 		myApp.setMainActivity(this);
 
+		// get instance of TrackRecorder class for fast access from MainActivity
+		trackRecorder = TrackRecorder.getInstance(myApp);
+
+		orientationHelper = new OrientationHelper(MainActivity.this);
+
 		initializeHiddenPreferences();
 
 		// ----------------------------------------------------------------------
@@ -322,14 +332,10 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 
 		// restoring previous application state
+		// it should be done between setContentView & replaceDynamicView calls 
 		if (savedInstanceState != null) {
 			restoreInstanceState(savedInstanceState);
 		}
-
-		// get instance of TrackRecorder class for fast access from MainActivity
-		trackRecorder = TrackRecorder.getInstance(myApp);
-
-		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		// attaching default middle layout
 		if (trackRecorder.isRecording()) {
@@ -338,43 +344,27 @@ public class MainActivity extends Activity {
 			this.replaceDynamicView(R.layout.main_idle2);
 		}
 
-		// disable control buttons
-		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
-		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
+		this.disableControlButtons();
 
-		// start gps only if stopped
-		// if gps was stopped before screen rotation - do not start
-		if (!myApp.isGpsOn() && myApp.getGpsStateBeforeRotation()) {
+		// start GPS service only if not started
+		startGPSService();
 
-			startGPSService();
-
-		} else {
-
-			// gps service can already be running if activity is recreated due
-			// to orientation change
-
-			// if track recording mode is ON
-			if (trackRecorder.isRecording()) {
-
-				((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
-
-				// enabling control buttons
-				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
-				((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
-
-			} else {
-
+		// show quick help only when activity first started
+		if (savedInstanceState == null) {
+			if (myApp.getPreferences().getBoolean("quick_help", true)) {
+				showQuickHelp();
 			}
+		}
 
+		// if track recording mode is ON
+		if (trackRecorder.isRecording()) {
+			// change "Record" button text with "Stop"
+			((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
+			// enabling control buttons
+			this.enableControlButtons();
 		}
 
 		setControlButtonListeners();
-
-		if (myApp.getPreferences().getBoolean("quick_help", true)) {
-			showQuickHelp();
-		}
 
 	}
 
@@ -387,18 +377,15 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Called by the system, as part of destroying an activity due to a
+	 * configuration change, when it is known that a new instance will
+	 * immediately be created for the new configuration.
+	 */
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 
 		Log.v(Constants.TAG, "MainActivity: onRetainNonConfigurationInstance");
-
-		// setting a flag that activity is restarting and we will not
-		// stop gps service in onDestroy when in track recording mode
-		// myApp.setActivityRestarting(true);
-
-		// save gps state before rotation
-		// if gps stopped, let's not start it after rotation
-		myApp.setGpsStateBeforeRotation();
 
 		return null;
 
@@ -410,31 +397,36 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		super.onResume();
-		
 		Log.v(Constants.TAG, "MainActivity: onResume");
-
-		// preventing phone from sleeping
-		if (findViewById(R.id.dynamicView) != null) {
-			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
-		}
-
-		if (myApp.getCurrentLocation() != null) {
-			if (myApp.isFixReceived()) {
-				this.updateMainActivity(Constants.GPS_PROVIDER);
-			} else {
-				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
-			}
-		}
+		
+		super.onResume();
 
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
 
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
+		
+		// preventing phone from sleeping
+		if (findViewById(R.id.dynamicView) != null) {
+			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
+		}
 
-		// bind to GPS service
-		doBindService();
+		//bindGpsService();
+
+		// update main activity after it's resumed
+		if (currentLocation != null) {
+			if (myApp.isFixReceived()) {
+				this.updateMainActivity(Constants.GPS_PROVIDER);
+			} else {
+				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
+			}
+		} else {
+		
+			Log.v(Constants.TAG, "MainActivity: onResume: currentLocation=null");
+			
+		}
+
 	}
 
 	/**
@@ -444,14 +436,14 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		super.onPause();
-		
+
+		//unbindGpsService();
+
 		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
-		doUnbindService();		
-		
 	}
 
 	/**
@@ -461,22 +453,13 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 
 		Log.v(Constants.TAG, "MainActivity: onDestroy");
-		
+
 		if (this.isFinishing()) {
 
-			// turn off GPS when not recording and going to background
-			if (myApp.isGpsOn()) {
-				stopGPSService();
-			}
+			stopGPSService();
 
 			this.saveHiddenPreferences();
 		}
-
-		/*
-		 * if (!myApp.isActivityRestarting()) { // stop gps service if
-		 * application is going to be destroyed if (myApp.isGpsOn()) {
-		 * stopGPSService(); } }
-		 */
 
 		myApp.setMainActivity(null);
 
@@ -487,21 +470,27 @@ public class MainActivity extends Activity {
 	 * Restoring data saved in onSaveInstanceState
 	 */
 	private void restoreInstanceState(Bundle savedInstanceState) {
+		
+		Log.v(Constants.TAG, "MainActivity: restoreInstanceState");
 
 		speedContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("speedContainerId"));
 		timeContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("timeContainerId"));
 		distanceContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("distanceContainerId"));
 		elevationContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("elevationContainerId"));
 		coordinatesContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("coordinatesContainerId"));
-
+		
+		// restore current location 
+		currentLocation = (Location) savedInstanceState.getParcelable("location");
+		
+		// restore pauseResumeTrackButton title and state
 		if (findViewById(R.id.pauseResumeTrackButton) != null) {
+
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setText(savedInstanceState
 					.getString("pauseButtonText"));
-		}
 
-		if (findViewById(R.id.pauseResumeTrackButton) != null) {
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(savedInstanceState
 					.getBoolean("pauseButtonState"));
+
 		}
 
 	}
@@ -514,11 +503,16 @@ public class MainActivity extends Activity {
 
 		super.onSaveInstanceState(outState);
 
+		Log.v(Constants.TAG, "MainActivity: onSaveInstanceState");
+
 		outState.putInt("speedContainerId", speedContainerCarousel.getCurrentContainerId());
 		outState.putInt("timeContainerId", timeContainerCarousel.getCurrentContainerId());
 		outState.putInt("distanceContainerId", distanceContainerCarousel.getCurrentContainerId());
 		outState.putInt("elevationContainerId", elevationContainerCarousel.getCurrentContainerId());
 		outState.putInt("coordinatesContainerId", coordinatesContainerCarousel.getCurrentContainerId());
+	
+		// saving current location 
+		outState.putParcelable("location", currentLocation);
 
 		outState.putString("pauseButtonText", ((Button) findViewById(R.id.pauseResumeTrackButton)).getText().toString());
 		outState.putBoolean("pauseButtonState", ((Button) findViewById(R.id.pauseResumeTrackButton)).isEnabled());
@@ -539,6 +533,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void setContainer(ContainerCarousel carousel) {
 
 		// assigning click event listener to speed or pace container
@@ -604,10 +601,14 @@ public class MainActivity extends Activity {
 	 */
 	private void startGPSService() {
 
-		// starting GPS listener service
-		startService(new Intent(this, GpsService.class));
+		if (!GpsService.isRunning()) {
+			// starting GPS listener service
+			startService(new Intent(this, GpsService.class));
+		}
 
-		myApp.setGpsOn(true);
+		// bind to GPS service
+		//bindGpsService();
+
 	}
 
 	/**
@@ -617,9 +618,7 @@ public class MainActivity extends Activity {
 
 		myApp.setFixReceived(false);
 
-		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
-		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
+		this.disableControlButtons();
 
 		// ((Button)
 		// findViewById(R.id.gpsServiceButton)).setText(getString(R.string.gps_off));
@@ -631,9 +630,33 @@ public class MainActivity extends Activity {
 
 		stopService(new Intent(this, GpsService.class));
 
+		unbindGpsService();
+
 		Log.v(Constants.TAG, "stopGPSService");
 
 		myApp.setGpsOn(false);
+
+	}
+
+	/**
+	 * Enable control buttons
+	 */
+	protected void enableControlButtons() {
+
+		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
+
+	}
+
+	/**
+	 * Disable control buttons
+	 */
+	protected void disableControlButtons() {
+
+		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
+		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 
 	}
 
@@ -735,19 +758,10 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
-			/*
-			 * if (myApp.getCurrentLocation() != null) { if
-			 * (myApp.getCurrentLocation().getAccuracy() != 0 &&
-			 * myApp.getCurrentLocation().getAccuracy() >
-			 * Integer.parseInt(myApp.getPreferences().getString(
-			 * "min_accuracy", "10"))) { Toast.makeText(MainActivity.this,
-			 * "Please wait for a better fix", Toast.LENGTH_SHORT).show(); } }
-			 */
-
 			// let's make reverse geocoder request and then show Add Waypoint
 			// dialog
 			// address will be inserted as default description for this waypoint
-			
+
 			// disable "add waypoint" button for the time of request
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 
@@ -755,7 +769,7 @@ public class MainActivity extends Activity {
 					&& myApp.getPreferences().getBoolean("waypoint_default_description", false)) {
 
 				// processing is done in separate thread
-				geocodeLocation(myApp.getCurrentLocation(), MainActivity.this, new GeocoderHandler());
+				geocodeLocation(currentLocation, MainActivity.this, new GeocoderHandler());
 
 			} else {
 				showAddWaypointDialog(null);
@@ -782,7 +796,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -890,14 +904,14 @@ public class MainActivity extends Activity {
 		}
 
 		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
-		// wpLat.setText(Location.convert(myApp.getCurrentLocation().getLatitude(),
+		// wpLat.setText(Location.convert(location.getLatitude(),
 		// 0));
-		wpLat.setText(Utils.formatCoord(myApp.getCurrentLocation().getLatitude()));
+		wpLat.setText(Utils.formatCoord(currentLocation.getLatitude()));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-		// wpLng.setText(Location.convert(myApp.getCurrentLocation().getLongitude(),
+		// wpLng.setText(Location.convert(location.getLongitude(),
 		// 0));
-		wpLng.setText(Utils.formatCoord(myApp.getCurrentLocation().getLongitude()));
+		wpLng.setText(Utils.formatCoord(currentLocation.getLongitude()));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -921,8 +935,8 @@ public class MainActivity extends Activity {
 				values.put("descr", descrStr);
 				values.put("lat", lat);
 				values.put("lng", lng);
-				values.put("elevation", Utils.formatNumber(myApp.getCurrentLocation().getAltitude(), 1));
-				values.put("time", myApp.getCurrentLocation().getTime());
+				values.put("elevation", Utils.formatNumber(currentLocation.getAltitude(), 1));
+				values.put("time", currentLocation.getTime());
 
 				// if track recording started assign track_id
 				if (trackRecorder.isRecording()) {
@@ -971,7 +985,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-				break;
+			break;
 
 			default:
 				dialog = null;
@@ -1080,28 +1094,31 @@ public class MainActivity extends Activity {
 
 				return true;
 
-/*			case R.id.gpsOnOff:
+				/*
+				 * case R.id.gpsOnOff:
+				 * 
+				 * if (myApp.isGpsOn()) {
+				 * 
+				 * // if in track recording mode do not stop GPS, display
+				 * // warning message instead
+				 * if (!trackRecorder.isRecording()) {
+				 * stopGPSService();
+				 * } else {
+				 * Toast.makeText(MainActivity.this,
+				 * R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
+				 * }
+				 * 
+				 * } else {
+				 * startGPSService();
+				 * }
+				 * 
+				 * return true;
+				 */
 
-				if (myApp.isGpsOn()) {
+			case R.id.quickHelp:
 
-					// if in track recording mode do not stop GPS, display
-					// warning message instead
-					if (!trackRecorder.isRecording()) {
-						stopGPSService();
-					} else {
-						Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
-					}
-
-				} else {
-					startGPSService();
-				}
-
-				return true; */
-				
-			case R.id.quickHelp :
-				
 				showQuickHelp();
-				
+
 				return true;
 
 			case R.id.backupMenuItem:
@@ -1114,8 +1131,8 @@ public class MainActivity extends Activity {
 				restoreDatabase();
 				return true;
 
-//			case R.id.testLabMenuItem:
-//				return true;
+				//			case R.id.testLabMenuItem:
+				//				return true;
 
 			default:
 
@@ -1177,38 +1194,34 @@ public class MainActivity extends Activity {
 	 */
 	public void updateMainActivity(int locationProvider) {
 
-		Location location = myApp.getCurrentLocation();
-
-		TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
-
-		// activate buttons if location updates come from GPS
 		if (locationProvider == Constants.GPS_PROVIDER) {
+
+			// updates came from GPS_PROVIDER
+			// new fix received
 
 			if (!myApp.isFixReceived()) {
 				myApp.setFixReceived(true);
 			}
 
+			// activate buttons if location updates come from GPS
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 
+			// hide waiting for gps fix message
 			if (findViewById(R.id.messageBox) != null) {
 				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.INVISIBLE);
 			}
 
 		} else {
 
-			// save last known location for updates until new fix received
-			// Toast.makeText(MainActivity.this,
-			// R.string.last_known_location_received,
-			// Toast.LENGTH_SHORT).show();
-
+			// show waiting for gps fix message
 			if (findViewById(R.id.messageBox) != null) {
 				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.VISIBLE);
 			}
 
 			// calculating gps fix age
 			if (findViewById(R.id.fixAge) != null) {
-				long fixAge = System.currentTimeMillis() - location.getTime();
+				long fixAge = System.currentTimeMillis() - currentLocation.getTime();
 				String t = Utils.timeToHumanReadableString(this, fixAge);
 				((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
 			}
@@ -1222,16 +1235,16 @@ public class MainActivity extends Activity {
 		int coordUnit = Integer.parseInt(myApp.getPreferences().getString("coord_units", "0"));
 
 		if (findViewById(R.id.lat) != null) {
-			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(location.getLatitude(), coordUnit));
+			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(currentLocation.getLatitude(), coordUnit));
 		}
 
 		if (findViewById(R.id.lng) != null) {
-			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(location.getLongitude(), coordUnit));
+			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(currentLocation.getLongitude(), coordUnit));
 		}
 
-		if (location.hasAccuracy()) {
+		if (currentLocation.hasAccuracy()) {
 
-			float accuracy = location.getAccuracy();
+			float accuracy = currentLocation.getAccuracy();
 
 			if (findViewById(R.id.accuracy) != null) {
 				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR
@@ -1244,14 +1257,14 @@ public class MainActivity extends Activity {
 		}
 
 		if (findViewById(R.id.lastFix) != null) {
-			String lastFix = (new SimpleDateFormat("H:mm:ss")).format(location.getTime());
+			String lastFix = (new SimpleDateFormat("H:mm:ss")).format(currentLocation.getTime());
 			((TextView) findViewById(R.id.lastFix)).setText(lastFix);
 		}
 
-		if (location.hasAltitude()) {
+		if (currentLocation.hasAltitude()) {
 			if (findViewById(R.id.elevation) != null) {
-				((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation((float) myApp
-						.getCurrentLocation().getAltitude(), elevationUnit));
+				((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation(
+						(float) currentLocation.getAltitude(), elevationUnit));
 			}
 			if (findViewById(R.id.elevationUnit) != null) {
 				((TextView) findViewById(R.id.elevationUnit)).setText(Utils.getLocalizedElevationUnit(this,
@@ -1261,10 +1274,10 @@ public class MainActivity extends Activity {
 
 		// current speed and pace
 		float speed = 0;
-		if (location.hasSpeed()) {
+		if (currentLocation.hasSpeed()) {
 
 			// speed is in meters per second
-			speed = location.getSpeed();
+			speed = currentLocation.getSpeed();
 
 			// current speed (cycling, driving)
 			if (findViewById(R.id.speed) != null) {
@@ -1384,7 +1397,8 @@ public class MainActivity extends Activity {
 		Calendar cal = Calendar.getInstance();
 		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
 
-		SunriseSunset ss = new SunriseSunset(location.getLatitude(), location.getLongitude(), cal.getTime(),
+		SunriseSunset ss = new SunriseSunset(currentLocation.getLatitude(), currentLocation.getLongitude(),
+				cal.getTime(),
 				tz.getOffset(cal.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
@@ -1410,12 +1424,12 @@ public class MainActivity extends Activity {
 
 		// let's not request declination on every compass update
 		float declination = 0;
-		if (trueNorth && myApp.getCurrentLocation() != null) {
+		if (trueNorth && currentLocation != null) {
 			long now = System.currentTimeMillis();
 			// let's request declination every 15 minutes, not every compass
 			// update
 			if (now - declinationLastUpdate > 15 * 60 * 1000) {
-				declination = Utils.getDeclination(myApp.getCurrentLocation(), now);
+				declination = Utils.getDeclination(currentLocation, now);
 				declinationLastUpdate = now;
 			}
 		}
@@ -1444,7 +1458,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1693,27 +1709,46 @@ public class MainActivity extends Activity {
 	 * GPS service connection
 	 */
 	private GpsService gpsService;
-	private boolean mIsBound = false;
-	private ServiceConnection mConnection = new ServiceConnection() {
-	    public void onServiceConnected(ComponentName className, IBinder service) {
-	    	gpsService = ((GpsService.LocalBinder)service).getService();
-	    }
-	    public void onServiceDisconnected(ComponentName className) {
-	    	gpsService = null;
-	    }
+	private boolean isGpsServiceBound = false;
+
+	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
+
+		public void onServiceConnected(ComponentName className, IBinder service) {
+
+			Log.v(Constants.TAG, "MainActivity: onServiceConnected");
+
+			gpsService = ((GpsService.LocalBinder) service).getService();
+			
+			isGpsServiceBound = true;
+			
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			gpsService = null;
+			isGpsServiceBound = false;
+		}
+
 	};
-	private void doBindService() {
-	    bindService(new Intent(MainActivity.this, 
-	            GpsService.class), mConnection, Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
+
+	private void bindGpsService() {
+
+		bindService(new Intent(MainActivity.this,
+				GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE);
+
+		Log.v(Constants.TAG, "MainActivity: doBindService");
+
 	}
-	private void doUnbindService() {
-	    if (mIsBound) {
-	        // Detach our existing connection.
-	        unbindService(mConnection);
-	        mIsBound = false;
-	    }
-	}	
-	
-	
+
+	private void unbindGpsService() {
+
+		if (isGpsServiceBound) {
+
+			// Detach our existing connection.
+			unbindService(gpsServiceConnection);
+
+			isGpsServiceBound = false;
+		}
+
+	}
+
 }
