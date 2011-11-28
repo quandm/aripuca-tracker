@@ -89,6 +89,8 @@ public class WaypointsListActivity extends ListActivity {
 	private ArrayList<Waypoint> waypoints;
 
 	private OrientationHelper orientationHelper;
+	
+	private Location currentLocation;
 
 	/**
 	 * Location updates broadcast receiver
@@ -99,6 +101,10 @@ public class WaypointsListActivity extends ListActivity {
 
 			// Log.d(Constants.TAG,
 			// "WaypointsListActivity: LOCATION BROADCAST MESSAGE RECEIVED");
+
+			Bundle bundle = intent.getExtras();
+			
+			currentLocation = (Location) bundle.getParcelable("location");
 
 			waypointsArrayAdapter.sortByDistance();
 			waypointsArrayAdapter.notifyDataSetChanged();
@@ -177,9 +183,9 @@ public class WaypointsListActivity extends ListActivity {
 			Waypoint wp = items.get(position);
 			if (wp != null) {
 
-				if (myApp.getCurrentLocation() != null) {
+				if (currentLocation != null) {
 
-					float distanceTo = myApp.getCurrentLocation().distanceTo(wp.getLocation());
+					float distanceTo = currentLocation.distanceTo(wp.getLocation());
 
 					String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 
@@ -189,7 +195,7 @@ public class WaypointsListActivity extends ListActivity {
 
 					wp.setDistanceTo(distanceTo);
 
-					newBearing = myApp.getCurrentLocation().bearingTo(wp.getLocation());
+					newBearing = currentLocation.bearingTo(wp.getLocation());
 
 					if ((int) newBearing < 0) {
 						newBearing = 360 - Math.abs((int) newBearing);

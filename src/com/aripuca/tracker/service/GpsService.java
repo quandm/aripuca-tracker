@@ -31,7 +31,15 @@ public class GpsService extends Service {
 	private SensorManager sensorManager;
 
 	private Location currentLocation;
+	
+	private static boolean running = false;
 
+	public static boolean isRunning() {
+		
+		return running;
+		
+	}
+	
 	/**
 	 * defines a listener that responds to location updates
 	 */
@@ -40,10 +48,10 @@ public class GpsService extends Service {
 		// Called when a new location is found by the network location provider.
 		@Override
 		public void onLocationChanged(Location location) {
+			
+			//Log.v(Constants.TAG, "GpsService: onLocationChanged");
 
 			if (myApp == null) { return; }
-
-			myApp.setCurrentLocation(location);
 
 			currentLocation = location;
 
@@ -52,11 +60,12 @@ public class GpsService extends Service {
 
 			Bundle bundle = new Bundle();
 			bundle.putInt("location_provider", Constants.GPS_PROVIDER);
+			bundle.putParcelable("location", location);
 
 			intent.putExtras(bundle);
-
+			
 			sendBroadcast(intent);
-
+			
 		}
 
 		@Override
@@ -121,14 +130,15 @@ public class GpsService extends Service {
 	public void onCreate() {
 
 		super.onCreate();
+		
+		Log.v(Constants.TAG, "GpsService: onCreate");
 
 		myApp = ((MyApp) getApplicationContext());
 
 		// GPS sensor
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-		requestLastKnownLocation();
+		
+		this.startLocationUpdates();		
 
 		// orientation sensor
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -137,13 +147,17 @@ public class GpsService extends Service {
 
 		// start updating time of tracking every second
 		updateTimeHandler.postDelayed(updateTimeTask, 100);
+		
+		running = true;
 
+		this.requestLastKnownLocation();			
+		
 	}
 
 	/**
 	 * Requesting last location from GPS or Network provider
 	 */
-	private void requestLastKnownLocation() {
+	public void requestLastKnownLocation() {
 
 		Location location;
 		int locationProvider;
@@ -162,8 +176,6 @@ public class GpsService extends Service {
 
 			locationProvider = Constants.NETWORK_PROVIDER_LAST;
 
-			myApp.setCurrentLocation(location);
-
 			currentLocation = location;
 
 			// let's broadcast location data to any activity waiting for updates
@@ -172,7 +184,8 @@ public class GpsService extends Service {
 			// attaching provider info
 			Bundle bundle = new Bundle();
 			bundle.putInt("location_provider", locationProvider);
-
+			bundle.putParcelable("location", location);
+			
 			intent.putExtras(bundle);
 
 			sendBroadcast(intent);
@@ -211,29 +224,31 @@ public class GpsService extends Service {
 	public void onDestroy() {
 
 		Log.v(Constants.TAG, "GpsService: onDestroy");
+		
+		running = false;
 
 		updateTimeHandler.removeCallbacks(updateTimeTask);
 
 		locationManager.removeUpdates(locationListener);
-		locationManager = null;
+		
+		this.stopLocationUpdates();
 
 		sensorManager.unregisterListener(sensorListener);
-		sensorManager = null;
 
+		locationManager = null;
+		sensorManager = null;
 		myApp = null;
 
 		super.onDestroy();
 
 	}
 
-	public void addLocationListener() {
+	public void startLocationUpdates() {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
 	
-	public void removeLocationListener() {
+	public void stopLocationUpdates() {
 		locationManager.removeUpdates(locationListener);
 	}
 	
-	
-
 }

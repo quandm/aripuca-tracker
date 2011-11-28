@@ -26,7 +26,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -42,9 +41,9 @@ public class MyApp extends Application {
 	 * gps on/off flag
 	 */
 	private boolean gpsOn = false;
-	
+
 	private boolean fixReceived = false;
-	
+
 	private Locale locale = null;
 
 	/**
@@ -64,27 +63,17 @@ public class MyApp extends Application {
 	 * MainActivity object reference
 	 */
 	private static MainActivity mainActivity;
-	
+
 	/**
 	 * is external storage available, ex: SD card
 	 */
 	private boolean externalStorageAvailable = false;
-	
-	/**
-	 * current gps location
-	 */
-	private Location currentLocation = null;
-	
-	/**
-	 * 
-	 */
-	private boolean gpsStateBeforeRotation = true;
-	
+
 	/**
 	 * database object
 	 */
 	private SQLiteDatabase db;
-	
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -106,22 +95,6 @@ public class MyApp extends Application {
 
 	public boolean isGpsOn() {
 		return this.gpsOn;
-	}
-
-	public void setGpsStateBeforeRotation() {
-		gpsStateBeforeRotation = this.gpsOn;
-	}
-
-	public boolean getGpsStateBeforeRotation() {
-		return gpsStateBeforeRotation;
-	}
-
-	public void setCurrentLocation(Location cl) {
-		currentLocation = cl;
-	}
-
-	public Location getCurrentLocation() {
-		return currentLocation;
 	}
 
 	public SQLiteDatabase getDatabase() {
@@ -318,13 +291,13 @@ public class MyApp extends Application {
 	public void onCreate() {
 
 		super.onCreate();
-		
+
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		updateLocale();
 
-		// registering receiver for compass updates
+		// registering receiver for language updates
 		registerReceiver(languageUpdateBroadcastReceiver, new IntentFilter(
 				"com.aripuca.tracker.LANGUAGE_UPDATES_ACTION"));
 
@@ -336,19 +309,20 @@ public class MyApp extends Application {
 
 		setExternalStorageState();
 
+		// set application external storage folder
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
 				+ Constants.APP_NAME;
-		
+
 		// create all folders required by the application on external storage
 		if (getExternalStorageAvailable() && getExternalStorageWriteable()) {
 			createFolderStructure();
 		} else {
 			//Toast.makeText(this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
 		}
-		
-		// adding famous waypoints
-		insertFamousWaypoints();
 
+		// adding famous waypoints to db
+		insertFamousWaypoints();
+		
 	}
 
 	/**
@@ -377,7 +351,9 @@ public class MyApp extends Application {
 	public void onConfigurationChanged(Configuration newConfig) {
 
 		if (locale != null) {
-			Log.v(Constants.TAG, "MyApp: onConfigurationChanged: updating locale: " + locale.getLanguage());
+
+			//Log.v(Constants.TAG, "MyApp: onConfigurationChanged: updating locale: " + locale.getLanguage());
+
 			newConfig.locale = locale;
 			Locale.setDefault(locale);
 			getBaseContext().getResources().updateConfiguration(newConfig,
@@ -454,7 +430,7 @@ public class MyApp extends Application {
 	public void log(String message) {
 
 		String fileName = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date()) + ".log";
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append((new SimpleDateFormat("yyyy-MM-dd HH-mm-ss")).format(new Date()));
 		sb.append(" | ");
@@ -480,13 +456,13 @@ public class MyApp extends Application {
 		}
 
 	}
-	
+
 	public boolean isFixReceived() {
 		return this.fixReceived;
 	}
-	
+
 	public void setFixReceived(boolean f) {
-		this.fixReceived  = f;
+		this.fixReceived = f;
 	}
 
 	/**
@@ -515,7 +491,7 @@ public class MyApp extends Application {
 		}
 
 	}
-	
+
 	/**
 	 * Create a list of famous waypoints and insert to db when application first
 	 * installed
@@ -523,7 +499,9 @@ public class MyApp extends Application {
 	private void insertFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (getPreferences().contains("famous_waypoints")) { return; }
+		if (getPreferences().contains("famous_waypoints")) {
+			return;
+		}
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
