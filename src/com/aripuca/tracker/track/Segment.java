@@ -7,15 +7,16 @@ import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.widget.Toast;
 
 public class Segment extends AbstractTrack {
 
-	public Segment(MyApp myApp) {
+	public Segment(Context context) {
 
-		super(myApp);
+		super(context);
 
 	}
 
@@ -62,7 +63,7 @@ public class Segment extends AbstractTrack {
 
 		} catch (SQLiteException e) {
 
-			Toast.makeText(myApp.getMainActivity(), "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 
 		}

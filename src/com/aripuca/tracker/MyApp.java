@@ -54,11 +54,6 @@ public class MyApp extends Application {
 	private boolean externalStorageWriteable = false;
 
 	/**
-	 * MainActivity object reference
-	 */
-	private static MainActivity mainActivity;
-
-	/**
 	 * is external storage available, ex: SD card
 	 */
 	private boolean externalStorageAvailable = false;
@@ -106,14 +101,6 @@ public class MyApp extends Application {
 		return externalStorageWriteable;
 	}
 
-	public void setMainActivity(MainActivity ma) {
-		mainActivity = ma;
-	}
-
-	public MainActivity getMainActivity() {
-		return mainActivity;
-	}
-
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}
@@ -137,9 +124,10 @@ public class MyApp extends Application {
 		// private static final String NOTES_TABLE_NAME = "notes";
 
 		/**
-		 * tracks table name
+		 * tracks table
 		 */
 		private static final String TRACKS_TABLE = "tracks";
+
 		/**
 		 * tracks table create sql
 		 */
@@ -180,7 +168,7 @@ public class MyApp extends Application {
 						"finish_time INTEGER)";
 
 		/**
-		 * track points table title
+		 * track points table
 		 */
 		private static final String TRACKPOINTS_TABLE = "track_points";
 		/**
@@ -200,7 +188,7 @@ public class MyApp extends Application {
 						"time INTEGER NOT NULL)";
 
 		/**
-		 * waypoints sql table name
+		 * waypoints sql table
 		 */
 		private static final String WAYPOINTS_TABLE = "waypoints";
 
@@ -219,6 +207,9 @@ public class MyApp extends Application {
 						"elevation REAL," +
 						"time INTEGER NOT NULL)";
 
+		/**
+		 * OpenHelper constructor
+		 */
 		OpenHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -233,7 +224,6 @@ public class MyApp extends Application {
 			db.execSQL(TRACKS_TABLE_CREATE);
 			db.execSQL(TRACKPOINTS_TABLE_CREATE);
 			db.execSQL(SEGMENTS_TABLE_CREATE);
-
 		}
 
 		/**
@@ -256,21 +246,41 @@ public class MyApp extends Application {
 		// upgrading db example
 		/*
 		 * public void onUpgrade(SQLiteDatabase db, int oldVersion, int
-		 * newVersion) { Log.w(Constants.TAG, "Upgrading database from version "
-		 * + oldVersion + " to " + newVersion); if (oldVersion < 1) {
+		 * newVersion) {
+		 * 
+		 * Log.w(Constants.TAG, "Upgrading database from version "
+		 * + oldVersion + " to " + newVersion);
+		 * 
+		 * if (oldVersion < 1) {
+		 * 
 		 * db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
-		 * db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE); onCreate(db); }
-		 * else { // adding "distance" field to track points table if
-		 * (oldVersion <= 1) { Log.i(Constants.TAG,
+		 * db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
+		 * 
+		 * onCreate(db);
+		 * }
+		 * else {
+		 * if (oldVersion <= 1) {
+		 * Log.i(Constants.TAG,
 		 * "distance field added to track_points table");
+		 * 
+		 * // adding "distance" field to track points table
 		 * db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE +
-		 * " ADD distance REAL"); } // adding segment stats table if (oldVersion
-		 * <= 1) { Log.i(Constants.TAG, "Segments table added");
-		 * db.execSQL(SEGMENTS_TABLE_CREATE); } } }
+		 * " ADD distance REAL");
+		 * }
+		 * 
+		 * if (oldVersion <= 1) {
+		 * 
+		 * Log.i(Constants.TAG, "Segments table added");
+		 * 
+		 * // adding segment stats table
+		 * db.execSQL(SEGMENTS_TABLE_CREATE);
+		 * 
+		 * }
+		 * }
+		 * }
 		 */
-
 	}
 
 	@Override
@@ -308,7 +318,7 @@ public class MyApp extends Application {
 
 		// adding famous waypoints to db
 		insertFamousWaypoints();
-		
+
 	}
 
 	/**

@@ -8,6 +8,7 @@ import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.util.Log;
@@ -18,9 +19,9 @@ import android.widget.Toast;
  */
 public class Track extends AbstractTrack {
 
-	public Track(MyApp myApp) {
+	public Track(Context context) {
 		
-		super(myApp);
+		super(context);
 
 		this.insertNewTrack();
 		
@@ -53,10 +54,14 @@ public class Track extends AbstractTrack {
 		values.put("start_time", this.trackTimeStart);
 
 		try {
+			
 			long newTrackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
 			this.setTrackId(newTrackId);
+			
 		} catch (SQLiteException e) {
-			Toast.makeText(myApp.getMainActivity(), "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			
+			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			
 			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
 
@@ -86,9 +91,13 @@ public class Track extends AbstractTrack {
 		values.put("recording", 0);
 
 		try {
+			
 			myApp.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
+			
 		} catch (SQLiteException e) {
-			Toast.makeText(myApp.getMainActivity(), "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			
+			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
 
@@ -121,8 +130,11 @@ public class Track extends AbstractTrack {
 			this.trackPointsCount++;
 
 		} catch (SQLiteException e) {
-			Toast.makeText(myApp.getMainActivity(), "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			
+			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+			
 		}
 
 	}

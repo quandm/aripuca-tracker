@@ -47,10 +47,8 @@
         android:icon="@android:drawable/ic_menu_revert"
         android:title="@string/restore_db"/>
 
-    <!--
      <item android:id="@+id/testLabMenuItem" 
 			android:title="Test Lab"
 			android:icon="@android:drawable/ic_menu_manage" />
-    -->
 
 </menu>
