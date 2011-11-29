@@ -11,9 +11,6 @@
 		<uses-library android:name="com.google.android.maps" />
 
 		<activity android:name=".MainActivity" android:label="@string/main_app_title" >
-			<!-- android:configChanges="orientation"  android:launchMode="singleTask" 
-			 android:configChanges="keyboardHidden|orientation"
-			-->
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

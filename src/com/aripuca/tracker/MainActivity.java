@@ -69,11 +69,6 @@ import android.view.View.OnClickListener;
 public class MainActivity extends Activity {
 
 	/**
-	 * 
-	 */
-	// private WakeLock wakeLock;
-
-	/**
 	 * Reference to Application object
 	 */
 	private MyApp myApp;
@@ -88,7 +83,12 @@ public class MainActivity extends Activity {
 
 	private long declinationLastUpdate = 0;
 
+	/**
+	 * location received from GpsService
+	 */
 	private Location currentLocation;
+
+	private boolean fixReceived = false;
 
 	/**
 	 * location updates broadcast receiver
@@ -98,10 +98,8 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 
 			Bundle bundle = intent.getExtras();
-			
-			currentLocation = (Location) bundle.getParcelable("location");
 
-			//Log.v(Constants.TAG, "locationBroadcastReceiver: updateMainActivity");
+			currentLocation = (Location) bundle.getParcelable("location");
 
 			// update MainActivity UI
 			updateMainActivity(bundle.getInt("location_provider"));
@@ -332,7 +330,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 
 		// restoring previous application state
-		// it should be done between setContentView & replaceDynamicView calls 
+		// it should be done between setContentView & replaceDynamicView calls
 		if (savedInstanceState != null) {
 			restoreInstanceState(savedInstanceState);
 		}
@@ -368,27 +366,14 @@ public class MainActivity extends Activity {
 
 	}
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-
-		super.onConfigurationChanged(newConfig);
-
-		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
-
-	}
-
 	/**
-	 * Called by the system, as part of destroying an activity due to a
-	 * configuration change, when it is known that a new instance will
-	 * immediately be created for the new configuration.
+	 * Called by the system when the device configuration changes while activity
+	 * is running
 	 */
 	@Override
-	public Object onRetainNonConfigurationInstance() {
-
-		Log.v(Constants.TAG, "MainActivity: onRetainNonConfigurationInstance");
-
-		return null;
-
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
 	}
 
 	/**
@@ -398,7 +383,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		Log.v(Constants.TAG, "MainActivity: onResume");
-		
+
 		super.onResume();
 
 		// registering receiver for compass updates
@@ -406,25 +391,25 @@ public class MainActivity extends Activity {
 
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
-		
+
 		// preventing phone from sleeping
 		if (findViewById(R.id.dynamicView) != null) {
 			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
 		}
 
-		//bindGpsService();
+		// bindGpsService();
 
 		// update main activity after it's resumed
 		if (currentLocation != null) {
-			if (myApp.isFixReceived()) {
+			if (fixReceived) {
 				this.updateMainActivity(Constants.GPS_PROVIDER);
 			} else {
 				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
 			}
 		} else {
-		
+
 			Log.v(Constants.TAG, "MainActivity: onResume: currentLocation=null");
-			
+
 		}
 
 	}
@@ -437,7 +422,7 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 
-		//unbindGpsService();
+		// unbindGpsService();
 
 		Log.v(Constants.TAG, "MainActivity: onPause");
 
@@ -470,7 +455,7 @@ public class MainActivity extends Activity {
 	 * Restoring data saved in onSaveInstanceState
 	 */
 	private void restoreInstanceState(Bundle savedInstanceState) {
-		
+
 		Log.v(Constants.TAG, "MainActivity: restoreInstanceState");
 
 		speedContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("speedContainerId"));
@@ -478,10 +463,12 @@ public class MainActivity extends Activity {
 		distanceContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("distanceContainerId"));
 		elevationContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("elevationContainerId"));
 		coordinatesContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("coordinatesContainerId"));
-		
-		// restore current location 
+
+		// restore current location
 		currentLocation = (Location) savedInstanceState.getParcelable("location");
-		
+
+		fixReceived = savedInstanceState.getBoolean("fixReceived");
+
 		// restore pauseResumeTrackButton title and state
 		if (findViewById(R.id.pauseResumeTrackButton) != null) {
 
@@ -510,9 +497,11 @@ public class MainActivity extends Activity {
 		outState.putInt("distanceContainerId", distanceContainerCarousel.getCurrentContainerId());
 		outState.putInt("elevationContainerId", elevationContainerCarousel.getCurrentContainerId());
 		outState.putInt("coordinatesContainerId", coordinatesContainerCarousel.getCurrentContainerId());
-	
-		// saving current location 
+
+		// saving current location
 		outState.putParcelable("location", currentLocation);
+
+		outState.putBoolean("fixReceived", fixReceived);
 
 		outState.putString("pauseButtonText", ((Button) findViewById(R.id.pauseResumeTrackButton)).getText().toString());
 		outState.putBoolean("pauseButtonState", ((Button) findViewById(R.id.pauseResumeTrackButton)).isEnabled());
@@ -607,7 +596,7 @@ public class MainActivity extends Activity {
 		}
 
 		// bind to GPS service
-		//bindGpsService();
+		// bindGpsService();
 
 	}
 
@@ -616,7 +605,7 @@ public class MainActivity extends Activity {
 	 */
 	private void stopGPSService() {
 
-		myApp.setFixReceived(false);
+		fixReceived = false;
 
 		this.disableControlButtons();
 
@@ -633,8 +622,6 @@ public class MainActivity extends Activity {
 		unbindGpsService();
 
 		Log.v(Constants.TAG, "stopGPSService");
-
-		myApp.setGpsOn(false);
 
 	}
 
@@ -796,7 +783,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -985,7 +972,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-			break;
+				break;
 
 			default:
 				dialog = null;
@@ -1041,12 +1028,6 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
-		/*
-		 * MenuItem mi = menu.findItem(R.id.gpsOnOff); if (myApp.isGpsOn()) {
-		 * mi.setTitle(R.string.stop_gps); } else {
-		 * mi.setTitle(R.string.start_gps); }
-		 */
-
 		// TODO: test lab
 		// MenuItem testLabMenuItem = (MenuItem)
 		// menu.findItem(R.id.testLabMenuItem);
@@ -1094,27 +1075,6 @@ public class MainActivity extends Activity {
 
 				return true;
 
-				/*
-				 * case R.id.gpsOnOff:
-				 * 
-				 * if (myApp.isGpsOn()) {
-				 * 
-				 * // if in track recording mode do not stop GPS, display
-				 * // warning message instead
-				 * if (!trackRecorder.isRecording()) {
-				 * stopGPSService();
-				 * } else {
-				 * Toast.makeText(MainActivity.this,
-				 * R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
-				 * }
-				 * 
-				 * } else {
-				 * startGPSService();
-				 * }
-				 * 
-				 * return true;
-				 */
-
 			case R.id.quickHelp:
 
 				showQuickHelp();
@@ -1131,8 +1091,8 @@ public class MainActivity extends Activity {
 				restoreDatabase();
 				return true;
 
-				//			case R.id.testLabMenuItem:
-				//				return true;
+				// case R.id.testLabMenuItem:
+				// return true;
 
 			default:
 
@@ -1199,8 +1159,8 @@ public class MainActivity extends Activity {
 			// updates came from GPS_PROVIDER
 			// new fix received
 
-			if (!myApp.isFixReceived()) {
-				myApp.setFixReceived(true);
+			if (!fixReceived) {
+				fixReceived = true;
 			}
 
 			// activate buttons if location updates come from GPS
@@ -1398,8 +1358,7 @@ public class MainActivity extends Activity {
 		TimeZone tz = TimeZone.getTimeZone(cal.getTimeZone().getID());
 
 		SunriseSunset ss = new SunriseSunset(currentLocation.getLatitude(), currentLocation.getLongitude(),
-				cal.getTime(),
-				tz.getOffset(cal.getTimeInMillis()) / 1000 / 60 / 60);
+				cal.getTime(), tz.getOffset(cal.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
 			String srise = (new SimpleDateFormat("H:mm")).format(ss.getSunrise());
@@ -1458,9 +1417,7 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1526,19 +1483,6 @@ public class MainActivity extends Activity {
 			backClickCount = 0;
 		}
 	};
-
-	// --------------------------------------------------------------------------------------------
-
-	// -------------------------------------------------------------------------
-	// WAKE LOCK
-	// -------------------------------------------------------------------------
-	/*
-	 * public void aquireWakeLock() { wakeLock = ((PowerManager)
-	 * getSystemService(Context.POWER_SERVICE))
-	 * .newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK |
-	 * PowerManager.ON_AFTER_RELEASE, Constants.TAG); wakeLock.acquire(); }
-	 * public void releaseWakeLock() { wakeLock.release(); }
-	 */
 
 	/**
 	 * Copy application database to sd card
@@ -1718,9 +1662,9 @@ public class MainActivity extends Activity {
 			Log.v(Constants.TAG, "MainActivity: onServiceConnected");
 
 			gpsService = ((GpsService.LocalBinder) service).getService();
-			
+
 			isGpsServiceBound = true;
-			
+
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
@@ -1732,8 +1676,7 @@ public class MainActivity extends Activity {
 
 	private void bindGpsService() {
 
-		bindService(new Intent(MainActivity.this,
-				GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE);
+		bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE);
 
 		Log.v(Constants.TAG, "MainActivity: doBindService");
 

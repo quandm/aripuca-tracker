@@ -37,13 +37,6 @@ import android.widget.Toast;
  */
 public class MyApp extends Application {
 
-	/**
-	 * gps on/off flag
-	 */
-	private boolean gpsOn = false;
-
-	private boolean fixReceived = false;
-
 	private Locale locale = null;
 
 	/**
@@ -59,6 +52,7 @@ public class MyApp extends Application {
 	 * is external storage writable
 	 */
 	private boolean externalStorageWriteable = false;
+
 	/**
 	 * MainActivity object reference
 	 */
@@ -88,14 +82,6 @@ public class MyApp extends Application {
 
 		}
 	};
-
-	public void setGpsOn(boolean flag) {
-		this.gpsOn = flag;
-	}
-
-	public boolean isGpsOn() {
-		return this.gpsOn;
-	}
 
 	public SQLiteDatabase getDatabase() {
 		return db;
@@ -455,14 +441,6 @@ public class MyApp extends Application {
 			Toast.makeText(this, "IOException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 
-	}
-
-	public boolean isFixReceived() {
-		return this.fixReceived;
-	}
-
-	public void setFixReceived(boolean f) {
-		this.fixReceived = f;
 	}
 
 	/**
