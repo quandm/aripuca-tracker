@@ -21,7 +21,7 @@ import android.widget.TextView;
  */
 public class QuickHelpDialog extends Dialog {
 
-	private Context mContext;
+	private Context context;
 
 	/**
 	 * Reference to Application object
@@ -29,11 +29,12 @@ public class QuickHelpDialog extends Dialog {
 	private MyApp myApp;
 
 	public QuickHelpDialog(Context context) {
+		
 		super(context);
 
-		mContext = context;
+		this.context = context;
 
-		myApp = ((MyApp) mContext.getApplicationContext());
+		myApp = ((MyApp) context.getApplicationContext());
 
 	}
 
@@ -108,7 +109,7 @@ public class QuickHelpDialog extends Dialog {
 
 	private String getNextHelpAdvice() {
 
-		String[] items = mContext.getResources().getStringArray(R.array.quick_help);
+		String[] items = context.getResources().getStringArray(R.array.quick_help);
 
 		int id = (int) Math.round(Math.random() * (items.length - 1));
 

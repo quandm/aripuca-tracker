@@ -2,6 +2,8 @@ package com.aripuca.tracker.track;
 
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.app.Constants;
+
+import android.content.Context;
 import android.location.Location;
 import android.os.SystemClock;
 
@@ -16,6 +18,8 @@ public class TrackRecorder {
 	 * Reference to Application object
 	 */
 	private MyApp myApp;
+	
+	private Context context;
 
 	private int minDistance;
 
@@ -90,10 +94,10 @@ public class TrackRecorder {
 	/**
 	 * Singleton pattern
 	 */
-	public static TrackRecorder getInstance(MyApp myApp) {
+	public static TrackRecorder getInstance(Context context) {
 
 		if (instance == null) {
-			instance = new TrackRecorder(myApp);
+			instance = new TrackRecorder(context);
 		}
 
 		return instance;
@@ -103,9 +107,11 @@ public class TrackRecorder {
 	/**
 	 * Private constructor
 	 */
-	private TrackRecorder(MyApp myApp) {
+	private TrackRecorder(Context context) {
 
-		this.myApp = myApp;
+		this.context = context;
+		
+		myApp = (MyApp) context.getApplicationContext();
 
 	}
 

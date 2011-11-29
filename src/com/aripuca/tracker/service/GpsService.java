@@ -1,9 +1,6 @@
 package com.aripuca.tracker.service;
 
-import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.app.Constants;
-
-import com.aripuca.tracker.track.TrackRecorder;
 
 import android.app.Service;
 import android.content.Context;
@@ -20,26 +17,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 public class GpsService extends Service {
 
-	private MyApp myApp;
+//	private MyApp myApp;
 
 	private LocationManager locationManager;
 
 	private SensorManager sensorManager;
-
-	private Location currentLocation;
 	
+	private boolean onSchedule = false;
+
 	private static boolean running = false;
 
-	public static boolean isRunning() {
-		
-		return running;
-		
-	}
-	
 	/**
 	 * defines a listener that responds to location updates
 	 */
@@ -48,13 +38,29 @@ public class GpsService extends Service {
 		// Called when a new location is found by the network location provider.
 		@Override
 		public void onLocationChanged(Location location) {
+
+			if (onSchedule) {
 			
-			//Log.v(Constants.TAG, "GpsService: onLocationChanged");
+				if (location.getAccuracy()<50) {
+					
+					// let's broadcast location data to any activity waiting for updates
+					Intent intent = new Intent("com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION");
 
-			if (myApp == null) { return; }
+					Bundle bundle = new Bundle();
+					bundle.putInt("location_provider", Constants.GPS_PROVIDER);
+					bundle.putParcelable("location", location);
 
-			currentLocation = location;
+					intent.putExtras(bundle);
 
+					sendBroadcast(intent);
+					
+					locationManager.removeUpdates(this);
+					
+				}
+				
+				return;
+			} 
+			
 			// let's broadcast location data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
@@ -63,20 +69,27 @@ public class GpsService extends Service {
 			bundle.putParcelable("location", location);
 
 			intent.putExtras(bundle);
-			
+
 			sendBroadcast(intent);
 			
+			
+			
+			
+			
+
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
 		public void onProviderDisabled(String provider) {
-			Toast.makeText(myApp.getMainActivity(), "GPS provider disabled", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(myApp.getMainActivity(), "GPS provider disabled", Toast.LENGTH_SHORT).show();
 		}
 
 	};
@@ -110,19 +123,19 @@ public class GpsService extends Service {
 	};
 
 	// This is the object that receives interactions from clients
-    private final IBinder mBinder = new LocalBinder();	
-	
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }    
+	private final IBinder mBinder = new LocalBinder();
 
-    public class LocalBinder extends Binder {
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
+
+	public class LocalBinder extends Binder {
 		public GpsService getService() {
 			return GpsService.this;
 		}
 	}
-	
+
 	/**
 	 * Initialize service
 	 */
@@ -130,30 +143,32 @@ public class GpsService extends Service {
 	public void onCreate() {
 
 		super.onCreate();
-		
-		Log.v(Constants.TAG, "GpsService: onCreate");
 
-		myApp = ((MyApp) getApplicationContext());
+		Log.v(Constants.TAG, "GpsService: onCreate");
 
 		// GPS sensor
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		
-		this.startLocationUpdates();		
+
+		this.startLocationUpdates();
 
 		// orientation sensor
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);
 
-		// start updating time of tracking every second
-		updateTimeHandler.postDelayed(updateTimeTask, 100);
-		
 		running = true;
 
-		this.requestLastKnownLocation();			
-		
+		this.requestLastKnownLocation();
+
 	}
 
+	/**
+	 * is service running?
+	 */
+	public static boolean isRunning() {
+		return running;
+	}
+	
 	/**
 	 * Requesting last location from GPS or Network provider
 	 */
@@ -176,8 +191,6 @@ public class GpsService extends Service {
 
 			locationProvider = Constants.NETWORK_PROVIDER_LAST;
 
-			currentLocation = location;
-
 			// let's broadcast location data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
@@ -185,7 +198,7 @@ public class GpsService extends Service {
 			Bundle bundle = new Bundle();
 			bundle.putInt("location_provider", locationProvider);
 			bundle.putParcelable("location", location);
-			
+
 			intent.putExtras(bundle);
 
 			sendBroadcast(intent);
@@ -195,49 +208,23 @@ public class GpsService extends Service {
 	}
 
 	/**
-	 * Updating UI every second
-	 */
-	private Handler updateTimeHandler = new Handler();
-	private Runnable updateTimeTask = new Runnable() {
-		@Override
-		public void run() {
-
-			if (myApp.getMainActivity() != null) {
-
-				// update track statistics
-				TrackRecorder trackRecorder = TrackRecorder.getInstance(myApp);
-				if (trackRecorder.isRecording() && currentLocation != null) {
-					trackRecorder.updateStatistics(currentLocation);
-				}
-
-				myApp.getMainActivity().updateTime();
-			}
-
-			updateTimeHandler.postDelayed(this, 200);
-		}
-	};
-
-	/**
 	 * Service destructor
 	 */
 	@Override
 	public void onDestroy() {
 
 		Log.v(Constants.TAG, "GpsService: onDestroy");
-		
+
 		running = false;
 
-		updateTimeHandler.removeCallbacks(updateTimeTask);
-
 		locationManager.removeUpdates(locationListener);
-		
+
 		this.stopLocationUpdates();
 
 		sensorManager.unregisterListener(sensorListener);
 
 		locationManager = null;
 		sensorManager = null;
-		myApp = null;
 
 		super.onDestroy();
 
@@ -246,9 +233,40 @@ public class GpsService extends Service {
 	public void startLocationUpdates() {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
-	
+
 	public void stopLocationUpdates() {
 		locationManager.removeUpdates(locationListener);
 	}
 	
+	public void startScheduler() {
+		
+		onSchedule = true;
+
+		schedulerHandler.postDelayed(schedulerTask, 100);
+	}
+	
+	public void stopScheduler() {
+		
+		onSchedule = false;
+		
+		schedulerHandler.removeCallbacks(schedulerTask);
+	}
+	
+	/**
+	 * Updating UI every second
+	 */
+	private Handler schedulerHandler = new Handler();
+	private Runnable schedulerTask = new Runnable() {
+		@Override
+		public void run() {
+
+			startLocationUpdates();
+			
+			schedulerHandler.postDelayed(this, 60*1000);
+			
+		}
+		
+	};
+
+
 }
