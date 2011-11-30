@@ -26,7 +26,7 @@
     <string name="next_segment">Следующий сегмент</string>
     <string name="do_you_know">Знаете ли вы?</string>
     <string name="show_on_startup">Показывать при запуске</string>
-        
+
     <!-- SEPARATE WORDS -->
     <string name="m">м</string>
     <string name="ft">фт</string>
@@ -122,30 +122,30 @@
     <string name="street">Улица</string>
     <string name="satellite">Спутник</string>
     <string name="next">Следующий</string>
-        
+
+    <!-- ########################################################### -->
     <!-- SETTINGS -->
-    <string name="min_distance_title">Минимальная дистанция</string>
-    <string name="min_distance_summary">Минимальное расстояние между двумя записываемыми
-		точками</string>
-    <string name="min_accuracy_title">Минимальная точность</string>
-    <string name="min_accuracy_summary">Минимальная точность необходимая для записи точки
-	</string>
+    <!-- ########################################################### -->
     <string name="app_settings_title">Настройки приложения</string>
+    <!-- User interface -->
     <string name="user_interface_title">Интерфейс пользователя</string>
+    <string name="app_language">Язык приложения</string>
     <string name="wake_lock_title">Не гасить экран</string>
     <string name="wake_lock_summary">Предотвратить засыпание устройства</string>
     <string name="quick_help_title">Быстрая справка</string>
     <string name="quick_help_summary">Показывать быструю справку при запуске</string>
-        <string name="units">Единицы измерения</string>
-    <string name="units_summary">Выбор единиц измерения (координаты, расстояние,
-		скорость и т.д.)</string>
-    <string name="tracking_title">Запись треков</string>
-    <string name="online_sync_title">Online sync</string>
-    <string name="online_sync_summary">Synchronize your data with online resource</string>
-    <string name="online_sync_url">Sync URL</string>
-    <string name="user_name">Login name</string>
-    <string name="user_password">Password</string>
-    <string name="track_recording">Запись трека</string>
+    <!-- Units -->
+    <string name="units">Единицы измерения</string>
+    <string name="units_summary">Выбор единиц измерения (координаты, расстояние, скорость и т.д.)</string>
+    <!-- Track recording -->
+    <string name="track_recording_title">Запись трека</string>
+    <string name="track_recording_summary">Записать все точки в реальном времени с избыточной статистикой</string>
+    <string name="min_distance_title">Минимальная дистанция</string>
+    <string name="min_distance_summary">Минимальное расстояние между двумя записываемыми точками</string>
+    <string name="min_accuracy_title">Минимальная точность</string>
+    <string name="min_accuracy_summary">Минимальная точность необходимая для записи точки
+	</string>
+    <!-- Segmenting -->
     <string name="segmenting">Сегментирование</string>
     <string name="segmenting_mode">Режим сегментирования</string>
     <string name="segment_distance">По расстоянию</string>
@@ -155,24 +155,35 @@
     <string name="segment_custom_1">Интервалы пользователя 1</string>
     <string name="segment_custom_2">Интервалы пользователя 2</string>
     <string name="segment_custom_summary">Сегментировать по заданным интервалам</string>
-    <string name="waypoint_default_description">Описание по умолчанию</string>
-    <string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание
-		точки
-		waypoint description</string>
-    <string name="app_language">Язык приложения</string>
-
-    <!-- COMPASS -->
+    <!-- Compass -->
     <string name="compass">Компас</string>
     <string name="true_north">Указывать на истинный север</string>
-    <string name="true_north_summary">Компас указывает на истинный север, а не на
-		магнитный
-	</string>
+    <string name="true_north_summary">Компас указывает на истинный север, а не на магнитный</string>
     <string name="show_magnetic">Показать магнитный север</string>
-    <string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное
-		изображение</string>
+    <string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное изображение</string>
+    <!-- Waypoints -->
+    <string name="waypoint_default_description">Описание по умолчанию</string>
+    <string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание точки waypoint description</string>
+    <!-- Waypoint track -->
+    <string name="wpt_title">Waypoint track</string>
+    <string name="wpt_summary">Record track as a set of waypoints and save battery power</string>
+    <string name="wpt_request_interval_title">GPS request interval</string>
+    <string name="wpt_request_interval_summary">Request GPS location every N minutes. GPS stays off in between requests.</string>
+    <string name="wpt_fix_wait_time_title">GPS fix wait time</string>
+    <string name="wpt_fix_wait_time_summary">Wait time for new GPS fix of acceptable accuracy</string>
+    <string name="wpt_stop_recording_after_title">Stop recording after</string>
+    <string name="wpt_stop_recording_after_summary">Recording will be stopped after N hours of recording unless stopped manually</string>
 
+    <!-- Online sync -->
+    <string name="online_sync_title">Online sync</string>
+    <string name="online_sync_summary">Synchronize your data with online resource</string>
+    <string name="online_sync_url">Sync URL</string>
+    <string name="user_name">Login name</string>
+    <string name="user_password">Password</string>
+
+    <!-- ########################################################### -->
     <!-- MESSAGES -->
-
+    <!-- ########################################################### -->
     <string name="recording_started">Начата запись трека</string>
     <string name="recording_paused">Запись трека приостановлена</string>
     <string name="recording_resumed">Запись трека возобновлена</string>
@@ -195,10 +206,8 @@
     <string name="username_or_password_required">Требуются имя пользователя и пароль</string>
     <string name="stop_track_recording">Остановите запись трека</string>
     <string name="press_again_to_exit">Нажмите еще раз чтобы остановить запись и выйти из приложения</string>
-    <string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека
-	</string>
-    <string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека
-	</string>
+    <string name="press_and_hold_to_stop">Нажмите и подержите для остановки записи трека</string>
+    <string name="press_and_hold_to_start">Нажмите и подержите для старта записи трека</string>
     <string name="no_segments">Для этого трека не было создано ни одного сегмента</string>
     <string name="backup_completed">База данных приложения скопирована в:</string>
     <string name="backup_error">Ошибка копирования базы данных</string>
@@ -210,8 +219,7 @@
     <string name="coming_soon">Скоро будет...</string>
     <string name="import_completed">Импорт завершен</string>
     <string name="export_completed">Экспорт завершен</string>
-    <string name="restart_required">Чтобы изменения вступили в силу необходим
-		перезапуск приложения</string>
+    <string name="restart_required">Чтобы изменения вступили в силу необходим перезапуск приложения</string>
     <string name="waiting_for_fix">Ожидание более точного сигнала</string>
     <string name="waiting_new_fix">Ожидание нового фикса. Обеспечьте видимость неба.</string>
     <string name="last_known_location_received">Последний известный сигнал GPS получен</string>

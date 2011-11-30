@@ -74,5 +74,25 @@
         <item>150 футов</item>
         <item>300 футов</item>
     </string-array>
+    
+	<string-array name="wpt_request_interval_labels">
+		<item>5 мин</item>
+		<item>10 мин</item>
+		<item>15 мин</item>
+		<item>20 мин</item>
+		<item>30 мин</item>
+		<item>45 мин</item>
+		<item>1 час</item>
+		<item>2 часа</item>
+	</string-array>
+        
+    <string-array name="wpt_fix_wait_time_labels">
+        <item>1 мин</item>
+        <item>2 мин (рекомендуется)</item>
+        <item>3 мин</item>
+        <item>4 мин</item>
+        <item>5 мин</item>
+    </string-array>
+	    	    
 
 </resources>

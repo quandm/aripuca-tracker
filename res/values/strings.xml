@@ -15,7 +15,7 @@
     <!-- NOT TRANSLATABLE END -->
 
     <string name="build_date">Build date</string>
-        <string name="about_dialog_message">Open source GPS tracking app for
+    <string name="about_dialog_message">Open source GPS tracking app for
 		Android.\n\nOfficial
 		blog:\nhttp://tracker.aripuca.com/blog\n\nSource
 		code:\nhttp://code.google.com/p/aripuca-tracker</string>
@@ -39,7 +39,7 @@
     <string name="next_segment">Next segment</string>
     <string name="do_you_know">Do you know?</string>
     <string name="show_on_startup">Show on startup</string>
-        
+
     <!-- SEPARATE WORDS -->
     <string name="m">m</string>
     <string name="ft">ft</string>
@@ -135,30 +135,31 @@
     <string name="street">Street</string>
     <string name="satellite">Satellite</string>
     <string name="next">Next</string>
-        
+
+    <!-- ########################################################### -->
     <!-- SETTINGS -->
+    <!-- ########################################################### -->
+    <string name="app_settings_title">Application settings</string>
+    <!-- User interface -->
+    <string name="user_interface_title">User interface</string>
+    <string name="app_language">Application language</string>
+    <string name="wake_lock_title">Stay awake</string>
+    <string name="wake_lock_summary">Prevents phone from sleeping</string>
+    <string name="quick_help_title">Quick help</string>
+    <string name="quick_help_summary">Show quick help every time application is started</string>
+    <!-- Units -->
+    <string name="units">Units</string>
+    <string name="units_summary">Measurement units (coordinates, distance, speed, etc)</string>
+    <!-- Track recording -->
+    <string name="track_recording_title">Track recording</string>
+    <string name="track_recording_summary">Record every track point in real time</string>
     <string name="min_distance_title">Minimum distance</string>
     <string name="min_distance_summary">Minimum distance between 2 recorded points
 	</string>
     <string name="min_accuracy_title">Minimum accuracy</string>
     <string name="min_accuracy_summary">Minimum accuracy required for recording
 	</string>
-    <string name="app_settings_title">Application settings</string>
-    <string name="user_interface_title">User interface</string>
-    <string name="wake_lock_title">Stay awake</string>
-    <string name="wake_lock_summary">Prevents phone from sleeping</string>
-    <string name="quick_help_title">Quick help</string>
-    <string name="quick_help_summary">Show quick help every time application is started</string>
-        <string name="units">Units</string>
-    <string name="units_summary">Measurement units (coordinates, distance, speed,
-		etc)</string>
-    <string name="tracking_title">Tracking</string>
-    <string name="online_sync_title">Online sync</string>
-    <string name="online_sync_summary">Synchronize your data with online resource</string>
-    <string name="online_sync_url">Sync URL</string>
-    <string name="user_name">Login name</string>
-    <string name="user_password">Password</string>
-    <string name="track_recording">Track recording</string>
+    <!-- Segmenting -->
     <string name="segmenting">Segmenting</string>
     <string name="segmenting_mode">Segmenting mode</string>
     <string name="segment_distance">By distance</string>
@@ -168,21 +169,35 @@
     <string name="segment_custom_1">Custom intervals 1</string>
     <string name="segment_custom_2">Custom intervals 2</string>
     <string name="segment_custom_summary">Segment by preset distances</string>
-    <string name="waypoint_default_description">Default description</string>
-    <string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as
-		waypoint description</string>
-    <string name="app_language">Application language</string>
-
-    <!-- COMPASS -->
+    <!-- Compass -->
     <string name="compass">Compass</string>
     <string name="true_north">Point to True North</string>
-    <string name="true_north_summary">Compass points to True North instead of Magnetic
-		North</string>
+    <string name="true_north_summary">Compass points to True North instead of Magnetic North</string>
     <string name="show_magnetic">Show Magnetic North</string>
     <string name="show_magnetic_summary">Shows transparent Magnetic North compass underneath the True North one</string>
+    <!-- Waypoints -->
+    <string name="waypoint_default_description">Default description</string>
+    <string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as waypoint description</string>
+    <!-- Waypoint track -->
+    <string name="wpt_title">Waypoint track</string>
+    <string name="wpt_summary">Record track as a set of waypoints and save battery power</string>
+    <string name="wpt_request_interval_title">GPS request interval</string>
+    <string name="wpt_request_interval_summary">Request GPS location every N minutes. GPS stays off in between requests.</string>
+    <string name="wpt_fix_wait_time_title">GPS fix wait time</string>
+    <string name="wpt_fix_wait_time_summary">Wait time for new GPS fix of acceptable accuracy</string>
+    <string name="wpt_stop_recording_after_title">Stop recording after</string>
+    <string name="wpt_stop_recording_after_summary">Recording will be stopped after N hours of recording unless stopped manually.</string>
 
+    <!-- Online sync -->
+    <string name="online_sync_title">Online sync</string>
+    <string name="online_sync_summary">Synchronize your data with online resource</string>
+    <string name="online_sync_url">Sync URL</string>
+    <string name="user_name">Login name</string>
+    <string name="user_password">Password</string>
+
+    <!-- ########################################################### -->
     <!-- MESSAGES -->
-
+    <!-- ########################################################### -->
     <string name="recording_started">Track recording started</string>
     <string name="recording_paused">Track recording paused</string>
     <string name="recording_resumed">Track recording resumed</string>
