@@ -1,5 +1,6 @@
 package com.aripuca.tracker.service;
 
+import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.app.Constants;
 
 import android.app.Service;
@@ -16,19 +17,33 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 
 public class GpsService extends Service {
 
-//	private MyApp myApp;
+	//	private MyApp myApp;
 
 	private LocationManager locationManager;
 
 	private SensorManager sensorManager;
-	
+
 	private boolean onSchedule = false;
 
 	private static boolean running = false;
+
+	private MyApp myApp;
+
+	/**
+	 * waypoint track recording start time
+	 */
+	private long wptStartTime;
+	private long wptGpsFixWaitTimeStart;
+
+	private long wptGpsFixWaitTime;
+	private int wptRequestInterval;
+	private int wptMinAccuracy;
+	private int wptStopRecordingAfter;
 
 	/**
 	 * defines a listener that responds to location updates
@@ -40,9 +55,9 @@ public class GpsService extends Service {
 		public void onLocationChanged(Location location) {
 
 			if (onSchedule) {
-			
-				if (location.getAccuracy()<50) {
-					
+
+				if (location.getAccuracy() < wptMinAccuracy) {
+
 					// let's broadcast location data to any activity waiting for updates
 					Intent intent = new Intent("com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION");
 
@@ -53,14 +68,24 @@ public class GpsService extends Service {
 					intent.putExtras(bundle);
 
 					sendBroadcast(intent);
-					
+
+					// location of acceptable accuracy received - stop GPS
 					locationManager.removeUpdates(this);
-					
+					return;
+
 				}
-				
+
+				if (wptGpsFixWaitTimeStart + wptGpsFixWaitTime * 60 * 1000 > SystemClock.uptimeMillis()) {
+
+					// stop trying to receive GPX signal
+					// let's wait until next session
+					locationManager.removeUpdates(this);
+					return;
+				}
+
 				return;
-			} 
-			
+			}
+
 			// let's broadcast location data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
@@ -71,11 +96,6 @@ public class GpsService extends Service {
 			intent.putExtras(bundle);
 
 			sendBroadcast(intent);
-			
-			
-			
-			
-			
 
 		}
 
@@ -146,6 +166,14 @@ public class GpsService extends Service {
 
 		Log.v(Constants.TAG, "GpsService: onCreate");
 
+		myApp = (MyApp) getApplicationContext();
+
+		// waypoint track settings
+		wptRequestInterval = myApp.getPreferences().getInt("wpt_request_interval", 10);
+		wptMinAccuracy = myApp.getPreferences().getInt("wpt_min_accuracy", 30);
+		wptStopRecordingAfter = myApp.getPreferences().getInt("wpt_stop_recording_after", 4);
+		wptGpsFixWaitTime = myApp.getPreferences().getInt("wpt_gps_fix_wait_time", 2);
+
 		// GPS sensor
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -168,7 +196,7 @@ public class GpsService extends Service {
 	public static boolean isRunning() {
 		return running;
 	}
-	
+
 	/**
 	 * Requesting last location from GPS or Network provider
 	 */
@@ -237,21 +265,24 @@ public class GpsService extends Service {
 	public void stopLocationUpdates() {
 		locationManager.removeUpdates(locationListener);
 	}
-	
+
 	public void startScheduler() {
-		
+
 		onSchedule = true;
 
+		wptStartTime = SystemClock.uptimeMillis();
+
 		schedulerHandler.postDelayed(schedulerTask, 100);
+
 	}
-	
+
 	public void stopScheduler() {
-		
+
 		onSchedule = false;
-		
+
 		schedulerHandler.removeCallbacks(schedulerTask);
 	}
-	
+
 	/**
 	 * Updating UI every second
 	 */
@@ -260,13 +291,22 @@ public class GpsService extends Service {
 		@Override
 		public void run() {
 
-			startLocationUpdates();
-			
-			schedulerHandler.postDelayed(this, 60*1000);
-			
-		}
-		
-	};
+			// new request for location started
+			wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
 
+			startLocationUpdates();
+
+			// has recording time limit been reached? 
+			if (wptStopRecordingAfter != 0 &&
+					wptStartTime + wptStopRecordingAfter * 60 * 60 * 1000 > SystemClock.uptimeMillis()) {
+				stopScheduler();
+				return;
+			}
+
+			schedulerHandler.postDelayed(this, wptRequestInterval * 1000);
+
+		}
+
+	};
 
 }

@@ -1,104 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	android:title="@string/app_settings_title">
+    android:title="@string/app_settings_title" >
 
-	<PreferenceScreen android:title="@string/user_interface_title"><ListPreference
-	android:entries="@array/language_labels" android:entryValues="@array/language_values"
-	android:key="language" android:dialogTitle="@string/app_language"
-	android:defaultValue="en-US" android:title="@string/app_language"></ListPreference><CheckBoxPreference android:defaultValue="true" android:key="wake_lock" android:title="@string/wake_lock_title" android:summary="@string/wake_lock_summary"></CheckBoxPreference>
-	<CheckBoxPreference android:key="quick_help" android:title="@string/quick_help_title" android:summary="@string/quick_help_summary" android:defaultValue="true"/>
-	
-</PreferenceScreen>
+    <PreferenceScreen android:title="@string/user_interface_title" >
 
-	<!-- <PreferenceScreen android:title="@string/user_interface_title"> <CheckBoxPreference 
-		android:defaultValue="true" android:key="show_compass" android:title="@string/show_compass_title"></CheckBoxPreference> 
-		</PreferenceScreen> -->
-	<!-- <PreferenceScreen android:title="@string/tracking_title"> <CheckBoxPreference 
-		android:summary="Automatically pause track recording when not in move" android:title="Auto 
-		pause" android:enabled="false"></CheckBoxPreference> <EditTextPreference 
-		android:key="min_accuracy" android:title="@string/min_accuracy_title" android:summary="@string/min_accuracy_summary" 
-		android:defaultValue="50"></EditTextPreference> <EditTextPreference android:title="@string/min_distance_title" 
-		android:key="min_distance" android:summary="@string/min_distance_summary" 
-		android:defaultValue="10"></EditTextPreference> </PreferenceScreen> -->
+        <ListPreference
+            android:defaultValue="en-US"
+            android:dialogTitle="@string/app_language"
+            android:entries="@array/language_labels"
+            android:entryValues="@array/language_values"
+            android:key="language"
+            android:title="@string/app_language" >
+        </ListPreference>
 
-	<!-- <PreferenceScreen android:title="@string/online_sync_title" android:summary="@string/online_sync_summary"> 
-		<EditTextPreference android:defaultValue="http://dev.aripuca.com" android:key="sync_url" 
-		android:title="@string/online_sync_url"></EditTextPreference> <EditTextPreference 
-		android:title="@string/user_name" android:key="user_name"></EditTextPreference> 
-		<EditTextPreference android:title="@string/user_password" android:key="user_password" 
-		android:password="true"></EditTextPreference> <CheckBoxPreference android:summary="Realtime 
-		sync when in track mode" android:key="autoSyncTrack" android:defaultValue="false" 
-		android:title="Auto sync track"></CheckBoxPreference> </PreferenceScreen> -->
-	<PreferenceScreen android:title="@string/units"
-		android:summary="@string/units_summary">
-		<ListPreference android:key="speed_units"
-			android:dialogTitle="@string/speed" android:title="@string/speed"
-			android:entryValues="@array/speed_units_values" android:entries="@array/speed_units_labels"
-			android:defaultValue="kph"></ListPreference>
-		<ListPreference android:key="distance_units"
-			android:dialogTitle="@string/distance" android:title="@string/distance"
-			android:entryValues="@array/distance_units_values" android:entries="@array/distance_units_labels"
-			android:defaultValue="km"></ListPreference>
-		<ListPreference android:key="elevation_units"
-			android:dialogTitle="@string/speed" android:title="@string/elevation"
-			android:entryValues="@array/elevation_units_values" android:entries="@array/elevation_units_labels"
-			android:defaultValue="m"></ListPreference>
-		<ListPreference android:key="coord_units"
-			android:dialogTitle="@string/coordinates" android:title="@string/coordinates"
-			android:entryValues="@array/coord_units_values" android:entries="@array/coord_units_labels"
-			android:defaultValue="0"></ListPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/compass">
-		<CheckBoxPreference android:summary="@string/true_north_summary"
-			android:title="@string/true_north" android:defaultValue="true"
-			android:key="true_north"></CheckBoxPreference>
-		<CheckBoxPreference android:summary="@string/show_magnetic_summary"
-			android:title="@string/show_magnetic" android:defaultValue="true"
-			android:key="show_magnetic" android:enabled="false"></CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="wake_lock"
+            android:summary="@string/wake_lock_summary"
+            android:title="@string/wake_lock_title" >
+        </CheckBoxPreference>
 
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/waypoints">
-		<CheckBoxPreference android:key="waypoint_default_description"
-			android:summary="@string/waypoint_default_description_summary"
-			android:title="@string/waypoint_default_description"
-			android:defaultValue="false"></CheckBoxPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/track_recording">
-		<PreferenceCategory android:title="@string/tracks">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="quick_help"
+            android:summary="@string/quick_help_summary"
+            android:title="@string/quick_help_title" />
+    </PreferenceScreen>
 
-			<ListPreference android:entries="@array/min_distance_labels" 
-				android:entryValues="@array/min_distance_values" android:title="@string/min_distance_title"
-				android:summary="@string/min_distance_summary"
-				android:key="min_distance" android:defaultValue="20" android:dialogTitle="@string/min_distance_title"></ListPreference>
+    <PreferenceScreen
+        android:summary="@string/units_summary"
+        android:title="@string/units" >
 
-			<ListPreference android:entries="@array/min_accuracy_labels" 
-				android:entryValues="@array/min_accuracy_values" android:title="@string/min_accuracy_title"
-				android:summary="@string/min_accuracy_summary"
-				android:key="min_accuracy" android:dialogTitle="@string/min_accuracy_title" android:defaultValue="30"></ListPreference>
+        <ListPreference
+            android:defaultValue="kph"
+            android:dialogTitle="@string/speed"
+            android:entries="@array/speed_units_labels"
+            android:entryValues="@array/speed_units_values"
+            android:key="speed_units"
+            android:title="@string/speed" >
+        </ListPreference>
 
-		</PreferenceCategory>
+        <ListPreference
+            android:defaultValue="km"
+            android:dialogTitle="@string/distance"
+            android:entries="@array/distance_units_labels"
+            android:entryValues="@array/distance_units_values"
+            android:key="distance_units"
+            android:title="@string/distance" >
+        </ListPreference>
 
-		<PreferenceCategory android:title="@string/segmenting">
-			<ListPreference android:entries="@array/segmenting_modes_labels"
-				android:entryValues="@array/segmenting_modes_values" android:title="@string/segmenting_mode"
-				android:key="segmenting_mode" android:dialogTitle="@string/segmenting_mode"
-				android:defaultValue="2"></ListPreference>
-			<EditTextPreference android:defaultValue="5"
-				android:key="segment_distance" android:summary="@string/segment_distance_summary"
-				android:title="@string/segment_distance" android:inputType="number"></EditTextPreference>
-			<EditTextPreference android:title="@string/segment_time"
-				android:summary="@string/segment_time_summary" android:key="segment_time"
-				android:defaultValue="10" android:inputType="number"></EditTextPreference>
-			<EditTextPreference android:summary="@string/segment_custom_summary"
-				android:title="@string/segment_custom_1" android:key="segment_custom_1"
-				android:defaultValue="6,10,15,20,25"></EditTextPreference>
-			<EditTextPreference android:title="@string/segment_custom_2"
-				android:key="segment_custom_2" android:defaultValue="10,20,30,40"
-				android:summary="@string/segment_custom_summary"></EditTextPreference>
-		</PreferenceCategory>
+        <ListPreference
+            android:defaultValue="m"
+            android:dialogTitle="@string/speed"
+            android:entries="@array/elevation_units_labels"
+            android:entryValues="@array/elevation_units_values"
+            android:key="elevation_units"
+            android:title="@string/elevation" >
+        </ListPreference>
 
-	</PreferenceScreen>
-	
+        <ListPreference
+            android:defaultValue="0"
+            android:dialogTitle="@string/coordinates"
+            android:entries="@array/coord_units_labels"
+            android:entryValues="@array/coord_units_values"
+            android:key="coord_units"
+            android:title="@string/coordinates" >
+        </ListPreference>
+    </PreferenceScreen>
 
+    <PreferenceScreen android:title="@string/compass" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="true_north"
+            android:summary="@string/true_north_summary"
+            android:title="@string/true_north" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="false"
+            android:key="show_magnetic"
+            android:summary="@string/show_magnetic_summary"
+            android:title="@string/show_magnetic" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="@string/waypoints" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="waypoint_default_description"
+            android:summary="@string/waypoint_default_description_summary"
+            android:title="@string/waypoint_default_description" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="@string/track_recording_title" android:summary="@string/track_recording_summary">
+
+        <PreferenceCategory android:title="@string/tracks" >
+
+            <ListPreference
+                android:defaultValue="20"
+                android:dialogTitle="@string/min_distance_title"
+                android:entries="@array/min_distance_labels"
+                android:entryValues="@array/min_distance_values"
+                android:key="min_distance"
+                android:summary="@string/min_distance_summary"
+                android:title="@string/min_distance_title" >
+            </ListPreference>
+
+            <ListPreference
+                android:defaultValue="30"
+                android:dialogTitle="@string/min_accuracy_title"
+                android:entries="@array/min_accuracy_labels"
+                android:entryValues="@array/min_accuracy_values"
+                android:key="min_accuracy"
+                android:summary="@string/min_accuracy_summary"
+                android:title="@string/min_accuracy_title" >
+            </ListPreference>
+        </PreferenceCategory>
+
+        <PreferenceCategory android:title="@string/segmenting" >
+
+            <ListPreference
+                android:defaultValue="2"
+                android:dialogTitle="@string/segmenting_mode"
+                android:entries="@array/segmenting_modes_labels"
+                android:entryValues="@array/segmenting_modes_values"
+                android:key="segmenting_mode"
+                android:title="@string/segmenting_mode" >
+            </ListPreference>
+
+            <EditTextPreference
+                android:defaultValue="5"
+                android:inputType="number"
+                android:key="segment_distance"
+                android:summary="@string/segment_distance_summary"
+                android:title="@string/segment_distance" >
+            </EditTextPreference>
+
+            <EditTextPreference
+                android:defaultValue="10"
+                android:inputType="number"
+                android:key="segment_time"
+                android:summary="@string/segment_time_summary"
+                android:title="@string/segment_time" >
+            </EditTextPreference>
+
+            <EditTextPreference
+                android:defaultValue="6,10,15,20,25"
+                android:key="segment_custom_1"
+                android:summary="@string/segment_custom_summary"
+                android:title="@string/segment_custom_1" >
+            </EditTextPreference>
+
+            <EditTextPreference
+                android:defaultValue="10,20,30,40"
+                android:key="segment_custom_2"
+                android:summary="@string/segment_custom_summary"
+                android:title="@string/segment_custom_2" >
+            </EditTextPreference>
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:summary="@string/wpt_summary"
+        android:title="@string/wpt_title" >
+
+        <ListPreference
+            android:defaultValue="10"
+            android:entries="@array/wpt_request_interval_labels"
+            android:entryValues="@array/wpt_request_interval_values"
+            android:key="wpt_request_interval"
+            android:summary="@string/wpt_request_interval_summary"
+            android:title="@string/wpt_request_interval_title" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/wpt_stop_recording_after_labels"
+            android:entryValues="@array/wpt_stop_recording_after_values"
+            android:key="wpt_stop_recording_after"
+            android:summary="@string/wpt_stop_recording_after_summary"
+            android:title="@string/wpt_stop_recording_after_title" />
+
+        <ListPreference
+            android:defaultValue="2"
+            android:entries="@array/wpt_fix_wait_time_labels"
+            android:entryValues="@array/wpt_fix_wait_time_values"
+            android:key="wpt_gps_fix_wait_time"
+            android:summary="@string/wpt_fix_wait_time_summary"
+            android:title="@string/wpt_fix_wait_time_title" />
+
+        <ListPreference
+            android:defaultValue="30"
+            android:entries="@array/min_accuracy_labels"
+            android:entryValues="@array/min_accuracy_values"
+            android:key="wpt_min_accuracy"
+            android:summary="@string/min_accuracy_summary"
+            android:title="@string/min_accuracy_title" />
+    </PreferenceScreen>
 
 </PreferenceScreen>
