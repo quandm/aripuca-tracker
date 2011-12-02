@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.aripuca.tracker" android:versionCode="4"
 	android:versionName="1.0.4" android:installLocation="preferExternal">
-
-	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="7" />
+	
+	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4" />
     
 	<application android:icon="@drawable/icon" android:label="@string/main_app_title"
 		android:debuggable="true" android:name=".MyApp">
@@ -59,10 +59,11 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
+	<!-- 
 	<uses-feature android:name="android.hardware.location.gps"
 		android:required="true" />
 
 	<uses-feature android:name="android.hardware.sensor.compass"
-		android:required="true" />
+		android:required="true" />  -->
 
 </manifest> 

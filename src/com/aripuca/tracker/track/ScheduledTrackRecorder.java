@@ -14,19 +14,16 @@ import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
-/**
- * Track statistics class 
- */
-public class Track extends AbstractTrack {
-
-	public Track(Context context) {
-		
-		super(context);
-
-		this.insertNewTrack();
-		
-	}
-
+public class ScheduledTrackRecorder {
+	
+	private Context context;
+	
+	protected MyApp myApp;	
+	
+	private int trackPointsCount;
+	
+	protected long trackTimeStart;
+	
 	/**
 	 * Id of the track being recorded
 	 */
@@ -37,19 +34,39 @@ public class Track extends AbstractTrack {
 	public long getTrackId() {
 		return this.trackId;
 	}
+	
 
-	public int getTrackPointsCount() {
-		return trackPointsCount;
+	public ScheduledTrackRecorder(Context context) {
+	
+		this.context = context;
+
+		myApp = (MyApp)context.getApplicationContext();
+		
+	}
+	
+	
+	public void startScheduler() {
+
+		trackPointsCount = 0;
+		
+		this.trackTimeStart = (new Date()).getTime();
+
+		
 	}
 
+	public void stopScheduler() {
+
+		
+	}
+	
 	/**
 	 * Add new track to application db after recording started
 	 */
 	public void insertNewTrack() {
 
 		ContentValues values = new ContentValues();
-		values.put("title", "New track");
-		values.put("activity", 0);
+		values.put("title", "New scheduled track");
+		values.put("activity", 1);
 		values.put("recording", 1);
 		values.put("start_time", this.trackTimeStart);
 
@@ -66,6 +83,7 @@ public class Track extends AbstractTrack {
 		}
 
 	}
+	
 
 	/**
 	 * Update track data after recording finished
@@ -79,15 +97,9 @@ public class Track extends AbstractTrack {
 
 		ContentValues values = new ContentValues();
 		values.put("title", trackTitle);
-		values.put("distance", Utils.formatNumber(this.getDistance(),1));
-		values.put("total_time", this.getTotalTime());
-		values.put("moving_time", this.getMovingTime());
-		values.put("max_speed", Utils.formatNumber(this.getMaxSpeed(), 2));
-		values.put("max_elevation", Utils.formatNumber(this.getMaxElevation(), 1));
-		values.put("min_elevation", Utils.formatNumber(this.getMinElevation(), 1));
-		values.put("elevation_gain", this.getElevationGain());
-		values.put("elevation_loss", this.getElevationLoss());
 		values.put("finish_time", finishTime);
+		// for scheduled tracks distance is always 0
+		values.put("distance", 0);
 		values.put("recording", 0);
 
 		try {
@@ -102,13 +114,14 @@ public class Track extends AbstractTrack {
 		}
 
 	}
-
+	
+	
 	/**
 	 * Record one track point
 	 * 
 	 * @param location Current location
 	 */
-	protected void recordTrackPoint(Location location, int segmentIndex) {
+	protected void recordTrackPoint(Location location) {
 
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
@@ -117,26 +130,23 @@ public class Track extends AbstractTrack {
 		values.put("elevation", Utils.formatNumber(location.getAltitude(), 1));
 		values.put("speed", Utils.formatNumber(location.getSpeed(), 2));
 		values.put("time", (new Date()).getTime());
-		values.put("segment_index", segmentIndex);
-		values.put("distance", Utils.formatNumber(this.distance, 1));
 		values.put("accuracy", location.getAccuracy());
 
 		try {
 
 			myApp.getDatabase().insertOrThrow("track_points", null, values);
 
-//			this.lastRecordedLocation = location;
-
 			this.trackPointsCount++;
 
 		} catch (SQLiteException e) {
-			
-			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
-			
 		}
 
 	}
+	
+	
+	
+	
 
+	
 }

@@ -3,9 +3,15 @@ package com.aripuca.tracker.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.aripuca.tracker.MainActivity;
 import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.NotificationActivity;
+import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +28,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 public class GpsService extends Service {
 
@@ -37,6 +44,14 @@ public class GpsService extends Service {
 
 	private MyApp myApp;
 
+	private Context context;
+	
+	public void setContext(Context context) {
+		
+		this.context = context;
+		
+	}
+	
 	/**
 	 * waypoint track recording start time
 	 */
@@ -58,7 +73,7 @@ public class GpsService extends Service {
 		public void onLocationChanged(Location location) {
 
 			Log.v(Constants.TAG, "locationListener");
-			
+
 			// let's broadcast location data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
@@ -73,10 +88,12 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
 		public void onProviderDisabled(String provider) {
@@ -89,14 +106,14 @@ public class GpsService extends Service {
 	/**
 	 * defines a listener that responds to location updates
 	 */
-	private LocationListener schedulerLocationListener = new LocationListener() {
+	private LocationListener scheduledLocationListener = new LocationListener() {
 
 		// Called when a new location is found by the network location provider.
 		@Override
 		public void onLocationChanged(Location location) {
 
-			Log.v(Constants.TAG, "schedulerLocationListener");
-			
+			Log.v(Constants.TAG, "scheduledLocationListener");
+
 			if (location.hasAccuracy() && location.getAccuracy() < wptMinAccuracy) {
 
 				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy() + " at "
@@ -104,7 +121,7 @@ public class GpsService extends Service {
 
 				// let's broadcast location data to any activity waiting for
 				// updates
-				Intent intent = new Intent("com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION");
+				Intent intent = new Intent("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION");
 
 				Bundle bundle = new Bundle();
 				bundle.putInt("location_provider", Constants.GPS_PROVIDER);
@@ -115,8 +132,8 @@ public class GpsService extends Service {
 				sendBroadcast(intent);
 
 				// location of acceptable accuracy received - stop GPS
-				stopSchedulerLocationUpdates();
-				
+				stopScheduledLocationUpdates();
+
 				return;
 
 			} else {
@@ -129,16 +146,18 @@ public class GpsService extends Service {
 
 				// stop trying to receive GPX signal and wait until next
 				// session
-				stopSchedulerLocationUpdates();
+				stopScheduledLocationUpdates();
 			}
 
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
 		public void onProviderDisabled(String provider) {
@@ -295,10 +314,14 @@ public class GpsService extends Service {
 		locationManager.removeUpdates(locationListener);
 	}
 
-	public void stopSchedulerLocationUpdates() {
-		locationManager.removeUpdates(schedulerLocationListener);
+	public void startScheduledLocationUpdates() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
-	
+
+	public void stopScheduledLocationUpdates() {
+		locationManager.removeUpdates(scheduledLocationListener);
+	}
+
 	private void startSensorUpdates() {
 		sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);
@@ -309,6 +332,8 @@ public class GpsService extends Service {
 	}
 
 	public void startScheduler() {
+
+		this.showOngoingNotification();
 
 		// waypoint track settings
 		wptRequestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10"));
@@ -321,23 +346,31 @@ public class GpsService extends Service {
 		wptStartTime = SystemClock.uptimeMillis();
 
 		Log.v(Constants.TAG, "Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
-
-		locationManager.removeUpdates(locationListener);
 		
+		//TODO: update resources
+		Toast.makeText(context, "Scheduled recording started", Toast.LENGTH_SHORT).show();
+		
+		this.stopLocationUpdates();
+
 		schedulerHandler.postDelayed(schedulerTask, 5000);
 
 	}
 
 	public void stopScheduler() {
-		
+
 		Log.v(Constants.TAG, "Scheduler stopped");
+		
+		//TODO: update resources
+		Toast.makeText(context, "Scheduled recording stopped", Toast.LENGTH_SHORT).show();
+
+		this.clearNotification();
 
 		onSchedule = false;
 
-		locationManager.removeUpdates(schedulerLocationListener);
-		
+		this.stopScheduledLocationUpdates();
+
 		schedulerHandler.removeCallbacks(schedulerTask);
-		
+
 		this.startLocationUpdates();
 
 	}
@@ -353,21 +386,60 @@ public class GpsService extends Service {
 			// new request for location started
 			wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, schedulerLocationListener);
-
 			// has recording time limit been reached?
 			if (wptStopRecordingAfter != 0
 					&& wptStartTime + wptStopRecordingAfter * 60 * 60 * 1000 < SystemClock.uptimeMillis()) {
-				
+
 				stopScheduler();
-				
+
 				return;
 			}
+
+			startScheduledLocationUpdates();
 
 			schedulerHandler.postDelayed(this, wptRequestInterval * 60 * 1000);
 
 		}
 
 	};
+
+	/**
+	 * Show ongoing notification
+	 */
+	private void showOngoingNotification() {
+
+		int icon = R.drawable.aripuca_a;
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+		long when = System.currentTimeMillis();
+
+		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
+
+		// show notification under ongoing title
+		notification.flags += Notification.FLAG_ONGOING_EVENT;
+
+		CharSequence contentTitle = getString(R.string.main_app_title);
+		CharSequence contentText = getString(R.string.recording_track);
+
+		Intent notificationIntent = new Intent(this, NotificationActivity.class);
+
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);
+
+		mNotificationManager.notify(Constants.NOTIFICATION_WAYPOINT_TRACK, notification);
+
+	}
+
+	private void clearNotification() {
+
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// remove all notifications
+		// mNotificationManager.cancelAll();
+		mNotificationManager.cancel(Constants.NOTIFICATION_WAYPOINT_TRACK);
+
+	}
 
 }
