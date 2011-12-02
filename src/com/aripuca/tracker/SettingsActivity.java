@@ -110,6 +110,11 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		// changing labels for min_distance 
 		final ListPreference minDistance = (ListPreference) findPreference("min_distance");
 		minDistance.setEntries(distanceUnit.equals("km") ? R.array.min_distance_labels : R.array.min_distance_labels_ft);
+		
+		// changing labels for wpt_min_distance 
+		final ListPreference wptMinDistance = (ListPreference) findPreference("wpt_min_distance");
+		wptMinDistance.setEntries(distanceUnit.equals("km") ? R.array.wpt_min_distance_labels : R.array.wpt_min_distance_labels_ft);
+		
 	}
 
 	/**

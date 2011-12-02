@@ -106,26 +106,25 @@ public class MainActivity extends Activity {
 
 		}
 	};
-	
+
 	protected BroadcastReceiver locationSchedulerBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
-			
+
 			// log location data to debug log file
 			String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(currentLocation.getTime());
 			myApp.log(locationTime + " " + currentLocation.getLatitude() + " " + currentLocation.getLongitude() + " "
 					+ currentLocation.getAccuracy() + " " + currentLocation.getAltitude());
-			
 
 			// update MainActivity UI
 			updateMainActivity(bundle.getInt("location_provider"));
-			
+
 			Toast.makeText(MainActivity.this, "new location received on schedule", Toast.LENGTH_SHORT).show();
-			
+
 		}
 	};
 	/**
@@ -365,28 +364,6 @@ public class MainActivity extends Activity {
 
 		// start GPS service only if not started
 		startGPSService();
-		
-		gpsServiceConnection = new ServiceConnection() {
-
-			public void onServiceConnected(ComponentName className, IBinder service) {
-
-				Log.v(Constants.TAG, "MainActivity: onServiceConnected");
-
-				gpsService = ((GpsService.LocalBinder) service).getService();
-
-				gpsService.startScheduler();
-				
-				isGpsServiceBound = true;
-
-			}
-
-			public void onServiceDisconnected(ComponentName className) {
-				gpsService = null;
-				isGpsServiceBound = false;
-			}
-
-		};
-		
 
 		// show quick help only when activity first started
 		if (savedInstanceState == null) {
@@ -397,14 +374,17 @@ public class MainActivity extends Activity {
 
 		// if track recording mode is ON
 		if (trackRecorder.isRecording()) {
+			
 			// change "Record" button text with "Stop"
 			((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
+
 			// enabling control buttons
 			this.enableControlButtons();
+			
 		}
-
+	
 		setControlButtonListeners();
-		
+
 	}
 
 	/**
@@ -434,26 +414,36 @@ public class MainActivity extends Activity {
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
 
 		// registering receiver for time updates
-		registerReceiver(locationSchedulerBroadcastReceiver, new IntentFilter("com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION"));
-		
-		// preventing phone from sleeping
-		if (findViewById(R.id.dynamicView) != null) {
-			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
-		}
+		registerReceiver(locationSchedulerBroadcastReceiver, new IntentFilter(
+				"com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION"));
 
-		// bindGpsService();
+	
+		this.keepScreenOn();
+
+		// bind to GPS service
+		this.bindGpsService();
+		
+		// start updating time of tracking every second
+		updateTimeHandler.postDelayed(updateTimeTask, 100);
 
 		// update main activity after it's resumed
-		if (currentLocation != null) {
+/*		if (currentLocation != null) {
 			if (fixReceived) {
 				this.updateMainActivity(Constants.GPS_PROVIDER);
 			} else {
 				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
 			}
-		} else {
+		} */
 
-			Log.v(Constants.TAG, "MainActivity: onResume: currentLocation=null");
+	}
 
+	/**
+	 * preventing phone from sleeping
+	 */
+	private void keepScreenOn() {
+		
+		if (findViewById(R.id.dynamicView) != null) {
+			findViewById(R.id.dynamicView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
 		}
 
 	}
@@ -466,8 +456,10 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 
-		// unbindGpsService();
+		this.unbindGpsService();
 
+		this.updateTimeHandler.removeCallbacks(updateTimeTask);
+		
 		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		unregisterReceiver(compassBroadcastReceiver);
@@ -490,7 +482,7 @@ public class MainActivity extends Activity {
 
 			this.saveHiddenPreferences();
 		}
-		
+
 		super.onDestroy();
 	}
 
@@ -637,10 +629,7 @@ public class MainActivity extends Activity {
 			// starting GPS listener service
 			startService(new Intent(this, GpsService.class));
 		}
-
-		// bind to GPS service
-		// bindGpsService();
-
+		
 	}
 
 	/**
@@ -652,17 +641,12 @@ public class MainActivity extends Activity {
 
 		this.disableControlButtons();
 
-		// ((Button)
-		// findViewById(R.id.gpsServiceButton)).setText(getString(R.string.gps_off));
-
 		// stop tracking if active
 		if (trackRecorder.isRecording()) {
 			stopTracking();
 		}
 
 		stopService(new Intent(this, GpsService.class));
-
-		unbindGpsService();
 
 		Log.v(Constants.TAG, "stopGPSService");
 
@@ -693,11 +677,10 @@ public class MainActivity extends Activity {
 	/**
 	 * Show ongoing notification
 	 */
-	private void showOngoingNotification() {
+	private void showOngoingNotification(int icon) {
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		int icon = R.drawable.aripuca;
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
@@ -745,13 +728,10 @@ public class MainActivity extends Activity {
 
 		this.replaceDynamicView(R.layout.main_tracking);
 
-		// start updating time of tracking every second
-		updateTimeHandler.postDelayed(updateTimeTask, 100);
-		
 		trackRecorder.start();
-
+		
 		// add notification icon in track recording mode
-		this.showOngoingNotification();
+		this.showOngoingNotification(R.drawable.aripuca);
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
@@ -774,8 +754,6 @@ public class MainActivity extends Activity {
 		// switching to initial layout
 		this.replaceDynamicView(R.layout.main_idle2);
 
-		this.updateTimeHandler.removeCallbacks(updateTimeTask);
-		
 		this.clearNotification();
 
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
@@ -828,7 +806,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -1017,7 +995,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-				break;
+			break;
 
 			default:
 				dialog = null;
@@ -1137,14 +1115,24 @@ public class MainActivity extends Activity {
 				return true;
 
 			case R.id.testLabMenuItem:
+
+				// scheduled track recording 
+				
+				if (gpsService == null) {
+					Toast.makeText(MainActivity.this, "GPS service not connected", Toast.LENGTH_SHORT).show();
+					return true;
+				}
+
+				// setting current context
+				gpsService.setContext(this);
 				
 				// testing location updates scheduler
-				if (!isGpsServiceBound) {
-					bindGpsService();
+				if (!gpsService.onSchedule) {
+					gpsService.startScheduler();
 				} else {
-					unbindGpsService();
+					gpsService.stopScheduler();
 				}
-				
+
 				return true;
 
 			default:
@@ -1470,7 +1458,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1486,13 +1476,13 @@ public class MainActivity extends Activity {
 	public void updateTime() {
 
 		// update track statistics
-		
+
 		if (trackRecorder.isRecording()) {
 
-			if (currentLocation!=null) {
+			if (currentLocation != null) {
 				trackRecorder.updateStatistics(currentLocation);
 			}
-			
+
 			if (findViewById(R.id.totalTime) != null) {
 				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(trackRecorder.getTrack()
 						.getTotalTime(), false));
@@ -1515,11 +1505,12 @@ public class MainActivity extends Activity {
 	 */
 	private int backClickCount = 0;
 
+	//TODO: back press for API Level 4
 	/**
 	 * Intercepting Back button click to prevent accidental exit in track
 	 * recording mode
 	 */
-	@Override
+/*	@Override
 	public void onBackPressed() {
 
 		backClickCount++;
@@ -1531,7 +1522,7 @@ public class MainActivity extends Activity {
 		} else {
 			this.finish();
 		}
-	}
+	} */
 
 	/**
 	 * Clear click count handler
@@ -1707,7 +1698,6 @@ public class MainActivity extends Activity {
 
 		}
 	};
-	
 
 	// -------------------------------------------------------------------------
 	//
@@ -1719,11 +1709,8 @@ public class MainActivity extends Activity {
 	private Runnable updateTimeTask = new Runnable() {
 		@Override
 		public void run() {
-			
 			updateTime();
-			
 			updateTimeHandler.postDelayed(this, 200);
-			
 		}
 	};
 	// -------------------------------------------------------------------------
@@ -1736,14 +1723,32 @@ public class MainActivity extends Activity {
 	private GpsService gpsService;
 	private boolean isGpsServiceBound = false;
 
-	private ServiceConnection gpsServiceConnection;
-	
+	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
+
+		public void onServiceConnected(ComponentName className, IBinder service) {
+
+			Log.v(Constants.TAG, "MainActivity: onServiceConnected");
+
+			gpsService = ((GpsService.LocalBinder) service).getService();
+
+			isGpsServiceBound = true;
+
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			gpsService = null;
+			isGpsServiceBound = false;
+		}
+
+	};
+
 	private void bindGpsService() {
 
-		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE)) {
+		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection,
+				Context.BIND_AUTO_CREATE)) {
 			Toast.makeText(MainActivity.this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
-		
+
 		Log.v(Constants.TAG, "MainActivity: doBindService");
 
 	}
@@ -1752,13 +1757,13 @@ public class MainActivity extends Activity {
 
 		if (isGpsServiceBound) {
 
-			gpsService.stopScheduler();
-			
 			// Detach our existing connection.
 			unbindService(gpsServiceConnection);
 
+			gpsService = null;
+
 			isGpsServiceBound = false;
-			
+
 		}
 
 	}

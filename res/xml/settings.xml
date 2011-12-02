@@ -96,7 +96,9 @@
         </CheckBoxPreference>
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/track_recording_title" android:summary="@string/track_recording_summary">
+    <PreferenceScreen
+        android:summary="@string/track_recording_summary"
+        android:title="@string/track_recording_title" >
 
         <PreferenceCategory android:title="@string/tracks" >
 
@@ -199,6 +201,16 @@
             android:key="wpt_min_accuracy"
             android:summary="@string/min_accuracy_summary"
             android:title="@string/min_accuracy_title" />
+
+        <ListPreference
+            android:defaultValue="500"
+            android:dialogTitle="@string/min_distance_title"
+            android:entries="@array/wpt_min_distance_labels"
+            android:entryValues="@array/wpt_min_distance_values"
+            android:key="wpt_min_distance"
+            android:summary="@string/min_distance_summary"
+            android:title="@string/min_distance_title" >
+        </ListPreference>
     </PreferenceScreen>
 
 </PreferenceScreen>
