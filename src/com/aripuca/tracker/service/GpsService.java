@@ -31,7 +31,7 @@ public class GpsService extends Service {
 
 	private SensorManager sensorManager;
 
-	private boolean onSchedule;
+	public boolean onSchedule;
 
 	private static boolean running = false;
 
@@ -57,45 +57,8 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
-			if (onSchedule) {
-
-				if (location.getAccuracy() < wptMinAccuracy) {
-
-					// let's broadcast location data to any activity waiting for
-					// updates
-					Intent intent = new Intent("com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION");
-
-					Bundle bundle = new Bundle();
-					bundle.putInt("location_provider", Constants.GPS_PROVIDER);
-					bundle.putParcelable("location", location);
-
-					intent.putExtras(bundle);
-
-					sendBroadcast(intent);
-
-					// location of acceptable accuracy received - stop GPS
-					stopLocationUpdates();
-
-					// log location data to debug log file
-					String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime());
-					myApp.log(locationTime + " " + location.getLatitude() + " " + location.getLongitude() + " "
-							+ location.getAccuracy() + " " + location.getAltitude());
-
-					return;
-
-				}
-
-				if (wptGpsFixWaitTimeStart + wptGpsFixWaitTime * 60 * 1000 > SystemClock.uptimeMillis()) {
-
-					// stop trying to receive GPX signal and wait until next
-					// session
-					stopLocationUpdates();
-					return;
-				}
-
-				return;
-			}
-
+			Log.v(Constants.TAG, "locationListener");
+			
 			// let's broadcast location data to any activity waiting for updates
 			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
@@ -106,6 +69,68 @@ public class GpsService extends Service {
 			intent.putExtras(bundle);
 
 			sendBroadcast(intent);
+
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+		@Override
+		public void onProviderEnabled(String provider) {}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			// Toast.makeText(myApp.getMainActivity(), "GPS provider disabled",
+			// Toast.LENGTH_SHORT).show();
+		}
+
+	};
+
+	/**
+	 * defines a listener that responds to location updates
+	 */
+	private LocationListener schedulerLocationListener = new LocationListener() {
+
+		// Called when a new location is found by the network location provider.
+		@Override
+		public void onLocationChanged(Location location) {
+
+			Log.v(Constants.TAG, "schedulerLocationListener");
+			
+			if (location.hasAccuracy() && location.getAccuracy() < wptMinAccuracy) {
+
+				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy() + " at "
+						+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime()));
+
+				// let's broadcast location data to any activity waiting for
+				// updates
+				Intent intent = new Intent("com.aripuca.tracker.SCHEDULER_LOCATION_UPDATES_ACTION");
+
+				Bundle bundle = new Bundle();
+				bundle.putInt("location_provider", Constants.GPS_PROVIDER);
+				bundle.putParcelable("location", location);
+
+				intent.putExtras(bundle);
+
+				sendBroadcast(intent);
+
+				// location of acceptable accuracy received - stop GPS
+				stopSchedulerLocationUpdates();
+				
+				return;
+
+			} else {
+
+				Log.v(Constants.TAG, "Accuracy not accepted: " + location.getAccuracy());
+
+			}
+
+			if (wptGpsFixWaitTimeStart + wptGpsFixWaitTime * 60 * 1000 < SystemClock.uptimeMillis()) {
+
+				// stop trying to receive GPX signal and wait until next
+				// session
+				stopSchedulerLocationUpdates();
+			}
 
 		}
 
@@ -176,12 +201,6 @@ public class GpsService extends Service {
 		Log.v(Constants.TAG, "GpsService: onCreate");
 
 		myApp = (MyApp) getApplicationContext();
-
-		// waypoint track settings
-		wptRequestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10"));
-		wptMinAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
-		wptStopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "4"));
-		wptGpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2"));
 
 		// GPS sensor
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -276,6 +295,10 @@ public class GpsService extends Service {
 		locationManager.removeUpdates(locationListener);
 	}
 
+	public void stopSchedulerLocationUpdates() {
+		locationManager.removeUpdates(schedulerLocationListener);
+	}
+	
 	private void startSensorUpdates() {
 		sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);
@@ -287,21 +310,35 @@ public class GpsService extends Service {
 
 	public void startScheduler() {
 
+		// waypoint track settings
+		wptRequestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10"));
+		wptMinAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
+		wptStopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "4"));
+		wptGpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2"));
+
 		onSchedule = true;
 
 		wptStartTime = SystemClock.uptimeMillis();
-		
-		this.stopLocationUpdates();
 
+		Log.v(Constants.TAG, "Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
+
+		locationManager.removeUpdates(locationListener);
+		
 		schedulerHandler.postDelayed(schedulerTask, 5000);
 
 	}
 
 	public void stopScheduler() {
+		
+		Log.v(Constants.TAG, "Scheduler stopped");
 
 		onSchedule = false;
 
+		locationManager.removeUpdates(schedulerLocationListener);
+		
 		schedulerHandler.removeCallbacks(schedulerTask);
+		
+		this.startLocationUpdates();
 
 	}
 
@@ -316,12 +353,14 @@ public class GpsService extends Service {
 			// new request for location started
 			wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
 
-			startLocationUpdates();
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, schedulerLocationListener);
 
 			// has recording time limit been reached?
 			if (wptStopRecordingAfter != 0
-					&& wptStartTime + wptStopRecordingAfter * 60 * 60 * 1000 > SystemClock.uptimeMillis()) {
+					&& wptStartTime + wptStopRecordingAfter * 60 * 60 * 1000 < SystemClock.uptimeMillis()) {
+				
 				stopScheduler();
+				
 				return;
 			}
 
