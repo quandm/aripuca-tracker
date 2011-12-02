@@ -114,6 +114,12 @@ public class MainActivity extends Activity {
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
+			
+			// log location data to debug log file
+			String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(currentLocation.getTime());
+			myApp.log(locationTime + " " + currentLocation.getLatitude() + " " + currentLocation.getLongitude() + " "
+					+ currentLocation.getAccuracy() + " " + currentLocation.getAltitude());
+			
 
 			// update MainActivity UI
 			updateMainActivity(bundle.getInt("location_provider"));
@@ -359,6 +365,28 @@ public class MainActivity extends Activity {
 
 		// start GPS service only if not started
 		startGPSService();
+		
+		gpsServiceConnection = new ServiceConnection() {
+
+			public void onServiceConnected(ComponentName className, IBinder service) {
+
+				Log.v(Constants.TAG, "MainActivity: onServiceConnected");
+
+				gpsService = ((GpsService.LocalBinder) service).getService();
+
+				gpsService.startScheduler();
+				
+				isGpsServiceBound = true;
+
+			}
+
+			public void onServiceDisconnected(ComponentName className) {
+				gpsService = null;
+				isGpsServiceBound = false;
+			}
+
+		};
+		
 
 		// show quick help only when activity first started
 		if (savedInstanceState == null) {
@@ -1708,27 +1736,8 @@ public class MainActivity extends Activity {
 	private GpsService gpsService;
 	private boolean isGpsServiceBound = false;
 
-	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder service) {
-
-			Log.v(Constants.TAG, "MainActivity: onServiceConnected");
-
-			gpsService = ((GpsService.LocalBinder) service).getService();
-
-			gpsService.startScheduler();
-			
-			isGpsServiceBound = true;
-
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			gpsService = null;
-			isGpsServiceBound = false;
-		}
-
-	};
-
+	private ServiceConnection gpsServiceConnection;
+	
 	private void bindGpsService() {
 
 		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE)) {
@@ -1748,8 +1757,6 @@ public class MainActivity extends Activity {
 			// Detach our existing connection.
 			unbindService(gpsServiceConnection);
 
-			Toast.makeText(MainActivity.this, "GPS service detached", Toast.LENGTH_SHORT).show();
-			
 			isGpsServiceBound = false;
 			
 		}
