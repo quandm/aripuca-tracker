@@ -167,6 +167,15 @@
 			</LinearLayout>
 
 		</LinearLayout>
+		
+<EditText
+            android:id="@+id/debugInfo"
+            android:textSize="10sp"
+            android:layout_width="fill_parent"
+            android:layout_height="130dp"
+            android:hint="debug info"
+            android:gravity="top"
+            />		    
 
 	</LinearLayout>
 
