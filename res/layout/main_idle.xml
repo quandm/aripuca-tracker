@@ -1,180 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_height="fill_parent" android:layout_width="fill_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <!-- SPEED & PACE -->
+
+        <LinearLayout
+            style="@style/TrackDetailsRow"
+            android:background="@drawable/border1" >
+
+            <LinearLayout style="@style/TrackDetailsLeftCell" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/speed" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/speed"
+                        style="@style/Label30"
+                        android:gravity="right" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/speedUnit"
+                        style="@style/LabelUnit"
+                        android:gravity="left" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout style="@style/TrackDetailsRightCell" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/pace" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/pace"
+                        style="@style/Label30" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ELEVATION & COMPASS -->
+
+        <LinearLayout style="@style/TrackDetailsRow" >
+
+            <LinearLayout
+                style="@style/TrackDetailsLeftCell"
+                android:background="@drawable/border1" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/elevation" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/elevation"
+                        style="@style/Label30"
+                        android:gravity="right" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/elevationUnit"
+                        style="@style/LabelUnit"
+                        android:gravity="left" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/TrackDetailsRightCell"
+                android:background="@drawable/border1" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/azimuth" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/azimuth"
+                        style="@style/Label30" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- COORDINATES -->
 
-	<LinearLayout android:id="@+id/mainLayout"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+        <LinearLayout
+            style="@style/TrackDetailsRow"
+            android:background="@drawable/border1" >
 
-		<!-- SPEED & PACE -->
+            <LinearLayout style="@style/TrackDetailsLeftCell" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/lat" >
+                </TextView>
 
-		<LinearLayout style="@style/TrackDetailsRow"
-			android:background="@drawable/border1">
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/lat"
+                        style="@style/Label17" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsLeftCell">
-
-				<TextView android:text="@string/speed" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-
-					<TextView android:id="@+id/speed" android:gravity="right"
-						style="@style/Label30">
-					</TextView>
-
-					<TextView android:id="@+id/speedUnit" android:gravity="left"
-						style="@style/LabelUnit">
-					</TextView>
-
-				</LinearLayout>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsRightCell">
-
-				<TextView android:text="@string/pace" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/pace" style="@style/Label30">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- ELEVATION & COMPASS -->
-
-		<LinearLayout style="@style/TrackDetailsRow">
-
-			<LinearLayout style="@style/TrackDetailsLeftCell"
-				android:background="@drawable/border1">
-
-				<TextView android:text="@string/elevation" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-
-					<TextView android:id="@+id/elevation" android:gravity="right"
-						style="@style/Label30">
-					</TextView>
-
-					<TextView android:id="@+id/elevationUnit" android:gravity="left"
-						style="@style/LabelUnit">
-					</TextView>
-
-				</LinearLayout>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsRightCell"
-				android:background="@drawable/border1">
-
-				<TextView android:text="@string/azimuth" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/azimuth" style="@style/Label30">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- COORDINATES -->
-
-		<LinearLayout style="@style/TrackDetailsRow"
-			android:background="@drawable/border1">
-
-			<LinearLayout style="@style/TrackDetailsLeftCell">
-
-				<TextView android:text="@string/lat" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/lat" style="@style/Label17">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsRightCell">
-
-				<TextView android:text="@string/lng" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/lng" style="@style/Label17">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- LAST FIX TIME & ACCURACY -->
-
-		<LinearLayout style="@style/TrackDetailsRow">
-
-			<LinearLayout style="@style/TrackDetailsLeftCell"
-				android:background="@drawable/border1">
-
-				<TextView android:text="@string/accuracy" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-
-					<TextView android:id="@+id/accuracy" style="@style/Label17"
-						android:gravity="right">
-					</TextView>
-
-					<TextView android:id="@+id/accuracyUnit" android:gravity="left"
-						style="@style/LabelUnit">
-					</TextView>
-
-				</LinearLayout>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsRightCell"
-				android:background="@drawable/border1">
-
-				<TextView android:text="@string/last_fix" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/lastFix" style="@style/Label17">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- SUNRISE/SUNSET -->
-
-		<LinearLayout style="@style/TrackDetailsRow"
-			android:background="@drawable/border1">
-
-			<LinearLayout style="@style/TrackDetailsLeftCell">
-
-				<TextView android:text="@string/sunrise" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/sunrise" style="@style/Label17">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsRightCell">
-
-				<TextView android:text="@string/sunset" style="@style/SmallHeader1"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-					<TextView android:id="@+id/sunset" style="@style/Label17">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+            <LinearLayout style="@style/TrackDetailsRightCell" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/lng" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/lng"
+                        style="@style/Label17" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- LAST FIX TIME & ACCURACY -->
+
+        <LinearLayout style="@style/TrackDetailsRow" >
+
+            <LinearLayout
+                style="@style/TrackDetailsLeftCell"
+                android:background="@drawable/border1" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/accuracy" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/accuracy"
+                        style="@style/Label17"
+                        android:gravity="right" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/accuracyUnit"
+                        style="@style/LabelUnit"
+                        android:gravity="left" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/TrackDetailsRightCell"
+                android:background="@drawable/border1" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/last_fix" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/lastFix"
+                        style="@style/Label17" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- SUNRISE/SUNSET -->
+
+        <LinearLayout
+            style="@style/TrackDetailsRow"
+            android:background="@drawable/border1" >
+
+            <LinearLayout style="@style/TrackDetailsLeftCell" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/sunrise" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/sunrise"
+                        style="@style/Label17" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout style="@style/TrackDetailsRightCell" >
+
+                <TextView
+                    style="@style/SmallHeader1"
+                    android:text="@string/sunset" >
+                </TextView>
+
+                <LinearLayout style="@style/TrackDetailsRow_ValueUnits" >
+
+                    <TextView
+                        android:id="@+id/sunset"
+                        style="@style/Label17" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>

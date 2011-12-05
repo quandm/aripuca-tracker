@@ -37,21 +37,23 @@ public class GpsService extends Service {
 	private LocationManager locationManager;
 
 	private SensorManager sensorManager;
+	
+	private Location currentLocation;
 
 	public boolean onSchedule;
 
-	private static boolean running = false;
+	private static boolean running = false;;
 
 	private MyApp myApp;
 
 	private Context context;
-	
+
 	public void setContext(Context context) {
-		
+
 		this.context = context;
-		
+
 	}
-	
+
 	/**
 	 * waypoint track recording start time
 	 */
@@ -72,6 +74,12 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
+			currentLocation = location;
+			
+			if (myApp.trackRecorder.isRecording()) {
+				myApp.trackRecorder.updateStatistics(location);
+			}
+			
 			Log.v(Constants.TAG, "locationListener");
 
 			// let's broadcast location data to any activity waiting for updates
@@ -88,12 +96,10 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
 		public void onProviderDisabled(String provider) {
@@ -112,9 +118,19 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
+			currentLocation = location;
+			
 			Log.v(Constants.TAG, "scheduledLocationListener");
 
+			// TODO: minimum distance check
+
 			if (location.hasAccuracy() && location.getAccuracy() < wptMinAccuracy) {
+
+				// SAVE LOCATION
+				// log location data to debug log file
+				String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime());
+				myApp.log(locationTime + " " + location.getLatitude() + " " + location.getLongitude() + " "
+						+ location.getAccuracy() + " " + location.getAltitude());
 
 				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy() + " at "
 						+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime()));
@@ -133,6 +149,7 @@ public class GpsService extends Service {
 
 				// location of acceptable accuracy received - stop GPS
 				stopScheduledLocationUpdates();
+				schedulerHandler.postDelayed(schedulerTask, wptRequestInterval * 60 * 1000);
 
 				return;
 
@@ -142,22 +159,32 @@ public class GpsService extends Service {
 
 			}
 
+			// wayting for acceptable accuracy
 			if (wptGpsFixWaitTimeStart + wptGpsFixWaitTime * 60 * 1000 < SystemClock.uptimeMillis()) {
+
+				Log.v(Constants.TAG, "Accuracy not accepted: " + location.getAccuracy());
 
 				// stop trying to receive GPX signal and wait until next
 				// session
 				stopScheduledLocationUpdates();
+				schedulerHandler.postDelayed(schedulerTask, wptRequestInterval * 60 * 1000);
+
+			} else {
+
+				Log.v(Constants.TAG,
+						"Time passed: "
+								+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(SystemClock.uptimeMillis()
+										- wptGpsFixWaitTimeStart));
+
 			}
 
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
 		public void onProviderDisabled(String provider) {
@@ -346,10 +373,10 @@ public class GpsService extends Service {
 		wptStartTime = SystemClock.uptimeMillis();
 
 		Log.v(Constants.TAG, "Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
-		
-		//TODO: update resources
+
+		// TODO: update resources
 		Toast.makeText(context, "Scheduled recording started", Toast.LENGTH_SHORT).show();
-		
+
 		this.stopLocationUpdates();
 
 		schedulerHandler.postDelayed(schedulerTask, 5000);
@@ -359,17 +386,16 @@ public class GpsService extends Service {
 	public void stopScheduler() {
 
 		Log.v(Constants.TAG, "Scheduler stopped");
-		
-		//TODO: update resources
+
+		// TODO: update resources
 		Toast.makeText(context, "Scheduled recording stopped", Toast.LENGTH_SHORT).show();
 
 		this.clearNotification();
 
-		onSchedule = false;
+		this.onSchedule = false;
 
 		this.stopScheduledLocationUpdates();
-
-		schedulerHandler.removeCallbacks(schedulerTask);
+		this.schedulerHandler.removeCallbacks(schedulerTask);
 
 		this.startLocationUpdates();
 
@@ -391,13 +417,12 @@ public class GpsService extends Service {
 					&& wptStartTime + wptStopRecordingAfter * 60 * 60 * 1000 < SystemClock.uptimeMillis()) {
 
 				stopScheduler();
-
 				return;
 			}
 
 			startScheduledLocationUpdates();
 
-			schedulerHandler.postDelayed(this, wptRequestInterval * 60 * 1000);
+			// schedulerHandler.postDelayed(this, 1 * 60 * 1000);
 
 		}
 
@@ -440,6 +465,10 @@ public class GpsService extends Service {
 		// mNotificationManager.cancelAll();
 		mNotificationManager.cancel(Constants.NOTIFICATION_WAYPOINT_TRACK);
 
+	}
+	
+	public Location getCurrentLocation() {
+		return this.currentLocation;
 	}
 
 }

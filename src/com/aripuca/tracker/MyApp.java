@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.track.Waypoint;
 
 import android.app.Application;
@@ -62,6 +63,8 @@ public class MyApp extends Application {
 	 * database object
 	 */
 	private SQLiteDatabase db;
+	
+	public TrackRecorder trackRecorder;
 
 	/**
 	 * location updates broadcast receiver
