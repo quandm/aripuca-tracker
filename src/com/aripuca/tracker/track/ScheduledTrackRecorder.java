@@ -114,8 +114,7 @@ public class ScheduledTrackRecorder {
 	public void initialize() {
 
 		// waypoint track settings
-		//requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
-		requestInterval = 1 * 60 * 1000;
+		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
 
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
 
