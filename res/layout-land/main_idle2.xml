@@ -1,174 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_height="fill_parent" android:layout_width="fill_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="3dp" >
+
+        <!-- SPEED & PACE -->
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/speed" >
+            </TextView>
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/pace" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/speed"
+                    style="@style/LayoutRowValue" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/speedUnit"
+                    style="@style/LayoutRowValueUnit" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/pace"
+                    style="@style/LayoutRowValue"
+                    android:text="00:00" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ELEVATION & COMPASS -->
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/elevation" >
+            </TextView>
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/azimuth" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/LayoutRow"
+            android:layout_height="45dp" >
+
+            <LinearLayout
+                style="@style/LayoutRowColumn"
+                android:layout_height="fill_parent" >
+
+                <TextView
+                    android:id="@+id/elevation"
+                    style="@style/LayoutRowValue" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/elevationUnit"
+                    style="@style/LayoutRowValueUnit" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LayoutRowColumn"
+                android:layout_height="fill_parent" >
+
+                <FrameLayout style="@style/FillParent" >
+
+                    <TextView
+                        android:id="@+id/azimuth"
+                        style="@style/LayoutRowValue"
+                        android:layout_gravity="center"
+                        android:text="360°N"
+                        android:textSize="20dp" >
+                    </TextView>
+
+                    <com.aripuca.tracker.view.CompassImage
+                        android:id="@+id/compassImage"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="right"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/arrow36" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
 
-	<LinearLayout android:id="@+id/mainLayout"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:padding="3dp">
+        <!-- COORDINATES -->
 
-		<!-- SPEED & PACE -->
+        <LinearLayout style="@style/LayoutRow" >
 
-		<LinearLayout style="@style/LayoutRow">
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/lat" >
+            </TextView>
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/lng" >
+            </TextView>
+        </LinearLayout>
 
-			<TextView android:text="@string/speed" style="@style/LayoutRowLabel"></TextView>
-
-			<TextView android:text="@string/pace" style="@style/LayoutRowLabel"></TextView>
-
-		</LinearLayout>
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/speed" style="@style/LayoutRowValue">
-				</TextView>
-
-				<TextView android:id="@+id/speedUnit" style="@style/LayoutRowValueUnit">
-				</TextView>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/pace" style="@style/LayoutRowValue"
-					android:text="00:00">
-				</TextView>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- ELEVATION & COMPASS -->
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<TextView android:text="@string/elevation" style="@style/LayoutRowLabel"></TextView>
-
-			<TextView android:text="@string/azimuth" style="@style/LayoutRowLabel"></TextView>
-
-		</LinearLayout>
-
-		<LinearLayout style="@style/LayoutRow"
-			android:layout_height="45dp">
-
-			<LinearLayout style="@style/LayoutRowColumn"
-				android:layout_height="fill_parent">
-
-				<TextView android:id="@+id/elevation" style="@style/LayoutRowValue">
-				</TextView>
-
-				<TextView android:id="@+id/elevationUnit" style="@style/LayoutRowValueUnit">
-				</TextView>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/LayoutRowColumn"
-				android:layout_height="fill_parent">
-
-				<FrameLayout style="@style/FillParent">
-					<TextView android:id="@+id/azimuth" style="@style/LayoutRowValue"
-						android:text="360°N" android:layout_gravity="center"
-						android:textSize="20dp">
-					</TextView>
-					<com.aripuca.tracker.view.CompassImage
-						android:id="@+id/compassImage" android:src="@drawable/arrow36"
-						android:layout_margin="5dp" android:layout_width="20dp"
-						android:layout_height="20dp" android:layout_gravity="right"/>
-				</FrameLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- COORDINATES -->
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<TextView android:text="@string/lat" style="@style/LayoutRowLabel"></TextView>
-
-			<TextView android:text="@string/lng" style="@style/LayoutRowLabel"></TextView>
-
-		</LinearLayout>
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/lat" style="@style/LayoutRowValueSmall">
-				</TextView>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/lng" style="@style/LayoutRowValueSmall">
-				</TextView>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- LAST FIX TIME & ACCURACY -->
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<TextView android:text="@string/accuracy" style="@style/LayoutRowLabel"></TextView>
-
-			<TextView android:text="@string/last_fix" style="@style/LayoutRowLabel"></TextView>
-
-		</LinearLayout>
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/accuracy" style="@style/LayoutRowValueSmall">
-				</TextView>
-
-				<TextView android:id="@+id/accuracyUnit" style="@style/LayoutRowValueUnit">
-				</TextView>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/lastFix" style="@style/LayoutRowValueSmall">
-				</TextView>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<!-- SUNRISE/SUNSET -->
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<TextView android:text="@string/sunrise" style="@style/LayoutRowLabel"></TextView>
-
-			<TextView android:text="@string/sunset" style="@style/LayoutRowLabel"></TextView>
-
-		</LinearLayout>
-
-		<LinearLayout style="@style/LayoutRow">
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/sunrise" style="@style/LayoutRowValueSmall">
-				</TextView>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/LayoutRowColumn">
-
-				<TextView android:id="@+id/sunset" style="@style/LayoutRowValueSmall">
-				</TextView>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
-
+        <LinearLayout style="@style/LayoutRow" >
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/lat"
+                    style="@style/LayoutRowValueSmall" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/lng"
+                    style="@style/LayoutRowValueSmall" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- LAST FIX TIME & ACCURACY -->
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/accuracy" >
+            </TextView>
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/last_fix" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/accuracy"
+                    style="@style/LayoutRowValueSmall" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/accuracyUnit"
+                    style="@style/LayoutRowValueUnit" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/lastFix"
+                    style="@style/LayoutRowValueSmall" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- SUNRISE/SUNSET -->
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/sunrise" >
+            </TextView>
+
+            <TextView
+                style="@style/LayoutRowLabel"
+                android:text="@string/sunset" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/LayoutRow" >
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/sunrise"
+                    style="@style/LayoutRowValueSmall" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout style="@style/LayoutRowColumn" >
+
+                <TextView
+                    android:id="@+id/sunset"
+                    style="@style/LayoutRowValueSmall" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- MESSAGE BOX -->
+
+        <LinearLayout
+            android:id="@+id/messageBox"
+            style="@style/FillParent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/messageText"
+                style="@style/LayoutRowValueSmall"
+                android:text="@string/waiting_new_fix" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/fixAge"
+                style="@style/LayoutRowValueSmall" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>

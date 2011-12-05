@@ -1,13 +1,13 @@
 package com.aripuca.tracker.service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import com.aripuca.tracker.MainActivity;
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.NotificationActivity;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.track.ScheduledTrackRecorder;
+import com.aripuca.tracker.util.Utils;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -28,7 +28,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 public class GpsService extends Service {
 
@@ -37,7 +36,7 @@ public class GpsService extends Service {
 	private LocationManager locationManager;
 
 	private SensorManager sensorManager;
-	
+
 	private Location currentLocation;
 
 	public boolean onSchedule;
@@ -46,24 +45,13 @@ public class GpsService extends Service {
 
 	private MyApp myApp;
 
-	private Context context;
-
-	public void setContext(Context context) {
-
-		this.context = context;
-
-	}
-
 	/**
 	 * waypoint track recording start time
 	 */
 	private long wptStartTime;
 	private long wptGpsFixWaitTimeStart;
 
-	private long wptGpsFixWaitTime;
-	private int wptRequestInterval;
-	private int wptMinAccuracy;
-	private int wptStopRecordingAfter;
+	private ScheduledTrackRecorder scheduledTrackRecorder;
 
 	/**
 	 * defines a listener that responds to location updates
@@ -75,36 +63,26 @@ public class GpsService extends Service {
 		public void onLocationChanged(Location location) {
 
 			currentLocation = location;
-			
+
+			// update track statistics 
 			if (myApp.trackRecorder.isRecording()) {
 				myApp.trackRecorder.updateStatistics(location);
 			}
-			
-			Log.v(Constants.TAG, "locationListener");
 
-			// let's broadcast location data to any activity waiting for updates
-			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
-
-			Bundle bundle = new Bundle();
-			bundle.putInt("location_provider", Constants.GPS_PROVIDER);
-			bundle.putParcelable("location", location);
-
-			intent.putExtras(bundle);
-
-			sendBroadcast(intent);
+			broadcastLocationUpdate(location, "com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
 		public void onProviderDisabled(String provider) {
-			// Toast.makeText(myApp.getMainActivity(), "GPS provider disabled",
-			// Toast.LENGTH_SHORT).show();
 		}
 
 	};
@@ -118,81 +96,89 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
-			currentLocation = location;
-			
 			Log.v(Constants.TAG, "scheduledLocationListener");
+
+			currentLocation = location;
 
 			// TODO: minimum distance check
 
-			if (location.hasAccuracy() && location.getAccuracy() < wptMinAccuracy) {
+			if (location.hasAccuracy() && location.getAccuracy() < scheduledTrackRecorder.getMinAccuracy()) {
+
+				scheduledTrackRecorder.recordTrackPoint(location);
+
+				// let's broadcast location data to any activity waiting for updates
+				broadcastLocationUpdate(location, "com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION");
+
+				// location of acceptable accuracy received - stop GPS
+				stopScheduledLocationUpdates();
+
+				// schedule next location update
+				schedulerHandler.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
 
 				// SAVE LOCATION
 				// log location data to debug log file
 				String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime());
-				myApp.log(locationTime + " " + location.getLatitude() + " " + location.getLongitude() + " "
+				myApp.log(locationTime + " " + Utils.formatLat(location.getLatitude()) + " "
+						+ Utils.formatLng(location.getLongitude()) + " "
 						+ location.getAccuracy() + " " + location.getAltitude());
-
+				
 				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy() + " at "
 						+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime()));
 
-				// let's broadcast location data to any activity waiting for
-				// updates
-				Intent intent = new Intent("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION");
-
-				Bundle bundle = new Bundle();
-				bundle.putInt("location_provider", Constants.GPS_PROVIDER);
-				bundle.putParcelable("location", location);
-
-				intent.putExtras(bundle);
-
-				sendBroadcast(intent);
-
-				// location of acceptable accuracy received - stop GPS
-				stopScheduledLocationUpdates();
-				schedulerHandler.postDelayed(schedulerTask, wptRequestInterval * 60 * 1000);
-
-				return;
-
 			} else {
+
+				// waiting for acceptable accuracy
+				if (wptGpsFixWaitTimeStart + scheduledTrackRecorder.getGpsFixWaitTime() < SystemClock.uptimeMillis()) {
+
+					// stop trying to receive GPX signal
+					stopScheduledLocationUpdates();
+
+					// schedule next location update
+					schedulerHandler
+							.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
+
+				}
 
 				Log.v(Constants.TAG, "Accuracy not accepted: " + location.getAccuracy());
 
 			}
 
-			// wayting for acceptable accuracy
-			if (wptGpsFixWaitTimeStart + wptGpsFixWaitTime * 60 * 1000 < SystemClock.uptimeMillis()) {
-
-				Log.v(Constants.TAG, "Accuracy not accepted: " + location.getAccuracy());
-
-				// stop trying to receive GPX signal and wait until next
-				// session
-				stopScheduledLocationUpdates();
-				schedulerHandler.postDelayed(schedulerTask, wptRequestInterval * 60 * 1000);
-
-			} else {
-
-				Log.v(Constants.TAG,
-						"Time passed: "
-								+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(SystemClock.uptimeMillis()
-										- wptGpsFixWaitTimeStart));
-
-			}
+			// has recording time limit been reached?
+			checkStopRecordingAfter();
 
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
 		public void onProviderDisabled(String provider) {
-			// Toast.makeText(myApp.getMainActivity(), "GPS provider disabled",
-			// Toast.LENGTH_SHORT).show();
 		}
 
 	};
+
+	/**
+	 * Broadcasting location update
+	 */
+	private void broadcastLocationUpdate(Location location, String action) {
+
+		// let's broadcast location data to any activity waiting for updates
+		Intent intent = new Intent(action);
+
+		Bundle bundle = new Bundle();
+		bundle.putInt("location_provider", Constants.GPS_PROVIDER);
+		bundle.putParcelable("location", location);
+
+		intent.putExtras(bundle);
+
+		sendBroadcast(intent);
+
+	}
 
 	private SensorEventListener sensorListener = new SensorEventListener() {
 
@@ -247,6 +233,9 @@ public class GpsService extends Service {
 		Log.v(Constants.TAG, "GpsService: onCreate");
 
 		myApp = (MyApp) getApplicationContext();
+
+		// scheduled track recorder instance
+		scheduledTrackRecorder = ScheduledTrackRecorder.getInstance(myApp);
 
 		// GPS sensor
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -362,22 +351,13 @@ public class GpsService extends Service {
 
 		this.showOngoingNotification();
 
-		// waypoint track settings
-		wptRequestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10"));
-		wptMinAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
-		wptStopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "4"));
-		wptGpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2"));
+		this.scheduledTrackRecorder.start();
 
 		onSchedule = true;
 
 		wptStartTime = SystemClock.uptimeMillis();
 
 		Log.v(Constants.TAG, "Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
-
-		// TODO: update resources
-		Toast.makeText(context, "Scheduled recording started", Toast.LENGTH_SHORT).show();
-
-		this.stopLocationUpdates();
 
 		schedulerHandler.postDelayed(schedulerTask, 5000);
 
@@ -387,8 +367,7 @@ public class GpsService extends Service {
 
 		Log.v(Constants.TAG, "Scheduler stopped");
 
-		// TODO: update resources
-		Toast.makeText(context, "Scheduled recording stopped", Toast.LENGTH_SHORT).show();
+		this.scheduledTrackRecorder.stop();
 
 		this.clearNotification();
 
@@ -396,8 +375,6 @@ public class GpsService extends Service {
 
 		this.stopScheduledLocationUpdates();
 		this.schedulerHandler.removeCallbacks(schedulerTask);
-
-		this.startLocationUpdates();
 
 	}
 
@@ -413,20 +390,27 @@ public class GpsService extends Service {
 			wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
 
 			// has recording time limit been reached?
-			if (wptStopRecordingAfter != 0
-					&& wptStartTime + wptStopRecordingAfter * 60 * 60 * 1000 < SystemClock.uptimeMillis()) {
-
-				stopScheduler();
-				return;
-			}
+			checkStopRecordingAfter();
 
 			startScheduledLocationUpdates();
-
-			// schedulerHandler.postDelayed(this, 1 * 60 * 1000);
 
 		}
 
 	};
+
+	/**
+	 * has recording time limit been reached?
+	 */
+	private void checkStopRecordingAfter() {
+
+		// has recording time limit been reached?
+		if (scheduledTrackRecorder.getStopRecordingAfter() != 0
+				&& wptStartTime + scheduledTrackRecorder.getStopRecordingAfter() < SystemClock.uptimeMillis()) {
+
+			stopScheduler();
+		}
+
+	}
 
 	/**
 	 * Show ongoing notification
@@ -445,7 +429,7 @@ public class GpsService extends Service {
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
 
 		CharSequence contentTitle = getString(R.string.main_app_title);
-		CharSequence contentText = getString(R.string.recording_track);
+		CharSequence contentText = getString(R.string.scheduled_track_recording_in_progress);
 
 		Intent notificationIntent = new Intent(this, NotificationActivity.class);
 
@@ -453,7 +437,7 @@ public class GpsService extends Service {
 
 		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);
 
-		mNotificationManager.notify(Constants.NOTIFICATION_WAYPOINT_TRACK, notification);
+		mNotificationManager.notify(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING, notification);
 
 	}
 
@@ -463,12 +447,16 @@ public class GpsService extends Service {
 
 		// remove all notifications
 		// mNotificationManager.cancelAll();
-		mNotificationManager.cancel(Constants.NOTIFICATION_WAYPOINT_TRACK);
+		mNotificationManager.cancel(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING);
 
 	}
-	
+
 	public Location getCurrentLocation() {
 		return this.currentLocation;
+	}
+
+	public ScheduledTrackRecorder getScheduledTrackRecorder() {
+		return scheduledTrackRecorder;
 	}
 
 }

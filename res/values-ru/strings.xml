@@ -20,6 +20,7 @@
     <string name="tracks">Треки</string>
     <string name="record_track">Записать трек</string>
     <string name="recording_track">Идет запись трека</string>
+    <string name="scheduled_track_recording_in_progress">Идет запись трека по расписанию</string>
     <string name="show_track">Показать трек</string>
     <string name="segments">Сегменты</string>
     <string name="prev_segment">Предыдущий сегмент</string>
@@ -220,10 +221,14 @@
     <string name="import_completed">Импорт завершен</string>
     <string name="export_completed">Экспорт завершен</string>
     <string name="restart_required">Чтобы изменения вступили в силу необходим перезапуск приложения</string>
-    <string name="waiting_for_fix">Ожидание более точного сигнала</string>
-    <string name="waiting_new_fix">Ожидание нового фикса. Обеспечьте видимость неба.</string>
+    <string name="waiting_for_fix">Ожидание более точного сигнала...</string>
+    <string name="waiting_new_fix">Ожидание нового фикса...</string>
     <string name="last_known_location_received">Последний известный сигнал GPS получен</string>
     <string name="fix_age">Последний фикс был получен %s назад</string>
+    <string name="location_received_on_schedule">New location received on schedule</string>
+    <string name="scheduled_recording_started">Scheduled recording started</string>
+    <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
+    <string name="gps_service_not_connected">GPS service not connected</string>
 
     <!-- HINTS -->
     <string name="waypoint_description">Описание путевой точки</string>

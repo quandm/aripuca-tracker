@@ -15,54 +15,122 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class ScheduledTrackRecorder {
-	
-	private Context context;
-	
-	protected MyApp myApp;	
-	
+
+	private static ScheduledTrackRecorder instance = null;
+
+	protected MyApp myApp;
+
 	private int trackPointsCount;
-	
+
 	protected long trackTimeStart;
+
+	private long gpsFixWaitTime;
 	
+	private Location lastRecordedLocation = null;
+
+	/**
+	 * @return the gpsFixWaitTime
+	 */
+	public long getGpsFixWaitTime() {
+		return gpsFixWaitTime;
+	}
+
+	/**
+	 * minimum distance between two recorded points
+	 */
+	private int minDistance;
+	
+	/**
+	 * minimum accuracy required for recording in meters
+	 */
+	private int minAccuracy;
+
+	/**
+	 * returns minAccuracy
+	 */
+	public int getMinAccuracy() {
+		return minAccuracy;
+	}
+
+	/**
+	 * @return the trackTimeStart
+	 */
+	public long getTrackTimeStart() {
+		return trackTimeStart;
+	}
+
+	/**
+	 * time interval between location requests in milliseconds
+	 */
+	private long requestInterval;
+
+	/**
+	 * returns requestInterval
+	 */
+	public long getRequestInterval() {
+		return requestInterval;
+	}
+
+	/**
+	 * recording time limit in milliseconds
+	 */
+	private long stopRecordingAfter;
+
+	/**
+	 * returns stopRecordingAfter
+	 */
+	public long getStopRecordingAfter() {
+		return stopRecordingAfter * 60 * 60 * 1000;
+	}
+
 	/**
 	 * Id of the track being recorded
 	 */
 	private long trackId;
-	public void setTrackId(long tid) {
-		this.trackId = tid;
-	}
+
 	public long getTrackId() {
 		return this.trackId;
 	}
-	
 
-	public ScheduledTrackRecorder(Context context) {
-	
-		this.context = context;
+	/**
+	 * Singleton pattern
+	 */
+	public static ScheduledTrackRecorder getInstance(MyApp app) {
 
-		myApp = (MyApp)context.getApplicationContext();
-		
-	}
-	
-	
-	public void startScheduler() {
+		if (instance == null) {
+			instance = new ScheduledTrackRecorder(app);
+		}
 
-		trackPointsCount = 0;
-		
-		this.trackTimeStart = (new Date()).getTime();
+		return instance;
 
-		
 	}
 
-	public void stopScheduler() {
+	public ScheduledTrackRecorder(MyApp app) {
 
-		
+		this.myApp = app;
+
 	}
-	
+
+	public void initialize() {
+
+		// waypoint track settings
+		//requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
+		requestInterval = 1 * 60 * 1000;
+
+		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
+
+		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
+		
+		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "4")) * 60 * 60 * 1000;
+
+		gpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
+
+	}
+
 	/**
 	 * Add new track to application db after recording started
 	 */
-	public void insertNewTrack() {
+	private void insertNewTrack() {
 
 		ContentValues values = new ContentValues();
 		values.put("title", "New scheduled track");
@@ -71,29 +139,23 @@ public class ScheduledTrackRecorder {
 		values.put("start_time", this.trackTimeStart);
 
 		try {
-			
-			long newTrackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
-			this.setTrackId(newTrackId);
-			
+			// setting track id
+			trackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
 		} catch (SQLiteException e) {
-			
-			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-			
 			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
 
 	}
-	
 
 	/**
 	 * Update track data after recording finished
 	 */
-	protected void updateNewTrack() {
+	private void updateNewTrack() {
 
 		long finishTime = (new Date()).getTime();
 
 		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-" +
-								(new SimpleDateFormat("H:mm")).format(finishTime);
+				(new SimpleDateFormat("H:mm")).format(finishTime);
 
 		ContentValues values = new ContentValues();
 		values.put("title", trackTitle);
@@ -103,33 +165,41 @@ public class ScheduledTrackRecorder {
 		values.put("recording", 0);
 
 		try {
-			
+
 			myApp.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
-			
+
 		} catch (SQLiteException e) {
-			
-			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-			
+
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
 
 	}
-	
-	
+
 	/**
 	 * Record one track point
 	 * 
 	 * @param location Current location
 	 */
-	protected void recordTrackPoint(Location location) {
-
+	public void recordTrackPoint(Location location) {
+		
+		// minimum distance check
+		if (lastRecordedLocation!=null && location.distanceTo(lastRecordedLocation) > minDistance) {
+			return;
+		}
+		
+		float distance = 0;
+		if (lastRecordedLocation!=null) { 
+			distance = location.distanceTo(lastRecordedLocation);
+		}
+		
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
-		values.put("lat", (int)(location.getLatitude()*1E6));
-		values.put("lng", (int)(location.getLongitude()*1E6));
+		values.put("lat", (int) (location.getLatitude() * 1E6));
+		values.put("lng", (int) (location.getLongitude() * 1E6));
 		values.put("elevation", Utils.formatNumber(location.getAltitude(), 1));
 		values.put("speed", Utils.formatNumber(location.getSpeed(), 2));
 		values.put("time", (new Date()).getTime());
+		values.put("distance", Utils.formatNumber(distance, 1));
 		values.put("accuracy", location.getAccuracy());
 
 		try {
@@ -141,12 +211,37 @@ public class ScheduledTrackRecorder {
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
+		
+		lastRecordedLocation = location;
 
 	}
-	
-	
-	
-	
 
-	
+	private boolean recording = false;
+
+	public boolean isRecording() {
+		return recording;
+	}
+
+	public void start() {
+
+		this.initialize();
+
+		this.trackTimeStart = (new Date()).getTime();
+
+		this.recording = true;
+
+		this.trackPointsCount = 0;
+
+		this.insertNewTrack();
+
+	}
+
+	public void stop() {
+
+		recording = false;
+
+		this.updateNewTrack();
+
+	}
+
 }

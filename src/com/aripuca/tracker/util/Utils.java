@@ -238,7 +238,7 @@ public class Utils {
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FORMAT COORDINATES
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	public static String formatLat(double lat, int outputType) {
 
 		String direction = "N";
@@ -251,6 +251,10 @@ public class Utils {
 
 	}
 
+	public static String formatLat(double lat) {
+		return formatLat(lat, Location.FORMAT_DEGREES);
+	}
+	
 	public static String formatLng(double lng, int outputType) {
 
 		String direction = "E";
@@ -263,6 +267,11 @@ public class Utils {
 
 	}
 
+	public static String formatLng(double lng) {
+		return formatLng(lng, Location.FORMAT_DEGREES);
+	}
+	
+
 	/**
 	 * Formats coordinate value to string based on output type (modified version
 	 * from Android API)
@@ -271,7 +280,7 @@ public class Utils {
 
 		StringBuilder sb = new StringBuilder();
 		char endChar = DEGREE_CHAR;
-
+		
 		DecimalFormat df = new DecimalFormat("###.######");
 		if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
 

@@ -1,9 +1,7 @@
 package com.aripuca.tracker;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -36,6 +34,7 @@ import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.map.WaypointsMapActivity;
+import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.Utils;
@@ -44,11 +43,13 @@ import com.aripuca.tracker.view.CompassImage;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
@@ -56,6 +57,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -333,6 +335,8 @@ public class WaypointsListActivity extends ListActivity {
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
+		
+		this.unbindGpsService();
 
 		super.onPause();
 	}
@@ -365,6 +369,10 @@ public class WaypointsListActivity extends ListActivity {
 
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
+		
+		// bind to GPS service
+		// once bound gpsServiceBoundCallback will be called
+		this.bindGpsService();
 
 		super.onResume();
 	}
@@ -1011,5 +1019,65 @@ public class WaypointsListActivity extends ListActivity {
 		dialog.show();
 
 	}
+	
+	/**
+	 * GPS service connection
+	 */
+	private GpsService gpsService;
+	private boolean isGpsServiceBound = false;
+
+	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
+
+		public void onServiceConnected(ComponentName className, IBinder service) {
+
+			gpsService = ((GpsService.LocalBinder) service).getService();
+
+			gpsServiceBoundCallback();
+
+			isGpsServiceBound = true;
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			gpsService = null;
+			isGpsServiceBound = false;
+		}
+
+	};
+
+	private void bindGpsService() {
+
+		if (!bindService(new Intent(this, GpsService.class), gpsServiceConnection,
+				Context.BIND_AUTO_CREATE)) {
+			Toast.makeText(this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
+	private void unbindGpsService() {
+
+		if (isGpsServiceBound) {
+
+			// Detach our existing connection.
+			unbindService(gpsServiceConnection);
+
+			gpsService = null;
+
+			isGpsServiceBound = false;
+
+		}
+
+	}
+
+	/**
+	 * called when gpsService bound
+	 */
+	private void gpsServiceBoundCallback() {
+
+		if (!myApp.trackRecorder.isRecording()) {
+			gpsService.startLocationUpdates();
+		}
+		
+	}
+	
 
 }

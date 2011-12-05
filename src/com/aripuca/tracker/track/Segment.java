@@ -2,7 +2,6 @@ package com.aripuca.tracker.track;
 
 import java.util.Date;
 
-import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 
