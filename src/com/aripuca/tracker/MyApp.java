@@ -319,7 +319,7 @@ public class MyApp extends Application {
 			//Toast.makeText(this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
 		}
 
-		// adding famous waypoints to db
+		// adding famous waypoints to db if not added yet
 		insertFamousWaypoints();
 
 	}
@@ -350,8 +350,6 @@ public class MyApp extends Application {
 	public void onConfigurationChanged(Configuration newConfig) {
 
 		if (locale != null) {
-
-			//Log.v(Constants.TAG, "MyApp: onConfigurationChanged: updating locale: " + locale.getLanguage());
 
 			newConfig.locale = locale;
 			Locale.setDefault(locale);

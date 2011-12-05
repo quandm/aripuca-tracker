@@ -28,29 +28,9 @@
 		</Button>
 
 		<Button android:id="@+id/pauseResumeTrackButton" android:text="@string/pause"
-			style="@style/ControlButton">
+			style="@style/ControlButton" android:visibility="gone">
 		</Button>
 
 	</LinearLayout>
 	
-	<LinearLayout android:id="@+id/messageBox" style="@style/FillParent"
-		android:gravity="center">
-
-		<LinearLayout android:layout_width="fill_parent" android:orientation="vertical"
-			android:layout_height="100dp" android:background="@drawable/border2"
-			android:layout_margin="20dp" android:padding="5dp" android:gravity="center">
-
-			<TextView android:id="@+id/messageText" style="@style/FillWidth" android:textSize="16sp" android:text="@string/waiting_new_fix"
-				android:textColor="#F000" android:gravity="center">
-			</TextView>
-
-			<TextView android:id="@+id/fixAge" style="@style/FillWidth" android:textSize="14sp"
-				android:textColor="#F000" android:gravity="center">
-			</TextView>
-
-		</LinearLayout>
-
-	</LinearLayout>
-	
-
 </FrameLayout>

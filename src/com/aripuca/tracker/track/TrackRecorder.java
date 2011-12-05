@@ -111,7 +111,7 @@ public class TrackRecorder {
 
 		this.context = context;
 		
-		myApp = (MyApp) context.getApplicationContext();
+		myApp = (MyApp) this.context.getApplicationContext();
 
 	}
 

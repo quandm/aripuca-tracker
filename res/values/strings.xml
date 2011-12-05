@@ -33,6 +33,7 @@
     <string name="tracks">Tracks</string>
     <string name="record_track">Record track</string>
     <string name="recording_track">Recording track</string>
+    <string name="scheduled_track_recording_in_progress">Scheduled track recording in progress</string>
     <string name="show_track">Show track</string>
     <string name="segments">Segments</string>
     <string name="prev_segment">Prev segment</string>
@@ -235,10 +236,14 @@
     <string name="export_completed">Export completed</string>
     <string name="restart_required">Application restart required for the changes to
 		take effect</string>
-    <string name="waiting_for_fix">Waiting for a better fix</string>
+    <string name="waiting_for_fix">Waiting for a better fix...</string>
     <string name="last_known_location_received">Last known location received</string>
-    <string name="waiting_new_fix">Waiting for new fix. Make sure the sky is visible.</string>
+    <string name="waiting_new_fix">Waiting for new fix...</string>
     <string name="fix_age">Last fix was received %s ago</string>
+    <string name="location_received_on_schedule">New location received on schedule</string>
+    <string name="scheduled_recording_started">Scheduled recording started</string>
+    <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
+    <string name="gps_service_not_connected">GPS service not connected</string>
 
     <!-- HINTS -->
     <string name="waypoint_description">Waypoint description</string>
