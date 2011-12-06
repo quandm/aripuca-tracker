@@ -21,6 +21,10 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings"/>
 
+     <item android:id="@+id/scheduledRecordingMenuItem" 
+			android:title="@string/start_scheduled_recording"
+			android:icon="@android:drawable/ic_media_play" />
+    
     <item
         android:id="@+id/aboutMenuItem"
         android:icon="@android:drawable/ic_menu_info_details"
@@ -30,12 +34,6 @@
         android:id="@+id/quickHelp"
         android:icon="@android:drawable/ic_menu_help"
         android:title="@string/quick_help_title"/>
-
-    <!--
-     <item android:id="@+id/gpsOnOff" 
-			android:title="@string/start_gps"
-			android:icon="@android:drawable/ic_menu_mylocation" />
-    -->
 
     <item
         android:id="@+id/backupMenuItem"

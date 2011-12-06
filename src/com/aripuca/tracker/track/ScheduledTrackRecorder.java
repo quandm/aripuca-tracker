@@ -80,7 +80,7 @@ public class ScheduledTrackRecorder {
 	 * returns stopRecordingAfter
 	 */
 	public long getStopRecordingAfter() {
-		return stopRecordingAfter * 60 * 60 * 1000;
+		return stopRecordingAfter;
 	}
 
 	/**
@@ -115,12 +115,14 @@ public class ScheduledTrackRecorder {
 
 		// waypoint track settings
 		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
+//		requestInterval = 1 * 60 * 1000;
 
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
 
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
 
-		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "4")) * 60 * 60 * 1000;
+		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
+//		stopRecordingAfter = 3 * 60 * 1000;
 
 		gpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
 
@@ -141,7 +143,7 @@ public class ScheduledTrackRecorder {
 			// setting track id
 			trackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
 		} catch (SQLiteException e) {
-			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
 
 	}
@@ -175,9 +177,7 @@ public class ScheduledTrackRecorder {
 	}
 
 	/**
-	 * Record one track point
-	 * 
-	 * @param location Current location
+	 * records one track point on schedule
 	 */
 	public void recordTrackPoint(Location location) {
 

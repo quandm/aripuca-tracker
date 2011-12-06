@@ -19,6 +19,8 @@
     <string name="track">Трек</string>
     <string name="tracks">Треки</string>
     <string name="record_track">Записать трек</string>
+    <string name="start_scheduled_recording">Расписание СТАРТ</string>
+    <string name="stop_scheduled_recording">Расписание СТОП</string>
     <string name="recording_track">Идет запись трека</string>
     <string name="scheduled_track_recording_in_progress">Идет запись трека по расписанию</string>
     <string name="show_track">Показать трек</string>
@@ -188,7 +190,7 @@
     <string name="recording_started">Начата запись трека</string>
     <string name="recording_paused">Запись трека приостановлена</string>
     <string name="recording_resumed">Запись трека возобновлена</string>
-    <string name="recording_finished">Трек сохранен</string>
+    <string name="recording_finished">Новый трек сохранен</string>
     <string name="waypoint_title_required">Имя путевой точки обязательно</string>
     <string name="waypoint_saved">Путевая точка добавлена</string>
     <string name="waypoint_updated">Путевая точка сохранена</string>

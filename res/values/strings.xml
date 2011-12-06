@@ -32,6 +32,8 @@
     <string name="track">Track</string>
     <string name="tracks">Tracks</string>
     <string name="record_track">Record track</string>
+    <string name="start_scheduled_recording">Start schedule</string>
+    <string name="stop_scheduled_recording">Stop schedule</string>
     <string name="recording_track">Recording track</string>
     <string name="scheduled_track_recording_in_progress">Scheduled track recording in progress</string>
     <string name="show_track">Show track</string>
@@ -202,7 +204,7 @@
     <string name="recording_started">Track recording started</string>
     <string name="recording_paused">Track recording paused</string>
     <string name="recording_resumed">Track recording resumed</string>
-    <string name="recording_finished">Track saved</string>
+    <string name="recording_finished">New track saved</string>
     <string name="waypoint_title_required">Waypoint title required</string>
     <string name="waypoint_saved">Waypoint saved</string>
     <string name="waypoint_updated">Waypoint updated</string>
