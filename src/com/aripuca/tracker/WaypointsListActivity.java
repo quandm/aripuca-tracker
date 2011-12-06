@@ -1077,6 +1077,8 @@ public class WaypointsListActivity extends ListActivity {
 			gpsService.startLocationUpdates();
 		}
 		
+		gpsService.setGpsInUse(true);
+		
 	}
 	
 

@@ -31,7 +31,9 @@ import android.util.Log;
 
 public class GpsService extends Service {
 
-	// private MyApp myApp;
+	private static boolean running = false;
+
+	private MyApp myApp;
 
 	private LocationManager locationManager;
 
@@ -39,17 +41,38 @@ public class GpsService extends Service {
 
 	private Location currentLocation;
 
-	private static boolean running = false;
-
-	private MyApp myApp;
-
 	/**
 	 * waypoint track recording start time
 	 */
 	private long wptStartTime;
+
 	private long wptGpsFixWaitTimeStart;
 
+	/**
+	 * is GPS in use?
+	 */
+	private boolean gpsInUse;
+
+	/**
+	 * listening for location updates flag
+	 */
+	private boolean listening = false;
+
+	/**
+	 * listening getter
+	 */
+	public boolean isListening() {
+		return listening;
+	}
+
 	private ScheduledTrackRecorder scheduledTrackRecorder;
+
+	/**
+	 * gpsInUse setter
+	 */
+	public void setGpsInUse(boolean gpsInUse) {
+		this.gpsInUse = gpsInUse;
+	}
 
 	/**
 	 * defines a listener that responds to location updates
@@ -59,6 +82,8 @@ public class GpsService extends Service {
 		// Called when a new location is found by the network location provider.
 		@Override
 		public void onLocationChanged(Location location) {
+
+			listening = true;
 
 			currentLocation = location;
 
@@ -73,13 +98,16 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -127,6 +155,7 @@ public class GpsService extends Service {
 			} else {
 
 				// waiting for acceptable accuracy
+
 				if (wptGpsFixWaitTimeStart + scheduledTrackRecorder.getGpsFixWaitTime() < SystemClock.uptimeMillis()) {
 
 					// stop trying to receive GPX signal
@@ -142,19 +171,19 @@ public class GpsService extends Service {
 
 			}
 
-			// has recording time limit been reached?
-			checkStopRecordingAfter();
-
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -250,6 +279,33 @@ public class GpsService extends Service {
 	}
 
 	/**
+	 * Service destructor
+	 */
+	@Override
+	public void onDestroy() {
+
+		Log.v(Constants.TAG, "GpsService: onDestroy");
+
+		GpsService.running = false;
+
+		if (scheduledTrackRecorder.isRecording()) {
+			stopScheduler();
+		}
+
+		// stop listener without delay
+		this.locationManager.removeUpdates(locationListener);
+
+		// stop compass listener
+		this.sensorManager.unregisterListener(sensorListener);
+
+		this.locationManager = null;
+		this.sensorManager = null;
+
+		super.onDestroy();
+
+	}
+
+	/**
 	 * is service running?
 	 */
 	public static boolean isRunning() {
@@ -279,39 +335,35 @@ public class GpsService extends Service {
 			broadcastLocationUpdate(location, locationProvider, "com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 		}
 
-	}
-
-	/**
-	 * Service destructor
-	 */
-	@Override
-	public void onDestroy() {
-
-		Log.v(Constants.TAG, "GpsService: onDestroy");
-
-		GpsService.running = false;
-
-		if (scheduledTrackRecorder.isRecording()) {
-			stopScheduler();
-		}
-
-		this.stopLocationUpdates();
-
-		this.stopSensorUpdates();
-
-		this.locationManager = null;
-		this.sensorManager = null;
-
-		super.onDestroy();
+		currentLocation = location;
 
 	}
 
 	public void startLocationUpdates() {
-		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+		if (!gpsInUse) {
+			this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+			gpsInUse = true;
+		}
+
 	}
 
 	public void stopLocationUpdates() {
-		this.locationManager.removeUpdates(locationListener);
+
+		gpsInUse = false;
+
+		(new stopLocationUpdatesThread()).start();
+
+	}
+
+	public void stopLocationUpdatesNow() {
+
+		Log.v(Constants.TAG, "GPS Service: location updates stopped");
+
+		locationManager.removeUpdates(locationListener);
+		listening = false;
+
+		gpsInUse = false;
 	}
 
 	public void startScheduledLocationUpdates() {
@@ -353,13 +405,14 @@ public class GpsService extends Service {
 
 		this.clearNotification();
 
-		this.stopScheduledLocationUpdates();
+		this.locationManager.removeUpdates(scheduledLocationListener);
+
 		this.schedulerHandler.removeCallbacks(schedulerTask);
 
 	}
 
 	/**
-	 * Updating UI every second
+	 * scheduled track recording handler
 	 */
 	private Handler schedulerHandler = new Handler();
 	private Runnable schedulerTask = new Runnable() {
@@ -367,30 +420,24 @@ public class GpsService extends Service {
 		public void run() {
 
 			// new request for location started
-			wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
+			GpsService.this.wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
 
 			// has recording time limit been reached?
-			checkStopRecordingAfter();
+			if (GpsService.this.scheduledTrackRecorder.getStopRecordingAfter() != 0
+					&& GpsService.this.wptStartTime + GpsService.this.scheduledTrackRecorder.getStopRecordingAfter() < SystemClock
+							.uptimeMillis()) {
 
-			startScheduledLocationUpdates();
+				GpsService.this.stopScheduler();
+
+			} else {
+
+				// scheduling next location update
+				GpsService.this.startScheduledLocationUpdates();
+			}
 
 		}
 
 	};
-
-	/**
-	 * has recording time limit been reached?
-	 */
-	private void checkStopRecordingAfter() {
-
-		// has recording time limit been reached?
-		if (scheduledTrackRecorder.getStopRecordingAfter() != 0
-				&& wptStartTime + scheduledTrackRecorder.getStopRecordingAfter() < SystemClock.uptimeMillis()) {
-
-			stopScheduler();
-		}
-
-	}
 
 	/**
 	 * Show ongoing notification
@@ -437,6 +484,29 @@ public class GpsService extends Service {
 
 	public ScheduledTrackRecorder getScheduledTrackRecorder() {
 		return scheduledTrackRecorder;
+	}
+
+	/**
+	 * stopping location updates with small delay giving us a chance not to
+	 * restart listener if other activity requires GPS sensor too
+	 */
+	private class stopLocationUpdatesThread extends Thread {
+
+		@Override
+		public void run() {
+
+			try {
+				sleep(2500);
+			} catch (Exception e) {
+			}
+
+			if (gpsInUse == false) {
+				Log.v(Constants.TAG, "GPS Service: location updates stopped");
+				locationManager.removeUpdates(locationListener);
+				listening = false;
+			}
+
+		}
 	}
 
 }
