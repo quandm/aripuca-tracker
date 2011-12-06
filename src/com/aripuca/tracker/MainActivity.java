@@ -96,17 +96,58 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 
 			Bundle bundle = intent.getExtras();
-			
-			// new fix received
-			fixReceived = true;
 
 			currentLocation = (Location) bundle.getParcelable("location");
 
+			if (bundle.getInt("location_provider") == Constants.GPS_PROVIDER) {
+
+				// new fix received
+				fixReceived = true;
+
+				// activate buttons if location updates come from GPS
+				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+
+				hideWaitForFixMessage();
+
+			} else {
+
+				fixReceived = false;
+
+				showWaitForFixMessage();
+
+			}
+
 			// update MainActivity UI
-			updateMainActivity(bundle.getInt("location_provider"));
+			updateMainActivity();
 
 		}
 	};
+
+	private void showWaitForFixMessage() {
+
+		// hide waiting for gps fix message
+		if (findViewById(R.id.messageBox) != null) {
+			((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.VISIBLE);
+		}
+
+		// calculating gps fix age
+		if (findViewById(R.id.fixAge) != null) {
+			long fixAge = System.currentTimeMillis() - currentLocation.getTime();
+			String t = Utils.timeToHumanReadableString(MainActivity.this, fixAge);
+			((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
+		}
+
+	}
+
+	private void hideWaitForFixMessage() {
+
+		// hide waiting for gps fix message
+		if (findViewById(R.id.messageBox) != null) {
+			((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.INVISIBLE);
+		}
+
+	}
 
 	protected BroadcastReceiver scheduledLocationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -116,15 +157,7 @@ public class MainActivity extends Activity {
 
 			currentLocation = (Location) bundle.getParcelable("location");
 
-/*			if (findViewById(R.id.debugInfo) != null) {
-				String newText = ((EditText) findViewById(R.id.debugInfo)).getText().toString();
-				String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(currentLocation.getTime());
-				((EditText) findViewById(R.id.debugInfo)).setText(newText + "\n" + locationTime + " "
-						+ currentLocation.getAccuracy());
-			} */
-
-			// update MainActivity UI
-			updateMainActivity(bundle.getInt("location_provider"));
+			updateMainActivity();
 
 			Toast.makeText(MainActivity.this, R.string.location_received_on_schedule, Toast.LENGTH_SHORT).show();
 
@@ -218,7 +251,7 @@ public class MainActivity extends Activity {
 
 			// disable pause/resume button when tracking started or stopped
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
-			
+
 			if (myApp.trackRecorder.isRecording()) {
 				stopTracking();
 			} else {
@@ -383,7 +416,7 @@ public class MainActivity extends Activity {
 
 			// change "Record" button text with "Stop"
 			((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
-			
+
 			// show pause/resume button
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setVisibility(View.VISIBLE);
 
@@ -394,16 +427,6 @@ public class MainActivity extends Activity {
 
 		setControlButtonListeners();
 
-	}
-
-	/**
-	 * Called by the system when the device configuration changes while activity
-	 * is running
-	 */
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		Log.v(Constants.TAG, "MainActivity: onConfigurationChanged");
 	}
 
 	/**
@@ -431,38 +454,18 @@ public class MainActivity extends Activity {
 		// bind to GPS service
 		// once bound gpsServiceBoundCallback will be called
 		this.bindGpsService();
+		
+		if (currentLocation!=null) {
+			if (fixReceived) {
+				this.hideWaitForFixMessage();
+			} else {
+				this.showWaitForFixMessage();
+			}
+			this.updateMainActivity();
+		}
 
 		// start updating time of tracking every second
 		updateTimeHandler.postDelayed(updateTimeTask, 100);
-
-		// update main activity after it's resumed
-		if (currentLocation != null) {
-			if (fixReceived) {
-				this.updateMainActivity(Constants.GPS_PROVIDER);
-			} else {
-				this.updateMainActivity(Constants.GPS_PROVIDER_LAST);
-			}
-		}
-
-	}
-
-	/**
-	 * called when gpsService bound
-	 */
-	private void gpsServiceBoundCallback() {
-
-		if (!myApp.trackRecorder.isRecording()) {
-			gpsService.startLocationUpdates();
-		}
-		
-		// new location was received by the service when activity was paused  
-		if (gpsService.getCurrentLocation()!=null && currentLocation.getTime() < gpsService.getCurrentLocation().getTime()) {
-			
-			currentLocation = gpsService.getCurrentLocation();
-
-			// update activity when resumed
-			this.updateMainActivity(Constants.GPS_PROVIDER);
-		}
 
 	}
 
@@ -485,16 +488,19 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 		
+		Log.v(Constants.TAG, "MainActivity: onPause");
+
+		// stop location updates when not recording track
 		if (!myApp.trackRecorder.isRecording()) {
-			fixReceived = true;
+			
+			Log.v(Constants.TAG, "gpsService.stopLocationUpdates");
+			
 			gpsService.stopLocationUpdates();
 		}
 
 		this.unbindGpsService();
 
 		this.updateTimeHandler.removeCallbacks(updateTimeTask);
-
-		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
@@ -510,10 +516,12 @@ public class MainActivity extends Activity {
 
 		Log.v(Constants.TAG, "MainActivity: onDestroy");
 
+		// if activity is not going to be recreated - stop service
 		if (this.isFinishing()) {
 
 			stopGPSService();
 
+			// save layout for next session
 			this.saveHiddenPreferences();
 		}
 
@@ -596,8 +604,9 @@ public class MainActivity extends Activity {
 	 */
 	private void setContainer(ContainerCarousel carousel) {
 
-		// assigning click event listener to speed or pace container
+		// assigning click event listener to container
 		if (findViewById(carousel.getResourceId()) != null) {
+			
 			ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
 
 			final int resourceId = carousel.getResourceId();
@@ -635,21 +644,12 @@ public class MainActivity extends Activity {
 		dynamicView.removeAllViews();
 		dynamicView.addView(tmpView, 0);
 
-		if (resourceId == R.layout.main_idle2) {
-			// show/hide compass
-			if (myApp.getPreferences().getBoolean("show_compass", true)) {
-				showCompass();
-			} else {
-				hideCompass();
-			}
-		} else {
-
+		if (resourceId != R.layout.main_idle2) {
 			setContainer(speedContainerCarousel);
 			setContainer(timeContainerCarousel);
 			setContainer(distanceContainerCarousel);
 			setContainer(elevationContainerCarousel);
 			setContainer(coordinatesContainerCarousel);
-
 		}
 
 	}
@@ -718,7 +718,7 @@ public class MainActivity extends Activity {
 		long when = System.currentTimeMillis();
 
 		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
-		
+
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
 
@@ -752,7 +752,7 @@ public class MainActivity extends Activity {
 
 		// Change button label from Record to Stop
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
-		
+
 		// show pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setVisibility(View.VISIBLE);
 
@@ -778,11 +778,11 @@ public class MainActivity extends Activity {
 		// disabling pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
-		
+
 		// hide pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setVisibility(View.GONE);
 
-		// Change button label from Stop to Record
+		// change button label from Stop to Record
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record));
 
 		myApp.trackRecorder.stop();
@@ -842,7 +842,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -1031,7 +1031,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-			break;
+				break;
 
 			default:
 				dialog = null;
@@ -1046,28 +1046,6 @@ public class MainActivity extends Activity {
 	private void showQuickHelp() {
 
 		showDialog(Constants.QUICK_HELP_DIALOG_ID);
-
-	}
-
-	/**
-	 * Show compass image
-	 */
-	public void showCompass() {
-
-		if (findViewById(R.id.compassImage) != null) {
-			((CompassImage) findViewById(R.id.compassImage)).setVisibility(View.VISIBLE);
-		}
-
-	}
-
-	/**
-	 * Hide compass image
-	 */
-	public void hideCompass() {
-
-		if (findViewById(R.id.compassImage) != null) {
-			((CompassImage) findViewById(R.id.compassImage)).setVisibility(View.GONE);
-		}
 
 	}
 
@@ -1153,7 +1131,7 @@ public class MainActivity extends Activity {
 			case R.id.testLabMenuItem:
 
 				// scheduled track recording
-				
+
 				if (myApp.trackRecorder.isRecording()) {
 					Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 					return true;
@@ -1165,24 +1143,24 @@ public class MainActivity extends Activity {
 				}
 
 				// testing location updates scheduler
-				if (!gpsService.onSchedule) {
-					
+				if (!gpsService.getScheduledTrackRecorder().isRecording()) {
+
 					((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 					((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
-					
+
 					gpsService.stopLocationUpdates();
-					
+
 					gpsService.startScheduler();
-					
+
 					Toast.makeText(MainActivity.this, R.string.scheduled_recording_started, Toast.LENGTH_SHORT).show();
-					
+
 				} else {
-					
+
 					// manually stop scheduled location updates
 					gpsService.stopScheduler();
 
 					gpsService.startLocationUpdates();
-					
+
 					Toast.makeText(MainActivity.this, R.string.scheduled_recording_stopped, Toast.LENGTH_SHORT).show();
 				}
 
@@ -1246,34 +1224,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Update main activity view
 	 */
-	public void updateMainActivity(int locationProvider) {
-
-		if (locationProvider == Constants.GPS_PROVIDER) {
-
-			// activate buttons if location updates come from GPS
-			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
-
-			// hide waiting for gps fix message
-			if (findViewById(R.id.messageBox) != null) {
-				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.INVISIBLE);
-			}
-
-		} else {
-
-			// show waiting for gps fix message
-			if (findViewById(R.id.messageBox) != null) {
-				((LinearLayout) findViewById(R.id.messageBox)).setVisibility(View.VISIBLE);
-			}
-
-			// calculating gps fix age
-			if (findViewById(R.id.fixAge) != null) {
-				long fixAge = System.currentTimeMillis() - currentLocation.getTime();
-				String t = Utils.timeToHumanReadableString(this, fixAge);
-				((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
-			}
-
-		}
+	public void updateMainActivity() {
 
 		// measuring units
 		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
@@ -1353,37 +1304,33 @@ public class MainActivity extends Activity {
 
 			// number of track points recorded
 			if (findViewById(R.id.segmentsCount) != null) {
-				((TextView) findViewById(R.id.segmentsCount))
-						.setText(Integer.toString(myApp.trackRecorder.getSegmentsCount()));
+				((TextView) findViewById(R.id.segmentsCount)).setText(Integer.toString(myApp.trackRecorder
+						.getSegmentsCount()));
 			}
 
 			// ------------------------------------------------------------------
 			// elevation gain
 			if (findViewById(R.id.elevationGain) != null) {
 				((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(myApp.trackRecorder
-						.getTrack()
-						.getElevationGain(), elevationUnit));
+						.getTrack().getElevationGain(), elevationUnit));
 			}
 
 			// elevation loss
 			if (findViewById(R.id.elevationLoss) != null) {
 				((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(myApp.trackRecorder
-						.getTrack()
-						.getElevationLoss(), elevationUnit));
+						.getTrack().getElevationLoss(), elevationUnit));
 			}
 
 			// max elevation
 			if (findViewById(R.id.maxElevation) != null) {
 				((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(myApp.trackRecorder
-						.getTrack()
-						.getMaxElevation(), elevationUnit));
+						.getTrack().getMaxElevation(), elevationUnit));
 			}
 
 			// min elevation
 			if (findViewById(R.id.minElevation) != null) {
 				((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(myApp.trackRecorder
-						.getTrack()
-						.getMinElevation(), elevationUnit));
+						.getTrack().getMinElevation(), elevationUnit));
 			}
 			// ------------------------------------------------------------------
 
@@ -1396,8 +1343,7 @@ public class MainActivity extends Activity {
 			// average moving speed
 			if (findViewById(R.id.averageMovingSpeed) != null) {
 				((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(myApp.trackRecorder
-						.getTrack()
-						.getAverageMovingSpeed(), speedUnit));
+						.getTrack().getAverageMovingSpeed(), speedUnit));
 			}
 
 			// max speed
@@ -1424,14 +1370,13 @@ public class MainActivity extends Activity {
 			// average moving pace
 			if (findViewById(R.id.averageMovingPace) != null) {
 				((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(myApp.trackRecorder
-						.getTrack()
-						.getAverageMovingSpeed(), speedUnit));
+						.getTrack().getAverageMovingSpeed(), speedUnit));
 			}
 
 			// max pace
 			if (findViewById(R.id.maxPace) != null) {
-				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(
-						myApp.trackRecorder.getTrack().getMaxSpeed(), speedUnit));
+				((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(myApp.trackRecorder.getTrack()
+						.getMaxSpeed(), speedUnit));
 			}
 
 			// total distance
@@ -1465,10 +1410,8 @@ public class MainActivity extends Activity {
 		}
 
 		// scheduled track recording
-//		if (gpsService!=null && gpsService.getScheduledTrackRecorder())
-		
-		
-		
+		// if (gpsService!=null && gpsService.getScheduledTrackRecorder())
+
 	}
 
 	/**
@@ -1516,9 +1459,7 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1559,7 +1500,7 @@ public class MainActivity extends Activity {
 	 */
 	private int backClickCount = 0;
 
-	//TODO: back press for API Level 4
+	// TODO: back press for API Level 4
 	/**
 	 * Intercepting Back button click to prevent accidental exit in track
 	 * recording mode
@@ -1797,6 +1738,27 @@ public class MainActivity extends Activity {
 		}
 
 	};
+
+	/**
+	 * called when gpsService bound
+	 */
+	private void gpsServiceBoundCallback() {
+
+		if (!myApp.trackRecorder.isRecording()) {
+			gpsService.startLocationUpdates();
+		}
+
+		// new location was received by the service when activity was paused
+		if (gpsService.getCurrentLocation() != null
+				&& currentLocation.getTime() < gpsService.getCurrentLocation().getTime()) {
+
+			currentLocation = gpsService.getCurrentLocation();
+
+			// update activity when resumed
+			this.updateMainActivity();
+		}
+
+	}
 
 	private void bindGpsService() {
 

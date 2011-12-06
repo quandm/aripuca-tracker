@@ -225,13 +225,13 @@
 
             <TextView
                 android:id="@+id/messageText"
-                style="@style/LayoutRowValueSmall"
+                style="@style/Message"
                 android:text="@string/waiting_new_fix" >
             </TextView>
 
             <TextView
                 android:id="@+id/fixAge"
-                style="@style/LayoutRowValueSmall" >
+                style="@style/Message" >
             </TextView>
         </LinearLayout>
     </LinearLayout>

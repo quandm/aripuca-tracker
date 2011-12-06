@@ -39,9 +39,7 @@ public class GpsService extends Service {
 
 	private Location currentLocation;
 
-	public boolean onSchedule;
-
-	private static boolean running = false;;
+	private static boolean running = false;
 
 	private MyApp myApp;
 
@@ -64,26 +62,24 @@ public class GpsService extends Service {
 
 			currentLocation = location;
 
-			// update track statistics 
+			// update track statistics
 			if (myApp.trackRecorder.isRecording()) {
 				myApp.trackRecorder.updateStatistics(location);
 			}
 
-			broadcastLocationUpdate(location, "com.aripuca.tracker.LOCATION_UPDATES_ACTION");
+			GpsService.this.broadcastLocationUpdate(location, Constants.GPS_PROVIDER,
+					"com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
@@ -104,24 +100,27 @@ public class GpsService extends Service {
 
 			if (location.hasAccuracy() && location.getAccuracy() < scheduledTrackRecorder.getMinAccuracy()) {
 
-				scheduledTrackRecorder.recordTrackPoint(location);
+				GpsService.this.scheduledTrackRecorder.recordTrackPoint(location);
 
-				// let's broadcast location data to any activity waiting for updates
-				broadcastLocationUpdate(location, "com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION");
+				// let's broadcast location data to any activity waiting for
+				// updates
+				GpsService.this.broadcastLocationUpdate(location, Constants.GPS_PROVIDER,
+						"com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION");
 
 				// location of acceptable accuracy received - stop GPS
-				stopScheduledLocationUpdates();
+				GpsService.this.stopScheduledLocationUpdates();
 
 				// schedule next location update
-				schedulerHandler.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
+				GpsService.this.schedulerHandler
+						.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
 
 				// SAVE LOCATION
 				// log location data to debug log file
 				String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime());
 				myApp.log(locationTime + " " + Utils.formatLat(location.getLatitude()) + " "
-						+ Utils.formatLng(location.getLongitude()) + " "
-						+ location.getAccuracy() + " " + location.getAltitude());
-				
+						+ Utils.formatLng(location.getLongitude()) + " " + location.getAccuracy() + " "
+						+ location.getAltitude());
+
 				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy() + " at "
 						+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime()));
 
@@ -131,11 +130,11 @@ public class GpsService extends Service {
 				if (wptGpsFixWaitTimeStart + scheduledTrackRecorder.getGpsFixWaitTime() < SystemClock.uptimeMillis()) {
 
 					// stop trying to receive GPX signal
-					stopScheduledLocationUpdates();
+					GpsService.this.stopScheduledLocationUpdates();
 
 					// schedule next location update
-					schedulerHandler
-							.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
+					GpsService.this.schedulerHandler.postDelayed(schedulerTask,
+							scheduledTrackRecorder.getRequestInterval());
 
 				}
 
@@ -149,29 +148,26 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
 	/**
 	 * Broadcasting location update
 	 */
-	private void broadcastLocationUpdate(Location location, String action) {
+	private void broadcastLocationUpdate(Location location, int locationProvider, String action) {
 
 		// let's broadcast location data to any activity waiting for updates
 		Intent intent = new Intent(action);
 
 		Bundle bundle = new Bundle();
-		bundle.putInt("location_provider", Constants.GPS_PROVIDER);
+		bundle.putInt("location_provider", locationProvider);
 		bundle.putParcelable("location", location);
 
 		intent.putExtras(bundle);
@@ -232,22 +228,22 @@ public class GpsService extends Service {
 
 		Log.v(Constants.TAG, "GpsService: onCreate");
 
-		myApp = (MyApp) getApplicationContext();
+		this.myApp = (MyApp) getApplicationContext();
 
 		// scheduled track recorder instance
-		scheduledTrackRecorder = ScheduledTrackRecorder.getInstance(myApp);
+		this.scheduledTrackRecorder = ScheduledTrackRecorder.getInstance(myApp);
 
 		// GPS sensor
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 		this.startLocationUpdates();
 
 		// orientation sensor
-		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		this.sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 		this.startSensorUpdates();
 
-		running = true;
+		GpsService.running = true;
 
 		this.requestLastKnownLocation();
 
@@ -269,30 +265,18 @@ public class GpsService extends Service {
 		int locationProvider;
 
 		// get last known location from gps provider
-		location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		location = this.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 		if (location != null) {
 			locationProvider = Constants.GPS_PROVIDER_LAST;
 		} else {
 			// let's try network provider
-			location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			location = this.locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		}
 
 		if (location != null) {
-
 			locationProvider = Constants.NETWORK_PROVIDER_LAST;
-
-			// let's broadcast location data to any activity waiting for updates
-			Intent intent = new Intent("com.aripuca.tracker.LOCATION_UPDATES_ACTION");
-
-			Bundle bundle = new Bundle();
-			bundle.putInt("location_provider", locationProvider);
-			bundle.putParcelable("location", location);
-
-			intent.putExtras(bundle);
-
-			sendBroadcast(intent);
-
+			broadcastLocationUpdate(location, locationProvider, "com.aripuca.tracker.LOCATION_UPDATES_ACTION");
 		}
 
 	}
@@ -305,9 +289,9 @@ public class GpsService extends Service {
 
 		Log.v(Constants.TAG, "GpsService: onDestroy");
 
-		running = false;
+		GpsService.running = false;
 
-		if (onSchedule) {
+		if (scheduledTrackRecorder.isRecording()) {
 			stopScheduler();
 		}
 
@@ -315,36 +299,36 @@ public class GpsService extends Service {
 
 		this.stopSensorUpdates();
 
-		locationManager = null;
-		sensorManager = null;
+		this.locationManager = null;
+		this.sensorManager = null;
 
 		super.onDestroy();
 
 	}
 
 	public void startLocationUpdates() {
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
 
 	public void stopLocationUpdates() {
-		locationManager.removeUpdates(locationListener);
+		this.locationManager.removeUpdates(locationListener);
 	}
 
 	public void startScheduledLocationUpdates() {
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
+		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
 
 	public void stopScheduledLocationUpdates() {
-		locationManager.removeUpdates(scheduledLocationListener);
+		this.locationManager.removeUpdates(scheduledLocationListener);
 	}
 
 	private void startSensorUpdates() {
-		sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+		this.sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 	private void stopSensorUpdates() {
-		sensorManager.unregisterListener(sensorListener);
+		this.sensorManager.unregisterListener(sensorListener);
 	}
 
 	public void startScheduler() {
@@ -353,13 +337,11 @@ public class GpsService extends Service {
 
 		this.scheduledTrackRecorder.start();
 
-		onSchedule = true;
-
-		wptStartTime = SystemClock.uptimeMillis();
+		this.wptStartTime = SystemClock.uptimeMillis();
 
 		Log.v(Constants.TAG, "Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
 
-		schedulerHandler.postDelayed(schedulerTask, 5000);
+		this.schedulerHandler.postDelayed(schedulerTask, 5000);
 
 	}
 
@@ -370,8 +352,6 @@ public class GpsService extends Service {
 		this.scheduledTrackRecorder.stop();
 
 		this.clearNotification();
-
-		this.onSchedule = false;
 
 		this.stopScheduledLocationUpdates();
 		this.schedulerHandler.removeCallbacks(schedulerTask);
