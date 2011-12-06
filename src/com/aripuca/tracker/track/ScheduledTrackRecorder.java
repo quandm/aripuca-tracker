@@ -25,7 +25,7 @@ public class ScheduledTrackRecorder {
 	protected long trackTimeStart;
 
 	private long gpsFixWaitTime;
-	
+
 	private Location lastRecordedLocation = null;
 
 	/**
@@ -39,7 +39,7 @@ public class ScheduledTrackRecorder {
 	 * minimum distance between two recorded points
 	 */
 	private int minDistance;
-	
+
 	/**
 	 * minimum accuracy required for recording in meters
 	 */
@@ -119,7 +119,7 @@ public class ScheduledTrackRecorder {
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
 
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
-		
+
 		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "4")) * 60 * 60 * 1000;
 
 		gpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
@@ -153,8 +153,8 @@ public class ScheduledTrackRecorder {
 
 		long finishTime = (new Date()).getTime();
 
-		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-" +
-				(new SimpleDateFormat("H:mm")).format(finishTime);
+		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-"
+				+ (new SimpleDateFormat("H:mm")).format(finishTime);
 
 		ContentValues values = new ContentValues();
 		values.put("title", trackTitle);
@@ -180,17 +180,18 @@ public class ScheduledTrackRecorder {
 	 * @param location Current location
 	 */
 	public void recordTrackPoint(Location location) {
-		
+
 		// minimum distance check
-		if (lastRecordedLocation!=null && location.distanceTo(lastRecordedLocation) > minDistance) {
+		if (lastRecordedLocation != null && location.distanceTo(lastRecordedLocation) < minDistance) {
+			// wait for next location
 			return;
 		}
-		
+
 		float distance = 0;
-		if (lastRecordedLocation!=null) { 
+		if (lastRecordedLocation != null) {
 			distance = location.distanceTo(lastRecordedLocation);
 		}
-		
+
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
 		values.put("lat", (int) (location.getLatitude() * 1E6));
@@ -210,7 +211,8 @@ public class ScheduledTrackRecorder {
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
-		
+
+		// save last location for distance calculation
 		lastRecordedLocation = location;
 
 	}
