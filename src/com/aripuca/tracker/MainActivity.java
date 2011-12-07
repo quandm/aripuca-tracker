@@ -54,6 +54,7 @@ import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1484,14 +1485,17 @@ public class MainActivity extends Activity {
 	 * recording mode
 	 */
 	@Override
-	public void onBackPressed() {
-		if (gpsService.trackRecorder.isRecording()) {
-			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
-		} else {
-			this.finish();
-		}
-	}
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
 
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (gpsService!=null && gpsService.trackRecorder.isRecording()) {
+				Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
+				return true;
+			}
+	    }
+    
+	    return super.onKeyUp(keyCode, event);
+	}	
 	/**
 	 * Copy application database to sd card
 	 */
