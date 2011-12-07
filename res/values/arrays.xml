@@ -101,12 +101,11 @@
         <item>300 m</item>
         <item>400 m</item>
         <item>500 m</item>
-        <item>1000 m</item>
-        <item>1500 m</item>
-        <item>2000 m</item>
-        <item>4000 m</item>
-        <item>5000 m</item>
-        <item>10000 m</item>
+        <item>1 km</item>
+        <item>2 km</item>
+        <item>4 km</item>
+        <item>5 km</item>
+        <item>10 km</item>
     </string-array>
     <string-array name="wpt_min_distance_labels_ft">
         <item>300 ft</item>
@@ -115,7 +114,6 @@
         <item>1200 ft</item>
         <item>1500 ft</item>
         <item>3000 ft</item>
-        <item>4500 ft</item>
         <item>6000 ft</item>
         <item>12000 ft</item>
         <item>15000 ft</item>

@@ -22,6 +22,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -75,7 +76,7 @@ public class GpsService extends Service {
 	}
 
 	/**
-	 * defines a listener that responds to location updates
+	 * Defines a listener that responds to location updates
 	 */
 	private LocationListener locationListener = new LocationListener() {
 
@@ -97,22 +98,30 @@ public class GpsService extends Service {
 
 		}
 
+		/**
+		 * Called when the provider status changes. This method is called when a
+		 * provider is unable to fetch a location or if the provider has
+		 * recently become available after a period of unavailability.
+		 */
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
+
+			if (status == LocationProvider.TEMPORARILY_UNAVAILABLE) {
+				listening = false;
+			}
+
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
 	/**
-	 * defines a listener that responds to location updates
+	 * Defines a listener that responds to location updates
 	 */
 	private LocationListener scheduledLocationListener = new LocationListener() {
 
@@ -142,15 +151,8 @@ public class GpsService extends Service {
 				GpsService.this.schedulerHandler
 						.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
 
-				// SAVE LOCATION
-				// log location data to debug log file
-				String locationTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime());
-				myApp.log(locationTime + " " + Utils.formatLat(location.getLatitude()) + " "
-						+ Utils.formatLng(location.getLongitude()) + " " + location.getAccuracy() + " "
-						+ location.getAltitude());
-
-				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy() + " at "
-						+ (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(location.getTime()));
+				myApp.log("Accuracy accepted: " + location.getAccuracy());
+				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy());
 
 			} else {
 
@@ -167,6 +169,7 @@ public class GpsService extends Service {
 
 				}
 
+				myApp.log("Accuracy not accepted: " + location.getAccuracy());
 				Log.v(Constants.TAG, "Accuracy not accepted: " + location.getAccuracy());
 
 			}
@@ -174,16 +177,13 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
@@ -233,7 +233,10 @@ public class GpsService extends Service {
 
 	};
 
-	// This is the object that receives interactions from clients
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 *  This is the object that receives interactions from clients
+	 */
 	private final IBinder mBinder = new LocalBinder();
 
 	@Override
@@ -246,6 +249,7 @@ public class GpsService extends Service {
 			return GpsService.this;
 		}
 	}
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Initialize service
@@ -336,7 +340,6 @@ public class GpsService extends Service {
 		}
 
 		currentLocation = location;
-
 	}
 
 	public void startLocationUpdates() {
@@ -359,6 +362,7 @@ public class GpsService extends Service {
 	public void stopLocationUpdatesNow() {
 
 		Log.v(Constants.TAG, "GPS Service: location updates stopped");
+		myApp.log("GPS Service: location updates stopped");
 
 		locationManager.removeUpdates(locationListener);
 		listening = false;
@@ -385,29 +389,31 @@ public class GpsService extends Service {
 
 	public void startScheduler() {
 
-		this.showOngoingNotification();
-
 		this.scheduledTrackRecorder.start();
 
 		this.wptStartTime = SystemClock.uptimeMillis();
 
 		Log.v(Constants.TAG, "Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
+		myApp.log("Scheduler started at: " + (new SimpleDateFormat("HH:mm:ss")).format(wptStartTime));
 
 		this.schedulerHandler.postDelayed(schedulerTask, 5000);
+
+		this.showOngoingNotification();
 
 	}
 
 	public void stopScheduler() {
 
 		Log.v(Constants.TAG, "Scheduler stopped");
+		myApp.log("Scheduler stopped");
 
 		this.scheduledTrackRecorder.stop();
 
 		this.clearNotification();
 
-		this.locationManager.removeUpdates(scheduledLocationListener);
-
 		this.schedulerHandler.removeCallbacks(schedulerTask);
+
+		this.locationManager.removeUpdates(scheduledLocationListener);
 
 	}
 
@@ -418,6 +424,8 @@ public class GpsService extends Service {
 	private Runnable schedulerTask = new Runnable() {
 		@Override
 		public void run() {
+
+			myApp.log("GPS Service scheduler task");
 
 			// new request for location started
 			GpsService.this.wptGpsFixWaitTimeStart = SystemClock.uptimeMillis();
@@ -497,11 +505,13 @@ public class GpsService extends Service {
 
 			try {
 				sleep(2500);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 
 			if (gpsInUse == false) {
+
 				Log.v(Constants.TAG, "GPS Service: location updates stopped");
+				myApp.log("stopLocationUpdatesThread: GPS Service: location updates stopped");
+
 				locationManager.removeUpdates(locationListener);
 				listening = false;
 			}

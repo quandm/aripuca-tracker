@@ -128,7 +128,7 @@ public class MainActivity extends Activity {
 			}
 
 			
-			this.updateMainActivity();
+			this.updateActivity();
 		}
 
 	}
@@ -166,7 +166,7 @@ public class MainActivity extends Activity {
 
 			currentLocation = (Location) bundle.getParcelable("location");
 
-			updateMainActivity();
+			updateActivity();
 
 			Toast.makeText(MainActivity.this, R.string.location_received_on_schedule, Toast.LENGTH_SHORT).show();
 
@@ -1229,7 +1229,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Update main activity view
 	 */
-	public void updateMainActivity() {
+	public void updateActivity() {
 
 		// update coordinates
 		if (findViewById(R.id.lat) != null) {
