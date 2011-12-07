@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -12,7 +11,7 @@ import java.util.Locale;
 
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.track.TrackRecorder;
+
 import com.aripuca.tracker.track.Waypoint;
 
 import android.app.Application;
@@ -30,6 +29,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,7 +39,7 @@ import android.widget.Toast;
 public class MyApp extends Application {
 
 	private Locale locale = null;
-
+	
 	/**
 	 * Android shared preferences
 	 */
@@ -64,8 +64,6 @@ public class MyApp extends Application {
 	 */
 	private SQLiteDatabase db;
 	
-	public TrackRecorder trackRecorder;
-
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -290,7 +288,7 @@ public class MyApp extends Application {
 	public void onCreate() {
 
 		super.onCreate();
-
+		
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -425,11 +423,11 @@ public class MyApp extends Application {
 	 * @param text
 	 */
 	public void log(String message) {
-
-		String fileName = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date()) + ".log";
+		
+		String fileName = DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
 
 		StringBuilder sb = new StringBuilder();
-		sb.append((new SimpleDateFormat("yyyy-MM-dd HH-mm-ss")).format(new Date()));
+		sb.append(DateFormat.format("yyyy-MM-dd h-mm-ss", new Date()));
 		sb.append(" | ");
 		sb.append(message);
 
@@ -439,7 +437,7 @@ public class MyApp extends Application {
 			try {
 				logFile.createNewFile();
 			} catch (IOException e) {
-				Toast.makeText(this, "IOException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				return;
 			}
 		}
 
@@ -449,7 +447,7 @@ public class MyApp extends Application {
 			buf.newLine();
 			buf.close();
 		} catch (IOException e) {
-			Toast.makeText(this, "IOException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			return;
 		}
 
 	}
