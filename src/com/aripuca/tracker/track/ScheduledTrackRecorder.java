@@ -20,8 +20,6 @@ public class ScheduledTrackRecorder {
 
 	protected MyApp myApp;
 
-	private int trackPointsCount;
-
 	protected long trackTimeStart;
 
 	private long gpsFixWaitTime;
@@ -50,13 +48,6 @@ public class ScheduledTrackRecorder {
 	 */
 	public int getMinAccuracy() {
 		return minAccuracy;
-	}
-
-	/**
-	 * @return the trackTimeStart
-	 */
-	public long getTrackTimeStart() {
-		return trackTimeStart;
 	}
 
 	/**
@@ -114,15 +105,15 @@ public class ScheduledTrackRecorder {
 	public void initialize() {
 
 		// waypoint track settings
-		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
-//		requestInterval = 1 * 60 * 1000;
+//		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
+		requestInterval = 1 * 60 * 1000;
 
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
 
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
 
-		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
-//		stopRecordingAfter = 3 * 60 * 1000;
+//		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
+		stopRecordingAfter = 5 * 60 * 1000;
 
 		gpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
 
@@ -181,8 +172,11 @@ public class ScheduledTrackRecorder {
 	 */
 	public void recordTrackPoint(Location location) {
 
+		myApp.log("ScheduledTrackRecorder: recordTrackPoint");
+		
 		// minimum distance check
 		if (lastRecordedLocation != null && location.distanceTo(lastRecordedLocation) < minDistance) {
+			myApp.log("ScheduledTrackRecorder: distance: "+location.distanceTo(lastRecordedLocation));
 			// wait for next location
 			return;
 		}
@@ -206,8 +200,6 @@ public class ScheduledTrackRecorder {
 
 			myApp.getDatabase().insertOrThrow("track_points", null, values);
 
-			this.trackPointsCount++;
-
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
@@ -230,8 +222,6 @@ public class ScheduledTrackRecorder {
 		this.trackTimeStart = (new Date()).getTime();
 
 		this.recording = true;
-
-		this.trackPointsCount = 0;
 
 		this.insertNewTrack();
 
