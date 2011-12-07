@@ -183,21 +183,21 @@
         </LinearLayout>
 
         <!-- SUNRISE/SUNSET -->
-
-        <LinearLayout style="@style/LayoutRow" >
-
-            <TextView
-                style="@style/LayoutRowLabel"
-                android:text="@string/sunrise" >
-            </TextView>
-
-            <TextView
-                style="@style/LayoutRowLabel"
-                android:text="@string/sunset" >
-            </TextView>
-        </LinearLayout>
-
-        <LinearLayout style="@style/LayoutRow" >
+        <!--
+	        <LinearLayout style="@style/LayoutRow" >
+	
+	            <TextView
+	                style="@style/LayoutRowLabel"
+	                android:text="@string/sunrise" >
+	            </TextView>
+	
+	            <TextView
+	                style="@style/LayoutRowLabel"
+	                android:text="@string/sunset" >
+	            </TextView>
+	        </LinearLayout>
+        
+            <LinearLayout style="@style/LayoutRow" >
 
             <LinearLayout style="@style/LayoutRowColumn" >
 
@@ -214,7 +214,10 @@
                     style="@style/LayoutRowValueSmall" >
                 </TextView>
             </LinearLayout>
-        </LinearLayout>
+            
+        </LinearLayout>
+        -->
+
 
         <!-- MESSAGE BOX -->
 

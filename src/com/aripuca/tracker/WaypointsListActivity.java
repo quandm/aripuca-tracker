@@ -335,7 +335,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
-		
+
 		this.unbindGpsService();
 
 		super.onPause();
@@ -369,7 +369,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
-		
+
 		// bind to GPS service
 		// once bound gpsServiceBoundCallback will be called
 		this.bindGpsService();
@@ -1019,21 +1019,18 @@ public class WaypointsListActivity extends ListActivity {
 		dialog.show();
 
 	}
-	
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * GPS service connection
 	 */
 	private GpsService gpsService;
 	private boolean isGpsServiceBound = false;
-
 	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
-
 			gpsService = ((GpsService.LocalBinder) service).getService();
-
 			gpsServiceBoundCallback();
-
 			isGpsServiceBound = true;
 		}
 
@@ -1041,45 +1038,32 @@ public class WaypointsListActivity extends ListActivity {
 			gpsService = null;
 			isGpsServiceBound = false;
 		}
-
 	};
 
 	private void bindGpsService() {
-
 		if (!bindService(new Intent(this, GpsService.class), gpsServiceConnection,
 				Context.BIND_AUTO_CREATE)) {
 			Toast.makeText(this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
 	private void unbindGpsService() {
-
 		if (isGpsServiceBound) {
-
 			// Detach our existing connection.
 			unbindService(gpsServiceConnection);
-
 			gpsService = null;
-
 			isGpsServiceBound = false;
-
 		}
-
 	}
 
 	/**
 	 * called when gpsService bound
 	 */
 	private void gpsServiceBoundCallback() {
-
-		if (!myApp.trackRecorder.isRecording()) {
-			gpsService.startLocationUpdates();
-		}
-		
+		// location listener will not stop 
 		gpsService.setGpsInUse(true);
-		
 	}
-	
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

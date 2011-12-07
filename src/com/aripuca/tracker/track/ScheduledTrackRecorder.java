@@ -8,11 +8,9 @@ import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.util.Log;
-import android.widget.Toast;
 
 public class ScheduledTrackRecorder {
 
@@ -104,18 +102,18 @@ public class ScheduledTrackRecorder {
 
 	public void initialize() {
 
-		// waypoint track settings
-//		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60 * 1000;
-		requestInterval = 1 * 60 * 1000;
+		// interval between requests in seconds
+		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60;
 
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
 
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
 
-//		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
-		stopRecordingAfter = 5 * 60 * 1000;
+		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
 
 		gpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
+
+		Log.v(Constants.TAG, "ScheduledTrackRecorder: initialize: " + requestInterval + " " + stopRecordingAfter);
 
 	}
 
@@ -173,10 +171,10 @@ public class ScheduledTrackRecorder {
 	public void recordTrackPoint(Location location) {
 
 		myApp.log("ScheduledTrackRecorder: recordTrackPoint");
-		
+
 		// minimum distance check
 		if (lastRecordedLocation != null && location.distanceTo(lastRecordedLocation) < minDistance) {
-			myApp.log("ScheduledTrackRecorder: distance: "+location.distanceTo(lastRecordedLocation));
+			myApp.log("ScheduledTrackRecorder: distance: " + location.distanceTo(lastRecordedLocation));
 			// wait for next location
 			return;
 		}
