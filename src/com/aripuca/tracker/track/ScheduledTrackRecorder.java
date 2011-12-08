@@ -5,11 +5,13 @@ import java.util.Date;
 
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
+import android.os.SystemClock;
 import android.util.Log;
 
 public class ScheduledTrackRecorder {
@@ -19,16 +21,22 @@ public class ScheduledTrackRecorder {
 	protected MyApp myApp;
 
 	protected long trackTimeStart;
-
-	private long gpsFixWaitTime;
+	
+	/**
+	 * wait time for GPS signal of acceptable accuracy
+	 */
+	private long requestWaitTime;
 
 	private Location lastRecordedLocation = null;
 
+	private long startTime; 
+	private long requestStartTime;
+	
 	/**
-	 * @return the gpsFixWaitTime
+	 * @return the startTime
 	 */
-	public long getGpsFixWaitTime() {
-		return gpsFixWaitTime;
+	public long getStartTime() {
+		return startTime;
 	}
 
 	/**
@@ -66,13 +74,6 @@ public class ScheduledTrackRecorder {
 	private long stopRecordingAfter;
 
 	/**
-	 * returns stopRecordingAfter
-	 */
-	public long getStopRecordingAfter() {
-		return stopRecordingAfter;
-	}
-
-	/**
 	 * Id of the track being recorded
 	 */
 	private long trackId;
@@ -104,16 +105,18 @@ public class ScheduledTrackRecorder {
 
 		// interval between requests in seconds
 		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60;
+		
+		// milliseconds
+		requestWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
 
+		// acceptable accuracy
 		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
 
+		// minimum distance between two recorded points
 		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
 
+		// stop scheduler after 
 		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
-
-		gpsFixWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
-
-		Log.v(Constants.TAG, "ScheduledTrackRecorder: initialize: " + requestInterval + " " + stopRecordingAfter);
 
 	}
 
@@ -215,6 +218,8 @@ public class ScheduledTrackRecorder {
 
 	public void start() {
 
+		this.startTime = SystemClock.elapsedRealtime(); 
+				
 		this.initialize();
 
 		this.trackTimeStart = (new Date()).getTime();
@@ -231,6 +236,38 @@ public class ScheduledTrackRecorder {
 
 		this.updateNewTrack();
 
+	}
+	
+	public void setRequestStartTime() {
+		requestStartTime = SystemClock.elapsedRealtime();
+	}
+	
+	public long getRequestStartTime() {
+		return requestStartTime;
+	}
+
+	/**
+	 * checking stopRecordingAfter time limit
+	 */
+	public boolean timeLimitReached() {
+		
+		if (stopRecordingAfter != 0 && startTime + stopRecordingAfter < SystemClock.elapsedRealtime()) {
+			return true;			
+		} else {
+			return false;
+		}		
+		
+	}
+	
+	public boolean requestTimeLimitReached() {
+		
+		if (requestStartTime + requestWaitTime < SystemClock.elapsedRealtime()) {
+			return true;
+		} else {
+			return false;
+		}
+		
+		
 	}
 
 }
