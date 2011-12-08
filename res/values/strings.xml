@@ -42,8 +42,7 @@
     <string name="next_segment">Next segment</string>
     <string name="do_you_know">Do you know?</string>
     <string name="show_on_startup">Show on startup</string>
-
-    <!-- SEPARATE WORDS -->
+    <!-- WORDS -->
     <string name="m">m</string>
     <string name="ft">ft</string>
     <string name="km">km</string>
@@ -67,6 +66,7 @@
     <string name="delete">Delete</string>
     <string name="import1">Import</string>
     <string name="export">Export</string>
+    <!--  -->
     <string name="export_to_gpx">Export to GPX</string>
     <string name="export_to_kml">Export to KML</string>
     <string name="send_as_gpx">Attach GPX file</string>
