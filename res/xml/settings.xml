@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/app_settings_title" >
 
-    <PreferenceScreen android:title="@string/user_interface_title" >
+    <PreferenceScreen android:title="@string/user_interface" >
 
         <ListPreference
             android:defaultValue="en-US"
@@ -68,7 +68,7 @@
         </ListPreference>
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/compass" >
+    <PreferenceScreen android:title="@string/compass" android:summary="@string/compass_summary">
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -86,7 +86,7 @@
         </CheckBoxPreference>
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/waypoints" >
+    <PreferenceScreen android:title="@string/waypoints" android:summary="@string/waypoints_summary">
 
         <CheckBoxPreference
             android:defaultValue="false"

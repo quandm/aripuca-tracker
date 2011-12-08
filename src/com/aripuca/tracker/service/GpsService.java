@@ -34,6 +34,10 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+/**
+ * this service handles real time and scheduled track recording as
+ * well as compass updates
+ */
 public class GpsService extends Service {
 
 	private static boolean running = false;
@@ -42,18 +46,20 @@ public class GpsService extends Service {
 
 	private LocationManager locationManager;
 
-    private PendingIntent alarmSender;
-	
-	private SensorManager sensorManager;
-
-	private Location currentLocation;
+	/**
+	 * 
+	 */
+	private PendingIntent alarmSender;
 
 	/**
-	 * waypoint track recording start time
-	 */
-	private long wptStartTime;
+     * 
+     */
+	private SensorManager sensorManager;
 
-	private long wptGpsFixWaitTimeStart;
+	/**
+	 * current device location
+	 */
+	private Location currentLocation;
 
 	/**
 	 * is GPS in use?
@@ -88,7 +94,9 @@ public class GpsService extends Service {
 	 */
 	private LocationListener locationListener = new LocationListener() {
 
-		// Called when a new location is found by the network location provider.
+		/**
+		 * Called when a new location is found by the network location provider.
+		 */
 		@Override
 		public void onLocationChanged(Location location) {
 
@@ -138,11 +146,9 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
-			Log.v(Constants.TAG, "scheduledLocationListener");
+			Log.i(Constants.TAG, "scheduledLocationListener");
 
 			currentLocation = location;
-
-			// TODO: minimum distance check
 
 			if (location.hasAccuracy() && location.getAccuracy() < scheduledTrackRecorder.getMinAccuracy()) {
 
@@ -158,28 +164,22 @@ public class GpsService extends Service {
 
 				// schedule next location update
 				//schedulerHandler.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
-				scheduleNextLocationRequest((int)scheduledTrackRecorder.getRequestInterval());
-
-				myApp.log("Accuracy accepted: " + location.getAccuracy());
-				Log.v(Constants.TAG, "Accuracy accepted: " + location.getAccuracy());
+				scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
 
 			} else {
 
 				// waiting for acceptable accuracy
 
-				if (wptGpsFixWaitTimeStart + scheduledTrackRecorder.getGpsFixWaitTime() < SystemClock.elapsedRealtime()) {
+				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
 
 					// schedule next location update
 					//schedulerHandler.postDelayed(schedulerTask,	scheduledTrackRecorder.getRequestInterval());
-					scheduleNextLocationRequest((int)scheduledTrackRecorder.getRequestInterval());
+					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
 
 				}
-
-				myApp.log("Accuracy not accepted: " + location.getAccuracy());
-				Log.v(Constants.TAG, "Accuracy not accepted: " + location.getAccuracy());
 
 			}
 
@@ -274,7 +274,7 @@ public class GpsService extends Service {
 
 		registerReceiver(alarmReceiver, new IntentFilter("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM"));
 
-		Log.v(Constants.TAG, "GpsService: onCreate");
+		Log.i(Constants.TAG, "GpsService: onCreate");
 
 		this.myApp = (MyApp) getApplicationContext();
 
@@ -306,7 +306,7 @@ public class GpsService extends Service {
 	@Override
 	public void onDestroy() {
 
-		Log.v(Constants.TAG, "GpsService: onDestroy");
+		Log.i(Constants.TAG, "GpsService: onDestroy");
 
 		GpsService.running = false;
 
@@ -421,20 +421,12 @@ public class GpsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			Log.v(Constants.TAG, "alarmReceiver");
-			myApp.log("alarmReceiver: onReceive");
-
 			// new request for location started
-			wptGpsFixWaitTimeStart = SystemClock.elapsedRealtime();
+			scheduledTrackRecorder.setRequestStartTime();
 
-			// has recording time limit been reached?
-			if (scheduledTrackRecorder.getStopRecordingAfter() != 0
-					&& wptStartTime + scheduledTrackRecorder.getStopRecordingAfter() < SystemClock.elapsedRealtime()) {
-
+			if (scheduledTrackRecorder.timeLimitReached()) {
 				stopScheduler();
-
 			} else {
-
 				// scheduling next location update
 				startScheduledLocationUpdates();
 			}
@@ -446,18 +438,38 @@ public class GpsService extends Service {
 
 		this.scheduledTrackRecorder.start();
 
-		this.wptStartTime = SystemClock.elapsedRealtime();
+		Log.i(Constants.TAG, "Scheduler started");
 
-		Log.v(Constants.TAG, "Scheduler started");
-
+		// first request is scheduled in 5 seconds from now 
 		this.scheduleNextLocationRequest(5);
 
 		this.showOngoingNotification();
-		
+
 	}
-	
-	private void scheduleNextLocationRequest(int interval) {
+
+	/**
+	 * 
+	 */
+	public void stopScheduler() {
+
+		Log.i(Constants.TAG, "Scheduler stopped");
 		
+		this.scheduledTrackRecorder.stop();
+
+		// cancel alarm
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.cancel(alarmSender);
+
+		this.locationManager.removeUpdates(scheduledLocationListener);
+
+		this.clearNotification();
+	}
+
+	/**
+	 * 
+	 */
+	private void scheduleNextLocationRequest(int interval) {
+
 		Intent intent = new Intent("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM");
 		alarmSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
@@ -465,59 +477,11 @@ public class GpsService extends Service {
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.SECOND, interval);
 
-		// Schedule the alarm!
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-		am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmSender);
-		
-	}
-
-	public void stopScheduler() {
-
-		Log.v(Constants.TAG, "Scheduler stopped");
-		myApp.log("Scheduler stopped");
-
-		this.scheduledTrackRecorder.stop();
-
-		this.clearNotification();
-
-		//this.schedulerHandler.removeCallbacks(schedulerTask);
-
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-		am.cancel(alarmSender);
-		
-		this.locationManager.removeUpdates(scheduledLocationListener);
+		// schedule single alarm
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmSender);
 
 	}
-
-	/**
-	 * scheduled track recording handler
-	 */
-	private Handler schedulerHandler = new Handler();
-	private Runnable schedulerTask = new Runnable() {
-		@Override
-		public void run() {
-
-			myApp.log("GPS Service scheduler task");
-
-			// new request for location started
-			GpsService.this.wptGpsFixWaitTimeStart = SystemClock.elapsedRealtime();
-
-			// has recording time limit been reached?
-			if (GpsService.this.scheduledTrackRecorder.getStopRecordingAfter() != 0
-					&& GpsService.this.wptStartTime + GpsService.this.scheduledTrackRecorder.getStopRecordingAfter() < SystemClock
-							.elapsedRealtime()) {
-
-				GpsService.this.stopScheduler();
-
-			} else {
-
-				// scheduling next location update
-				GpsService.this.startScheduledLocationUpdates();
-			}
-
-		}
-
-	};
 
 	/**
 	 * Show ongoing notification
@@ -578,15 +542,13 @@ public class GpsService extends Service {
 		public void run() {
 
 			try {
+				// wait for other activities to grab location updates 
 				sleep(2500);
 			} catch (Exception e) {
 			}
 
+			// if no activities require location updates - stop them and save battery 
 			if (gpsInUse == false) {
-
-				Log.v(Constants.TAG, "GPS Service: stopLocationUpdatesThread: location updates stopped");
-				myApp.log("stopLocationUpdatesThread: GPS Service: location updates stopped");
-
 				locationManager.removeUpdates(locationListener);
 				listening = false;
 			}

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.aripuca.tracker" android:versionCode="4"
-	android:versionName="1.0.4" >
-	
-    <!-- android:installLocation="preferExternal" -->
+	android:versionName="1.0.4" android:installLocation="preferExternal">
 	
 	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4" />
     
@@ -24,7 +22,7 @@
 		<activity android:name=".NotificationActivity" android:label="Notify">
 		</activity>
 		    		    
-		<activity android:name=".CompassActivity" android:label="@string/compass_activity_title"
+		<activity android:name=".CompassActivity" android:label="@string/compass"
 			android:screenOrientation="portrait">
 		</activity>
 
@@ -32,10 +30,10 @@
 		</activity>
 
 		<activity android:name=".WaypointsListActivity"
-			android:label="@string/waypoints_activity_title">
+			android:label="@string/waypoints">
 		</activity>
 
-		<activity android:name=".TracksListActivity" android:label="@string/tracks_activity_title">
+		<activity android:name=".TracksListActivity" android:label="@string/tracks">
 		</activity>
 
 		<activity android:name=".map.MyMapActivity" android:label="@string/main_app_title"
