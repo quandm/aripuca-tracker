@@ -103,36 +103,11 @@ public class MainActivity extends Activity {
 
 			currentLocation = (Location) bundle.getParcelable("location");
 
-			updateUI();
+			updateActivity();
 			
 		}
 	};
 
-	private void updateUI() {
-
-		if (currentLocation != null && gpsService!=null) {
-
-			if (gpsService.isListening()) {
-
-				// activate buttons if location updates come from GPS
-				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
-
-				this.hideWaitForFixMessage();
-
-			} else {
-
-				((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-				((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
-				
-				this.showWaitForFixMessage();
-			}
-
-			
-			this.updateActivity();
-		}
-
-	}
 
 	private void showWaitForFixMessage() {
 
@@ -1203,6 +1178,24 @@ public class MainActivity extends Activity {
 	 * Update main activity view
 	 */
 	public void updateActivity() {
+		
+		if (currentLocation == null || gpsService==null) {
+			return;
+		}
+
+		/////////////////////////////////////////////////////////////////////
+		if (gpsService.isListening()) {
+			// activate buttons if location updates come from GPS
+			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+			this.hideWaitForFixMessage();
+		} else {
+			// disable recording buttons when waiting for new location
+			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
+			this.showWaitForFixMessage();
+		}
+		////////////////////////////////////////////////////////////////////
 
 		// update coordinates
 		if (findViewById(R.id.lat) != null) {
@@ -1264,9 +1257,6 @@ public class MainActivity extends Activity {
 
 		// updating track recording info
 		this.updateTrackRecording();
-
-		//TODO: update sunrise/sunset only once
-		//this.updateSunriseSunset();
 
 	}
 
@@ -1385,12 +1375,12 @@ public class MainActivity extends Activity {
 				calendar.getTime(), timeZone.getOffset(calendar.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
-			String srise = (String)DateFormat.format("h:mm", ss.getSunrise());
+			String srise = (String)DateFormat.format("k:mm", ss.getSunrise());
 			((TextView) findViewById(R.id.sunrise)).setText(srise);
 		}
 
 		if (findViewById(R.id.sunset) != null) {
-			String sset = (String)DateFormat.format("h:mm", ss.getSunset());
+			String sset = (String)DateFormat.format("k:mm", ss.getSunset());
 			((TextView) findViewById(R.id.sunset)).setText(sset);
 		}
 
@@ -1732,7 +1722,10 @@ public class MainActivity extends Activity {
 		// new location was received by the service when activity was paused
 		if (location != null) {
 			currentLocation = location;
-			updateUI();
+
+			updateActivity();
+			
+			updateSunriseSunset();
 		}
 		
 	}

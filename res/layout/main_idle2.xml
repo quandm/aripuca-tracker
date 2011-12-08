@@ -184,8 +184,6 @@
 
         <!-- SUNRISE/SUNSET -->
 
-
-        <!--
         <LinearLayout style="@style/LayoutRow" >
 
             <TextView
@@ -198,8 +196,7 @@
                 android:text="@string/sunset" >
             </TextView>
         </LinearLayout>
-        
-        
+
         <LinearLayout style="@style/LayoutRow" >
 
             <LinearLayout style="@style/LayoutRowColumn" >
@@ -218,8 +215,6 @@
                 </TextView>
             </LinearLayout>
         </LinearLayout>
-        -->
-
 
         <!-- MESSAGE BOX -->
 
