@@ -91,11 +91,6 @@ public class MainActivity extends Activity {
 	private String distanceUnit;
 	private String elevationUnit;
 	private int coordUnit;
-
-	private Calendar calendar;
-	private TimeZone timeZone;
-	
-	private int timeZoneOffset; 
 	
 	/**
 	 * location updates broadcast receiver
@@ -385,10 +380,6 @@ public class MainActivity extends Activity {
 
 		Log.v(Constants.TAG, "MainActivity: onCreate");
 		
-		calendar = Calendar.getInstance();
-		timeZone = TimeZone.getTimeZone(calendar.getTimeZone().getID());
-		timeZoneOffset = timeZone.getOffset(calendar.getTimeInMillis());
-		
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
@@ -467,8 +458,6 @@ public class MainActivity extends Activity {
 		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		if (this.isFinishing()) {
-			
-			gpsService.stopLocationUpdatesNow();
 			
 			// if activity is not going to be recreated - stop service
 			stopGPSService();
@@ -1276,6 +1265,7 @@ public class MainActivity extends Activity {
 		// updating track recording info
 		this.updateTrackRecording();
 
+		//TODO: update sunrise/sunset only once
 		//this.updateSunriseSunset();
 
 	}
@@ -1382,11 +1372,17 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Update sunrise/sunset times
+	 */
 	private void updateSunriseSunset() {
 
+		Calendar calendar = Calendar.getInstance();
+		TimeZone timeZone = TimeZone.getTimeZone(calendar.getTimeZone().getID());
+		
 		// sunrise/sunset times
 		SunriseSunset ss = new SunriseSunset(currentLocation.getLatitude(), currentLocation.getLongitude(),
-				calendar.getTime(), timeZoneOffset / 1000 / 60 / 60);
+				calendar.getTime(), timeZone.getOffset(calendar.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
 			String srise = (String)DateFormat.format("h:mm", ss.getSunrise());
@@ -1464,7 +1460,7 @@ public class MainActivity extends Activity {
 
 		// update track statistics
 
-		if (gpsService.trackRecorder.isRecording()) {
+		if (gpsService!=null && gpsService.trackRecorder.isRecording()) {
 
 			if (findViewById(R.id.totalTime) != null) {
 				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.trackRecorder.getTrack()
