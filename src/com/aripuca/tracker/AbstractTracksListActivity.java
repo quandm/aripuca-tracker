@@ -19,6 +19,8 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -74,8 +76,9 @@ public class AbstractTracksListActivity extends ListActivity {
 	/**
 	 * Overridden in child classes
 	 */
-	protected void deleteAllTracks() {}
-	
+	protected void deleteAllTracks() {
+	}
+
 	/**
 	 * View track details
 	 */
@@ -142,7 +145,7 @@ public class AbstractTracksListActivity extends ListActivity {
 			float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
 			String distanceStr = Utils.formatDistance(distance, distanceUnit) +
-									Utils.getLocalaziedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
+					Utils.getLocalaziedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
 
 			String elevationUnits = myApp.getPreferences().getString("elevation_units", "m");
 
@@ -172,7 +175,7 @@ public class AbstractTracksListActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		Log.v(Constants.TAG, "TracksListActivity onCreate");
+		Log.v(Constants.TAG, "AbstractTracksListActivity onCreate");
 
 		super.onCreate(savedInstanceState);
 
@@ -184,7 +187,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		cursorAdapter = new TracksCursorAdapter(this, cursor, false);
 		setListAdapter(cursorAdapter);
-		
+
 	}
 
 	/**
@@ -193,16 +196,15 @@ public class AbstractTracksListActivity extends ListActivity {
 	@Override
 	protected void onDestroy() {
 
-		Log.v(Constants.TAG, "TracksListActivity onDestroy");
-		
+		Log.v(Constants.TAG, "AbstractTracksListActivity onDestroy");
+
 		cursor.close();
 		cursor = null;
 
 		myApp = null;
 
-		
 		super.onDestroy();
-		
+
 	}
 
 	/**
@@ -211,8 +213,8 @@ public class AbstractTracksListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 
-		Log.v(Constants.TAG, "TracksListActivity onResume");
-		
+		Log.v(Constants.TAG, "AbstractTracksListActivity onResume");
+
 		super.onResume();
 	}
 
@@ -221,8 +223,8 @@ public class AbstractTracksListActivity extends ListActivity {
 	 */
 	@Override
 	protected void onPause() {
-		
-		Log.v(Constants.TAG, "TracksListActivity onPause");
+
+		Log.v(Constants.TAG, "AbstractTracksListActivity onPause");
 
 		super.onPause();
 	}
@@ -254,18 +256,15 @@ public class AbstractTracksListActivity extends ListActivity {
 						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
-								
-								deleteAllTracks();
-								
-								cursor.requery();
 
-								Toast.makeText(AbstractTracksListActivity.this, R.string.all_tracks_deleted, Toast.LENGTH_SHORT)
-										.show();
+								deleteTracksInOtherThread(new UpdateAfterDeleteHandler());
+
 							}
 						}).setNegativeButton("No", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
-								Toast.makeText(AbstractTracksListActivity.this, R.string.cancelled, Toast.LENGTH_SHORT).show();
+								Toast.makeText(AbstractTracksListActivity.this, R.string.cancelled, Toast.LENGTH_SHORT)
+										.show();
 								dialog.cancel();
 							}
 						});
@@ -284,6 +283,46 @@ public class AbstractTracksListActivity extends ListActivity {
 	}
 
 	/**
+	 * Update UI after delete thread finished
+	 */
+	private class UpdateAfterDeleteHandler extends Handler {
+
+		@Override
+		public void handleMessage(Message message) {
+
+			cursor.requery();
+
+			Toast.makeText(AbstractTracksListActivity.this, R.string.all_tracks_deleted, Toast.LENGTH_SHORT).show();
+		}
+	};
+
+	/**
+	 * Deleting track records in separate thread with progress dialog
+	 */
+	protected void deleteTracksInOtherThread(final UpdateAfterDeleteHandler handler) {
+
+		final ProgressDialog progressDailog = ProgressDialog.show(AbstractTracksListActivity.this,
+				getString(R.string.please_wait), getString(R.string.deleting_records), true);
+
+		Thread thread = new Thread() {
+
+			@Override
+			public void run() {
+
+				deleteAllTracks();
+
+				// sending message to update UI handler
+				handler.sendEmptyMessage(0);
+
+				progressDailog.dismiss();
+			}
+		};
+
+		thread.start();
+
+	}
+
+	/**
 	 * 
 	 */
 	@Override
@@ -297,7 +336,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.track));
-//		menu.add(Menu.NONE, 1, 1, R.string.view);
+		//		menu.add(Menu.NONE, 1, 1, R.string.view);
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
@@ -308,7 +347,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		SubMenu exportSubMenu2 = menu.addSubMenu(Menu.NONE, 5, 5, R.string.send_as_attachment);
 		exportSubMenu2.add(Menu.NONE, 51, 1, R.string.send_as_gpx);
 		exportSubMenu2.add(Menu.NONE, 52, 2, R.string.send_as_kml);
-		
+
 		// menu.add(Menu.NONE, 5, 5, R.string.online_sync);
 
 		menu.add(Menu.NONE, 6, 6, R.string.show_on_map);
@@ -333,7 +372,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		switch (item.getItemId()) {
 
-			// view track info
+		// view track info
 			case 1:
 				this.viewTrackDetails(info.id);
 			break;
@@ -367,7 +406,7 @@ public class AbstractTracksListActivity extends ListActivity {
 			case 52:
 				this.exportTrackToKml(info.id, true);
 			break;
-			
+
 			// sync track online
 			case 5:
 
@@ -427,7 +466,8 @@ public class AbstractTracksListActivity extends ListActivity {
 				String descrStr = trDescr.getText().toString().trim();
 
 				if (titleStr.equals("")) {
-					Toast.makeText(AbstractTracksListActivity.this, R.string.track_title_required, Toast.LENGTH_SHORT).show();
+					Toast.makeText(AbstractTracksListActivity.this, R.string.track_title_required, Toast.LENGTH_SHORT)
+							.show();
 					return;
 				}
 
@@ -463,7 +503,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		final long trackId = id;
 
-		// clear all waypoints with confirmation dialog
+		// delete track with confirmation dialog
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.are_you_sure).setCancelable(true)
 				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -474,17 +514,18 @@ public class AbstractTracksListActivity extends ListActivity {
 						String sql = "DELETE FROM track_points WHERE track_id=" + trackId + ";";
 						myApp.getDatabase().execSQL(sql);
 
-						// delete track from db
+						// delete track segments
 						sql = "DELETE FROM segments WHERE track_id=" + trackId + ";";
 						myApp.getDatabase().execSQL(sql);
 
-						// delete track from db
+						// delete track
 						sql = "DELETE FROM tracks WHERE _id=" + trackId + ";";
 						myApp.getDatabase().execSQL(sql);
-						
+
 						cursor.requery();
 
-						Toast.makeText(AbstractTracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT).show();
+						Toast.makeText(AbstractTracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT)
+								.show();
 					}
 				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 					@Override
