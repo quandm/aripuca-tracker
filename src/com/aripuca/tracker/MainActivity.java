@@ -91,7 +91,9 @@ public class MainActivity extends Activity {
 	private String distanceUnit;
 	private String elevationUnit;
 	private int coordUnit;
-	
+
+	private Notification notification;
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -104,10 +106,9 @@ public class MainActivity extends Activity {
 			currentLocation = (Location) bundle.getParcelable("location");
 
 			updateActivity();
-			
+
 		}
 	};
-
 
 	private void showWaitForFixMessage() {
 
@@ -354,7 +355,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Log.v(Constants.TAG, "MainActivity: onCreate");
-		
+
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
@@ -433,13 +434,13 @@ public class MainActivity extends Activity {
 		Log.v(Constants.TAG, "MainActivity: onPause");
 
 		if (this.isFinishing()) {
-			
+
 			// if activity is not going to be recreated - stop service
 			stopGPSService();
 
 			// save layout for next session
 			this.saveHiddenPreferences();
-			
+
 		} else {
 			// stop location updates when not recording track
 			if (!gpsService.trackRecorder.isRecording()) {
@@ -654,13 +655,13 @@ public class MainActivity extends Activity {
 	/**
 	 * Show ongoing notification
 	 */
-	private void showOngoingNotification(int icon) {
+	private void showNotification() {
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(icon, getString(R.string.recording_started), when);
+		notification = new Notification(R.drawable.aripuca, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -709,7 +710,7 @@ public class MainActivity extends Activity {
 		gpsService.trackRecorder.start();
 
 		// add notification icon in track recording mode
-		this.showOngoingNotification(R.drawable.aripuca);
+		this.showNotification();
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
@@ -796,7 +797,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -986,7 +987,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-			break;
+				break;
 
 			default:
 				dialog = null;
@@ -1021,10 +1022,9 @@ public class MainActivity extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
 		// TODO: test lab
-		MenuItem testLabMenuItem = (MenuItem)
-		menu.findItem(R.id.testLabMenuItem);
+		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
 		testLabMenuItem.setVisible(false);
-		
+
 		// setting icon and title for scheduled track recording menu
 		MenuItem scheduledRecordingMenuItem = (MenuItem) menu.findItem(R.id.scheduledRecordingMenuItem);
 		if (gpsService.getScheduledTrackRecorder().isRecording()) {
@@ -1106,7 +1106,7 @@ public class MainActivity extends Activity {
 				if (!gpsService.getScheduledTrackRecorder().isRecording()) {
 
 					gpsService.startScheduler();
-					
+
 					Toast.makeText(MainActivity.this, R.string.scheduled_recording_started, Toast.LENGTH_SHORT).show();
 
 				} else {
@@ -1178,12 +1178,10 @@ public class MainActivity extends Activity {
 	 * Update main activity view
 	 */
 	public void updateActivity() {
-		
-		if (currentLocation == null || gpsService==null) {
-			return;
-		}
 
-		/////////////////////////////////////////////////////////////////////
+		if (currentLocation == null || gpsService == null) { return; }
+
+		// ///////////////////////////////////////////////////////////////////
 		if (gpsService.isListening()) {
 			// activate buttons if location updates come from GPS
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
@@ -1195,7 +1193,7 @@ public class MainActivity extends Activity {
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 			this.showWaitForFixMessage();
 		}
-		////////////////////////////////////////////////////////////////////
+		// //////////////////////////////////////////////////////////////////
 
 		// update coordinates
 		if (findViewById(R.id.lat) != null) {
@@ -1222,7 +1220,7 @@ public class MainActivity extends Activity {
 
 		// last fix time
 		if (findViewById(R.id.lastFix) != null) {
-			String lastFix = (String)DateFormat.format("h:mm:ss", currentLocation.getTime());
+			String lastFix = (String) DateFormat.format("h:mm:ss", currentLocation.getTime());
 			((TextView) findViewById(R.id.lastFix)).setText(lastFix);
 		}
 
@@ -1240,7 +1238,7 @@ public class MainActivity extends Activity {
 
 		// current speed and pace
 		float speed = currentLocation.getSpeed();
-		
+
 		// current speed (cycling, driving)
 		if (findViewById(R.id.speed) != null) {
 			((TextView) findViewById(R.id.speed)).setText(Utils.formatSpeed(speed, speedUnit));
@@ -1262,10 +1260,8 @@ public class MainActivity extends Activity {
 
 	private void updateTrackRecording() {
 
-		if (gpsService==null || !gpsService.trackRecorder.isRecording()) {
-			return;
-		}
-		
+		if (gpsService == null || !gpsService.trackRecorder.isRecording()) { return; }
+
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
 			((TextView) findViewById(R.id.pointsCount)).setText(Integer.toString(gpsService.trackRecorder
@@ -1369,18 +1365,18 @@ public class MainActivity extends Activity {
 
 		Calendar calendar = Calendar.getInstance();
 		TimeZone timeZone = TimeZone.getTimeZone(calendar.getTimeZone().getID());
-		
+
 		// sunrise/sunset times
 		SunriseSunset ss = new SunriseSunset(currentLocation.getLatitude(), currentLocation.getLongitude(),
 				calendar.getTime(), timeZone.getOffset(calendar.getTimeInMillis()) / 1000 / 60 / 60);
 
 		if (findViewById(R.id.sunrise) != null) {
-			String srise = (String)DateFormat.format("k:mm", ss.getSunrise());
+			String srise = (String) DateFormat.format("k:mm", ss.getSunrise());
 			((TextView) findViewById(R.id.sunrise)).setText(srise);
 		}
 
 		if (findViewById(R.id.sunset) != null) {
-			String sset = (String)DateFormat.format("k:mm", ss.getSunset());
+			String sset = (String) DateFormat.format("k:mm", ss.getSunset());
 			((TextView) findViewById(R.id.sunset)).setText(sset);
 		}
 
@@ -1431,9 +1427,7 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
@@ -1450,16 +1444,16 @@ public class MainActivity extends Activity {
 
 		// update track statistics
 
-		if (gpsService!=null && gpsService.trackRecorder.isRecording()) {
+		if (gpsService != null && gpsService.trackRecorder.isRecording()) {
 
 			if (findViewById(R.id.totalTime) != null) {
-				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.trackRecorder.getTrack()
-						.getTotalTime(), false));
+				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.trackRecorder
+						.getTrack().getTotalTime(), false));
 			}
 
 			if (findViewById(R.id.movingTime) != null) {
-				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(gpsService.trackRecorder.getTrack()
-						.getMovingTime(), false));
+				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(gpsService.trackRecorder
+						.getTrack().getMovingTime(), false));
 			}
 
 		}
@@ -1474,14 +1468,15 @@ public class MainActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (gpsService!=null && gpsService.trackRecorder.isRecording()) {
+			if (gpsService != null && gpsService.trackRecorder.isRecording()) {
 				Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 				return true;
 			}
-	    }
-    
-	    return super.onKeyUp(keyCode, event);
-	}	
+		}
+
+		return super.onKeyUp(keyCode, event);
+	}
+
 	/**
 	 * Copy application database to sd card
 	 */
@@ -1500,7 +1495,7 @@ public class MainActivity extends Activity {
 
 				String currentDBPath = "/data/com.aripuca.tracker/databases/" + Constants.APP_NAME + ".db";
 
-				String dateStr = (String)DateFormat.format("yyyyMMdd_hhmmss", new Date());
+				String dateStr = (String) DateFormat.format("yyyyMMdd_hhmmss", new Date());
 
 				File currentDB = new File(data, currentDBPath);
 				File backupDB = new File(myApp.getAppDir() + "/backup/" + dateStr + ".db");
@@ -1700,7 +1695,7 @@ public class MainActivity extends Activity {
 		if (gpsService.trackRecorder.isRecording()) {
 
 			this.replaceDynamicView(R.layout.main_tracking);
-			
+
 			// change "Record" button text with "Stop"
 			((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.stop));
 
@@ -1709,11 +1704,11 @@ public class MainActivity extends Activity {
 
 			// enabling control buttons
 			this.enableControlButtons();
-			
+
 		} else {
-			
+
 			this.replaceDynamicView(R.layout.main_idle2);
-			
+
 			// start location updates after service bound if not recording track
 			gpsService.startLocationUpdates();
 		}
@@ -1724,10 +1719,10 @@ public class MainActivity extends Activity {
 			currentLocation = location;
 
 			updateActivity();
-			
+
 			updateSunriseSunset();
 		}
-		
+
 	}
 
 	private void bindGpsService() {
