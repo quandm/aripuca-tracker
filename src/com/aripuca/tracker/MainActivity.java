@@ -92,8 +92,6 @@ public class MainActivity extends Activity {
 	private String elevationUnit;
 	private int coordUnit;
 
-	private Notification notification;
-
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -239,6 +237,7 @@ public class MainActivity extends Activity {
 
 			if (gpsService.trackRecorder.isRecording()) {
 				stopTracking();
+				updateSunriseSunset();
 			} else {
 				startTracking();
 			}
@@ -354,7 +353,7 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		Log.v(Constants.TAG, "MainActivity: onCreate");
+		Log.i(Constants.TAG, "MainActivity: onCreate");
 
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
@@ -396,7 +395,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		Log.v(Constants.TAG, "MainActivity: onResume");
+		Log.i(Constants.TAG, "MainActivity: onResume");
 
 		super.onResume();
 
@@ -431,7 +430,7 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 
-		Log.v(Constants.TAG, "MainActivity: onPause");
+		Log.i(Constants.TAG, "MainActivity: onPause");
 
 		if (this.isFinishing()) {
 
@@ -464,7 +463,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 
-		Log.v(Constants.TAG, "MainActivity: onDestroy");
+		Log.i(Constants.TAG, "MainActivity: onDestroy");
 
 		super.onDestroy();
 	}
@@ -474,7 +473,7 @@ public class MainActivity extends Activity {
 	 */
 	private void restoreInstanceState(Bundle savedInstanceState) {
 
-		Log.v(Constants.TAG, "MainActivity: restoreInstanceState");
+		Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
 
 		speedContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("speedContainerId"));
 		timeContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("timeContainerId"));
@@ -506,7 +505,7 @@ public class MainActivity extends Activity {
 
 		super.onSaveInstanceState(outState);
 
-		Log.v(Constants.TAG, "MainActivity: onSaveInstanceState");
+		Log.i(Constants.TAG, "MainActivity: onSaveInstanceState");
 
 		outState.putInt("speedContainerId", speedContainerCarousel.getCurrentContainerId());
 		outState.putInt("timeContainerId", timeContainerCarousel.getCurrentContainerId());
@@ -626,7 +625,7 @@ public class MainActivity extends Activity {
 
 		stopService(new Intent(this, GpsService.class));
 
-		Log.v(Constants.TAG, "stopGPSService");
+		Log.i(Constants.TAG, "stopGPSService");
 
 	}
 
@@ -661,7 +660,7 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		notification = new Notification(R.drawable.aripuca, getString(R.string.recording_started), when);
+		Notification notification = new Notification(R.drawable.aripuca, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -797,7 +796,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -987,7 +986,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-				break;
+			break;
 
 			default:
 				dialog = null;
@@ -1061,7 +1060,7 @@ public class MainActivity extends Activity {
 
 			case R.id.tracksMenuItem:
 
-				startActivity(new Intent(this, TracksListActivity.class));
+				startActivity(new Intent(this, TracksTabActivity.class));
 
 				return true;
 
@@ -1179,7 +1178,9 @@ public class MainActivity extends Activity {
 	 */
 	public void updateActivity() {
 
-		if (currentLocation == null || gpsService == null) { return; }
+		if (currentLocation == null || gpsService == null) {
+			return;
+		}
 
 		// ///////////////////////////////////////////////////////////////////
 		if (gpsService.isListening()) {
@@ -1260,7 +1261,9 @@ public class MainActivity extends Activity {
 
 	private void updateTrackRecording() {
 
-		if (gpsService == null || !gpsService.trackRecorder.isRecording()) { return; }
+		if (gpsService == null || !gpsService.trackRecorder.isRecording()) {
+			return;
+		}
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
@@ -1360,6 +1363,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Update sunrise/sunset times
+	 * We update this only after GpsService bound or track recording stopped
 	 */
 	private void updateSunriseSunset() {
 
@@ -1427,7 +1431,9 @@ public class MainActivity extends Activity {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -1670,7 +1676,7 @@ public class MainActivity extends Activity {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
 
-			Log.v(Constants.TAG, "MainActivity: onServiceConnected");
+			Log.i(Constants.TAG, "MainActivity: onServiceConnected");
 
 			gpsService = ((GpsService.LocalBinder) service).getService();
 
@@ -1732,7 +1738,7 @@ public class MainActivity extends Activity {
 			Toast.makeText(MainActivity.this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
 
-		Log.v(Constants.TAG, "MainActivity: doBindService");
+		Log.i(Constants.TAG, "MainActivity: doBindService");
 
 	}
 

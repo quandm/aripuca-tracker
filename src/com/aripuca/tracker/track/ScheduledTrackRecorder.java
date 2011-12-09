@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.aripuca.tracker.MyApp;
 import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.service.GpsService;
+
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
@@ -173,11 +173,8 @@ public class ScheduledTrackRecorder {
 	 */
 	public void recordTrackPoint(Location location) {
 
-		myApp.log("ScheduledTrackRecorder: recordTrackPoint");
-
 		// minimum distance check
 		if (lastRecordedLocation != null && location.distanceTo(lastRecordedLocation) < minDistance) {
-			myApp.log("ScheduledTrackRecorder: distance: " + location.distanceTo(lastRecordedLocation));
 			// wait for next location
 			return;
 		}

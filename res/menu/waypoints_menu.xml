@@ -16,7 +16,7 @@
  -->			
 			
 	<item android:id="@+id/deleteWaypointsMenuItem" 
-			android:title="@string/delete_waypoints"
+			android:title="@string/clear_all"
 			android:icon="@android:drawable/ic_menu_delete" />
 	
 	<item android:id="@+id/showMapMenuItem" 

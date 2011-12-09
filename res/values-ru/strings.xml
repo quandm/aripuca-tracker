@@ -105,8 +105,6 @@
     <string name="idle_time">Время простоя</string>
     <string name="start_time">Начало</string>
     <string name="finish_time">Конец</string>
-    <string name="delete_waypoints">Очистить</string>
-    <string name="delete_tracks">Очистить</string>
     <string name="sync_all">Синхронизация</string>
     <string name="export_all">Экспорт</string>
     <string name="import_all">Импорт</string>
@@ -227,4 +225,5 @@
     <string name="waypoints_summary">Описание по умолчанию и др.</string>
     <string name="user_interface_summary">Язык приложения, режим экрана и др.</string>
     <string name="user_interface">Интерфейс пользователя</string>
+    <string name="compass_summary">Куда указывает компас и т.д.</string>
 </resources>
