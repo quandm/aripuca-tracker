@@ -226,4 +226,6 @@
     <string name="user_interface_summary">Язык приложения, режим экрана и др.</string>
     <string name="user_interface">Интерфейс пользователя</string>
     <string name="compass_summary">Куда указывает компас и т.д.</string>
+    <string name="deleting_records">Удаление записей...</string>
+    <string name="please_wait">Подождите немного</string>
 </resources>

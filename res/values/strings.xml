@@ -231,4 +231,6 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="do_you_know">Do you know?</string>
     <string name="coming_soon">Coming soon...</string>
+    <string name="please_wait">Please wait</string>
+    <string name="deleting_records">Deleting records...</string>
 </resources>

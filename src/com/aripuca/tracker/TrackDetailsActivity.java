@@ -1,6 +1,5 @@
 package com.aripuca.tracker;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.aripuca.tracker.R;

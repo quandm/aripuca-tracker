@@ -29,9 +29,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -453,7 +451,7 @@ public class GpsService extends Service {
 	public void stopScheduler() {
 
 		Log.i(Constants.TAG, "Scheduler stopped");
-		
+
 		this.scheduledTrackRecorder.stop();
 
 		// cancel alarm
