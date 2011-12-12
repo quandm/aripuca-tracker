@@ -92,6 +92,16 @@ public class GpsService extends Service {
 	}
 
 	/**
+	 * location updates broadcast receiver
+	 */
+	protected BroadcastReceiver startSensorUpdatesReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			startSensorUpdates();
+		}
+	};
+	
+	/**
 	 * Defines a listener that responds to location updates
 	 */
 	private LocationListener locationListener = new LocationListener() {
@@ -198,6 +208,7 @@ public class GpsService extends Service {
 
 	};
 
+	
 	/**
 	 * Broadcasting location update
 	 */
@@ -217,6 +228,8 @@ public class GpsService extends Service {
 	}
 
 	private SensorEventListener sensorListener = new SensorEventListener() {
+
+		
 
 		@Override
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -244,7 +257,7 @@ public class GpsService extends Service {
 
 	};
 
-	// //////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * This is the object that receives interactions from clients
 	 */
@@ -272,6 +285,7 @@ public class GpsService extends Service {
 		super.onCreate();
 
 		registerReceiver(alarmReceiver, new IntentFilter("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM"));
+		registerReceiver(startSensorUpdatesReceiver, new IntentFilter("com.aripuca.tracker.START_SENSOR_UPDATES_ACTION"));
 
 		Log.i(Constants.TAG, "GpsService: onCreate");
 
@@ -289,9 +303,7 @@ public class GpsService extends Service {
 
 		// orientation sensor
 		this.sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		this.sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-				SensorManager.SENSOR_DELAY_NORMAL);
-
+		
 		GpsService.running = true;
 
 		this.requestLastKnownLocation();
@@ -308,6 +320,8 @@ public class GpsService extends Service {
 
 		GpsService.running = false;
 
+		unregisterReceiver(startSensorUpdatesReceiver);
+
 		if (scheduledTrackRecorder.isRecording()) {
 			stopScheduler();
 		}
@@ -315,8 +329,7 @@ public class GpsService extends Service {
 		// stop listener without delay
 		this.locationManager.removeUpdates(locationListener);
 
-		// stop compass listener
-		this.sensorManager.unregisterListener(sensorListener);
+		this.stopSensorUpdates();
 
 		this.locationManager = null;
 		this.sensorManager = null;
@@ -404,6 +417,19 @@ public class GpsService extends Service {
 	public void stopScheduledLocationUpdates() {
 		this.locationManager.removeUpdates(scheduledLocationListener);
 	}
+
+	public void startSensorUpdates() {
+		this.sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+				SensorManager.SENSOR_DELAY_NORMAL);
+	}
+	
+	public void stopSensorUpdates() {
+
+		// stop compass listener
+		this.sensorManager.unregisterListener(sensorListener);
+
+	}
+	
 
 	protected BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 		@Override

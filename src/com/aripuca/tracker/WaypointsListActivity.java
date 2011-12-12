@@ -344,6 +344,8 @@ public class WaypointsListActivity extends ListActivity {
 			waypoints = null;
 		}
 
+		gpsServiceConnection = null;		
+
 		myApp = null;
 
 		super.onDestroy();
@@ -1018,7 +1020,6 @@ public class WaypointsListActivity extends ListActivity {
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			gpsService = null;
 			isGpsServiceBound = false;
 		}
 	};
@@ -1030,12 +1031,15 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	private void unbindGpsService() {
+		
 		if (isGpsServiceBound) {
 			// Detach our existing connection.
 			unbindService(gpsServiceConnection);
-			gpsService = null;
 			isGpsServiceBound = false;
 		}
+		
+		gpsService = null;
+		
 	}
 
 	/**
@@ -1049,6 +1053,8 @@ public class WaypointsListActivity extends ListActivity {
 		// by setting gpsInUse to true we insure that listening will not stop in
 		// GpsService.stopLocationUpdatesThread
 		gpsService.setGpsInUse(true);
+		
+		gpsService.startSensorUpdates();
 
 	}
 

@@ -282,8 +282,13 @@ public class TrackpointsListActivity extends ListActivity {
 		unregisterReceiver(locationBroadcastReceiver);
 
 		// stop location updates when not recording track
-		if (gpsService!=null && !gpsService.getTrackRecorder().isRecording()) {
-			gpsService.stopLocationUpdates();
+		if (gpsService!=null) {
+
+			if (!gpsService.getTrackRecorder().isRecording()) {
+				gpsService.stopLocationUpdates();
+			}
+			
+			gpsService.stopSensorUpdates();
 		}
 
 		this.unbindGpsService();
@@ -302,6 +307,8 @@ public class TrackpointsListActivity extends ListActivity {
 			waypoints = null;
 		}
 
+		gpsServiceConnection = null;
+		
 		myApp = null;
 
 		super.onDestroy();
@@ -374,7 +381,6 @@ public class TrackpointsListActivity extends ListActivity {
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			gpsService = null;
 			isGpsServiceBound = false;
 		}
 	};
@@ -389,9 +395,11 @@ public class TrackpointsListActivity extends ListActivity {
 		if (isGpsServiceBound) {
 			// Detach our existing connection.
 			unbindService(gpsServiceConnection);
-			gpsService = null;
 			isGpsServiceBound = false;
 		}
+		
+		gpsService = null;
+		
 	}
 
 	/**
@@ -415,6 +423,8 @@ public class TrackpointsListActivity extends ListActivity {
 			// most likely we are in the process of recording track
 
 		}
+		
+		gpsService.startSensorUpdates();
 
 	}
 
