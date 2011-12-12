@@ -235,7 +235,7 @@ public class MainActivity extends Activity {
 			// disable pause/resume button when tracking started or stopped
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
 
-			if (gpsService.trackRecorder.isRecording()) {
+			if (gpsService.getTrackRecorder().isRecording()) {
 				stopTracking();
 				updateSunriseSunset();
 			} else {
@@ -251,7 +251,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
-			if (gpsService.trackRecorder.isRecording()) {
+			if (gpsService.getTrackRecorder().isRecording()) {
 				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_stop, Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_start, Toast.LENGTH_SHORT).show();
@@ -269,11 +269,11 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
-			if (gpsService.trackRecorder.isRecordingPaused()) {
+			if (gpsService.getTrackRecorder().isRecordingPaused()) {
 
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
 
-				gpsService.trackRecorder.resume();
+				gpsService.getTrackRecorder().resume();
 
 				Toast.makeText(MainActivity.this, R.string.recording_resumed, Toast.LENGTH_SHORT).show();
 
@@ -281,7 +281,7 @@ public class MainActivity extends Activity {
 
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.resume));
 
-				gpsService.trackRecorder.pause();
+				gpsService.getTrackRecorder().pause();
 
 				Toast.makeText(MainActivity.this, R.string.recording_paused, Toast.LENGTH_SHORT).show();
 
@@ -442,7 +442,7 @@ public class MainActivity extends Activity {
 
 		} else {
 			// stop location updates when not recording track
-			if (!gpsService.trackRecorder.isRecording()) {
+			if (gpsService!=null && !gpsService.getTrackRecorder().isRecording()) {
 				gpsService.stopLocationUpdates();
 			}
 		}
@@ -619,7 +619,7 @@ public class MainActivity extends Activity {
 	private void stopGPSService() {
 
 		// stop tracking if active
-		if (gpsService.trackRecorder.isRecording()) {
+		if (gpsService.getTrackRecorder().isRecording()) {
 			stopTracking();
 		}
 
@@ -660,7 +660,7 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(R.drawable.aripuca, getString(R.string.recording_started), when);
+		Notification notification = new Notification(R.drawable.ic_stat_notification, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -706,7 +706,7 @@ public class MainActivity extends Activity {
 
 		this.replaceDynamicView(R.layout.main_tracking);
 
-		gpsService.trackRecorder.start();
+		gpsService.getTrackRecorder().start();
 
 		// add notification icon in track recording mode
 		this.showNotification();
@@ -730,7 +730,7 @@ public class MainActivity extends Activity {
 		// change button label from Stop to Record
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record));
 
-		gpsService.trackRecorder.stop();
+		gpsService.getTrackRecorder().stop();
 
 		// switching to initial layout
 		this.replaceDynamicView(R.layout.main_idle2);
@@ -940,8 +940,8 @@ public class MainActivity extends Activity {
 				values.put("time", currentLocation.getTime());
 
 				// if track recording started assign track_id
-				if (gpsService.trackRecorder.isRecording()) {
-					values.put("track_id", gpsService.trackRecorder.getTrack().getTrackId());
+				if (gpsService.getTrackRecorder().isRecording()) {
+					values.put("track_id", gpsService.getTrackRecorder().getTrack().getTrackId());
 				}
 
 				try {
@@ -1027,10 +1027,10 @@ public class MainActivity extends Activity {
 		// setting icon and title for scheduled track recording menu
 		MenuItem scheduledRecordingMenuItem = (MenuItem) menu.findItem(R.id.scheduledRecordingMenuItem);
 		if (gpsService.getScheduledTrackRecorder().isRecording()) {
-			scheduledRecordingMenuItem.setTitle(R.string.stop_scheduled_recording);
+			scheduledRecordingMenuItem.setTitle(R.string.stop_scheduler);
 			scheduledRecordingMenuItem.setIcon(android.R.drawable.ic_media_pause);
 		} else {
-			scheduledRecordingMenuItem.setTitle(R.string.start_scheduled_recording);
+			scheduledRecordingMenuItem.setTitle(R.string.start_scheduler);
 			scheduledRecordingMenuItem.setIcon(android.R.drawable.ic_media_play);
 		}
 
@@ -1261,63 +1261,63 @@ public class MainActivity extends Activity {
 
 	private void updateTrackRecording() {
 
-		if (gpsService == null || !gpsService.trackRecorder.isRecording()) {
+		if (gpsService == null || !gpsService.getTrackRecorder().isRecording()) {
 			return;
 		}
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
-			((TextView) findViewById(R.id.pointsCount)).setText(Integer.toString(gpsService.trackRecorder
+			((TextView) findViewById(R.id.pointsCount)).setText(Integer.toString(gpsService.getTrackRecorder()
 					.getPointsCount()));
 		}
 
 		// number of track points recorded
 		if (findViewById(R.id.segmentsCount) != null) {
-			((TextView) findViewById(R.id.segmentsCount)).setText(Integer.toString(gpsService.trackRecorder
+			((TextView) findViewById(R.id.segmentsCount)).setText(Integer.toString(gpsService.getTrackRecorder()
 					.getSegmentsCount()));
 		}
 
 		// ------------------------------------------------------------------
 		// elevation gain
 		if (findViewById(R.id.elevationGain) != null) {
-			((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(gpsService.trackRecorder
+			((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(gpsService.getTrackRecorder()
 					.getTrack().getElevationGain(), elevationUnit));
 		}
 
 		// elevation loss
 		if (findViewById(R.id.elevationLoss) != null) {
-			((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(gpsService.trackRecorder
+			((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(gpsService.getTrackRecorder()
 					.getTrack().getElevationLoss(), elevationUnit));
 		}
 
 		// max elevation
 		if (findViewById(R.id.maxElevation) != null) {
-			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(gpsService.trackRecorder
+			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(gpsService.getTrackRecorder()
 					.getTrack().getMaxElevation(), elevationUnit));
 		}
 
 		// min elevation
 		if (findViewById(R.id.minElevation) != null) {
-			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(gpsService.trackRecorder
+			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(gpsService.getTrackRecorder()
 					.getTrack().getMinElevation(), elevationUnit));
 		}
 		// ------------------------------------------------------------------
 
 		// average speed
 		if (findViewById(R.id.averageSpeed) != null) {
-			((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(gpsService.trackRecorder.getTrack()
+			((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(gpsService.getTrackRecorder().getTrack()
 					.getAverageSpeed(), speedUnit));
 		}
 
 		// average moving speed
 		if (findViewById(R.id.averageMovingSpeed) != null) {
-			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(gpsService.trackRecorder
+			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(gpsService.getTrackRecorder()
 					.getTrack().getAverageMovingSpeed(), speedUnit));
 		}
 
 		// max speed
 		if (findViewById(R.id.maxSpeed) != null) {
-			((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(gpsService.trackRecorder.getTrack()
+			((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(gpsService.getTrackRecorder().getTrack()
 					.getMaxSpeed(), speedUnit));
 		}
 
@@ -1325,38 +1325,38 @@ public class MainActivity extends Activity {
 		if (findViewById(R.id.acceleration) != null) {
 
 			// let's display last non-zero acceleration
-			((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(gpsService.trackRecorder.getTrack()
+			((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(gpsService.getTrackRecorder().getTrack()
 					.getAcceleration(), 2));
 
 		}
 
 		// average pace
 		if (findViewById(R.id.averagePace) != null) {
-			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(gpsService.trackRecorder.getTrack()
+			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(gpsService.getTrackRecorder().getTrack()
 					.getAverageSpeed(), speedUnit));
 		}
 
 		// average moving pace
 		if (findViewById(R.id.averageMovingPace) != null) {
-			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(gpsService.trackRecorder
+			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(gpsService.getTrackRecorder()
 					.getTrack().getAverageMovingSpeed(), speedUnit));
 		}
 
 		// max pace
 		if (findViewById(R.id.maxPace) != null) {
-			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(gpsService.trackRecorder.getTrack()
+			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(gpsService.getTrackRecorder().getTrack()
 					.getMaxSpeed(), speedUnit));
 		}
 
 		// total distance
 		if (findViewById(R.id.distance) != null) {
-			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(gpsService.trackRecorder.getTrack()
+			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(gpsService.getTrackRecorder().getTrack()
 					.getDistance(), distanceUnit));
 		}
 
 		if (findViewById(R.id.distanceUnit) != null) {
 			((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalaziedDistanceUnit(this,
-					gpsService.trackRecorder.getTrack().getDistance(), distanceUnit));
+					gpsService.getTrackRecorder().getTrack().getDistance(), distanceUnit));
 		}
 
 	}
@@ -1450,15 +1450,15 @@ public class MainActivity extends Activity {
 
 		// update track statistics
 
-		if (gpsService != null && gpsService.trackRecorder.isRecording()) {
+		if (gpsService != null && gpsService.getTrackRecorder().isRecording()) {
 
 			if (findViewById(R.id.totalTime) != null) {
-				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.trackRecorder
+				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.getTrackRecorder()
 						.getTrack().getTotalTime(), false));
 			}
 
 			if (findViewById(R.id.movingTime) != null) {
-				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(gpsService.trackRecorder
+				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(gpsService.getTrackRecorder()
 						.getTrack().getMovingTime(), false));
 			}
 
@@ -1474,10 +1474,20 @@ public class MainActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (gpsService != null && gpsService.trackRecorder.isRecording()) {
-				Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
-				return true;
+			if (gpsService != null) {
+				
+				if (gpsService.getTrackRecorder().isRecording()) {
+					Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
+					return true;
+				}
+				
+				if (gpsService.getScheduledTrackRecorder().isRecording()) {
+					Toast.makeText(MainActivity.this, R.string.stop_scheduled_track_recording, Toast.LENGTH_SHORT).show();
+					return true;
+				}
+				
 			}
+			
 		}
 
 		return super.onKeyUp(keyCode, event);
@@ -1488,7 +1498,7 @@ public class MainActivity extends Activity {
 	 */
 	private void backupDatabase() {
 
-		if (gpsService.trackRecorder.isRecording()) {
+		if (gpsService.getTrackRecorder().isRecording()) {
 			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -1540,7 +1550,7 @@ public class MainActivity extends Activity {
 	 */
 	private void restoreDatabase() {
 
-		if (gpsService.trackRecorder.isRecording()) {
+		if (gpsService.getTrackRecorder().isRecording()) {
 			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -1698,7 +1708,7 @@ public class MainActivity extends Activity {
 	 */
 	private void gpsServiceBoundCallback() {
 
-		if (gpsService.trackRecorder.isRecording()) {
+		if (gpsService.getTrackRecorder().isRecording()) {
 
 			this.replaceDynamicView(R.layout.main_tracking);
 
@@ -1717,11 +1727,13 @@ public class MainActivity extends Activity {
 
 			// start location updates after service bound if not recording track
 			gpsService.startLocationUpdates();
+			
 		}
 
 		Location location = gpsService.getCurrentLocation();
 		// new location was received by the service when activity was paused
 		if (location != null) {
+
 			currentLocation = location;
 
 			updateActivity();
@@ -1735,10 +1747,9 @@ public class MainActivity extends Activity {
 
 		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection,
 				Context.BIND_AUTO_CREATE)) {
-			Toast.makeText(MainActivity.this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
+			gpsService = null;
+			Toast.makeText(MainActivity.this, "System error: Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
-
-		Log.i(Constants.TAG, "MainActivity: doBindService");
 
 	}
 
@@ -1746,7 +1757,7 @@ public class MainActivity extends Activity {
 
 		if (isGpsServiceBound) {
 
-			// Detach our existing connection.
+			// detach our existing connection
 			unbindService(gpsServiceConnection);
 
 			gpsService = null;

@@ -3,7 +3,7 @@
     <!-- NOT TRANSLATABLE -->
     <string name="main_app_title">Aripuca Tracker</string>
     <string name="company">Aripuca Apps</string>
-    <string name="app_build_date">2011-12-06</string>
+    <string name="app_build_date">2011-12-10</string>
     <string name="app_url">http://tracker.aripuca.com</string>
     <string name="blog_url">http://tracker.aripuca.com/blog</string>
     <string name="market_url">https://market.android.com/details?id=com.aripuca.tracker</string>
@@ -107,7 +107,10 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="units_summary">Measurement units (coordinates, distance, speed, etc)</string>
     <!-- Tracks -->
     <string name="track">Track</string>
+    <string name="track_points">Track points</string>
+    <string name="scheduled_track_points">Scheduled track points</string>
     <string name="tracks">Tracks</string>
+    <string name="scheduled_tracks">Scheduled tracks</string>
     <string name="track_details_activity_title">Track details</string>
     <string name="show_track">Show track</string>
     <string name="record_track">Record track</string>
@@ -126,7 +129,8 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="press_and_hold_to_stop">Press and hold to stop track recording</string>
     <string name="press_and_hold_to_start">Press and hold to start track recording</string>
     <string name="press_again_to_exit">Press again to stop track recording and exit</string>
-    <string name="stop_track_recording">Stop track recording</string>
+    <string name="stop_track_recording">Please stop track recording before exit</string>
+    <string name="stop_scheduled_track_recording">Scheduled track recording is still running. Please stop it before exit.</string>
     <string name="track_description">Enter track description</string>
     <string name="min_distance_title">Minimum distance</string>
     <string name="min_distance_summary">Minimum distance between 2 recorded points</string>
@@ -169,8 +173,6 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="all_waypoints_deleted">All waypoints deleted</string>
     <string name="waypoint_description">Waypoint description</string>
     <!-- Scheduled track recording -->
-    <string name="start_scheduled_recording">Start schedule</string>
-    <string name="stop_scheduled_recording">Stop schedule</string>
     <string name="scheduled_track_recording_in_progress">Scheduled track recording in progress</string>
     <string name="wpt_title">Scheduled track recording</string>
     <string name="wpt_summary">Record track points on schedule and save battery power. No extra statistics recorded.</string>
@@ -233,4 +235,6 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="coming_soon">Coming soon...</string>
     <string name="please_wait">Please wait</string>
     <string name="deleting_records">Deleting records...</string>
+    <string name="stop_scheduler">Stop scheduler</string>
+    <string name="start_scheduler">Start scheduler</string>
 </resources>

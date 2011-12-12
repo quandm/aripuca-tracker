@@ -22,7 +22,7 @@
         android:title="@string/settings"/>
 
      <item android:id="@+id/scheduledRecordingMenuItem" 
-			android:title="@string/start_scheduled_recording"
+			android:title="@string/start_scheduler"
 			android:icon="@android:drawable/ic_media_play" />
     
     <item

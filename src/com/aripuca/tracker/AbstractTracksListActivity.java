@@ -76,8 +76,7 @@ public class AbstractTracksListActivity extends ListActivity {
 	/**
 	 * Overridden in child classes
 	 */
-	protected void deleteAllTracks() {
-	}
+	protected void deleteAllTracks() {}
 
 	/**
 	 * View track details
@@ -144,8 +143,8 @@ public class AbstractTracksListActivity extends ListActivity {
 
 			float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
-			String distanceStr = Utils.formatDistance(distance, distanceUnit) +
-					Utils.getLocalaziedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
+			String distanceStr = Utils.formatDistance(distance, distanceUnit)
+					+ Utils.getLocalaziedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
 
 			String elevationUnits = myApp.getPreferences().getString("elevation_units", "m");
 
@@ -160,10 +159,9 @@ public class AbstractTracksListActivity extends ListActivity {
 
 			text1.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
 
-			text2.setText(distanceStr
-					+ " | " + Utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false)
-					+ " | +" + elevationGain
-					+ " | -" + elevationLoss);
+			text2.setText(distanceStr + " | "
+					+ Utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false) + " | +"
+					+ elevationGain + " | -" + elevationLoss);
 
 		}
 
@@ -333,10 +331,11 @@ public class AbstractTracksListActivity extends ListActivity {
 		// MenuInflater inflater = getMenuInflater();
 		// inflater.inflate(R.menu.context_menu, menu);
 
-		//AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		// AdapterView.AdapterContextMenuInfo info =
+		// (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.track));
-		//		menu.add(Menu.NONE, 1, 1, R.string.view);
+		// menu.add(Menu.NONE, 1, 1, R.string.view);
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
@@ -375,48 +374,48 @@ public class AbstractTracksListActivity extends ListActivity {
 		// view track info
 			case 1:
 				this.viewTrackDetails(info.id);
-			break;
+				break;
 
 			// edit track info
 			case 2:
 				this.updateTrack(info.id);
-			break;
+				break;
 
 			// delete track
 			case 3:
 				this.deleteTrack(info.id);
-			break;
+				break;
 
 			// export to GPX
 			case 41:
 				this.exportTrackToGpx(info.id, false);
-			break;
+				break;
 
 			// export to KML
 			case 42:
 				this.exportTrackToKml(info.id, false);
-			break;
+				break;
 
 			// export to GPX and send as attachment
 			case 51:
 				this.exportTrackToGpx(info.id, true);
-			break;
+				break;
 
 			// export to KML and send as attachment
 			case 52:
 				this.exportTrackToKml(info.id, true);
-			break;
+				break;
 
 			// sync track online
 			case 5:
 
-			break;
+				break;
 
 			case 6:
 
 				this.showTrackOnMap(info.id);
 
-			break;
+				break;
 
 			default:
 				return super.onContextItemSelected(item);
@@ -540,18 +539,19 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	// --------------------------------------------------------------------------------------------
 
+	/**
+	 * locking device orientation. export process not to be interrupted
+	 */
 	private void lockOrientationChange() {
 
 		// Stop the screen orientation changing during an event
 		switch (this.getResources().getConfiguration().orientation) {
 			case Configuration.ORIENTATION_PORTRAIT:
-				this.setRequestedOrientation(
-						ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			break;
+				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+				break;
 			case Configuration.ORIENTATION_LANDSCAPE:
-				this.setRequestedOrientation(
-						ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			break;
+				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+				break;
 		}
 
 	}

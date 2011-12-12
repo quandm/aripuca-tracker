@@ -1,5 +1,8 @@
 package com.aripuca.tracker;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 /**
  * Scheduled tracks list activity
  */
@@ -32,5 +35,27 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 		sql = "DELETE FROM tracks WHERE activity=1";
 		myApp.getDatabase().execSQL(sql);
 		
-	}	
+	}
+	
+	
+	/**
+	 * Start the track details activity
+	 * 
+	 * @param id Track id
+	 */
+	@Override
+	protected void viewTrackDetails(long id) {
+
+		Intent intent = new Intent(this, TrackpointsListActivity.class);
+
+		// using Bundle to pass track id into new activity
+		Bundle bundle = new Bundle();
+		bundle.putLong("track_id", id);
+
+		intent.putExtras(bundle);
+
+		startActivity(intent);
+
+	}
+	
 }
