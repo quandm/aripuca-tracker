@@ -11,6 +11,7 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 	// instance initialization block
 	{
 		sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND activity=1";
+		listItemResourceId = R.layout.scheduled_track_list_item;
 	}
 
 	@Override

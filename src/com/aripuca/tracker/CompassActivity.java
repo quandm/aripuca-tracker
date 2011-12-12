@@ -66,7 +66,7 @@ public class CompassActivity extends Activity {
 		myApp = ((MyApp) getApplicationContext());
 
 		setContentView(R.layout.compass);
-
+		
 	}
 
 	@Override
@@ -86,6 +86,10 @@ public class CompassActivity extends Activity {
 		
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
+		
+		// staring compass updates in GpsService
+		Intent intent = new Intent("com.aripuca.tracker.START_SENSOR_UPDATES_ACTION");
+		sendBroadcast(intent);
 		
 		super.onResume();
 

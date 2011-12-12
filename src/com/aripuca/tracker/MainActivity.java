@@ -23,6 +23,7 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -136,7 +137,7 @@ public class MainActivity extends Activity {
 	protected BroadcastReceiver scheduledLocationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
+			
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
@@ -155,6 +156,10 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
+			if (myApp==null) {
+				return;
+			}
+			
 			Bundle bundle = intent.getExtras();
 
 			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
@@ -354,7 +359,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Log.i(Constants.TAG, "MainActivity: onCreate");
-
+		
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
@@ -376,7 +381,7 @@ public class MainActivity extends Activity {
 		this.disableControlButtons();
 
 		// start GPS service only if not started
-		startGPSService();
+		startGpsService();
 
 		// show quick help only when activity first started
 		if (savedInstanceState == null) {
@@ -399,16 +404,6 @@ public class MainActivity extends Activity {
 
 		super.onResume();
 
-		// registering receiver for compass updates
-		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
-
-		// registering receiver for location updates
-		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
-
-		// registering receiver for time updates
-		registerReceiver(scheduledLocationBroadcastReceiver, new IntentFilter(
-				"com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION"));
-
 		this.initializeMeasuringUnits();
 
 		this.keepScreenOn();
@@ -418,7 +413,7 @@ public class MainActivity extends Activity {
 		this.bindGpsService();
 
 		// start updating time of tracking every second
-		updateTimeHandler.postDelayed(updateTimeTask, 100);
+		updateTimeHandler.postDelayed(updateTimeTask, 500);
 
 	}
 
@@ -429,31 +424,53 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		super.onPause();
-
+		
 		Log.i(Constants.TAG, "MainActivity: onPause");
 
+		Log.d(Constants.TAG, "!!!!!!!!!!!! UNregisterReceiver");
+		
+		unregisterReceiver(compassBroadcastReceiver);
+		unregisterReceiver(locationBroadcastReceiver);
+		unregisterReceiver(scheduledLocationBroadcastReceiver);
+		
+		if (!this.isFinishing()) {
+
+			// activity will be recreated
+			if (gpsService!=null) {
+				
+				// stop location updates when not recording track
+				if (!gpsService.getTrackRecorder().isRecording()) {
+					gpsService.stopLocationUpdates();
+				}
+				
+				gpsService.stopSensorUpdates();
+			}
+			
+		} else {
+
+			// activity will be destroyed and not recreated
+
+			// stop tracking if active
+			if (gpsService.getTrackRecorder().isRecording()) {
+				stopTracking();
+			}
+			
+		}
+
+		// unbind GpsService
+		this.unbindGpsService();
+		
 		if (this.isFinishing()) {
 
 			// if activity is not going to be recreated - stop service
-			stopGPSService();
+			stopGpsService();
 
 			// save layout for next session
 			this.saveHiddenPreferences();
 
-		} else {
-			// stop location updates when not recording track
-			if (gpsService!=null && !gpsService.getTrackRecorder().isRecording()) {
-				gpsService.stopLocationUpdates();
-			}
-		}
-
-		this.unbindGpsService();
+		} 
 
 		this.updateTimeHandler.removeCallbacks(updateTimeTask);
-
-		unregisterReceiver(compassBroadcastReceiver);
-		unregisterReceiver(locationBroadcastReceiver);
-		unregisterReceiver(scheduledLocationBroadcastReceiver);
 
 	}
 
@@ -464,8 +481,15 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 
 		Log.i(Constants.TAG, "MainActivity: onDestroy");
-
+		
 		super.onDestroy();
+		
+		gpsServiceConnection = null;
+
+		
+		myApp = null;
+		Log.d(Constants.TAG, "!!!!!!!!!!!! myApp=null");
+		
 	}
 
 	/**
@@ -604,9 +628,10 @@ public class MainActivity extends Activity {
 	/**
 	 * start GPS listener service
 	 */
-	private void startGPSService() {
+	private void startGpsService() {
 
 		if (!GpsService.isRunning()) {
+			Log.i(Constants.TAG, "startGPSService");
 			// starting GPS listener service
 			startService(new Intent(this, GpsService.class));
 		}
@@ -616,12 +641,7 @@ public class MainActivity extends Activity {
 	/**
 	 * stop GPS listener service
 	 */
-	private void stopGPSService() {
-
-		// stop tracking if active
-		if (gpsService.getTrackRecorder().isRecording()) {
-			stopTracking();
-		}
+	private void stopGpsService() {
 
 		stopService(new Intent(this, GpsService.class));
 
@@ -1390,7 +1410,7 @@ public class MainActivity extends Activity {
 	 * Update compass image and azimuth text
 	 */
 	public void updateCompass(float azimuth) {
-
+		
 		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
 
 		float rotation = 0;
@@ -1683,7 +1703,7 @@ public class MainActivity extends Activity {
 	private boolean isGpsServiceBound = false;
 
 	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
-
+		
 		public void onServiceConnected(ComponentName className, IBinder service) {
 
 			Log.i(Constants.TAG, "MainActivity: onServiceConnected");
@@ -1697,7 +1717,6 @@ public class MainActivity extends Activity {
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			gpsService = null;
 			isGpsServiceBound = false;
 		}
 
@@ -1729,6 +1748,8 @@ public class MainActivity extends Activity {
 			gpsService.startLocationUpdates();
 			
 		}
+		
+		gpsService.startSensorUpdates();
 
 		Location location = gpsService.getCurrentLocation();
 		// new location was received by the service when activity was paused
@@ -1740,6 +1761,18 @@ public class MainActivity extends Activity {
 
 			updateSunriseSunset();
 		}
+		
+		Log.d(Constants.TAG, "!!!!!!!!!!!! registerReceiver");
+		
+		// registering receiver for compass updates
+		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
+
+		// registering receiver for location updates
+		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
+
+		// registering receiver for time updates
+		registerReceiver(scheduledLocationBroadcastReceiver, new IntentFilter(
+				"com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION"));
 
 	}
 
@@ -1747,25 +1780,21 @@ public class MainActivity extends Activity {
 
 		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection,
 				Context.BIND_AUTO_CREATE)) {
-			gpsService = null;
 			Toast.makeText(MainActivity.this, "System error: Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
-
+		
 	}
 
 	private void unbindGpsService() {
 
 		if (isGpsServiceBound) {
-
 			// detach our existing connection
 			unbindService(gpsServiceConnection);
-
-			gpsService = null;
-
 			isGpsServiceBound = false;
-
 		}
 
+		gpsService = null;
+		
 	}
 
 }
