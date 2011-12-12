@@ -51,6 +51,10 @@
             android:name=".TrackDetailsActivity" >
         </activity>
         <activity
+            android:label="@string/scheduled_track_points"
+            android:name=".TrackpointsListActivity" >
+        </activity>
+            <activity
             android:label="@string/waypoints"
             android:name=".WaypointsListActivity" >
         </activity>

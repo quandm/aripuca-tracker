@@ -9,8 +9,6 @@
     <string name="track">Трек</string>
     <string name="tracks">Треки</string>
     <string name="record_track">Записать трек</string>
-    <string name="start_scheduled_recording">Расписание СТАРТ</string>
-    <string name="stop_scheduled_recording">Расписание СТОП</string>
     <string name="recording_track">Идет запись трека</string>
     <string name="scheduled_track_recording_in_progress">Идет запись трека по расписанию</string>
     <string name="show_track">Показать трек</string>
@@ -19,7 +17,6 @@
     <string name="next_segment">Следующий сегмент</string>
     <string name="do_you_know">Знаете ли вы?</string>
     <string name="show_on_startup">Показывать при запуске</string>
-    <!-- SEPARATE WORDS -->
     <string name="m">м</string>
     <string name="ft">фт</string>
     <string name="km">км</string>
@@ -112,27 +109,20 @@
     <string name="street">Улица</string>
     <string name="satellite">Спутник</string>
     <string name="next">Следующий</string>
-    <!-- ########################################################### -->
-    <!-- SETTINGS -->
-    <!-- ########################################################### -->
     <string name="app_settings_title">Настройки приложения</string>
-    <!-- User interface -->
     <string name="app_language">Язык приложения</string>
     <string name="wake_lock_title">Не гасить экран</string>
     <string name="wake_lock_summary">Предотвратить засыпание устройства</string>
     <string name="quick_help_title">Быстрая справка</string>
     <string name="quick_help_summary">Показывать быструю справку при запуске</string>
-    <!-- Units -->
     <string name="units">Единицы измерения</string>
     <string name="units_summary">Выбор единиц измерения (координаты, расстояние, скорость и т.д.)</string>
-    <!-- Track recording -->
     <string name="track_recording_title">Запись трека</string>
     <string name="track_recording_summary">Записать все точки в реальном времени с избыточной статистикой</string>
     <string name="min_distance_title">Минимальная дистанция</string>
     <string name="min_distance_summary">Минимальное расстояние между двумя записываемыми точками</string>
     <string name="min_accuracy_title">Минимальная точность</string>
     <string name="min_accuracy_summary">Минимальная точность необходимая для записи точки</string>
-    <!-- Segmenting -->
     <string name="segmenting">Сегментирование</string>
     <string name="segmenting_mode">Режим сегментирования</string>
     <string name="segment_distance">По расстоянию</string>
@@ -142,20 +132,17 @@
     <string name="segment_custom_1">Интервалы пользователя 1</string>
     <string name="segment_custom_2">Интервалы пользователя 2</string>
     <string name="segment_custom_summary">Сегментировать по заданным интервалам</string>
-    <!-- Compass -->
     <string name="compass">Компас</string>
     <string name="true_north">Указывать на истинный север</string>
     <string name="true_north_summary">Компас указывает на истинный север, а не на магнитный</string>
     <string name="show_magnetic">Показать магнитный север</string>
     <string name="show_magnetic_summary">Показывать магнитный север как полупрозрачное изображение</string>
-    <!-- Waypoints -->
     <string name="waypoint">Путевая точка</string>
     <string name="add_waypoint">Добавить путевую точку</string>
     <string name="waypoints">Путевые точки</string>
     <string name="show_waypoint">Показать путевую точку</string>
     <string name="waypoint_default_description">Описание по умолчанию</string>
     <string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание точки waypoint description</string>
-    <!-- Waypoint track -->
     <string name="wpt_title">Waypoint track</string>
     <string name="wpt_summary">Record track as a set of waypoints and save battery power</string>
     <string name="wpt_request_interval_title">GPS request interval</string>
@@ -164,14 +151,10 @@
     <string name="wpt_fix_wait_time_summary">Wait time for new GPS fix of acceptable accuracy</string>
     <string name="wpt_stop_recording_after_title">Stop recording after</string>
     <string name="wpt_stop_recording_after_summary">Recording will be stopped after N hours of recording unless stopped manually</string>
-    <!-- Online sync -->
     <string name="online_sync_summary">Synchronize your data with online resource</string>
     <string name="online_sync_url">Sync URL</string>
     <string name="user_name">Login name</string>
     <string name="user_password">Password</string>
-    <!-- ########################################################### -->
-    <!-- MESSAGES -->
-    <!-- ########################################################### -->
     <string name="recording_started">Начата запись трека</string>
     <string name="recording_paused">Запись трека приостановлена</string>
     <string name="recording_resumed">Запись трека возобновлена</string>
@@ -214,10 +197,8 @@
     <string name="scheduled_recording_started">Scheduled recording started</string>
     <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
     <string name="gps_service_not_connected">GPS служба не подключена</string>
-    <!-- HINTS -->
     <string name="waypoint_description">Описание путевой точки</string>
     <string name="track_description">Описание трека</string>
-    <!-- EMAILS -->
     <string name="email_subject_waypoint">Путевая точка от Aripuca Tracker</string>
     <string name="email_subject_track">ГПС трек от Aripuca Tracker</string>
     <string name="email_body_track">Трек записан приложением Aripuca Tracker для операционной системы Андроид</string>
@@ -228,4 +209,8 @@
     <string name="compass_summary">Куда указывает компас и т.д.</string>
     <string name="deleting_records">Удаление записей...</string>
     <string name="please_wait">Подождите немного</string>
+    <string name="stop_scheduled_track_recording">Остановите пожалуйста запись трека по расписанию</string>
+    <string name="stop_scheduler">Расписание Стоп</string>
+    <string name="start_scheduler">Расписание Старт</string>
+    <string name="scheduled_tracks">Треки по расписанию</string>
 </resources>

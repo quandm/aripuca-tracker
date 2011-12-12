@@ -33,8 +33,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 /**
- * this service handles real time and scheduled track recording as
- * well as compass updates
+ * this service handles real time and scheduled track recording as well as
+ * compass updates
  */
 public class GpsService extends Service {
 
@@ -76,7 +76,7 @@ public class GpsService extends Service {
 		return listening;
 	}
 
-	public TrackRecorder trackRecorder;
+	private TrackRecorder trackRecorder;
 
 	private ScheduledTrackRecorder scheduledTrackRecorder;
 
@@ -85,6 +85,10 @@ public class GpsService extends Service {
 	 */
 	public void setGpsInUse(boolean gpsInUse) {
 		this.gpsInUse = gpsInUse;
+	}
+
+	public boolean isGpsInUse() {
+		return this.gpsInUse;
 	}
 
 	/**
@@ -126,12 +130,10 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
@@ -148,7 +150,7 @@ public class GpsService extends Service {
 
 			currentLocation = location;
 
-			if (location.hasAccuracy() && location.getAccuracy() < scheduledTrackRecorder.getMinAccuracy()) {
+			if (location.hasAccuracy() && location.getAccuracy() <= scheduledTrackRecorder.getMinAccuracy()) {
 
 				scheduledTrackRecorder.recordTrackPoint(location);
 
@@ -161,7 +163,8 @@ public class GpsService extends Service {
 				stopScheduledLocationUpdates();
 
 				// schedule next location update
-				//schedulerHandler.postDelayed(schedulerTask, scheduledTrackRecorder.getRequestInterval());
+				// schedulerHandler.postDelayed(schedulerTask,
+				// scheduledTrackRecorder.getRequestInterval());
 				scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
 
 			} else {
@@ -174,7 +177,8 @@ public class GpsService extends Service {
 					stopScheduledLocationUpdates();
 
 					// schedule next location update
-					//schedulerHandler.postDelayed(schedulerTask,	scheduledTrackRecorder.getRequestInterval());
+					// schedulerHandler.postDelayed(schedulerTask,
+					// scheduledTrackRecorder.getRequestInterval());
 					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
 
 				}
@@ -184,16 +188,13 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
@@ -243,7 +244,7 @@ public class GpsService extends Service {
 
 	};
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * This is the object that receives interactions from clients
 	 */
@@ -260,7 +261,7 @@ public class GpsService extends Service {
 		}
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Initialize service
@@ -282,15 +283,14 @@ public class GpsService extends Service {
 		// scheduled track recorder instance
 		this.scheduledTrackRecorder = ScheduledTrackRecorder.getInstance(myApp);
 
-		// GPS sensor
+		// location sensor
+		// first time we call startLocationUpdates from MainActivity 
 		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		this.startLocationUpdates();
 
 		// orientation sensor
 		this.sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-		this.startSensorUpdates();
+		this.sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+				SensorManager.SENSOR_DELAY_NORMAL);
 
 		GpsService.running = true;
 
@@ -364,18 +364,17 @@ public class GpsService extends Service {
 	 * 
 	 */
 	public void startLocationUpdates() {
-
-		if (!gpsInUse) {
-			this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-			gpsInUse = true;
-		}
-
+		
+		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		
+		// setting gpsInUse to true, but listening is still false at this point
+		// listening is set to true with first location update in LocationListener.onLocationChanged
+		gpsInUse = true;
 	}
 
 	/**
 	 * Stopping location updates with delay, leaving a chance for new activity
-	 * not to
-	 * restart location listener
+	 * not to restart location listener
 	 */
 	public void stopLocationUpdates() {
 
@@ -406,15 +405,6 @@ public class GpsService extends Service {
 		this.locationManager.removeUpdates(scheduledLocationListener);
 	}
 
-	private void startSensorUpdates() {
-		this.sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-				SensorManager.SENSOR_DELAY_NORMAL);
-	}
-
-	private void stopSensorUpdates() {
-		this.sensorManager.unregisterListener(sensorListener);
-	}
-
 	protected BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -438,7 +428,7 @@ public class GpsService extends Service {
 
 		Log.i(Constants.TAG, "Scheduler started");
 
-		// first request is scheduled in 5 seconds from now 
+		// first request is scheduled in 5 seconds from now
 		this.scheduleNextLocationRequest(5);
 
 		this.showOngoingNotification();
@@ -528,11 +518,14 @@ public class GpsService extends Service {
 		return scheduledTrackRecorder;
 	}
 
+	public TrackRecorder getTrackRecorder() {
+		return trackRecorder;
+	}
+
 	/**
 	 * stopping location updates with small delay giving us a chance not to
-	 * restart listener if other activity requires GPS sensor too
-	 * 
-	 * new activity has to bind to GpsService and set gpsInUse to true
+	 * restart listener if other activity requires GPS sensor too new activity
+	 * has to bind to GpsService and set gpsInUse to true
 	 */
 	private class stopLocationUpdatesThread extends Thread {
 
@@ -540,12 +533,12 @@ public class GpsService extends Service {
 		public void run() {
 
 			try {
-				// wait for other activities to grab location updates 
+				// wait for other activities to grab location updates
 				sleep(2500);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 
-			// if no activities require location updates - stop them and save battery 
+			// if no activities require location updates - stop them and save
+			// battery
 			if (gpsInUse == false) {
 				locationManager.removeUpdates(locationListener);
 				listening = false;

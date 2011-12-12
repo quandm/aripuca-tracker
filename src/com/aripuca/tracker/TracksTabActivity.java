@@ -22,26 +22,22 @@ public class TracksTabActivity extends TabActivity {
 	    // creating real-time tracks tab
 	    intent = new Intent().setClass(this, TracksListActivity.class);
 
-	    //TODO: create tab icons
-	    
 	    // Initialize a TabSpec for each tab and add it to the TabHost
-	    spec = tabHost.newTabSpec("tracks").setIndicator("Tracks",
+	    spec = tabHost.newTabSpec("tracks").setIndicator(getString(R.string.tracks),
 	                      res.getDrawable(R.drawable.ic_tab_tracks))
 	                  .setContent(intent);
 	    
 	    tabHost.addTab(spec);
-	    
 	    
 	    // scheduled tracks tab
 	    intent = new Intent().setClass(this, ScheduledTracksListActivity.class);
 
 	    // Initialize a TabSpec for each tab and add it to the TabHost
-	    spec = tabHost.newTabSpec("tracks").setIndicator("Scheduled Tracks",
-	                      res.getDrawable(R.drawable.ic_tab_tracks))
+	    spec = tabHost.newTabSpec("scheduled_tracks").setIndicator(getString(R.string.scheduled_tracks),
+	                      res.getDrawable(R.drawable.ic_tab_scheduled_tracks))
 	                  .setContent(intent);
 
 	    tabHost.addTab(spec);
-	    
 	    
 	    tabHost.setCurrentTab(0);
 	}	

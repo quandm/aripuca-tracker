@@ -39,7 +39,7 @@ import android.widget.Toast;
 public class MyApp extends Application {
 
 	private Locale locale = null;
-	
+
 	/**
 	 * Android shared preferences
 	 */
@@ -63,7 +63,7 @@ public class MyApp extends Application {
 	 * database object
 	 */
 	private SQLiteDatabase db;
-	
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -132,41 +132,20 @@ public class MyApp extends Application {
 		/**
 		 * tracks table create sql
 		 */
-		private static final String TRACKS_TABLE_CREATE =
-				"CREATE TABLE " + TRACKS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"title TEXT NOT NULL," +
-						"descr TEXT," +
-						"activity INTEGER," +
-						"distance REAL," +
-						"total_time INTEGER," +
-						"moving_time INTEGER," +
-						"max_speed REAL," +
-						"max_elevation REAL," +
-						"min_elevation REAL," +
-						"elevation_gain REAL," +
-						"elevation_loss REAL," +
-						"recording INTEGER NOT NULL," +
-						"start_time INTEGER NOT NULL," +
-						"finish_time INTEGER)";
+		private static final String TRACKS_TABLE_CREATE = "CREATE TABLE " + TRACKS_TABLE
+				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT," + "title TEXT NOT NULL," + "descr TEXT,"
+				+ "activity INTEGER," + "distance REAL," + "total_time INTEGER," + "moving_time INTEGER,"
+				+ "max_speed REAL," + "max_elevation REAL," + "min_elevation REAL," + "elevation_gain REAL,"
+				+ "elevation_loss REAL," + "recording INTEGER NOT NULL," + "start_time INTEGER NOT NULL,"
+				+ "finish_time INTEGER)";
 
 		private static final String SEGMENTS_TABLE = "segments";
 
-		private static final String SEGMENTS_TABLE_CREATE =
-				"CREATE TABLE " + SEGMENTS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"track_id INTEGER NOT NULL," +
-						"segment_index INTEGER," +
-						"distance REAL," +
-						"total_time INTEGER," +
-						"moving_time INTEGER," +
-						"max_speed REAL," +
-						"max_elevation REAL," +
-						"min_elevation REAL," +
-						"elevation_gain REAL," +
-						"elevation_loss REAL," +
-						"start_time INTEGER NOT NULL," +
-						"finish_time INTEGER)";
+		private static final String SEGMENTS_TABLE_CREATE = "CREATE TABLE " + SEGMENTS_TABLE
+				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT," + "track_id INTEGER NOT NULL," + "segment_index INTEGER,"
+				+ "distance REAL," + "total_time INTEGER," + "moving_time INTEGER," + "max_speed REAL,"
+				+ "max_elevation REAL," + "min_elevation REAL," + "elevation_gain REAL," + "elevation_loss REAL,"
+				+ "start_time INTEGER NOT NULL," + "finish_time INTEGER)";
 
 		/**
 		 * track points table
@@ -175,18 +154,10 @@ public class MyApp extends Application {
 		/**
 		 * track points table create sql
 		 */
-		private static final String TRACKPOINTS_TABLE_CREATE =
-				"CREATE TABLE " + TRACKPOINTS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"track_id INTEGER NOT NULL," +
-						"segment_index INTEGER," +
-						"distance REAL," +
-						"lat INTEGER NOT NULL," +
-						"lng INTEGER NOT NULL," +
-						"accuracy REAL," +
-						"elevation REAL," +
-						"speed REAL," +
-						"time INTEGER NOT NULL)";
+		private static final String TRACKPOINTS_TABLE_CREATE = "CREATE TABLE " + TRACKPOINTS_TABLE
+				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT," + "track_id INTEGER NOT NULL," + "segment_index INTEGER,"
+				+ "distance REAL," + "lat INTEGER NOT NULL," + "lng INTEGER NOT NULL," + "accuracy REAL,"
+				+ "elevation REAL," + "speed REAL," + "time INTEGER NOT NULL)";
 
 		/**
 		 * waypoints sql table
@@ -196,17 +167,10 @@ public class MyApp extends Application {
 		/**
 		 * waypointss table create sql
 		 */
-		private static final String WAYPOINTS_TABLE_CREATE =
-				"CREATE TABLE " + WAYPOINTS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-						"track_id INTEGER," +
-						"title TEXT NOT NULL, " +
-						"descr TEXT, " +
-						"lat INTEGER NOT NULL, " +
-						"lng INTEGER NOT NULL, " +
-						"accuracy REAL," +
-						"elevation REAL," +
-						"time INTEGER NOT NULL)";
+		private static final String WAYPOINTS_TABLE_CREATE = "CREATE TABLE " + WAYPOINTS_TABLE
+				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "track_id INTEGER," + "title TEXT NOT NULL, "
+				+ "descr TEXT, " + "lat INTEGER NOT NULL, " + "lng INTEGER NOT NULL, " + "accuracy REAL,"
+				+ "elevation REAL," + "time INTEGER NOT NULL)";
 
 		/**
 		 * OpenHelper constructor
@@ -220,7 +184,6 @@ public class MyApp extends Application {
 		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-
 			db.execSQL(WAYPOINTS_TABLE_CREATE);
 			db.execSQL(TRACKS_TABLE_CREATE);
 			db.execSQL(TRACKPOINTS_TABLE_CREATE);
@@ -232,63 +195,21 @@ public class MyApp extends Application {
 		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
 			// recreate database if version changes (DATABASE_VERSION)
-
 			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
 			db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
-
 			onCreate(db);
-
 		}
 
-		// upgrading db example
-		/*
-		 * public void onUpgrade(SQLiteDatabase db, int oldVersion, int
-		 * newVersion) {
-		 * 
-		 * Log.w(Constants.TAG, "Upgrading database from version "
-		 * + oldVersion + " to " + newVersion);
-		 * 
-		 * if (oldVersion < 1) {
-		 * 
-		 * db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
-		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
-		 * db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
-		 * db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
-		 * 
-		 * onCreate(db);
-		 * }
-		 * else {
-		 * if (oldVersion <= 1) {
-		 * Log.i(Constants.TAG,
-		 * "distance field added to track_points table");
-		 * 
-		 * // adding "distance" field to track points table
-		 * db.execSQL("ALTER TABLE " + TRACKPOINTS_TABLE +
-		 * " ADD distance REAL");
-		 * }
-		 * 
-		 * if (oldVersion <= 1) {
-		 * 
-		 * Log.i(Constants.TAG, "Segments table added");
-		 * 
-		 * // adding segment stats table
-		 * db.execSQL(SEGMENTS_TABLE_CREATE);
-		 * 
-		 * }
-		 * }
-		 * }
-		 */
 	}
 
 	@Override
 	public void onCreate() {
 
 		super.onCreate();
-		
+
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -307,14 +228,14 @@ public class MyApp extends Application {
 		setExternalStorageState();
 
 		// set application external storage folder
-		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
-				+ Constants.APP_NAME;
+		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
 
 		// create all folders required by the application on external storage
 		if (getExternalStorageAvailable() && getExternalStorageWriteable()) {
 			createFolderStructure();
 		} else {
-			//Toast.makeText(this, R.string.memory_card_not_available, Toast.LENGTH_SHORT).show();
+			// Toast.makeText(this, R.string.memory_card_not_available,
+			// Toast.LENGTH_SHORT).show();
 		}
 
 		// adding famous waypoints to db if not added yet
@@ -391,8 +312,7 @@ public class MyApp extends Application {
 
 		PackageInfo packageInfo;
 		try {
-			packageInfo = context.getPackageManager().getPackageInfo(
-					context.getPackageName(), 0);
+			packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			return packageInfo.versionName;
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
@@ -423,7 +343,7 @@ public class MyApp extends Application {
 	 * @param text
 	 */
 	public void log(String message) {
-		
+
 		String fileName = DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
 
 		StringBuilder sb = new StringBuilder();
@@ -486,9 +406,7 @@ public class MyApp extends Application {
 	private void insertFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (getPreferences().contains("famous_waypoints")) {
-			return;
-		}
+		if (getPreferences().contains("famous_waypoints")) { return; }
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
