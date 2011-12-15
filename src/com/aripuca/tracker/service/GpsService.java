@@ -100,7 +100,7 @@ public class GpsService extends Service {
 			startSensorUpdates();
 		}
 	};
-	
+
 	/**
 	 * Defines a listener that responds to location updates
 	 */
@@ -140,10 +140,12 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -198,17 +200,19 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
-	
 	/**
 	 * Broadcasting location update
 	 */
@@ -228,8 +232,6 @@ public class GpsService extends Service {
 	}
 
 	private SensorEventListener sensorListener = new SensorEventListener() {
-
-		
 
 		@Override
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -265,9 +267,20 @@ public class GpsService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+
+		Log.d(Constants.TAG, "BOUND");
+		
 		return mBinder;
 	}
 
+	@Override
+	public boolean onUnbind(Intent intent) {
+		
+		Log.d(Constants.TAG, "UNBIND");
+		
+		return true;
+	}
+	
 	public class LocalBinder extends Binder {
 		public GpsService getService() {
 			return GpsService.this;
@@ -285,7 +298,8 @@ public class GpsService extends Service {
 		super.onCreate();
 
 		registerReceiver(alarmReceiver, new IntentFilter("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM"));
-		registerReceiver(startSensorUpdatesReceiver, new IntentFilter("com.aripuca.tracker.START_SENSOR_UPDATES_ACTION"));
+		registerReceiver(startSensorUpdatesReceiver,
+				new IntentFilter("com.aripuca.tracker.START_SENSOR_UPDATES_ACTION"));
 
 		Log.i(Constants.TAG, "GpsService: onCreate");
 
@@ -303,7 +317,7 @@ public class GpsService extends Service {
 
 		// orientation sensor
 		this.sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		
+
 		GpsService.running = true;
 
 		this.requestLastKnownLocation();
@@ -377,9 +391,9 @@ public class GpsService extends Service {
 	 * 
 	 */
 	public void startLocationUpdates() {
-		
+
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-		
+
 		// setting gpsInUse to true, but listening is still false at this point
 		// listening is set to true with first location update in LocationListener.onLocationChanged
 		gpsInUse = true;
@@ -422,14 +436,13 @@ public class GpsService extends Service {
 		this.sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_NORMAL);
 	}
-	
+
 	public void stopSensorUpdates() {
 
 		// stop compass listener
 		this.sensorManager.unregisterListener(sensorListener);
 
 	}
-	
 
 	protected BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
 		@Override
@@ -561,7 +574,8 @@ public class GpsService extends Service {
 			try {
 				// wait for other activities to grab location updates
 				sleep(2500);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 
 			// if no activities require location updates - stop them and save
 			// battery
