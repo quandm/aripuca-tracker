@@ -95,7 +95,7 @@ public class MainActivity extends Activity {
 	private String distanceUnit;
 	private String elevationUnit;
 	private int coordUnit;
-
+	
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -382,6 +382,8 @@ public class MainActivity extends Activity {
 		this.disableControlButtons();
 		
 		gpsServiceConnection = new GpsServiceConnection();
+		
+		Log.d(Constants.TAG, "SERVICE CONNECTION CREATED: "+gpsServiceConnection.toString());
 
 		// start GPS service only if not started
 		startGpsService();
@@ -404,7 +406,6 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		Log.i(Constants.TAG, "MainActivity: onResume");
-
 		super.onResume();
 
 		this.initializeMeasuringUnits();
@@ -445,8 +446,6 @@ public class MainActivity extends Activity {
 	 */
 	@Override
 	protected void onPause() {
-
-		super.onPause();
 
 		Log.i(Constants.TAG, "MainActivity: onPause");
 
@@ -493,6 +492,7 @@ public class MainActivity extends Activity {
 
 		this.updateTimeHandler.removeCallbacks(updateTimeTask);
 
+		super.onPause();
 	}
 
 	/**
@@ -503,14 +503,13 @@ public class MainActivity extends Activity {
 
 		Log.i(Constants.TAG, "MainActivity: onDestroy");
 
-		super.onDestroy();
-
 		Log.v(Constants.TAG, "!!!!!!!!!!!!!! ServiceConnection destroyed "+gpsServiceConnection.toString());
 		
 		gpsServiceConnection = null;
 
 		myApp = null;
-		
+
+		super.onDestroy();
 	}
 
 	/**
@@ -518,7 +517,7 @@ public class MainActivity extends Activity {
 	 */
 	private void restoreInstanceState(Bundle savedInstanceState) {
 
-		Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
+//		Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
 
 		speedContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("speedContainerId"));
 		timeContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("timeContainerId"));
@@ -550,7 +549,7 @@ public class MainActivity extends Activity {
 
 		super.onSaveInstanceState(outState);
 
-		Log.i(Constants.TAG, "MainActivity: onSaveInstanceState");
+//		Log.i(Constants.TAG, "MainActivity: onSaveInstanceState");
 
 		outState.putInt("speedContainerId", speedContainerCarousel.getCurrentContainerId());
 		outState.putInt("timeContainerId", timeContainerCarousel.getCurrentContainerId());
@@ -652,7 +651,9 @@ public class MainActivity extends Activity {
 	private void startGpsService() {
 
 		if (!GpsService.isRunning()) {
+			
 			Log.i(Constants.TAG, "startGPSService");
+			
 			// starting GPS listener service
 			startService(new Intent(this, GpsService.class));
 		}
@@ -664,9 +665,9 @@ public class MainActivity extends Activity {
 	 */
 	private void stopGpsService() {
 
-		stopService(new Intent(this, GpsService.class));
-
 		Log.i(Constants.TAG, "stopGPSService");
+		
+		stopService(new Intent(this, GpsService.class));
 
 	}
 
@@ -1717,8 +1718,8 @@ public class MainActivity extends Activity {
 	 * GPS service connection
 	 */
 	private GpsService gpsService;
-	private boolean isGpsServiceBound = false;
 	private GpsServiceConnection gpsServiceConnection;	
+	private boolean isServiceBound;
 
 	private class GpsServiceConnection implements ServiceConnection {
 		
@@ -1730,12 +1731,12 @@ public class MainActivity extends Activity {
 
 			gpsServiceBoundCallback();
 
-			isGpsServiceBound = true;
-
+			isServiceBound = true;
+			
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			isGpsServiceBound = false;
+			isServiceBound = false;
 		}
 
 	};
@@ -1784,6 +1785,8 @@ public class MainActivity extends Activity {
 
 	private void bindGpsService() {
 
+		//GpsService.LocalBinder.flushPendingCommands();
+		
 		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection, 0)) {
 			Toast.makeText(MainActivity.this, "System error: Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
@@ -1792,14 +1795,14 @@ public class MainActivity extends Activity {
 
 	private void unbindGpsService() {
 
-		if (isGpsServiceBound) {
+		if (this.isServiceBound) {
 			
 			Log.v(Constants.TAG, "!!! isGpsServiceBound");
 			
 			// detach our existing connection
 			unbindService(gpsServiceConnection);
 			
-			isGpsServiceBound = false;
+			this.isServiceBound = false;
 		}
 
 		gpsService = null;
