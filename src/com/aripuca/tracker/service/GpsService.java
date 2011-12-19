@@ -427,10 +427,12 @@ public class GpsService extends Service {
 	 */
 	public void startScheduledLocationUpdates() {
 
+		myApp.log("startScheduledLocationUpdates");
+		
 		this.schedulerListening = false;		
 		
 		// control the time of location request before any updates received
-		controlRequestTimeHandler.postDelayed(controlRequestTimeTask, 500);
+		controlRequestTimeHandler.postDelayed(controlRequestTimeTask, 5000);
 		
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
@@ -459,12 +461,10 @@ public class GpsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			// TODO: control total time of request not just the time of waiting
-			// for acceptable accuracy
-
 			// new request for location started
 			scheduledTrackRecorder.setRequestStartTime();
 
+			// check scheduler global time limit
 			if (scheduledTrackRecorder.timeLimitReached()) {
 				stopScheduler();
 			} else {
@@ -513,6 +513,8 @@ public class GpsService extends Service {
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
+		myApp.log("scheduleNextLocationRequest");
+		
 		Intent intent = new Intent("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM");
 		alarmSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
