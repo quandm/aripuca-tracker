@@ -14,6 +14,9 @@ import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
 
+/**
+ * Scheduled track recording class 
+ */
 public class ScheduledTrackRecorder {
 
 	private static ScheduledTrackRecorder instance = null;
@@ -29,7 +32,14 @@ public class ScheduledTrackRecorder {
 
 	private Location lastRecordedLocation = null;
 
+	/**
+	 * new scheduler session start time
+	 */
 	private long startTime; 
+	
+	/**
+	 * new location request start time
+	 */
 	private long requestStartTime;
 	
 	/**
@@ -235,10 +245,16 @@ public class ScheduledTrackRecorder {
 
 	}
 	
+	/**
+	 * sets new location request time
+	 */
 	public void setRequestStartTime() {
 		requestStartTime = SystemClock.elapsedRealtime();
 	}
 	
+	/**
+	 * returns current location request start time 
+	 */
 	public long getRequestStartTime() {
 		return requestStartTime;
 	}

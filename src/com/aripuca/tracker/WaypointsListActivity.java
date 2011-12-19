@@ -587,7 +587,7 @@ public class WaypointsListActivity extends ListActivity {
 				Waypoint wp = new Waypoint(tmpCursor.getString(tmpCursor.getColumnIndex("title")),
 						tmpCursor.getLong(tmpCursor.getColumnIndex("time")), tmpCursor.getDouble(tmpCursor
 								.getColumnIndex("lat")), tmpCursor.getDouble(tmpCursor.getColumnIndex("lng")),
-						tmpCursor.getDouble(tmpCursor.getColumnIndex("elevation")));
+						tmpCursor.getDouble(tmpCursor.getColumnIndex("elevation")), tmpCursor.getFloat(tmpCursor.getColumnIndex("accuracy")));
 
 				tmpCursor.close();
 
@@ -761,7 +761,8 @@ public class WaypointsListActivity extends ListActivity {
 			Waypoint wp = new Waypoint(cursor.getString(cursor.getColumnIndex("title")), cursor.getLong(cursor
 					.getColumnIndex("time")), cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
 					cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6, cursor.getDouble(cursor
-							.getColumnIndex("elevation")));
+							.getColumnIndex("elevation")), cursor.getFloat(cursor
+									.getColumnIndex("accuracy")));
 
 			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
 

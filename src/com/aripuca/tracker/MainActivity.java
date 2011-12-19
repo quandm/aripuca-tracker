@@ -1137,28 +1137,7 @@ public class MainActivity extends Activity {
 
 			case R.id.scheduledRecordingMenuItem:
 
-				// scheduled track recording
-
-				if (gpsService == null) {
-					Toast.makeText(MainActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
-					return true;
-				}
-
-				// testing location updates scheduler
-				if (!gpsService.getScheduledTrackRecorder().isRecording()) {
-
-					gpsService.startScheduler();
-
-					Toast.makeText(MainActivity.this, R.string.scheduled_recording_started, Toast.LENGTH_SHORT).show();
-
-				} else {
-
-					// manually stop scheduled location updates
-					gpsService.stopScheduler();
-
-					Toast.makeText(MainActivity.this, R.string.scheduled_recording_stopped, Toast.LENGTH_SHORT).show();
-				}
-
+				this.startStopScheduledTrackRecording();
 				return true;
 
 			default:
@@ -1696,9 +1675,6 @@ public class MainActivity extends Activity {
 		}
 	};
 
-	// -------------------------------------------------------------------------
-	//
-	// -------------------------------------------------------------------------
 	/**
 	 * Updating UI every second
 	 */
@@ -1710,9 +1686,6 @@ public class MainActivity extends Activity {
 			updateTimeHandler.postDelayed(this, 200);
 		}
 	};
-	// -------------------------------------------------------------------------
-	// -------------------------------------------------------------------------
-	// -------------------------------------------------------------------------
 
 	/**
 	 * GPS service connection
@@ -1807,6 +1780,33 @@ public class MainActivity extends Activity {
 
 		gpsService = null;
 
+	}
+	
+	/**
+	 * Start/stop scheduled track recording
+	 */
+	private void startStopScheduledTrackRecording() {
+		
+		if (gpsService == null) {
+			Toast.makeText(MainActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		// testing location updates scheduler
+		if (!gpsService.getScheduledTrackRecorder().isRecording()) {
+
+			gpsService.startScheduler();
+
+			Toast.makeText(MainActivity.this, R.string.scheduled_recording_started, Toast.LENGTH_SHORT).show();
+
+		} else {
+
+			// manually stop scheduled location updates
+			gpsService.stopScheduler();
+
+			Toast.makeText(MainActivity.this, R.string.scheduled_recording_stopped, Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 	
 }
