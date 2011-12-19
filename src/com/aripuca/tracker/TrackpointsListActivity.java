@@ -56,6 +56,7 @@ public class TrackpointsListActivity extends ListActivity {
 
 	private String elevationUnit;
 	private String distanceUnit;
+	private String speedUnit;
 
 	/**
 	 * Location updates broadcast receiver
@@ -140,8 +141,9 @@ public class TrackpointsListActivity extends ListActivity {
 			}
 
 			String distStr = "distance";
-			String bearingStr = "0"+Utils.DEGREE_CHAR;
+			String bearingStr = "0" + Utils.DEGREE_CHAR;
 			String elevationStr = "";
+			String accuracyStr = "";
 
 			float newAzimuth = 0;
 			float newBearing = 0;
@@ -153,7 +155,7 @@ public class TrackpointsListActivity extends ListActivity {
 
 					float distanceTo = currentLocation.distanceTo(wp.getLocation());
 
-					distStr = Utils.formatDistance(distanceTo, distanceUnit) + " "
+					distStr = Utils.formatDistance(distanceTo, distanceUnit)
 							+ Utils.getLocalaziedDistanceUnit(TrackpointsListActivity.this, distanceTo, distanceUnit);
 
 					wp.setDistanceTo(distanceTo);
@@ -178,27 +180,31 @@ public class TrackpointsListActivity extends ListActivity {
 
 				}
 
-				elevationStr = Utils.formatElevation(wp.getElevation(), elevationUnit) + " "
+				elevationStr = Utils.formatElevation(wp.getElevation(), elevationUnit)
 						+ Utils.getLocalizedElevationUnit(TrackpointsListActivity.this, elevationUnit);
+
+				accuracyStr = Utils.PLUSMINUS_CHAR + Utils.formatDistance(wp.getAccuracy(), distanceUnit)
+						+ Utils.getLocalaziedDistanceUnit(TrackpointsListActivity.this, wp.getAccuracy(), distanceUnit);
 				
+//				speedStr = Utils.formatSpeed(speed, speedUnit) + Utils.getLocalizedSpeedUnit(TrackpointsListActivity.this, speedUnit);
+						
 				TextView coordinatesTextView = (TextView) v.findViewById(R.id.coordinates);
 				TextView detailsTextView = (TextView) v.findViewById(R.id.details);
 				TextView distanceTextView = (TextView) v.findViewById(R.id.distance);
-				
+
 				// setting track point coordinates
 				if (coordinatesTextView != null) {
 					coordinatesTextView.setText(Utils.formatLat(wp.getLatitude(),
-									Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
+							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
 							+ " "
 							+ Utils.formatLng(wp.getLongitude(),
 									Integer.parseInt(myApp.getPreferences().getString("coord_units", "0"))));
-									
+
 				}
-				
 
 				// setting track point details
 				if (detailsTextView != null) {
-					detailsTextView.setText("Elevation: " + elevationStr + " Bearing: " + bearingStr);
+					detailsTextView.setText(accuracyStr + " " + elevationStr + " " + bearingStr);
 				}
 
 				if (distanceTextView != null) {
@@ -253,6 +259,7 @@ public class TrackpointsListActivity extends ListActivity {
 
 		elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 		distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+		speedUnit = myApp.getPreferences().getString("speed_units", "kph");
 
 	}
 
@@ -282,12 +289,12 @@ public class TrackpointsListActivity extends ListActivity {
 		unregisterReceiver(locationBroadcastReceiver);
 
 		// stop location updates when not recording track
-		if (gpsService!=null) {
+		if (gpsService != null) {
 
 			if (!gpsService.getTrackRecorder().isRecording()) {
 				gpsService.stopLocationUpdates();
 			}
-			
+
 			gpsService.stopSensorUpdates();
 		}
 
@@ -308,7 +315,7 @@ public class TrackpointsListActivity extends ListActivity {
 		}
 
 		gpsServiceConnection = null;
-		
+
 		myApp = null;
 
 		super.onDestroy();
@@ -332,7 +339,7 @@ public class TrackpointsListActivity extends ListActivity {
 			Waypoint wp = new Waypoint(Integer.toString(i), cursor.getLong(cursor.getColumnIndex("time")),
 					cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
 					cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6, cursor.getDouble(cursor
-							.getColumnIndex("elevation")));
+							.getColumnIndex("elevation")), cursor.getFloat(cursor.getColumnIndex("accuracy")));
 
 			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
 
@@ -397,9 +404,9 @@ public class TrackpointsListActivity extends ListActivity {
 			unbindService(gpsServiceConnection);
 			isGpsServiceBound = false;
 		}
-		
+
 		gpsService = null;
-		
+
 	}
 
 	/**
@@ -423,7 +430,7 @@ public class TrackpointsListActivity extends ListActivity {
 			// most likely we are in the process of recording track
 
 		}
-		
+
 		gpsService.startSensorUpdates();
 
 	}
