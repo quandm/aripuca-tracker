@@ -939,7 +939,7 @@ public class MainActivity extends Activity {
 		// creating references to input fields in order to use them in
 		// onClick handler
 		final EditText wpTitle = (EditText) layout.findViewById(R.id.waypointTitleInputText);
-		wpTitle.setText(DateFormat.format("yyyy-MM-dd h:mm:ss", new Date()));
+		wpTitle.setText(DateFormat.format("yyyy-MM-dd k:mm:ss", new Date()));
 
 		final EditText wpDescr = (EditText) layout.findViewById(R.id.waypointDescriptionInputText);
 		if (address != null) {
@@ -1241,7 +1241,7 @@ public class MainActivity extends Activity {
 
 		// last fix time
 		if (findViewById(R.id.lastFix) != null) {
-			String lastFix = (String) DateFormat.format("h:mm:ss", currentLocation.getTime());
+			String lastFix = (String) DateFormat.format("k:mm:ss", currentLocation.getTime());
 			((TextView) findViewById(R.id.lastFix)).setText(lastFix);
 		}
 
@@ -1528,7 +1528,7 @@ public class MainActivity extends Activity {
 
 				String currentDBPath = "/data/com.aripuca.tracker/databases/" + Constants.APP_NAME + ".db";
 
-				String dateStr = (String) DateFormat.format("yyyyMMdd_hhmmss", new Date());
+				String dateStr = (String) DateFormat.format("yyyyMMdd_kkmmss", new Date());
 
 				File currentDB = new File(data, currentDBPath);
 				File backupDB = new File(myApp.getAppDir() + "/backup/" + dateStr + ".db");

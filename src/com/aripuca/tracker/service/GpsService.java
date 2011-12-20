@@ -48,10 +48,7 @@ public class GpsService extends Service {
 	/**
 	 * 
 	 */
-	private PendingIntent alarmSender;
 
-	private PendingIntent requestTimeLimitSender;
-	
 	/**
      * 
      */
@@ -162,7 +159,7 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
-			Log.i(Constants.TAG, "scheduledLocationListener");
+			Log.i(Constants.TAG, "scheduledLocationListener: "+location.getAccuracy());
 			
 			// first location update received
 			schedulerListening = true;
@@ -294,10 +291,9 @@ public class GpsService extends Service {
 
 		super.onCreate();
 
-		registerReceiver(requestTimeLimitReceiver, new IntentFilter("com.aripuca.tracker.REQUEST_TIME_LIMIT_ALARM"));
-		registerReceiver(alarmReceiver, new IntentFilter("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM"));
-		registerReceiver(startSensorUpdatesReceiver,
-				new IntentFilter("com.aripuca.tracker.START_SENSOR_UPDATES_ACTION"));
+		registerReceiver(nextTimeLimitCheckReceiver, new IntentFilter(Constants.ACTION_NEXT_TIME_LIMIT_CHECK));
+		registerReceiver(nextLocationRequestReceiver, new IntentFilter(Constants.ACTION_NEXT_LOCATION_REQUEST));
+		registerReceiver(startSensorUpdatesReceiver, new IntentFilter(Constants.ACTION_START_SENSOR_UPDATES));
 
 		Log.i(Constants.TAG, "GpsService: onCreate");
 
@@ -346,8 +342,8 @@ public class GpsService extends Service {
 		this.locationManager = null;
 		this.sensorManager = null;
 
-		unregisterReceiver(alarmReceiver);
-		unregisterReceiver(requestTimeLimitReceiver);
+		unregisterReceiver(nextLocationRequestReceiver);
+		unregisterReceiver(nextTimeLimitCheckReceiver);
 
 		super.onDestroy();
 
@@ -436,7 +432,7 @@ public class GpsService extends Service {
 		this.schedulerListening = false;		
 		
 		// control the time of location request before any updates received
-		this.nextRequestTimeLimit();
+		this.scheduleNextRequestTimeLimitCheck();
 		
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
@@ -445,7 +441,7 @@ public class GpsService extends Service {
 	 * stop scheduler location updates
 	 */
 	public void stopScheduledLocationUpdates() {
-		this.schedulerListening = false;		
+		//this.schedulerListening = false;		
 		this.locationManager.removeUpdates(scheduledLocationListener);
 	}
 
@@ -461,7 +457,36 @@ public class GpsService extends Service {
 		this.sensorManager.unregisterListener(sensorListener);
 	}
 
-	protected BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * 
+	 */
+	private PendingIntent nextLocationRequestSender;
+	
+	/**
+	 * 
+	 */
+	private void scheduleNextLocationRequest(int interval) {
+
+		myApp.log("scheduleNextLocationRequest");
+		
+		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
+		nextLocationRequestSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.SECOND, interval);
+
+		// schedule single alarm
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), nextLocationRequestSender);
+
+	}
+	
+	private BroadcastReceiver nextLocationRequestReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -479,12 +504,25 @@ public class GpsService extends Service {
 		}
 	};
 
-	private void nextRequestTimeLimit() {
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * 
+	 */
+	private PendingIntent nextTimeLimitCheckSender;
+	
+	/**
+	 * 
+	 */
+	private void scheduleNextRequestTimeLimitCheck() {
 
-		myApp.log("nextRequestTimeLimit");
+		myApp.log("scheduleNextRequestTimeLimitCheck");
+		Log.d(Constants.TAG, "scheduleNextRequestTimeLimitCheck");
 		
-		Intent intent = new Intent("com.aripuca.tracker.REQUEST_TIME_LIMIT_ALARM");
-		requestTimeLimitSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
+		Intent intent = new Intent(Constants.ACTION_NEXT_TIME_LIMIT_CHECK);
+		nextTimeLimitCheckSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
@@ -492,22 +530,27 @@ public class GpsService extends Service {
 
 		// schedule single alarm
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), requestTimeLimitSender);
-
+		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), nextTimeLimitCheckSender);
 	}
-	
-	protected BroadcastReceiver requestTimeLimitReceiver = new BroadcastReceiver() {
+
+	/**
+	 * 
+	 */
+	private BroadcastReceiver nextTimeLimitCheckReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
+			Log.d(Constants.TAG, "nextTimeLimitCheckReceiver "+schedulerListening);
+			
 			if (!schedulerListening) {
 
-				myApp.log("CHECK REQUEST TIME LIMIT");
+				Log.d(Constants.TAG, "nextTimeLimitCheckReceiver FALSE");
 				
-				Log.d(Constants.TAG, "controlRequestTimeHandler");
+				myApp.log("CHECK REQUEST TIME LIMIT");
 				
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
+					Log.d(Constants.TAG, "CANCEL REQUEST");
 					myApp.log("CANCEL REQUEST");
 					
 					// canceling current location update request 
@@ -519,13 +562,17 @@ public class GpsService extends Service {
 					
 				} else {
 					// check request time limit in 5 seconds
-					nextRequestTimeLimit();
+					scheduleNextRequestTimeLimitCheck();
 				}
 				
 			}
 			
 		}
 	};
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void startScheduler() {
 
@@ -551,32 +598,12 @@ public class GpsService extends Service {
 
 		// cancel alarm
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.cancel(alarmSender);
-		alarmManager.cancel(requestTimeLimitSender);
+		alarmManager.cancel(nextLocationRequestSender);
+		alarmManager.cancel(nextTimeLimitCheckSender);
 		
 		this.locationManager.removeUpdates(scheduledLocationListener);
 
 		this.clearNotification();
-	}
-
-	/**
-	 * 
-	 */
-	private void scheduleNextLocationRequest(int interval) {
-
-		myApp.log("scheduleNextLocationRequest");
-		
-		Intent intent = new Intent("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM");
-		alarmSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.add(Calendar.SECOND, interval);
-
-		// schedule single alarm
-		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmSender);
-
 	}
 
 	/**

@@ -56,5 +56,12 @@ public abstract class Constants {
 	 */
 	public static final int QUICK_HELP_DIALOG_ID = 1;
 
+	/**
+	 * intent actions
+	 */
+	public static final String ACTION_NEXT_LOCATION_REQUEST = "com.aripuca.tracker.ACTION_NEXT_LOCATION_REQUEST";
+	public static final String ACTION_NEXT_TIME_LIMIT_CHECK = "com.aripuca.tracker.ACTION_NEXT_TIME_LIMIT_CHECK";
+	public static final String ACTION_START_SENSOR_UPDATES = "com.aripuca.tracker.ACTION_START_SENSOR_UPDATES";
+	
 	
 }

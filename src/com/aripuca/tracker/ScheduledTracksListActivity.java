@@ -10,7 +10,12 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 
 	// instance initialization block
 	{
+//		sqlSelectAllTracks = "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks " +
+//				"LEFT JOIN track_points ON tracks._id = track_points.track_id "+
+//				"WHERE recording=0 AND activity=1";
+
 		sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND activity=1";
+		
 		listItemResourceId = R.layout.scheduled_track_list_item;
 	}
 
