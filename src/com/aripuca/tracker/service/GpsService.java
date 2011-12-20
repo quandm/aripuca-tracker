@@ -50,6 +50,8 @@ public class GpsService extends Service {
 	 */
 	private PendingIntent alarmSender;
 
+	private PendingIntent requestTimeLimitSender;
+	
 	/**
      * 
      */
@@ -292,6 +294,7 @@ public class GpsService extends Service {
 
 		super.onCreate();
 
+		registerReceiver(requestTimeLimitReceiver, new IntentFilter("com.aripuca.tracker.REQUEST_TIME_LIMIT_ALARM"));
 		registerReceiver(alarmReceiver, new IntentFilter("com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ALARM"));
 		registerReceiver(startSensorUpdatesReceiver,
 				new IntentFilter("com.aripuca.tracker.START_SENSOR_UPDATES_ACTION"));
@@ -330,7 +333,7 @@ public class GpsService extends Service {
 		GpsService.running = false;
 
 		unregisterReceiver(startSensorUpdatesReceiver);
-
+		
 		if (scheduledTrackRecorder.isRecording()) {
 			stopScheduler();
 		}
@@ -344,6 +347,7 @@ public class GpsService extends Service {
 		this.sensorManager = null;
 
 		unregisterReceiver(alarmReceiver);
+		unregisterReceiver(requestTimeLimitReceiver);
 
 		super.onDestroy();
 
@@ -432,7 +436,7 @@ public class GpsService extends Service {
 		this.schedulerListening = false;		
 		
 		// control the time of location request before any updates received
-		controlRequestTimeHandler.postDelayed(controlRequestTimeTask, 5000);
+		this.nextRequestTimeLimit();
 		
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
@@ -475,6 +479,54 @@ public class GpsService extends Service {
 		}
 	};
 
+	private void nextRequestTimeLimit() {
+
+		myApp.log("nextRequestTimeLimit");
+		
+		Intent intent = new Intent("com.aripuca.tracker.REQUEST_TIME_LIMIT_ALARM");
+		requestTimeLimitSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.SECOND, 5);
+
+		// schedule single alarm
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), requestTimeLimitSender);
+
+	}
+	
+	protected BroadcastReceiver requestTimeLimitReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			if (!schedulerListening) {
+
+				myApp.log("CHECK REQUEST TIME LIMIT");
+				
+				Log.d(Constants.TAG, "controlRequestTimeHandler");
+				
+				if (scheduledTrackRecorder.requestTimeLimitReached()) {
+
+					myApp.log("CANCEL REQUEST");
+					
+					// canceling current location update request 
+					
+					// stop trying to receive GPX signal
+					stopScheduledLocationUpdates();
+					// schedule next location update
+					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
+					
+				} else {
+					// check request time limit in 5 seconds
+					nextRequestTimeLimit();
+				}
+				
+			}
+			
+		}
+	};
+	
 	public void startScheduler() {
 
 		this.scheduledTrackRecorder.start();
@@ -500,8 +552,7 @@ public class GpsService extends Service {
 		// cancel alarm
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		alarmManager.cancel(alarmSender);
-
-		this.controlRequestTimeHandler.removeCallbacks(this.controlRequestTimeTask);
+		alarmManager.cancel(requestTimeLimitSender);
 		
 		this.locationManager.removeUpdates(scheduledLocationListener);
 
@@ -604,37 +655,4 @@ public class GpsService extends Service {
 		}
 	}
 	
-	private Handler controlRequestTimeHandler = new Handler();
-	private Runnable controlRequestTimeTask = new Runnable() {
-		@Override
-		public void run() {
-			
-			if (!schedulerListening) {
-
-				myApp.log("CHECK REQUEST TIME LIMIT");
-				
-				Log.d(Constants.TAG, "controlRequestTimeHandler");
-				
-				if (scheduledTrackRecorder.requestTimeLimitReached()) {
-
-					myApp.log("CANCEL REQUEST");
-					
-					// canceling current location update request 
-					
-					// stop trying to receive GPX signal
-					stopScheduledLocationUpdates();
-					// schedule next location update
-					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
-					
-				} else {
-					// check request time limit in 5 seconds
-					controlRequestTimeHandler.postDelayed(this, 5000);
-				}
-				
-			}
-
-		}
-	};
-	
-
 }
