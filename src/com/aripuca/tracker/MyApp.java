@@ -347,7 +347,7 @@ public class MyApp extends Application {
 		String fileName = DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(DateFormat.format("yyyy-MM-dd h-mm-ss", new Date()));
+		sb.append(DateFormat.format("yyyy-MM-dd kk-mm-ss", new Date()));
 		sb.append(" | ");
 		sb.append(message);
 

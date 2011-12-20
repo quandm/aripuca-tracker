@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/app_settings_title" >
 
-    <PreferenceScreen android:title="@string/user_interface" >
+    <PreferenceScreen android:title="@string/user_interface" android:summary="@string/user_interface_summary">
 
         <ListPreference
             android:defaultValue="en-US"

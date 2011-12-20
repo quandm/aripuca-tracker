@@ -140,6 +140,10 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
+			
+			if (cursor.getCount()==0) {
+				return;
+			}
 
 			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 
@@ -158,8 +162,11 @@ public class AbstractTracksListActivity extends ListActivity {
 
 			TextView text1 = (TextView) view.findViewById(R.id.text1);
 			TextView text2 = (TextView) view.findViewById(R.id.text2);
+			TextView text3 = (TextView) view.findViewById(R.id.text3);
 
-			text1.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
+			if (text1 != null) {
+				text1.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
+			}
 
 			if (text2 != null) {
 				text2.setText(distanceStr + " | "
@@ -167,6 +174,10 @@ public class AbstractTracksListActivity extends ListActivity {
 						+ elevationGain + " | -" + elevationLoss);
 			}
 
+			if (text3 != null) {
+				//text3.setText("Points: " + cursor.getInt(cursor.getColumnIndex("count")));
+			}
+			
 		}
 
 	}
