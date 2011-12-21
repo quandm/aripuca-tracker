@@ -3,7 +3,6 @@ package com.aripuca.tracker;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.GpsService;
-import com.aripuca.tracker.track.TrackRecorder;
 
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.OrientationHelper;
@@ -24,7 +23,6 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -702,7 +700,7 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(R.drawable.ic_stat_notification,
+		Notification notification = new Notification(R.drawable.aripuca,
 				getString(R.string.recording_started), when);
 
 		// show notification under ongoing title

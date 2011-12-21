@@ -2,6 +2,7 @@ package com.aripuca.tracker;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 
 import com.aripuca.tracker.R;
@@ -27,6 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -186,6 +188,7 @@ public class TrackpointsListActivity extends ListActivity {
 				accuracyStr = Utils.PLUSMINUS_CHAR + Utils.formatDistance(wp.getAccuracy(), distanceUnit)
 						+ Utils.getLocalaziedDistanceUnit(TrackpointsListActivity.this, wp.getAccuracy(), distanceUnit);
 				
+				
 //				speedStr = Utils.formatSpeed(speed, speedUnit) + Utils.getLocalizedSpeedUnit(TrackpointsListActivity.this, speedUnit);
 						
 				TextView coordinatesTextView = (TextView) v.findViewById(R.id.coordinates);
@@ -204,7 +207,8 @@ public class TrackpointsListActivity extends ListActivity {
 
 				// setting track point details
 				if (detailsTextView != null) {
-					detailsTextView.setText(accuracyStr + " " + elevationStr + " " + bearingStr);
+					detailsTextView.setText(DateFormat.format("k:mm", wp.getTime()) + " "+ 
+										accuracyStr + " " + elevationStr + " " + bearingStr);
 				}
 
 				if (distanceTextView != null) {
