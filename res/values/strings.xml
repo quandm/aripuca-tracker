@@ -3,7 +3,7 @@
     <!-- NOT TRANSLATABLE -->
     <string name="main_app_title">Aripuca Tracker</string>
     <string name="company">Aripuca Apps</string>
-    <string name="app_build_date">2011-12-18</string>
+    <string name="app_build_date">2011-12-21</string>
     <string name="app_url">http://tracker.aripuca.com</string>
     <string name="blog_url">http://tracker.aripuca.com/blog</string>
     <string name="market_url">https://market.android.com/details?id=com.aripuca.tracker</string>
