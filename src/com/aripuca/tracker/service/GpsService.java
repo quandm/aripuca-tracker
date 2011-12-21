@@ -427,7 +427,7 @@ public class GpsService extends Service {
 	 */
 	public void startScheduledLocationUpdates() {
 
-		myApp.log("startScheduledLocationUpdates");
+//		myApp.log("startScheduledLocationUpdates");
 		
 		this.schedulerListening = false;		
 		
@@ -471,7 +471,7 @@ public class GpsService extends Service {
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
-		myApp.log("scheduleNextLocationRequest");
+//		myApp.log("scheduleNextLocationRequest");
 		
 		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
 		nextLocationRequestSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
@@ -518,7 +518,7 @@ public class GpsService extends Service {
 	 */
 	private void scheduleNextRequestTimeLimitCheck() {
 
-		myApp.log("scheduleNextRequestTimeLimitCheck");
+//		myApp.log("scheduleNextRequestTimeLimitCheck");
 		Log.d(Constants.TAG, "scheduleNextRequestTimeLimitCheck");
 		
 		Intent intent = new Intent(Constants.ACTION_NEXT_TIME_LIMIT_CHECK);
@@ -546,12 +546,12 @@ public class GpsService extends Service {
 
 				Log.d(Constants.TAG, "nextTimeLimitCheckReceiver FALSE");
 				
-				myApp.log("CHECK REQUEST TIME LIMIT");
+//				myApp.log("CHECK REQUEST TIME LIMIT");
 				
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
 					Log.d(Constants.TAG, "CANCEL REQUEST");
-					myApp.log("CANCEL REQUEST");
+//					myApp.log("CANCEL REQUEST");
 					
 					// canceling current location update request 
 					
