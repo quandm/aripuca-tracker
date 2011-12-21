@@ -1055,7 +1055,7 @@ public class WaypointsListActivity extends ListActivity {
 		// GpsService.stopLocationUpdatesThread
 		gpsService.setGpsInUse(true);
 		
-		gpsService.startSensorUpdates();
+//		gpsService.startSensorUpdates();
 
 	}
 
