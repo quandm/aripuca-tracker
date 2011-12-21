@@ -99,12 +99,12 @@ public class GpsService extends Service {
 	/**
 	 * location updates broadcast receiver
 	 */
-	protected BroadcastReceiver startSensorUpdatesReceiver = new BroadcastReceiver() {
+/*	protected BroadcastReceiver startSensorUpdatesReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			startSensorUpdates();
 		}
-	};
+	}; */
 
 	/**
 	 * Defines a listener that responds to location updates
@@ -293,7 +293,7 @@ public class GpsService extends Service {
 
 		registerReceiver(nextTimeLimitCheckReceiver, new IntentFilter(Constants.ACTION_NEXT_TIME_LIMIT_CHECK));
 		registerReceiver(nextLocationRequestReceiver, new IntentFilter(Constants.ACTION_NEXT_LOCATION_REQUEST));
-		registerReceiver(startSensorUpdatesReceiver, new IntentFilter(Constants.ACTION_START_SENSOR_UPDATES));
+//		registerReceiver(startSensorUpdatesReceiver, new IntentFilter(Constants.ACTION_START_SENSOR_UPDATES));
 
 		Log.i(Constants.TAG, "GpsService: onCreate");
 
@@ -328,7 +328,7 @@ public class GpsService extends Service {
 
 		GpsService.running = false;
 
-		unregisterReceiver(startSensorUpdatesReceiver);
+//		unregisterReceiver(startSensorUpdatesReceiver);
 		
 		if (scheduledTrackRecorder.isRecording()) {
 			stopScheduler();
