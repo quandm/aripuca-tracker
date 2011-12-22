@@ -218,18 +218,18 @@ public class WaypointsListActivity extends ListActivity {
 
 				}
 
-				TextView text1 = (TextView) v.findViewById(R.id.text1);
-				TextView text2 = (TextView) v.findViewById(R.id.text2);
-				TextView text3 = (TextView) v.findViewById(R.id.text3);
+				TextView waypointTitle = (TextView) v.findViewById(R.id.waypoint_title);
+				TextView waypointDetails = (TextView) v.findViewById(R.id.waypoint_details);
+				TextView waypointDistance = (TextView) v.findViewById(R.id.waypoint_distance);
 
 				// Set value for the first text field
-				if (text1 != null) {
-					text1.setText(Utils.shortenStr(wp.getTitle(), 32));
+				if (waypointTitle != null) {
+					waypointTitle.setText(Utils.shortenStr(wp.getTitle(), 32));
 				}
 
 				// set value for the second text field
-				if (text2 != null) {
-					text2.setText(Utils.formatLat(wp.getLocation().getLatitude(),
+				if (waypointDetails != null) {
+					waypointDetails.setText(Utils.formatLat(wp.getLocation().getLatitude(),
 							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
 							+ "|"
 							+ Utils.formatLng(wp.getLocation().getLongitude(),
@@ -238,8 +238,8 @@ public class WaypointsListActivity extends ListActivity {
 							+ Utils.formatNumber(wp.getLocation().getAltitude(), 0) + "|" + bearingStr);
 				}
 
-				if (text3 != null) {
-					text3.setText(distStr);
+				if (waypointDistance != null) {
+					waypointDistance.setText(distStr);
 				}
 
 				// rotating small arrow pointing to waypoint

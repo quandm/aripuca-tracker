@@ -15,14 +15,14 @@
 		android:layout_marginBottom="4dp"
 		>
 
-		<TextView android:id="@+id/text1"
+		<TextView android:id="@+id/waypoint_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" 
 			android:textSize="18dp"
 			android:layout_marginBottom = "3dp"
 		/>
 
-		<TextView android:id="@+id/text2"
+		<TextView android:id="@+id/waypoint_details"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:textSize="12dp" 
@@ -46,7 +46,7 @@
 			android:layout_height="20dp"
 		 />
 		 
-		<TextView android:id="@+id/text3"
+		<TextView android:id="@+id/waypoint_distance"
 			android:paddingTop="3dp"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
