@@ -62,6 +62,9 @@ public abstract class Constants {
 	public static final String ACTION_NEXT_LOCATION_REQUEST = "com.aripuca.tracker.ACTION_NEXT_LOCATION_REQUEST";
 	public static final String ACTION_NEXT_TIME_LIMIT_CHECK = "com.aripuca.tracker.ACTION_NEXT_TIME_LIMIT_CHECK";
 	public static final String ACTION_START_SENSOR_UPDATES = "com.aripuca.tracker.ACTION_START_SENSOR_UPDATES";
-	
+	public static final String ACTION_LOCATION_UPDATES = "com.aripuca.tracker.ACTION_LOCATION_UPDATES";
+	public static final String ACTION_SCHEDULED_LOCATION_UPDATES = "com.aripuca.tracker.ACTION_SCHEDULED_LOCATION_UPDATES";
+	public static final String ACTION_COMPASS_UPDATES = "com.aripuca.tracker.ACTION_COMPASS_UPDATES";
+	public static final String ACTION_LANGUAGE_UPDATES = "com.aripuca.tracker.ACTION_LANGUAGE_UPDATES";
 	
 }

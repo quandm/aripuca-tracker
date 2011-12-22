@@ -411,14 +411,14 @@ public class MainActivity extends Activity {
 		this.keepScreenOn();
 		
 		// registering receiver for compass updates
-		registerReceiver(compassBroadcastReceiver, new IntentFilter("com.aripuca.tracker.COMPASS_UPDATES_ACTION"));
+		registerReceiver(compassBroadcastReceiver, new IntentFilter(Constants.ACTION_COMPASS_UPDATES));
 
 		// registering receiver for location updates
-		registerReceiver(locationBroadcastReceiver, new IntentFilter("com.aripuca.tracker.LOCATION_UPDATES_ACTION"));
+		registerReceiver(locationBroadcastReceiver, new IntentFilter(Constants.ACTION_LOCATION_UPDATES));
 
 		// registering receiver for time updates
 		registerReceiver(scheduledLocationBroadcastReceiver, new IntentFilter(
-				"com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION"));
+				Constants.ACTION_SCHEDULED_LOCATION_UPDATES));
 		
 		// bind to GPS service
 		// once bound gpsServiceBoundCallback will be called

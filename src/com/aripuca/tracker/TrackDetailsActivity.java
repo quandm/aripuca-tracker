@@ -168,9 +168,11 @@ public class TrackDetailsActivity extends Activity {
 	protected void updateTrack() {
 
 		// get track data
-		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks, track_points WHERE " +
-				" tracks._id=" + this.trackId +
-				" AND tracks._id = track_points.track_id";
+		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count " +
+				" FROM tracks" +
+				" LEFT JOIN track_points ON tracks._id = track_points.track_id " +
+				" WHERE " +
+				" tracks._id=" + this.trackId;
 
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -230,7 +232,7 @@ public class TrackDetailsActivity extends Activity {
 		float averageSpeed = 0;
 		long totalTime = cursor.getLong(cursor.getColumnIndex("total_time"));
 		if (totalTime != 0) {
-			averageSpeed = distance / totalTime / 1000f;
+			averageSpeed = distance / (totalTime / 1000f);
 		}
 
 		// moving average speed

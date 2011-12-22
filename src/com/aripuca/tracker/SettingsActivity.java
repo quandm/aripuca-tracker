@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import android.preference.Preference.OnPreferenceChangeListener;
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.ArrayUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -69,7 +70,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 					@Override
 					public boolean onPreferenceChange(Preference preference, Object newValue) {
 						
-						Intent intent = new Intent("com.aripuca.tracker.LANGUAGE_UPDATES_ACTION");
+						Intent intent = new Intent(Constants.ACTION_LANGUAGE_UPDATES);
 						// broadcasting language updates 
 						sendBroadcast(intent);
 						
