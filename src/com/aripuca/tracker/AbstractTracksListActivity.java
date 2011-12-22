@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -140,8 +141,8 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
-			
-			if (cursor.getCount()==0) {
+
+			if (cursor.getCount() == 0) {
 				return;
 			}
 
@@ -160,24 +161,28 @@ public class AbstractTracksListActivity extends ListActivity {
 			String elevationLoss = Utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_loss")),
 					elevationUnits) + Utils.getLocalizedElevationUnit(AbstractTracksListActivity.this, elevationUnits);
 
-			TextView text1 = (TextView) view.findViewById(R.id.text1);
-			TextView text2 = (TextView) view.findViewById(R.id.text2);
-			TextView text3 = (TextView) view.findViewById(R.id.text3);
+			TextView trackTitle = (TextView) view.findViewById(R.id.track_title);
+			TextView trackDetails = (TextView) view.findViewById(R.id.track_details);
+			TextView scheduledTrackDetails = (TextView) view.findViewById(R.id.scheduled_track_details);
 
-			if (text1 != null) {
-				text1.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
+			if (trackTitle != null) {
+				trackTitle.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
 			}
 
-			if (text2 != null) {
-				text2.setText(distanceStr + " | "
+			if (trackDetails != null) {
+				trackDetails.setText(distanceStr + " | "
 						+ Utils.formatInterval(cursor.getLong(cursor.getColumnIndex("total_time")), false) + " | +"
 						+ elevationGain + " | -" + elevationLoss);
 			}
 
-			if (text3 != null) {
-				//text3.setText("Points: " + cursor.getInt(cursor.getColumnIndex("count")));
+			if (scheduledTrackDetails != null) {
+				scheduledTrackDetails.setText(DateFormat.format("yyyy-MM-dd kk:mm",
+						cursor.getLong(cursor.getColumnIndex("start_time")))
+						+ " - " +
+						DateFormat.format("yyyy-MM-dd kk:mm", cursor.getLong(cursor.getColumnIndex("finish_time"))));
+				//"Points: " + cursor.getInt(cursor.getColumnIndex("count"))
 			}
-			
+
 		}
 
 	}
