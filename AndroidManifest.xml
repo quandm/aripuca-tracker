@@ -10,7 +10,7 @@
         android:targetSdkVersion="8" />
 
     <application
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/icon"
         android:label="@string/main_app_title"
         android:name=".MyApp" >
