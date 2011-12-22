@@ -6,7 +6,7 @@
 	<com.google.android.maps.MapView
 		android:id="@+id/mapview" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:clickable="true"
-		android:apiKey="0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ" />
+		android:apiKey="0XQ_7l3D8Jr53Kdl__j0p3rB1GnvnVsqJrWGdYw" />
 	
 		<!-- REPLACE WITH RELEASE KEY -->
 		<!-- Debug Map API Key: 0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ -->

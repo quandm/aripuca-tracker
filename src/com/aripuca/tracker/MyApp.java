@@ -217,7 +217,7 @@ public class MyApp extends Application {
 
 		// registering receiver for language updates
 		registerReceiver(languageUpdateBroadcastReceiver, new IntentFilter(
-				"com.aripuca.tracker.LANGUAGE_UPDATES_ACTION"));
+				Constants.ACTION_LANGUAGE_UPDATES));
 
 		// database helper
 		OpenHelper openHelper = new OpenHelper(this);

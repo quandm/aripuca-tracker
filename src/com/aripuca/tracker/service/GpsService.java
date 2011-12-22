@@ -126,7 +126,7 @@ public class GpsService extends Service {
 				trackRecorder.updateStatistics(location);
 			}
 
-			broadcastLocationUpdate(location, Constants.GPS_PROVIDER, "com.aripuca.tracker.LOCATION_UPDATES_ACTION");
+			broadcastLocationUpdate(location, Constants.GPS_PROVIDER, Constants.ACTION_LOCATION_UPDATES);
 
 		}
 
@@ -173,7 +173,7 @@ public class GpsService extends Service {
 				// let's broadcast location data to any activity waiting for
 				// updates
 				broadcastLocationUpdate(location, Constants.GPS_PROVIDER,
-						"com.aripuca.tracker.SCHEDULED_LOCATION_UPDATES_ACTION");
+						Constants.ACTION_SCHEDULED_LOCATION_UPDATES);
 
 				// location of acceptable accuracy received - stop GPS
 				stopScheduledLocationUpdates();
@@ -236,7 +236,7 @@ public class GpsService extends Service {
 		public void onSensorChanged(SensorEvent event) {
 
 			// let's broadcast compass data to any activity waiting for updates
-			Intent intent = new Intent("com.aripuca.tracker.COMPASS_UPDATES_ACTION");
+			Intent intent = new Intent(Constants.ACTION_COMPASS_UPDATES);
 
 			// packing azimuth value into bundle
 			Bundle bundle = new Bundle();
@@ -376,7 +376,7 @@ public class GpsService extends Service {
 
 		if (location != null) {
 			locationProvider = Constants.NETWORK_PROVIDER_LAST;
-			broadcastLocationUpdate(location, locationProvider, "com.aripuca.tracker.LOCATION_UPDATES_ACTION");
+			broadcastLocationUpdate(location, locationProvider, Constants.ACTION_LOCATION_UPDATES);
 		}
 
 		currentLocation = location;
