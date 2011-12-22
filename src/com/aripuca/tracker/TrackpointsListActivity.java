@@ -435,7 +435,8 @@ public class TrackpointsListActivity extends ListActivity {
 
 		}
 
-//		gpsService.startSensorUpdates();
+		// this activity requires compass data
+		gpsService.startSensorUpdates();
 
 	}
 

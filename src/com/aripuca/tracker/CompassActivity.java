@@ -235,6 +235,9 @@ public class CompassActivity extends Activity {
 		// GpsService.stopLocationUpdatesThread
 		gpsService.setGpsInUse(true);
 		
+		// this activity requires compass data
+		gpsService.startSensorUpdates();
+		
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////

@@ -1055,7 +1055,8 @@ public class WaypointsListActivity extends ListActivity {
 		// GpsService.stopLocationUpdatesThread
 		gpsService.setGpsInUse(true);
 		
-//		gpsService.startSensorUpdates();
+		// this activity requires compass data
+		gpsService.startSensorUpdates();
 
 	}
 
