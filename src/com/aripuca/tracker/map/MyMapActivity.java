@@ -258,7 +258,7 @@ public class MyMapActivity extends MapActivity {
 		Bundle b = getIntent().getExtras();
 
 		this.mode = b.getInt("mode");
-
+		
 		// show waypoint
 		if (this.mode == Constants.SHOW_WAYPOINT) {
 
@@ -274,7 +274,11 @@ public class MyMapActivity extends MapActivity {
 		// show track
 		if (this.mode == Constants.SHOW_TRACK) {
 
-			((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
+			if (b.getBoolean("display_info")) {
+				((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
+			} else {
+				((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.INVISIBLE);
+			}
 
 			this.trackId = b.getLong("track_id");
 

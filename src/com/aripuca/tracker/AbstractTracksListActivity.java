@@ -61,6 +61,8 @@ public class AbstractTracksListActivity extends ListActivity {
 	 * Select all tracks sql query
 	 */
 	protected String sqlSelectAllTracks;
+	
+	protected Boolean infoDisplayed = true;
 
 	/**
 	 * Workaround Issue 7139: MenuItem.getMenuInfo() returns null for sub-menu
@@ -664,7 +666,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		trackExportTask.execute(trackId);
 
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -676,6 +678,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		Bundle b = new Bundle();
 		b.putInt("mode", Constants.SHOW_TRACK);
 		b.putLong("track_id", trackId);
+		b.putBoolean("display_info", this.infoDisplayed);
 
 		i.putExtras(b);
 		startActivity(i);

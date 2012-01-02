@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
 	private String distanceUnit;
 	private String elevationUnit;
 	private int coordUnit;
-	
+
 	/**
 	 * location updates broadcast receiver
 	 */
@@ -325,6 +325,11 @@ public class MainActivity extends Activity {
 			editor.commit();
 		}
 
+		if (!myApp.getPreferences().contains("trackpoints_sort")) {
+			editor.putInt("trackpoints_sort", 0);
+			editor.commit();
+		}
+
 		speedContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("speed_container_id", 0));
 		timeContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("time_container_id", 0));
 		distanceContainerCarousel.setCurrentContainerId(myApp.getPreferences().getInt("distance_container_id", 0));
@@ -378,10 +383,10 @@ public class MainActivity extends Activity {
 		}
 
 		this.disableControlButtons();
-		
+
 		gpsServiceConnection = new GpsServiceConnection();
-		
-		Log.d(Constants.TAG, "SERVICE CONNECTION CREATED: "+gpsServiceConnection.toString());
+
+		Log.d(Constants.TAG, "SERVICE CONNECTION CREATED: " + gpsServiceConnection.toString());
 
 		// start GPS service only if not started
 		startGpsService();
@@ -409,7 +414,7 @@ public class MainActivity extends Activity {
 		this.initializeMeasuringUnits();
 
 		this.keepScreenOn();
-		
+
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter(Constants.ACTION_COMPASS_UPDATES));
 
@@ -419,7 +424,7 @@ public class MainActivity extends Activity {
 		// registering receiver for time updates
 		registerReceiver(scheduledLocationBroadcastReceiver, new IntentFilter(
 				Constants.ACTION_SCHEDULED_LOCATION_UPDATES));
-		
+
 		// bind to GPS service
 		// once bound gpsServiceBoundCallback will be called
 		this.bindGpsService();
@@ -430,15 +435,15 @@ public class MainActivity extends Activity {
 	}
 
 	protected void tryUnregisterReceiver(BroadcastReceiver receiver) {
-		
+
 		try {
 			unregisterReceiver(receiver);
 		} catch (IllegalArgumentException e) {
 			Log.e(Constants.TAG, e.getMessage());
 		}
-		
+
 	}
-	
+
 	/**
 	 * onPause event handler
 	 */
@@ -501,8 +506,6 @@ public class MainActivity extends Activity {
 
 		Log.i(Constants.TAG, "MainActivity: onDestroy");
 
-		Log.v(Constants.TAG, "!!!!!!!!!!!!!! ServiceConnection destroyed "+gpsServiceConnection.toString());
-		
 		gpsServiceConnection = null;
 
 		myApp = null;
@@ -515,7 +518,7 @@ public class MainActivity extends Activity {
 	 */
 	private void restoreInstanceState(Bundle savedInstanceState) {
 
-//		Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
+		// Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
 
 		speedContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("speedContainerId"));
 		timeContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("timeContainerId"));
@@ -547,7 +550,7 @@ public class MainActivity extends Activity {
 
 		super.onSaveInstanceState(outState);
 
-//		Log.i(Constants.TAG, "MainActivity: onSaveInstanceState");
+		// Log.i(Constants.TAG, "MainActivity: onSaveInstanceState");
 
 		outState.putInt("speedContainerId", speedContainerCarousel.getCurrentContainerId());
 		outState.putInt("timeContainerId", timeContainerCarousel.getCurrentContainerId());
@@ -649,9 +652,9 @@ public class MainActivity extends Activity {
 	private void startGpsService() {
 
 		if (!GpsService.isRunning()) {
-			
+
 			Log.i(Constants.TAG, "startGPSService");
-			
+
 			// starting GPS listener service
 			startService(new Intent(this, GpsService.class));
 		}
@@ -664,7 +667,7 @@ public class MainActivity extends Activity {
 	private void stopGpsService() {
 
 		Log.i(Constants.TAG, "stopGPSService");
-		
+
 		stopService(new Intent(this, GpsService.class));
 
 	}
@@ -700,8 +703,7 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(R.drawable.aripuca,
-				getString(R.string.recording_started), when);
+		Notification notification = new Notification(R.drawable.aripuca, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -1061,18 +1063,21 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
-		// TODO: test lab
+		// hide test lab menu
 		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
 		testLabMenuItem.setVisible(false);
 
 		// setting icon and title for scheduled track recording menu
 		MenuItem scheduledRecordingMenuItem = (MenuItem) menu.findItem(R.id.scheduledRecordingMenuItem);
-		if (gpsService.getScheduledTrackRecorder().isRecording()) {
-			scheduledRecordingMenuItem.setTitle(R.string.stop_scheduler);
-			scheduledRecordingMenuItem.setIcon(android.R.drawable.ic_media_pause);
-		} else {
-			scheduledRecordingMenuItem.setTitle(R.string.start_scheduler);
-			scheduledRecordingMenuItem.setIcon(android.R.drawable.ic_media_play);
+
+		if (gpsService != null) {
+			if (gpsService.getScheduledTrackRecorder().isRecording()) {
+				scheduledRecordingMenuItem.setTitle(R.string.stop_scheduler);
+				scheduledRecordingMenuItem.setIcon(R.drawable.ic_media_pause);
+			} else {
+				scheduledRecordingMenuItem.setTitle(R.string.start_scheduler);
+				scheduledRecordingMenuItem.setIcon(R.drawable.ic_media_play);
+			}
 		}
 
 		return true;
@@ -1277,6 +1282,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Updates UI in track recording mode
+	 */
 	private void updateTrackRecording() {
 
 		if (gpsService == null || !gpsService.getTrackRecorder().isRecording()) { return; }
@@ -1409,7 +1417,7 @@ public class MainActivity extends Activity {
 
 		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
 
-		float rotation = 0;
+		float trueAzimuth = 0;
 
 		// let's not request declination on every compass update
 		float declination = 0;
@@ -1424,11 +1432,14 @@ public class MainActivity extends Activity {
 		}
 
 		// magnetic north to true north
-		rotation = getAzimuth(azimuth + declination);
+		trueAzimuth = azimuth + declination;
+		if (trueAzimuth > 360) {
+			trueAzimuth -= 360;
+		}
 
 		if (findViewById(R.id.azimuth) != null) {
-			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0) + Utils.DEGREE_CHAR + " "
-					+ Utils.getDirectionCode(rotation));
+			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(trueAzimuth, 0) + Utils.DEGREE_CHAR
+					+ " " + Utils.getDirectionCode(trueAzimuth));
 		}
 
 		int orientationAdjustment = 0;
@@ -1439,17 +1450,9 @@ public class MainActivity extends Activity {
 		// update compass image
 		if (findViewById(R.id.compassImage) != null) {
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
-			compassImage.setAngle(360 - rotation - orientationAdjustment);
+			compassImage.setAngle(360 - trueAzimuth - orientationAdjustment);
 			compassImage.invalidate();
 		}
-
-	}
-
-	protected float getAzimuth(float az) {
-
-		if (az > 360) { return az - 360; }
-
-		return az;
 
 	}
 
@@ -1689,21 +1692,21 @@ public class MainActivity extends Activity {
 	 * GPS service connection
 	 */
 	private GpsService gpsService;
-	private GpsServiceConnection gpsServiceConnection;	
+	private GpsServiceConnection gpsServiceConnection;
 	private boolean isServiceBound;
 
 	private class GpsServiceConnection implements ServiceConnection {
-		
+
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			
-			Log.d(Constants.TAG, "onServiceConnected "+this.toString());
-			
+
+			Log.d(Constants.TAG, "onServiceConnected " + this.toString());
+
 			gpsService = ((GpsService.LocalBinder) service).getService();
 
 			gpsServiceBoundCallback();
 
 			isServiceBound = true;
-			
+
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
@@ -1756,8 +1759,8 @@ public class MainActivity extends Activity {
 
 	private void bindGpsService() {
 
-		//GpsService.LocalBinder.flushPendingCommands();
-		
+		// GpsService.LocalBinder.flushPendingCommands();
+
 		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection, 0)) {
 			Toast.makeText(MainActivity.this, "System error: Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
@@ -1767,24 +1770,24 @@ public class MainActivity extends Activity {
 	private void unbindGpsService() {
 
 		if (this.isServiceBound) {
-			
+
 			Log.v(Constants.TAG, "!!! isGpsServiceBound");
-			
+
 			// detach our existing connection
 			unbindService(gpsServiceConnection);
-			
+
 			this.isServiceBound = false;
 		}
 
 		gpsService = null;
 
 	}
-	
+
 	/**
 	 * Start/stop scheduled track recording
 	 */
 	private void startStopScheduledTrackRecording() {
-		
+
 		if (gpsService == null) {
 			Toast.makeText(MainActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
 			return;
@@ -1804,7 +1807,7 @@ public class MainActivity extends Activity {
 
 			Toast.makeText(MainActivity.this, R.string.scheduled_recording_stopped, Toast.LENGTH_SHORT).show();
 		}
-		
+
 	}
-	
+
 }

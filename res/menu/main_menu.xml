@@ -23,7 +23,7 @@
 
      <item android:id="@+id/scheduledRecordingMenuItem" 
 			android:title="@string/start_scheduler"
-			android:icon="@android:drawable/ic_media_play" />
+			android:icon="@drawable/ic_media_play" />
     
     <item
         android:id="@+id/aboutMenuItem"

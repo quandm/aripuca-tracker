@@ -213,4 +213,8 @@
     <string name="stop_scheduler">Расписание Стоп</string>
     <string name="start_scheduler">Расписание Старт</string>
     <string name="scheduled_tracks">Треки по расписанию</string>
+    <string name="sort_by">Сортировать по</string>
+    <string name="sort_by_time">времени</string>
+    <string name="sort_by_distance">расстоянию</string>
+    <string name="sort">Сортировать</string>
 </resources>
