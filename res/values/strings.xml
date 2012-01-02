@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- NOT TRANSLATABLE -->
     <string name="main_app_title">Aripuca Tracker</string>
     <string name="company">Aripuca Apps</string>
@@ -242,4 +242,7 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="deleting_records">Deleting records...</string>
     <string name="stop_scheduler">Stop scheduler</string>
     <string name="start_scheduler">Start scheduler</string>
+    <string name="appwidget_configure_instructions">This text will be shown before the date in our example widget.</string>
+    <string name="appwidget_prefix_default">Oh hai</string>
+    <string name="appwidget_text_format"><xliff:g id="prefix">%1$s</xliff:g>: <xliff:g id="time">%2$s</xliff:g></string>
 </resources>

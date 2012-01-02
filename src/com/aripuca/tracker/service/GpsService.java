@@ -68,7 +68,7 @@ public class GpsService extends Service {
 	 * listening for location updates flag
 	 */
 	private boolean listening;
-	
+
 	/**
 	 * sets to true once first location update received
 	 */
@@ -133,10 +133,12 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -149,8 +151,8 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
-			Log.i(Constants.TAG, "scheduledLocationListener: "+location.getAccuracy());
-			
+			Log.i(Constants.TAG, "scheduledLocationListener: " + location.getAccuracy());
+
 			// first location update received
 			schedulerListening = true;
 
@@ -187,13 +189,16 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -375,7 +380,7 @@ public class GpsService extends Service {
 	public void startLocationUpdates() {
 
 		this.listening = false;
-		
+
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
 		// setting gpsInUse to true, but listening is still false at this point
@@ -414,13 +419,13 @@ public class GpsService extends Service {
 	 */
 	public void startScheduledLocationUpdates() {
 
-//		myApp.log("startScheduledLocationUpdates");
-		
-		this.schedulerListening = false;		
-		
+		//		myApp.log("startScheduledLocationUpdates");
+
+		this.schedulerListening = false;
+
 		// control the time of location request before any updates received
 		this.scheduleNextRequestTimeLimitCheck();
-		
+
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
 
@@ -452,14 +457,14 @@ public class GpsService extends Service {
 	 * 
 	 */
 	private PendingIntent nextLocationRequestSender;
-	
+
 	/**
 	 * 
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
-//		myApp.log("scheduleNextLocationRequest");
-		
+		//		myApp.log("scheduleNextLocationRequest");
+
 		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
 		nextLocationRequestSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
@@ -472,7 +477,7 @@ public class GpsService extends Service {
 		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), nextLocationRequestSender);
 
 	}
-	
+
 	private BroadcastReceiver nextLocationRequestReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -494,20 +499,20 @@ public class GpsService extends Service {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * 
 	 */
 	private PendingIntent nextTimeLimitCheckSender;
-	
+
 	/**
 	 * 
 	 */
 	private void scheduleNextRequestTimeLimitCheck() {
 
-//		myApp.log("scheduleNextRequestTimeLimitCheck");
+		//		myApp.log("scheduleNextRequestTimeLimitCheck");
 		Log.d(Constants.TAG, "scheduleNextRequestTimeLimitCheck");
-		
+
 		Intent intent = new Intent(Constants.ACTION_NEXT_TIME_LIMIT_CHECK);
 		nextTimeLimitCheckSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
@@ -527,40 +532,40 @@ public class GpsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			Log.d(Constants.TAG, "nextTimeLimitCheckReceiver "+schedulerListening);
-			
+			Log.d(Constants.TAG, "nextTimeLimitCheckReceiver " + schedulerListening);
+
 			if (!schedulerListening) {
 
 				Log.d(Constants.TAG, "nextTimeLimitCheckReceiver FALSE");
-				
-//				myApp.log("CHECK REQUEST TIME LIMIT");
-				
+
+				//				myApp.log("CHECK REQUEST TIME LIMIT");
+
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
 					Log.d(Constants.TAG, "CANCEL REQUEST");
-//					myApp.log("CANCEL REQUEST");
-					
+					//					myApp.log("CANCEL REQUEST");
+
 					// canceling current location update request 
-					
+
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
 					// schedule next location update
 					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
-					
+
 				} else {
 					// check request time limit in 5 seconds
 					scheduleNextRequestTimeLimitCheck();
 				}
-				
+
 			}
-			
+
 		}
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public void startScheduler() {
 
 		this.scheduledTrackRecorder.start();
@@ -587,7 +592,7 @@ public class GpsService extends Service {
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		alarmManager.cancel(nextLocationRequestSender);
 		alarmManager.cancel(nextTimeLimitCheckSender);
-		
+
 		this.locationManager.removeUpdates(scheduledLocationListener);
 
 		this.clearNotification();
@@ -646,7 +651,7 @@ public class GpsService extends Service {
 
 	/**
 	 * stopping location updates with small delay giving us a chance not to
-	 * restart listener if other activity requires GPS sensor too new activity
+	 * restart listener if other activity requires GPS sensor too. new activity
 	 * has to bind to GpsService and set gpsInUse to true
 	 */
 	private class stopLocationUpdatesThread extends Thread {
@@ -657,7 +662,8 @@ public class GpsService extends Service {
 			try {
 				// wait for other activities to grab location updates
 				sleep(2500);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 
 			// if no activities require location updates - stop them and save
 			// battery
@@ -668,5 +674,5 @@ public class GpsService extends Service {
 
 		}
 	}
-	
+
 }

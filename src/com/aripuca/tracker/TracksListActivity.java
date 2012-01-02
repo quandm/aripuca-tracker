@@ -1,8 +1,5 @@
 package com.aripuca.tracker;
 
-//TODO: compare 2 tracks on the map, select track to compare
-//TODO: show main parameters of the track and segments on the map 
-
 /**
  * Tracks list activity
  */
