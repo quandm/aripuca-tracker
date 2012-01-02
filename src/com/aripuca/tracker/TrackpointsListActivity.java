@@ -1,5 +1,6 @@
 package com.aripuca.tracker;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -8,19 +9,23 @@ import java.util.Iterator;
 import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.map.WaypointsMapActivity;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 
@@ -31,6 +36,9 @@ import android.os.IBinder;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -39,7 +47,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Waypoints list activity
+ * Track points list activity. Displays list of track points related to one
+ * scheduled track. The list can be sorted by recording time or distance to
+ * specific point from current location
  */
 public class TrackpointsListActivity extends ListActivity {
 
@@ -60,6 +70,8 @@ public class TrackpointsListActivity extends ListActivity {
 	private String distanceUnit;
 	private String speedUnit;
 
+	private int sortMethod;
+
 	/**
 	 * Location updates broadcast receiver
 	 */
@@ -75,7 +87,7 @@ public class TrackpointsListActivity extends ListActivity {
 			currentLocation = (Location) bundle.getParcelable("location");
 
 			waypointsArrayAdapter.sortByDistance();
-			waypointsArrayAdapter.notifyDataSetChanged();
+			// waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 	/**
@@ -100,8 +112,12 @@ public class TrackpointsListActivity extends ListActivity {
 		private final Comparator<Waypoint> distanceComparator = new Comparator<Waypoint>() {
 			@Override
 			public int compare(Waypoint wp1, Waypoint wp2) {
-				return (wp1.getDistanceTo() < wp2.getDistanceTo() ? -1
-						: (wp1.getDistanceTo() == wp2.getDistanceTo() ? 0 : 1));
+				if (sortMethod == 0) {
+					return (wp1.getDistanceTo() < wp2.getDistanceTo() ? -1 : (wp1.getDistanceTo() == wp2
+							.getDistanceTo() ? 0 : 1));
+				} else {
+					return (wp1.getTime() < wp2.getTime() ? -1 : (wp1.getTime() == wp2.getTime() ? 0 : 1));
+				}
 			}
 		};
 
@@ -187,10 +203,11 @@ public class TrackpointsListActivity extends ListActivity {
 
 				accuracyStr = Utils.PLUSMINUS_CHAR + Utils.formatDistance(wp.getAccuracy(), distanceUnit)
 						+ Utils.getLocalaziedDistanceUnit(TrackpointsListActivity.this, wp.getAccuracy(), distanceUnit);
-				
-				
-//				speedStr = Utils.formatSpeed(speed, speedUnit) + Utils.getLocalizedSpeedUnit(TrackpointsListActivity.this, speedUnit);
-						
+
+				// speedStr = Utils.formatSpeed(speed, speedUnit) +
+				// Utils.getLocalizedSpeedUnit(TrackpointsListActivity.this,
+				// speedUnit);
+
 				TextView coordinatesTextView = (TextView) v.findViewById(R.id.coordinates);
 				TextView detailsTextView = (TextView) v.findViewById(R.id.details);
 				TextView distanceTextView = (TextView) v.findViewById(R.id.distance);
@@ -207,8 +224,8 @@ public class TrackpointsListActivity extends ListActivity {
 
 				// setting track point details
 				if (detailsTextView != null) {
-					detailsTextView.setText(DateFormat.format("k:mm", wp.getTime()) + " "+ 
-										accuracyStr + " " + elevationStr + " " + bearingStr);
+					detailsTextView.setText(DateFormat.format("k:mm", wp.getTime()) + " " + accuracyStr + " "
+							+ elevationStr + " " + bearingStr);
 				}
 
 				if (distanceTextView != null) {
@@ -264,7 +281,8 @@ public class TrackpointsListActivity extends ListActivity {
 		elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 		distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 		speedUnit = myApp.getPreferences().getString("speed_units", "kph");
-
+		
+		sortMethod = myApp.getPreferences().getInt("trackpoints_sort", 0);
 	}
 
 	/**
@@ -323,6 +341,68 @@ public class TrackpointsListActivity extends ListActivity {
 		myApp = null;
 
 		super.onDestroy();
+
+	}
+
+	/**
+	 * onCreateOptionsMenu handler
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.trackpoints_menu, menu);
+		return true;
+	}
+
+	/**
+     * 
+     */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		// Handle item selection
+		switch (item.getItemId()) {
+
+			case R.id.sortBy:
+
+				selectSortMethod();
+
+				return true;
+
+			default:
+
+				return super.onOptionsItemSelected(item);
+
+		}
+
+	}
+
+	private void selectSortMethod() {
+
+		// show "select a file" dialog
+		final String sortMethods[] = { getString(R.string.sort_by_distance), getString(R.string.sort_by_time) };
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.sort_by);
+		
+		builder.setSingleChoiceItems(sortMethods, sortMethod, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				
+				sortMethod = whichButton;
+				
+				// save current sort method in preferences
+				SharedPreferences.Editor editor = myApp.getPreferences().edit();
+				editor.putInt("trackpoints_sort", sortMethod);
+				editor.commit();
+				
+				// resort the list
+				waypointsArrayAdapter.notifyDataSetChanged();
+				dialog.dismiss();
+			}
+		});
+
+		AlertDialog alert = builder.create();
+		alert.show();
 
 	}
 
