@@ -76,16 +76,31 @@
             android:exported="false"
             android:name=".service.GpsService" />
 
-        <!-- <receiver android:name="AripucaTrackerWidgetProvider" >
-            <intent-filter >
-                <action android:name="com.aripuca.tracker.appwidget.action.APPWIDGET_UPDATE" />
+        
+        <!-- SCHEDULER APPWIDGET -->
+        
+        <receiver android:name=".appwidget.SchedulerAppWidgetProvider">
+            <meta-data android:name="android.appwidget.provider"
+                    android:resource="@xml/scheduler_appwidget_provider" />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/scheduler_appwidget" />
+        </receiver>
+
+        <activity android:name=".appwidget.SchedulerAppWidgetConfigure">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".appwidget.SchedulerBroadcastReceiver" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.ACTION_TIMEZONE_CHANGED" />
+                <action android:name="android.intent.ACTION_TIME" />
+            </intent-filter>
         </receiver>
         
-         -->
+        
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
