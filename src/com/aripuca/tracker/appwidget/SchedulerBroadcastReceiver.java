@@ -17,7 +17,8 @@ public class SchedulerBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("SchedulerBroadcastReceiver", "intent=" + intent);
+        
+    	Log.d("SchedulerBroadcastReceiver", "intent=" + intent);
 
         // For our example, we'll also update all of the widgets when the timezone
         // changes, or the user or network sets the time.

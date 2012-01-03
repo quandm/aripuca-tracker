@@ -10,97 +10,86 @@
         android:targetSdkVersion="8" />
 
     <application
+        android:name=".MyApp"
         android:debuggable="true"
         android:icon="@drawable/icon"
-        android:label="@string/main_app_title"
-        android:name=".MyApp" >
+        android:label="@string/main_app_title" >
+        
         <uses-library android:name="com.google.android.maps" />
 
         <activity
-            android:label="@string/main_app_title"
-            android:name=".MainActivity" >
-            <intent-filter >
+            android:name=".MainActivity"
+            android:label="@string/main_app_title" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:label="Notify"
-            android:name=".NotificationActivity" >
+            android:name=".NotificationActivity"
+            android:label="Notify" >
         </activity>
         <activity
-            android:label="@string/compass"
             android:name=".CompassActivity"
+            android:label="@string/compass"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:label="@string/tracks"
-            android:name=".TracksTabActivity" >
+            android:name=".TracksTabActivity"
+            android:label="@string/tracks" >
         </activity>
         <activity
-            android:label="@string/tracks"
-            android:name=".ScheduledTracksListActivity" >
+            android:name=".ScheduledTracksListActivity"
+            android:label="@string/tracks" >
         </activity>
         <activity
-            android:label="@string/tracks"
-            android:name=".TracksListActivity" >
+            android:name=".TracksListActivity"
+            android:label="@string/tracks" >
         </activity>
         <activity
-            android:label="@string/track_details_activity_title"
-            android:name=".TrackDetailsActivity" >
+            android:name=".TrackDetailsActivity"
+            android:label="@string/track_details_activity_title" >
         </activity>
         <activity
-            android:label="@string/scheduled_track_points"
-            android:name=".TrackpointsListActivity" >
+            android:name=".TrackpointsListActivity"
+            android:label="@string/scheduled_track_points" >
         </activity>
         <activity
-            android:label="@string/waypoints"
-            android:name=".WaypointsListActivity" >
+            android:name=".WaypointsListActivity"
+            android:label="@string/waypoints" >
         </activity>
         <activity
-            android:label="@string/main_app_title"
             android:name=".map.MyMapActivity"
+            android:label="@string/main_app_title"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:label="@string/main_app_title"
-            android:name=".map.WaypointsMapActivity" >
+            android:name=".map.WaypointsMapActivity"
+            android:label="@string/main_app_title" >
         </activity>
         <activity
-            android:label="@string/main_app_title"
-            android:name=".SettingsActivity" />
+            android:name=".SettingsActivity"
+            android:label="@string/main_app_title" />
 
         <service
+            android:name=".service.GpsService"
             android:enabled="true"
-            android:exported="false"
-            android:name=".service.GpsService" />
+            android:exported="false" />
 
-        
         <!-- SCHEDULER APPWIDGET -->
-        
-        <receiver android:name=".appwidget.SchedulerAppWidgetProvider">
-            <meta-data android:name="android.appwidget.provider"
-                    android:resource="@xml/scheduler_appwidget_provider" />
+        <receiver
+            android:name=".appwidget.SchedulerAppWidgetProvider"
+            android:icon="@drawable/aripuca"
+            android:label="@string/main_app_title" >
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/scheduler_appwidget_provider" />
+
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
         </receiver>
-
-        <activity android:name=".appwidget.SchedulerAppWidgetConfigure">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-
-        <receiver android:name=".appwidget.SchedulerBroadcastReceiver" android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.ACTION_TIMEZONE_CHANGED" />
-                <action android:name="android.intent.ACTION_TIME" />
-            </intent-filter>
-        </receiver>
-        
-        
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

@@ -20,8 +20,6 @@ import com.aripuca.tracker.R;
  */
 public class SchedulerAppWidgetConfigure extends Activity {
 	
-    static final String TAG = "SchedulerAppWidgetConfigure";
-
     private static final String PREFS_NAME
             = "com.aripuca.tracker.appwidget.SchedulerAppWidgetProvider";
     
