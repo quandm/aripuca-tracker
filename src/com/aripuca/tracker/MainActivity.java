@@ -1,5 +1,6 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.app.AppLog;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.GpsService;
@@ -42,8 +43,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -104,7 +103,9 @@ public class MainActivity extends Activity {
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
-
+			
+			AppLog.getInstance(myApp).d("location");
+			
 			updateActivity();
 
 		}

@@ -242,4 +242,6 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="deleting_records">Deleting records...</string>
     <string name="stop_scheduler">Stop scheduler</string>
     <string name="start_scheduler">Start scheduler</string>
+    <string name="logging_level">Logging level</string>
+    <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
 </resources>

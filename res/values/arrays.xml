@@ -138,4 +138,12 @@
         <item>Record new waypoint and use address from Google Geocoder as default description</item>
     </string-array>
 
+    <string-array name="logging_level_labels">
+        <item>No logging</item>
+        <item>Errors only</item>
+        <item>Errors, warnings</item>
+        <item>Errors, warnings, info</item>
+        <item>Debugging (log everything)</item>
+    </string-array>
+    
 </resources>
