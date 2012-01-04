@@ -343,7 +343,7 @@ public class MyApp extends Application {
 	 * @param text
 	 */
 	public void log(String message) {
-
+		
 		String fileName = DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
 
 		StringBuilder sb = new StringBuilder();
@@ -381,6 +381,7 @@ public class MyApp extends Application {
 		createFolder(getAppDir() + "/waypoints");
 		createFolder(getAppDir() + "/backup");
 		createFolder(getAppDir() + "/debug");
+		createFolder(getAppDir() + "/logs");
 	}
 
 	/**
