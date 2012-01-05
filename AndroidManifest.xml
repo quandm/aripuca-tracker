@@ -51,6 +51,11 @@
             android:name=".TrackDetailsActivity" >
         </activity>
         <activity
+            android:label="@string/track_chart"
+            android:name=".TrackChartActivity"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
             android:label="@string/scheduled_track_points"
             android:name=".TrackpointsListActivity" >
         </activity>
@@ -75,7 +80,6 @@
             android:enabled="true"
             android:exported="false"
             android:name=".service.GpsService" />
-
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

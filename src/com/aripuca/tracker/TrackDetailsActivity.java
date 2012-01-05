@@ -350,15 +350,18 @@ public class TrackDetailsActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
+		Intent i;
+		Bundle b;
+		
 		// Handle item selection
 		switch (item.getItemId()) {
 
 			case R.id.showOnMap:
 
-				Intent i = new Intent(this, MyMapActivity.class);
+				i = new Intent(this, MyMapActivity.class);
 
 				// using Bundle to pass track id into new activity
-				Bundle b = new Bundle();
+				b = new Bundle();
 				b.putInt("mode", Constants.SHOW_TRACK);
 				b.putLong("track_id", this.trackId);
 
@@ -367,6 +370,19 @@ public class TrackDetailsActivity extends Activity {
 
 				return true;
 
+			case R.id.showTrackChart:
+
+				i = new Intent(this, TrackChartActivity.class);
+
+				// using Bundle to pass track id into new activity
+				b = new Bundle();
+				b.putLong("track_id", this.trackId);
+
+				i.putExtras(b);
+				startActivity(i);
+
+				return true;
+				
 			default:
 
 				return super.onOptionsItemSelected(item);

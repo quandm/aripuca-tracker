@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
 
 			currentLocation = (Location) bundle.getParcelable("location");
 			
-			AppLog.getInstance(myApp).d("location");
+			myApp.logd("location");
 			
 			updateActivity();
 
