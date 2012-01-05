@@ -6,9 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import com.aripuca.tracker.MyApp;
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
@@ -16,11 +15,9 @@ import android.text.format.DateFormat;
 
 public class AppLog {
 
-	private static AppLog instance = null;
+	private Context context;
 	
 	private String appDir;
-	
-	private MyApp myApp;
 	
 	private static final int ERROR = 1;//;
 	private static final int WARNING = 2;//;
@@ -30,34 +27,19 @@ public class AppLog {
 	private String[] loggingLevels = new String[]{"no logging", "errors", "warning", "info", "debug"};
 	
 	/**
-	 * Singleton pattern
-	 */
-	public static AppLog getInstance(MyApp myApp) {
-
-		if (instance == null) {
-			instance = new AppLog(myApp);
-		}
-
-		return instance;
-	}
-	
-	/**
 	 * Private constructor
 	 */
-	private AppLog(MyApp myApp) {
+	public AppLog(Context context) {
 		
-		this.myApp = myApp; 
-
+		this.context = context;
 		// set application external storage folder
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
-
-		
-		
 	}
 	
 	private void log(int loggingLevel, String message) {
 		
-		if (loggingLevel > Integer.parseInt(myApp.getPreferences().getString("logging_level", "0"))) {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		if (loggingLevel > Integer.parseInt(preferences.getString("logging_level", "0"))) {
 			return;
 		}
 	

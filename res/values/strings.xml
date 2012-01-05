@@ -113,6 +113,7 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="scheduled_tracks">Scheduled tracks</string>
     <string name="track_details_activity_title">Track details</string>
     <string name="show_track">Show track</string>
+    <string name="track_chart">Track chart</string>
     <string name="record_track">Record track</string>
     <string name="recording_track">Recording track</string>
     <string name="track_recording_title">Track recording</string>

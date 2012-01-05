@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.app.AppLog;
 import com.aripuca.tracker.app.Constants;
 
 import com.aripuca.tracker.track.Waypoint;
@@ -337,41 +338,23 @@ public class MyApp extends Application {
 
 	}
 
-	/**
-	 * Append application debug log file
-	 * 
-	 * @param text
-	 */
-	public void log(String message) {
-		
-		String fileName = DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(DateFormat.format("yyyy-MM-dd kk-mm-ss", new Date()));
-		sb.append(" | ");
-		sb.append(message);
-
-		File logFile = new File(this.getAppDir() + "/debug/" + fileName);
-
-		if (!logFile.exists()) {
-			try {
-				logFile.createNewFile();
-			} catch (IOException e) {
-				return;
-			}
-		}
-
-		try {
-			BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-			buf.append(sb.toString());
-			buf.newLine();
-			buf.close();
-		} catch (IOException e) {
-			return;
-		}
-
+	public void loge(String message) {
+		AppLog appLog = new AppLog(this);
+		appLog.e(message);
 	}
-
+	public void logw(String message) {
+		AppLog appLog = new AppLog(this);
+		appLog.w(message);
+	}
+	public void logi(String message) {
+		AppLog appLog = new AppLog(this);
+		appLog.i(message);
+	}
+	public void logd(String message) {
+		AppLog appLog = new AppLog(this);
+		appLog.d(message);
+	}
+	
 	/**
 	 * Create application folders
 	 */

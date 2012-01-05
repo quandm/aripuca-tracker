@@ -217,4 +217,6 @@
     <string name="sort_by_time">времени</string>
     <string name="sort_by_distance">расстоянию</string>
     <string name="sort">Сортировать</string>
+    <string name="logging_level_summary">Уровень записи в системный журнал</string>
+    <string name="logging_level">Уровень записи в журнал</string>
 </resources>

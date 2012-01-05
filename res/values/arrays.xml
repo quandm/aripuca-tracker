@@ -136,8 +136,8 @@
         <item>Please send all your questions and concerns to tracker@aripuca.com</item>
         <item>Record track on schedule and save battery power. New track point recorded every N minutes for M hours with X accuracy and D minimum distance between points</item>
         <item>Record new waypoint and use address from Google Geocoder as default description</item>
+        <item>Developers, application supports 4 levels of logging: Errors, Warnings, Info and Debug. Check out the content of \'logs\' folder</item>
     </string-array>
-
     <string-array name="logging_level_labels">
         <item>No logging</item>
         <item>Errors only</item>
@@ -145,5 +145,5 @@
         <item>Errors, warnings, info</item>
         <item>Debugging (log everything)</item>
     </string-array>
-    
+
 </resources>
