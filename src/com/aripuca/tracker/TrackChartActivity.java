@@ -1,7 +1,7 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.chart.LineChart;
+import com.aripuca.tracker.chart.TrackChart;
 import com.aripuca.tracker.chart.Point;
 import com.aripuca.tracker.chart.Series;
 
@@ -39,7 +39,7 @@ public class TrackChartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		//		setContentView(R.layout.track_chart);
-		setContentView(new SampleView(this));
+		setContentView(new ChartView(this));
 
 		myApp = ((MyApp) getApplicationContext());
 
@@ -53,8 +53,8 @@ public class TrackChartActivity extends Activity {
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
-		elevationSeries = new Series(Color.RED);
-		speedSeries = new Series(Color.BLUE);
+		elevationSeries = new Series(Color.RED, getString(R.string.elevation));
+		speedSeries = new Series(Color.BLUE, getString(R.string.speed));
 
 		while (cursor.isAfterLast() == false) {
 			
@@ -72,12 +72,9 @@ public class TrackChartActivity extends Activity {
 
 	}
 
-	private class SampleView extends View {
+	private class ChartView extends View {
 
-		private int offsetX = 20;
-		private int offsetY = 20;
-		
-		public SampleView(Context context) {
+		public ChartView(Context context) {
 			super(context);
 
 		}
@@ -85,19 +82,16 @@ public class TrackChartActivity extends Activity {
 		@Override
 		protected void onDraw(Canvas canvas) {
 
-			int sizeX = this.getWidth() - offsetX * 2;
-			int sizeY = this.getHeight() - offsetY * 2;
-			
 			// background
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
 			Rect r = new Rect(0, 0, this.getWidth(), this.getHeight());
 			canvas.drawRect(r, paint);
 
-			LineChart lineChart = new LineChart(sizeX, sizeY);
-			lineChart.addSeries(elevationSeries);
-			lineChart.addSeries(speedSeries);
-			lineChart.draw(canvas);
+			TrackChart trackChart = new TrackChart(this);
+			trackChart.addSeries(elevationSeries);
+			trackChart.addSeries(speedSeries);
+			trackChart.draw(canvas);
 			
 		}
 
