@@ -35,6 +35,14 @@ public class Series {
 	}
 	
 	public void addPoint(Point p) {
+
+		this.setMinMax(p);
+		
+		points.add(p);
+		
+	}
+	
+	private void setMinMax(Point p) {
 		
 		if (p.getValueX() < minValueX) {
 			minValueX = p.getValueX(); 
@@ -51,8 +59,6 @@ public class Series {
 		if (p.getValueY() > maxValueY) {
 			maxValueY = p.getValueY(); 
 		}
-		
-		points.add(p);
 		
 	}
 	
