@@ -12,10 +12,18 @@ public class Series {
 	private float minValueY = Float.POSITIVE_INFINITY;
 	private float maxValueY = Float.NEGATIVE_INFINITY;
 	
-	public Series() {
+	private int color;
+	
+	public Series(int c) {
+		
+		this.color = c;
 		
 		this.points = new ArrayList<Point>(); 
 		
+	}
+	
+	public int getColor() {
+		return color;
 	}
 	
 	public void addPoint(Point p) {
