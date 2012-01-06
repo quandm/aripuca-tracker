@@ -1,6 +1,7 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.chart.LineChart;
 import com.aripuca.tracker.chart.Point;
 import com.aripuca.tracker.chart.Series;
 
@@ -52,8 +53,8 @@ public class TrackChartActivity extends Activity {
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
-		elevationSeries = new Series();
-		speedSeries = new Series();
+		elevationSeries = new Series(Color.RED);
+		speedSeries = new Series(Color.BLUE);
 
 		while (cursor.isAfterLast() == false) {
 			
@@ -62,7 +63,6 @@ public class TrackChartActivity extends Activity {
 			float speed = cursor.getFloat(cursor.getColumnIndex("speed"));
 
 			elevationSeries.addPoint(new Point(distance, elevation));
-			
 			speedSeries.addPoint(new Point(distance, speed));
 			
 			cursor.moveToNext();
@@ -74,15 +74,9 @@ public class TrackChartActivity extends Activity {
 
 	private class SampleView extends View {
 
-		private int sizeX;
-		private int sizeY;
 		private int offsetX = 20;
 		private int offsetY = 20;
-		private float scaleX;
-		private float scaleY;
-		private float scaleX1;
-		private float scaleY1;
-
+		
 		public SampleView(Context context) {
 			super(context);
 
@@ -91,66 +85,20 @@ public class TrackChartActivity extends Activity {
 		@Override
 		protected void onDraw(Canvas canvas) {
 
-			sizeX = this.getWidth() - offsetX * 2;
-			sizeY = this.getHeight() - offsetY * 2;
-
-			Log.d(Constants.TAG, "sizeX " + sizeX);
-			Log.d(Constants.TAG, "sizeY " + sizeY);
-
-			Log.d(Constants.TAG, "elevationSeries.getRangeX() " + elevationSeries.getRangeX());
-			Log.d(Constants.TAG, "elevationSeries.getRangeY() " + elevationSeries.getRangeY());
-
-			scaleX = sizeX / elevationSeries.getRangeX();
-			scaleY = sizeY / elevationSeries.getRangeY();
-
-			scaleX1 = sizeX / speedSeries.getRangeX();
-			scaleY1 = sizeY / speedSeries.getRangeY();
+			int sizeX = this.getWidth() - offsetX * 2;
+			int sizeY = this.getHeight() - offsetY * 2;
 			
-			Log.d(Constants.TAG, "scaleX " + scaleX);
-			Log.d(Constants.TAG, "scaleY " + scaleY);
-
-			Paint paint = new Paint();
-
-			//canvas.translate(offsetX, offsetY);
-
-			canvas.drawColor(Color.WHITE);
-
 			// background
+			Paint paint = new Paint();
 			paint.setColor(Color.BLACK);
 			Rect r = new Rect(0, 0, this.getWidth(), this.getHeight());
 			canvas.drawRect(r, paint);
 
-			// axes labels
-
-			// chart
-			paint.setColor(Color.RED);
-			paint.setStrokeWidth(2);
-
-			for (int i = 0; i < elevationSeries.getCount(); i++) {
-				Point p = elevationSeries.getPoint(i);
-				canvas.drawPoint(offsetX + p.getValueX() * scaleX,
-						sizeY + offsetY - (p.getValueY() - elevationSeries.getMinY()) * scaleY, paint);
-			}
-
+			LineChart lineChart = new LineChart(sizeX, sizeY);
+			lineChart.addSeries(elevationSeries);
+			lineChart.addSeries(speedSeries);
+			lineChart.draw(canvas);
 			
-			paint.setColor(Color.BLUE);
-
-			for (int i = 0; i < speedSeries.getCount(); i++) {
-				Point p = speedSeries.getPoint(i);
-				canvas.drawPoint(offsetX + p.getValueX() * scaleX1,
-						sizeY + offsetY - (p.getValueY() - speedSeries.getMinY()) * scaleY1, paint);
-			}
-			
-			// axes
-			paint.setColor(Color.WHITE);
-			paint.setStrokeWidth(2);
-			canvas.drawLine(offsetX, offsetY, offsetX, offsetY + sizeY, paint);
-			canvas.drawLine(offsetX, offsetY + sizeY, offsetX + sizeX, offsetY + sizeY, paint);
-
-			paint.setColor(Color.WHITE);
-			paint.setTextSize(15);
-			canvas.drawText(getString(R.string.distance), this.getWidth()/2 - 20, sizeY+offsetY+15, paint);
-
 		}
 
 	}
