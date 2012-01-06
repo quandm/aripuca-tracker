@@ -22,7 +22,7 @@ public class Utils {
 	public final static long ONE_HOUR = ONE_MINUTE * 60;
 	public final static long HOURS = 24;
 	public final static long ONE_DAY = ONE_HOUR * 24;
-	
+
 	public static final char DEGREE_CHAR = (char) 0x00B0;
 	public static final char PLUSMINUS_CHAR = (char) 0x00B1;
 
@@ -88,7 +88,7 @@ public class Utils {
 			if (value > 100000) {
 				return Utils.formatNumber(value / 1000, 1);
 			}
-			
+
 			// convert to km
 			if (value > 1000) {
 				return Utils.formatNumber(value / 1000, 2, 1);
@@ -104,7 +104,7 @@ public class Utils {
 			if (value > 100 * MI_TO_M) {
 				return Utils.formatNumber(value / 1000, 1);
 			}
-			
+
 			// convert to miles
 			if (value > MI_TO_M) {
 				return Utils.formatNumber(value / MI_TO_M, 2, 1);
@@ -121,7 +121,7 @@ public class Utils {
 	public static String getLocalaziedDistanceUnit(Context context, float value, String unit) {
 
 		if (unit.equals("km")) {
-			
+
 			if (value > 1000) {
 				return context.getString(R.string.km);
 			}
@@ -238,7 +238,7 @@ public class Utils {
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FORMAT COORDINATES
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public static String formatLat(double lat, int outputType) {
 
 		String direction = "N";
@@ -254,7 +254,7 @@ public class Utils {
 	public static String formatLat(double lat) {
 		return formatLat(lat, Location.FORMAT_DEGREES);
 	}
-	
+
 	public static String formatLng(double lng, int outputType) {
 
 		String direction = "E";
@@ -270,7 +270,6 @@ public class Utils {
 	public static String formatLng(double lng) {
 		return formatLng(lng, Location.FORMAT_DEGREES);
 	}
-	
 
 	/**
 	 * Formats coordinate value to string based on output type (modified version
@@ -280,7 +279,7 @@ public class Utils {
 
 		StringBuilder sb = new StringBuilder();
 		char endChar = DEGREE_CHAR;
-		
+
 		DecimalFormat df = new DecimalFormat("###.######");
 		if (outputType == Location.FORMAT_MINUTES || outputType == Location.FORMAT_SECONDS) {
 
@@ -426,7 +425,7 @@ public class Utils {
 
 		return field.getDeclination();
 	}
-	
+
 	/**
 	 * Converts time (in milliseconds) to human-readable format
 	 * "<w> days, <x> hours, <y> minutes and (z) seconds"
@@ -438,9 +437,9 @@ public class Utils {
 		long temp = 0;
 
 		if (duration >= ONE_SECOND) {
-			
+
 			temp = duration / ONE_DAY;
-			
+
 			if (temp > 0) {
 				duration -= temp * ONE_DAY;
 				res.append(temp).append(" day").append(temp > 1 ? "s" : "")
@@ -468,15 +467,15 @@ public class Utils {
 			if (temp > 0) {
 				res.append(temp).append(" second").append(temp > 1 ? "s" : "");
 			}
-			
+
 			return res.toString();
-			
+
 		} else {
-			
+
 			return "0 second";
 		}
 	}
-	
+
 	/**
 	 * Converts time (in milliseconds) to human-readable format (localized)
 	 * "<w> days, <x> hours, <y> minutes and (z) seconds"
@@ -488,9 +487,9 @@ public class Utils {
 		long temp = 0;
 
 		if (duration >= ONE_SECOND) {
-			
+
 			temp = duration / ONE_DAY;
-			
+
 			if (temp > 0) {
 				duration -= temp * ONE_DAY;
 				res.append(temp).append(" ").append(context.getString(R.string.days))
@@ -518,15 +517,34 @@ public class Utils {
 			if (temp > 0) {
 				res.append(temp).append(" ").append(context.getString(R.string.seconds));
 			}
-			
+
 			return res.toString();
-			
+
 		} else {
-			
-			return "0 "+context.getString(R.string.seconds);
+
+			return "0 " + context.getString(R.string.seconds);
 		}
 	}
-	
-	
 
+	public static int roundToNearest(int number, int place)
+	{
+		int i = 1;
+		if (place <= 0) {
+			return number;
+		}
+
+		while (place > 0) {
+			i = i * 10;
+			place--;
+		}
+
+		int r = number % i;
+		if (r < (i / 2)) {
+			return number - r;
+		}
+		else {
+			return number - r + i;
+		}
+		
+	}
 }
