@@ -3,6 +3,8 @@ package com.aripuca.tracker.chart;
 import java.util.ArrayList;
 
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.util.Utils;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 public class AbstractChart {
@@ -76,6 +79,10 @@ public class AbstractChart {
 	protected void drawLegend(Canvas canvas) {
 
 	}
+	
+	protected void drawAxisXLabels(Canvas canvas) {
+
+	}
 
 	public void draw(Canvas canvas) {
 
@@ -88,6 +95,8 @@ public class AbstractChart {
 		this.drawTitle(canvas);
 
 		this.drawLegend(canvas);
+		
+		this.drawAxisXLabels(canvas);
 
 	}
 
