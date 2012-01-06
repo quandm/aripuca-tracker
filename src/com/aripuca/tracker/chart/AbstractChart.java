@@ -7,6 +7,7 @@ import com.aripuca.tracker.R;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 
 public class AbstractChart {
@@ -60,6 +61,21 @@ public class AbstractChart {
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(15);
 		canvas.drawText("Distance", sizeX / 2, sizeY + offsetY + 15, paint);
+		
+		paint.setColor(Color.RED);
+	
+		Path path = new Path();
+		path.moveTo(offsetX/2+3, sizeY/2 + paint.measureText("Elevation") + 10);
+		path.lineTo(offsetX/2+3, sizeY/2);
+		canvas.drawTextOnPath("Elevation", path, 0, 0, paint);
+
+		paint.setColor(Color.BLUE);
+		
+		path = new Path();
+		path.moveTo(offsetX/2+3, sizeY/2);
+		path.lineTo(offsetX/2+3, sizeY/2 - paint.measureText("Speed") - 10);
+		canvas.drawTextOnPath("Speed", path, 0, 0, paint);
+		
 
 	}
 
