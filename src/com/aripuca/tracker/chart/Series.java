@@ -14,9 +14,13 @@ public class Series {
 	
 	private int color;
 	
-	public Series(int c) {
+	private String label;
+	
+	public Series(int c, String l) {
 		
 		this.color = c;
+		
+		this.label = l;
 		
 		this.points = new ArrayList<Point>(); 
 		
@@ -24,6 +28,10 @@ public class Series {
 	
 	public int getColor() {
 		return color;
+	}
+	
+	public String getLabel() {
+		return label;
 	}
 	
 	public void addPoint(Point p) {
