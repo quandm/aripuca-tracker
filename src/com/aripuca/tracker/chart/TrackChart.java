@@ -6,42 +6,48 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Paint.Align;
 import android.view.View;
 
 public class TrackChart extends AbstractChart {
 
-	public TrackChart(View view) {
-
-		super(view);
-
+	public TrackChart(View v, String t) {
+		super(v, t);
 	}
 
 	@Override
 	protected void drawLabels(Canvas canvas) {
 
-		Paint paint = new Paint();
+/*		Paint paint = new Paint();
 
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(15);
+		paint.setTextAlign(Align.CENTER);
 		canvas.drawText(chartView.getContext().getString(R.string.distance),
-				sizeX / 2 + offsetX - paint.measureText(chartView.getContext().getString(R.string.distance)) / 2,
-				sizeY + offsetY + 15, paint);
+				sizeX / 2 + offsetX, sizeY + offsetY + 15, paint);
 
-		paint.setColor(Color.RED);
+*/
 
-/*		Path path = new Path();
-		path.moveTo(offsetX / 2 + 3,
-				sizeY / 2 + paint.measureText(chartView.getContext().getString(R.string.elevation)) + 10);
-		path.lineTo(offsetX / 2 + 3, sizeY / 2);
-		canvas.drawTextOnPath(chartView.getContext().getString(R.string.elevation), path, 0, 0, paint);
-
-		paint.setColor(Color.BLUE);
-
-		path = new Path();
-		path.moveTo(offsetX / 2 + 3, sizeY / 2);
-		path.lineTo(offsetX / 2 + 3, sizeY / 2 - paint.measureText(chartView.getContext().getString(R.string.speed))
-				- 10);
-		canvas.drawTextOnPath(chartView.getContext().getString(R.string.speed), path, 0, 0, paint); */
+		/*
+		 * Path path = new Path();
+		 * path.moveTo(offsetX / 2 + 3,
+		 * sizeY / 2 +
+		 * paint.measureText(chartView.getContext().getString(R.string
+		 * .elevation)) + 10);
+		 * path.lineTo(offsetX / 2 + 3, sizeY / 2);
+		 * canvas.drawTextOnPath(chartView.getContext().getString(R.string.elevation
+		 * ), path, 0, 0, paint);
+		 * 
+		 * paint.setColor(Color.BLUE);
+		 * 
+		 * path = new Path();
+		 * path.moveTo(offsetX / 2 + 3, sizeY / 2);
+		 * path.lineTo(offsetX / 2 + 3, sizeY / 2 -
+		 * paint.measureText(chartView.getContext().getString(R.string.speed))
+		 * - 10);
+		 * canvas.drawTextOnPath(chartView.getContext().getString(R.string.speed)
+		 * , path, 0, 0, paint);
+		 */
 
 	}
 
@@ -72,15 +78,15 @@ public class TrackChart extends AbstractChart {
 
 		Paint paint = new Paint();
 
+		paint.setTextSize(17);
+		paint.setAntiAlias(true);
+		paint.setTextAlign(Align.RIGHT);
+		
 		for (int i = 0; i < series.size(); i++) {
-
 			paint.setColor(series.get(i).getColor());
-			paint.setTextSize(16);
-
 			canvas.drawText(series.get(i).getLabel(),
-					sizeX - offsetX - paint.measureText(series.get(i).getLabel()),
-					offsetY + 5 + i * 17, paint);
-
+					sizeX + offsetX,
+					offsetY*2 + i * 18, paint);
 		}
 
 	}

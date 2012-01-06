@@ -88,7 +88,7 @@ public class TrackChartActivity extends Activity {
 			Rect r = new Rect(0, 0, this.getWidth(), this.getHeight());
 			canvas.drawRect(r, paint);
 
-			TrackChart trackChart = new TrackChart(this);
+			TrackChart trackChart = new TrackChart(this, "Elevation/speed over distance");
 			trackChart.addSeries(elevationSeries);
 			trackChart.addSeries(speedSeries);
 			trackChart.draw(canvas);
