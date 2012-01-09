@@ -1249,7 +1249,7 @@ public class MainActivity extends Activity {
 						+ Utils.formatDistance(accuracy, distanceUnit));
 			}
 			if (findViewById(R.id.accuracyUnit) != null) {
-				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalaziedDistanceUnit(this, accuracy,
+				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalizedDistanceUnit(this, accuracy,
 						distanceUnit));
 			}
 		}
@@ -1393,7 +1393,7 @@ public class MainActivity extends Activity {
 		}
 
 		if (findViewById(R.id.distanceUnit) != null) {
-			((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalaziedDistanceUnit(this, gpsService
+			((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalizedDistanceUnit(this, gpsService
 					.getTrackRecorder().getTrack().getDistance(), distanceUnit));
 		}
 

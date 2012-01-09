@@ -52,8 +52,8 @@ public class TrackChartActivity extends Activity {
 
 		this.createSeries();
 	    
-	    trackChartView.elevationSeries = elevationSeries;
-	    trackChartView.speedSeries = speedSeries;    
+	    trackChartView.setElevationSeries(elevationSeries);
+	    trackChartView.setSpeedSeries(speedSeries);    
 	    
 	    LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 	    layout.addView(trackChartView, params);
