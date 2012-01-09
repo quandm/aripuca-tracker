@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Series {
 
-	private ArrayList<Point> points;
+	private ArrayList<ChartPoint> points;
 	
 	private float minValueX = Float.POSITIVE_INFINITY;
 	private float maxValueX = Float.NEGATIVE_INFINITY;
@@ -22,7 +22,7 @@ public class Series {
 		
 		this.label = l;
 		
-		this.points = new ArrayList<Point>(); 
+		this.points = new ArrayList<ChartPoint>(); 
 		
 	}
 	
@@ -34,7 +34,7 @@ public class Series {
 		return label;
 	}
 	
-	public void addPoint(Point p) {
+	public void addPoint(ChartPoint p) {
 
 		this.setMinMax(p);
 		
@@ -42,7 +42,7 @@ public class Series {
 		
 	}
 	
-	private void setMinMax(Point p) {
+	private void setMinMax(ChartPoint p) {
 		
 		if (p.getValueX() < minValueX) {
 			minValueX = p.getValueX(); 
@@ -62,7 +62,7 @@ public class Series {
 		
 	}
 	
-	public Point getPoint(int index) {
+	public ChartPoint getPoint(int index) {
 		
 		return points.get(index);
 		
@@ -87,9 +87,13 @@ public class Series {
 	}
 	
 	public float getMinX() {
-		return maxValueX;
+		return minValueX;
 	}
 
+	public float getMaxX() {
+		return maxValueX;
+	}
+	
 	public float getMinY() {
 		return minValueY;
 	}
