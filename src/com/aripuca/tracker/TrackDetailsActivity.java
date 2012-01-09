@@ -226,7 +226,7 @@ public class TrackDetailsActivity extends Activity {
 		float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
 		// localized distance unit depends on distance value  
-		String distanceUnitLocalized = Utils.getLocalaziedDistanceUnit(TrackDetailsActivity.this, distance, distanceUnit);
+		String distanceUnitLocalized = Utils.getLocalizedDistanceUnit(TrackDetailsActivity.this, distance, distanceUnit);
 		
 		// average speed
 		float averageSpeed = 0;

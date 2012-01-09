@@ -97,5 +97,9 @@ public class Series {
 	public float getMinY() {
 		return minValueY;
 	}
+
+	public float getMaxY() {
+		return maxValueY;
+	}
 	
 }

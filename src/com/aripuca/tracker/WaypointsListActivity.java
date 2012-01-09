@@ -194,7 +194,7 @@ public class WaypointsListActivity extends ListActivity {
 					String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 
 					distStr = Utils.formatDistance(distanceTo, distanceUnit) + " "
-							+ Utils.getLocalaziedDistanceUnit(WaypointsListActivity.this, distanceTo, distanceUnit);
+							+ Utils.getLocalizedDistanceUnit(WaypointsListActivity.this, distanceTo, distanceUnit);
 
 					wp.setDistanceTo(distanceTo);
 

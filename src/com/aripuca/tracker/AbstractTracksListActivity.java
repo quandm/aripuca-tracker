@@ -153,7 +153,7 @@ public class AbstractTracksListActivity extends ListActivity {
 			float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
 			String distanceStr = Utils.formatDistance(distance, distanceUnit)
-					+ Utils.getLocalaziedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
+					+ Utils.getLocalizedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
 
 			String elevationUnits = myApp.getPreferences().getString("elevation_units", "m");
 

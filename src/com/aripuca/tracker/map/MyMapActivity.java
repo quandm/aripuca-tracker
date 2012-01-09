@@ -302,7 +302,7 @@ public class MyMapActivity extends MapActivity {
 
 			// track distance
 			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit)
-					+ Utils.getLocalaziedDistanceUnit(this, distance, distanceUnit));
+					+ Utils.getLocalizedDistanceUnit(this, distance, distanceUnit));
 
 			cursor.close();
 

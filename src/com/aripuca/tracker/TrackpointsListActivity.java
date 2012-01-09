@@ -174,7 +174,7 @@ public class TrackpointsListActivity extends ListActivity {
 					float distanceTo = currentLocation.distanceTo(wp.getLocation());
 
 					distStr = Utils.formatDistance(distanceTo, distanceUnit)
-							+ Utils.getLocalaziedDistanceUnit(TrackpointsListActivity.this, distanceTo, distanceUnit);
+							+ Utils.getLocalizedDistanceUnit(TrackpointsListActivity.this, distanceTo, distanceUnit);
 
 					wp.setDistanceTo(distanceTo);
 
@@ -202,7 +202,7 @@ public class TrackpointsListActivity extends ListActivity {
 						+ Utils.getLocalizedElevationUnit(TrackpointsListActivity.this, elevationUnit);
 
 				accuracyStr = Utils.PLUSMINUS_CHAR + Utils.formatDistance(wp.getAccuracy(), distanceUnit)
-						+ Utils.getLocalaziedDistanceUnit(TrackpointsListActivity.this, wp.getAccuracy(), distanceUnit);
+						+ Utils.getLocalizedDistanceUnit(TrackpointsListActivity.this, wp.getAccuracy(), distanceUnit);
 
 				// speedStr = Utils.formatSpeed(speed, speedUnit) +
 				// Utils.getLocalizedSpeedUnit(TrackpointsListActivity.this,
