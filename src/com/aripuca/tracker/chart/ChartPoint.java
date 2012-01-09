@@ -1,15 +1,13 @@
 package com.aripuca.tracker.chart;
 
-public class Point {
+public class ChartPoint {
 	
 	private float valueX; 
 	private float valueY; 
 
-	public Point(float x, float y) {
-		
+	public ChartPoint(float x, float y) {
 		valueX = x;
 		valueY = y;
-		
 	}
 	
 	public float getValueX() {
@@ -19,5 +17,5 @@ public class Point {
 	public float getValueY() {
 		return valueY;
 	}
-	
+
 }
