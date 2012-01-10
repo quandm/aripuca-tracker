@@ -71,8 +71,8 @@ public class TrackChartActivity extends Activity {
 		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
-		elevationSeries = new Series(0xFFFF0000, getString(R.string.elevation));
-		speedSeries = new Series(0xFF0000FF, getString(R.string.speed));
+		elevationSeries = new Series(0xFFF2811D, getString(R.string.elevation));
+		speedSeries = new Series(0xFFA2BF39, getString(R.string.speed));
 
 		while (cursor.isAfterLast() == false) {
 			
