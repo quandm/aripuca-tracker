@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="preferExternal"
     package="com.aripuca.tracker"
-    android:versionCode="10"
-    android:versionName="1.1.5" >
+    android:versionCode="11"
+    android:versionName="1.1.6" >
 
     <uses-sdk
         android:minSdkVersion="4"
@@ -11,7 +11,7 @@
 
     <application
         android:name=".MyApp"
-        android:debuggable="true"
+        android:debuggable="false"
         android:icon="@drawable/icon"
         android:label="@string/main_app_title" >
         <uses-library android:name="com.google.android.maps" />
