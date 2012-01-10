@@ -3,15 +3,14 @@ package com.aripuca.tracker.chart;
 import java.util.ArrayList;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.TrackDetailsActivity;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
+
 import android.graphics.Paint;
-import android.graphics.Path;
+
 import android.graphics.Paint.Align;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -113,20 +112,20 @@ public class TrackChart {
 
 		// elevation
 		paint.setColor(series.get(0).getColor());
-		canvas.drawText(series.get(0).getLabel() + ", " + elevationUnitLocalized, offsetLeft + sizeX / 3, offsetTop / 2,
-				paint);
+		canvas.drawText(series.get(0).getLabel() + ", " + elevationUnitLocalized, offsetLeft + sizeX / 3,
+				offsetTop / 2, paint);
 
 		// speed
 		paint.setColor(series.get(1).getColor());
-		canvas.drawText(series.get(1).getLabel() + ", " + speedUnitLocalized, offsetLeft + sizeX / 3 * 2, offsetTop / 2,
-				paint);
+		canvas.drawText(series.get(1).getLabel() + ", " + speedUnitLocalized, offsetLeft + sizeX / 3 * 2,
+				offsetTop / 2, paint);
 
-		distanceUnitLocalized = Utils.getLocalizedDistanceUnit(chartView.getContext(), series.get(0).getMaxX(), distanceUnit);
-		
-		paint.setColor(0xFFDDDDDD);
-		canvas.drawText(chartView.getContext().getString(R.string.distance) + ", " + distanceUnitLocalized, offsetLeft + sizeX
-				/ 2, offsetTop + sizeY
-				+ offsetBottom - 5, paint);
+		distanceUnitLocalized = Utils.getLocalizedDistanceUnit(chartView.getContext(), series.get(0).getMaxX(),
+				distanceUnit);
+
+		paint.setColor(0xFFCCCCCC);
+		canvas.drawText(chartView.getContext().getString(R.string.distance) + ", " + distanceUnitLocalized, offsetLeft
+				+ sizeX / 2, offsetTop + sizeY + offsetBottom - 5, paint);
 
 	}
 
@@ -199,8 +198,7 @@ public class TrackChart {
 
 				paint.setColor(0x33AAAAAA);
 				canvas.drawLine(offsetLeft, sizeY + offsetTop - i * step1 * scaleY1, offsetLeft + sizeX, sizeY
-						+ offsetTop
-						- i * step1 * scaleY1, paint);
+						+ offsetTop - i * step1 * scaleY1, paint);
 
 			}
 
@@ -222,9 +220,6 @@ public class TrackChart {
 
 		// y axis
 		canvas.drawLine(offsetLeft, offsetTop - 10, offsetLeft, offsetTop + sizeY + 5, paint);
-
-		// y axis
-		//		canvas.drawLine(offsetLeft + sizeX, offsetTop - 10, offsetLeft + sizeX, offsetTop + sizeY, paint);
 
 		// x axis
 		canvas.drawLine(offsetLeft - 5, offsetTop + sizeY, offsetLeft + sizeX + 5, offsetTop + sizeY, paint);

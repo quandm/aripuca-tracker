@@ -68,7 +68,7 @@ public class GpsService extends Service {
 	 * listening for location updates flag
 	 */
 	private boolean listening;
-	
+
 	/**
 	 * sets to true once first location update received
 	 */
@@ -149,8 +149,8 @@ public class GpsService extends Service {
 		@Override
 		public void onLocationChanged(Location location) {
 
-			Log.i(Constants.TAG, "scheduledLocationListener: "+location.getAccuracy());
-			
+			Log.i(Constants.TAG, "scheduledLocationListener: " + location.getAccuracy());
+
 			// first location update received
 			schedulerListening = true;
 
@@ -162,8 +162,7 @@ public class GpsService extends Service {
 
 				// let's broadcast location data to any activity waiting for
 				// updates
-				broadcastLocationUpdate(location, Constants.GPS_PROVIDER,
-						Constants.ACTION_SCHEDULED_LOCATION_UPDATES);
+				broadcastLocationUpdate(location, Constants.GPS_PROVIDER, Constants.ACTION_SCHEDULED_LOCATION_UPDATES);
 
 				// location of acceptable accuracy received - stop GPS
 				stopScheduledLocationUpdates();
@@ -178,8 +177,11 @@ public class GpsService extends Service {
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
+
 					// schedule next location update
-					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
+					// if current location request was unsuccessful let's try
+					// again in 5 minutes (min request interval time)
+					scheduleNextLocationRequest(5 * 60);
 				}
 
 			}
@@ -375,7 +377,7 @@ public class GpsService extends Service {
 	public void startLocationUpdates() {
 
 		this.listening = false;
-		
+
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
 		// setting gpsInUse to true, but listening is still false at this point
@@ -414,13 +416,13 @@ public class GpsService extends Service {
 	 */
 	public void startScheduledLocationUpdates() {
 
-//		myApp.log("startScheduledLocationUpdates");
-		
-		this.schedulerListening = false;		
-		
+		// myApp.log("startScheduledLocationUpdates");
+
+		this.schedulerListening = false;
+
 		// control the time of location request before any updates received
 		this.scheduleNextRequestTimeLimitCheck();
-		
+
 		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, scheduledLocationListener);
 	}
 
@@ -428,7 +430,7 @@ public class GpsService extends Service {
 	 * stop scheduler location updates
 	 */
 	public void stopScheduledLocationUpdates() {
-		//this.schedulerListening = false;		
+		// this.schedulerListening = false;
 		this.locationManager.removeUpdates(scheduledLocationListener);
 	}
 
@@ -444,22 +446,22 @@ public class GpsService extends Service {
 		this.sensorManager.unregisterListener(sensorListener);
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * 
 	 */
 	private PendingIntent nextLocationRequestSender;
-	
+
 	/**
 	 * 
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
-//		myApp.log("scheduleNextLocationRequest");
-		
+		// myApp.log("scheduleNextLocationRequest");
+
 		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
 		nextLocationRequestSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
@@ -472,7 +474,7 @@ public class GpsService extends Service {
 		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), nextLocationRequestSender);
 
 	}
-	
+
 	private BroadcastReceiver nextLocationRequestReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -491,23 +493,23 @@ public class GpsService extends Service {
 		}
 	};
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * 
 	 */
 	private PendingIntent nextTimeLimitCheckSender;
-	
+
 	/**
 	 * 
 	 */
 	private void scheduleNextRequestTimeLimitCheck() {
 
-//		myApp.log("scheduleNextRequestTimeLimitCheck");
+		// myApp.log("scheduleNextRequestTimeLimitCheck");
 		Log.d(Constants.TAG, "scheduleNextRequestTimeLimitCheck");
-		
+
 		Intent intent = new Intent(Constants.ACTION_NEXT_TIME_LIMIT_CHECK);
 		nextTimeLimitCheckSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
 
@@ -527,40 +529,43 @@ public class GpsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			Log.d(Constants.TAG, "nextTimeLimitCheckReceiver "+schedulerListening);
-			
+			Log.d(Constants.TAG, "nextTimeLimitCheckReceiver " + schedulerListening);
+
 			if (!schedulerListening) {
 
 				Log.d(Constants.TAG, "nextTimeLimitCheckReceiver FALSE");
-				
-//				myApp.log("CHECK REQUEST TIME LIMIT");
-				
+
+				// myApp.log("CHECK REQUEST TIME LIMIT");
+
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
 					Log.d(Constants.TAG, "CANCEL REQUEST");
-//					myApp.log("CANCEL REQUEST");
-					
-					// canceling current location update request 
-					
+					// myApp.log("CANCEL REQUEST");
+
+					// canceling current location update request
+
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
+
 					// schedule next location update
-					scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
-					
+					// if current location request was unsuccessful let's try
+					// again in 5 minutes (min request interval time)
+					scheduleNextLocationRequest(5 * 60);
+
 				} else {
 					// check request time limit in 5 seconds
 					scheduleNextRequestTimeLimitCheck();
 				}
-				
+
 			}
-			
+
 		}
 	};
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////////////////////
+
 	public void startScheduler() {
 
 		this.scheduledTrackRecorder.start();
@@ -587,7 +592,7 @@ public class GpsService extends Service {
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		alarmManager.cancel(nextLocationRequestSender);
 		alarmManager.cancel(nextTimeLimitCheckSender);
-		
+
 		this.locationManager.removeUpdates(scheduledLocationListener);
 
 		this.clearNotification();
@@ -668,5 +673,5 @@ public class GpsService extends Service {
 
 		}
 	}
-	
+
 }
