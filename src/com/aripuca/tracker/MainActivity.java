@@ -370,10 +370,13 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Log.i(Constants.TAG, "MainActivity: onCreate");
-
+		
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
+		//DEBUG
+		myApp.logd("MainActivity.onCreate");
+		
 		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		initializeHiddenPreferences();
@@ -458,6 +461,7 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.i(Constants.TAG, "MainActivity: onPause");
+		myApp.logd("MainActivity.onPause");
 
 		this.tryUnregisterReceiver(compassBroadcastReceiver);
 		this.tryUnregisterReceiver(locationBroadcastReceiver);
@@ -478,6 +482,8 @@ public class MainActivity extends Activity {
 
 		} else {
 
+			myApp.logd("MainActivity.onPause Finishing");
+			
 			// activity will be destroyed and not recreated
 			if (gpsService != null) {
 				
@@ -520,6 +526,7 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 
 		Log.i(Constants.TAG, "MainActivity: onDestroy");
+		myApp.logd("MainActivity.onDestroy");
 
 		gpsServiceConnection = null;
 

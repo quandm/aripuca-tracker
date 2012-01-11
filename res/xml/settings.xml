@@ -213,6 +213,8 @@
             android:title="@string/min_distance_title" >
         </ListPreference>
     </PreferenceScreen>
-    <PreferenceScreen android:title="Development"><ListPreference android:title="@string/logging_level" android:key="logging_level" android:summary="@string/logging_level_summary" android:entries="@array/logging_level_labels" android:entryValues="@array/logging_level_values" android:defaultValue="0" /></PreferenceScreen>
+    <PreferenceScreen android:title="Development"><ListPreference android:title="@string/logging_level" android:key="logging_level" android:summary="@string/logging_level_summary" android:entries="@array/logging_level_labels" android:entryValues="@array/logging_level_values" android:defaultValue="0" />
+    <CheckBoxPreference android:title="Debugging" android:key="debug_on" android:defaultValue="false"/>
+</PreferenceScreen>
 
 </PreferenceScreen>

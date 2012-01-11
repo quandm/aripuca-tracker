@@ -7,7 +7,6 @@ public class TracksListActivity extends AbstractTracksListActivity {
 
 	// instance initialization block
 	{
-		sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND (activity=0 OR activity IS NULL)";
 		listItemResourceId = R.layout.track_list_item;
 	}
 
@@ -32,6 +31,17 @@ public class TracksListActivity extends AbstractTracksListActivity {
 		// delete from tracks table
 		sql = "DELETE FROM tracks WHERE activity=0 OR activity IS NULL";
 		myApp.getDatabase().execSQL(sql);
+		
+	}
+
+	@Override
+	protected void setQuery() {
+		
+		if (myApp.getPreferences().getBoolean("debug_on", false )) {
+			sqlSelectAllTracks = "SELECT * FROM tracks WHERE (activity=0 OR activity IS NULL)";
+		} else {
+			sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND (activity=0 OR activity IS NULL)";
+		}
 		
 	}
 	

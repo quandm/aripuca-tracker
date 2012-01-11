@@ -12,10 +12,11 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.SystemClock;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 /**
- * Scheduled track recording class 
+ * Scheduled track recording class
  */
 public class ScheduledTrackRecorder {
 
@@ -24,7 +25,7 @@ public class ScheduledTrackRecorder {
 	protected MyApp myApp;
 
 	protected long trackTimeStart;
-	
+
 	/**
 	 * wait time for GPS signal of acceptable accuracy
 	 */
@@ -33,13 +34,13 @@ public class ScheduledTrackRecorder {
 	/**
 	 * new scheduler session start time
 	 */
-	private long startTime; 
-	
+	private long startTime;
+
 	/**
 	 * new location request start time
 	 */
 	private long requestStartTime;
-	
+
 	/**
 	 * @return the startTime
 	 */
@@ -113,7 +114,7 @@ public class ScheduledTrackRecorder {
 
 		// interval between requests in seconds
 		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60;
-		
+
 		// milliseconds
 		requestWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
 
@@ -210,8 +211,8 @@ public class ScheduledTrackRecorder {
 
 	public void start() {
 
-		this.startTime = SystemClock.elapsedRealtime(); 
-				
+		this.startTime = SystemClock.elapsedRealtime();
+
 		this.initialize();
 
 		this.trackTimeStart = (new Date()).getTime();
@@ -229,16 +230,16 @@ public class ScheduledTrackRecorder {
 		this.updateNewTrack();
 
 	}
-	
+
 	/**
 	 * sets new location request time
 	 */
 	public void setRequestStartTime() {
 		requestStartTime = SystemClock.elapsedRealtime();
 	}
-	
+
 	/**
-	 * returns current location request start time 
+	 * returns current location request start time
 	 */
 	public long getRequestStartTime() {
 		return requestStartTime;
@@ -247,29 +248,32 @@ public class ScheduledTrackRecorder {
 	public long getMinDistance() {
 		return minDistance;
 	}
-	
+
 	/**
 	 * checking stopRecordingAfter time limit
 	 */
 	public boolean timeLimitReached() {
-		
+
 		if (stopRecordingAfter != 0 && startTime + stopRecordingAfter < SystemClock.elapsedRealtime()) {
-			return true;			
+			return true;
 		} else {
 			return false;
-		}		
-		
+		}
+
 	}
-	
+
 	public boolean requestTimeLimitReached() {
-		
+
+		myApp.logd("requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
+				+ Utils.formatInterval(SystemClock.elapsedRealtime(), true) + " Wait: "
+				+ Utils.formatInterval(requestWaitTime, true));
+
 		if (requestStartTime + requestWaitTime < SystemClock.elapsedRealtime()) {
 			return true;
 		} else {
 			return false;
 		}
-		
-		
+
 	}
 
 }

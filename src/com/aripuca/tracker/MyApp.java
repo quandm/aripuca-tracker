@@ -30,7 +30,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.text.format.DateFormat;
+
 import android.util.Log;
 import android.widget.Toast;
 

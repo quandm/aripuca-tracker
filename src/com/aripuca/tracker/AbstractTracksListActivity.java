@@ -202,6 +202,8 @@ public class AbstractTracksListActivity extends ListActivity {
 		myApp = ((MyApp) getApplicationContext());
 
 		registerForContextMenu(this.getListView());
+		
+		this.setQuery();
 
 		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
 
@@ -685,4 +687,8 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	}
 
+	protected void setQuery() {
+		
+	}
+	
 }
