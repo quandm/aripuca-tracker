@@ -30,8 +30,6 @@ public class ScheduledTrackRecorder {
 	 */
 	private long requestWaitTime;
 
-	private Location lastRecordedLocation = null;
-
 	/**
 	 * new scheduler session start time
 	 */
@@ -140,6 +138,7 @@ public class ScheduledTrackRecorder {
 		values.put("activity", 1);
 		values.put("recording", 1);
 		values.put("start_time", this.trackTimeStart);
+		values.put("finish_time", this.trackTimeStart);
 
 		try {
 			// setting track id
@@ -181,18 +180,7 @@ public class ScheduledTrackRecorder {
 	/**
 	 * records one track point on schedule
 	 */
-	public void recordTrackPoint(Location location) {
-
-		// minimum distance check
-		if (lastRecordedLocation != null && location.distanceTo(lastRecordedLocation) < minDistance) {
-			// wait for next location
-			return;
-		}
-
-		float distance = 0;
-		if (lastRecordedLocation != null) {
-			distance = location.distanceTo(lastRecordedLocation);
-		}
+	public void recordTrackPoint(Location location, float distance) {
 
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
@@ -211,9 +199,6 @@ public class ScheduledTrackRecorder {
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
-
-		// save last location for distance calculation
-		lastRecordedLocation = location;
 
 	}
 
@@ -259,6 +244,10 @@ public class ScheduledTrackRecorder {
 		return requestStartTime;
 	}
 
+	public long getMinDistance() {
+		return minDistance;
+	}
+	
 	/**
 	 * checking stopRecordingAfter time limit
 	 */

@@ -103,9 +103,7 @@ public class MainActivity extends Activity {
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
-			
-			myApp.logd("location");
-			
+
 			updateActivity();
 
 		}
@@ -122,12 +120,13 @@ public class MainActivity extends Activity {
 		if (findViewById(R.id.fixAge) != null) {
 
 			long fixAge = System.currentTimeMillis() - currentLocation.getTime();
-			
-			//TODO: for some reason currentLocation.getTime returns date in the future (started in January 2012)
-			if (fixAge<0) {
+
+			// TODO: for some reason currentLocation.getTime returns date in the
+			// future (started in January 2012)
+			if (fixAge < 0) {
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
 			}
-			
+
 			String t = Utils.timeToHumanReadableString(MainActivity.this, fixAge);
 			((TextView) findViewById(R.id.fixAge)).setText(String.format(getString(R.string.fix_age), t));
 		}
@@ -165,9 +164,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (myApp == null) {
-				return;
-			}
+			if (myApp == null) { return; }
 
 			Bundle bundle = intent.getExtras();
 
@@ -482,10 +479,18 @@ public class MainActivity extends Activity {
 		} else {
 
 			// activity will be destroyed and not recreated
+			if (gpsService != null) {
+				
+				// stop tracking if active
+				if (gpsService.getTrackRecorder().isRecording()) {
+					myApp.logd("MainActivity.onPause: Recording stopped by the system");
+					stopTracking();
+				}
 
-			// stop tracking if active
-			if (gpsService.getTrackRecorder().isRecording()) {
-				stopTracking();
+				if (gpsService.getScheduledTrackRecorder().isRecording()) {
+					myApp.logd("MainActivity.onPause: Scheduled recording stopped by the system");
+					gpsService.stopScheduler();
+				}
 			}
 
 		}
@@ -849,7 +854,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-				break;
+					break;
 				default:
 					addressStr = null;
 			}
@@ -1039,7 +1044,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-			break;
+				break;
 
 			default:
 				dialog = null;
@@ -1213,9 +1218,7 @@ public class MainActivity extends Activity {
 	 */
 	public void updateActivity() {
 
-		if (currentLocation == null || gpsService == null) {
-			return;
-		}
+		if (currentLocation == null || gpsService == null) { return; }
 
 		// ///////////////////////////////////////////////////////////////////
 		if (gpsService.isListening()) {
@@ -1299,9 +1302,7 @@ public class MainActivity extends Activity {
 	 */
 	private void updateTrackRecording() {
 
-		if (gpsService == null || !gpsService.getTrackRecorder().isRecording()) {
-			return;
-		}
+		if (gpsService == null || !gpsService.getTrackRecorder().isRecording()) { return; }
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
