@@ -167,6 +167,8 @@ public class GpsService extends Service {
 				// location of acceptable accuracy received - stop GPS
 				stopScheduledLocationUpdates();
 
+				myApp.logd("Scheduled location recorded. Accuracy: " + location.getAccuracy());
+				
 				// schedule next location update
 				scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
 
@@ -178,6 +180,8 @@ public class GpsService extends Service {
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
 
+					myApp.logd("Scheduled request cancelled: UNACCEPTABLE ACCURACY");
+					
 					// schedule next location update
 					// if current location request was unsuccessful let's try
 					// again in 5 minutes (min request interval time)
@@ -416,7 +420,7 @@ public class GpsService extends Service {
 	 */
 	public void startScheduledLocationUpdates() {
 
-		// myApp.log("startScheduledLocationUpdates");
+		myApp.logd("GpsService.startScheduledLocationUpdates");
 
 		this.schedulerListening = false;
 
@@ -430,7 +434,9 @@ public class GpsService extends Service {
 	 * stop scheduler location updates
 	 */
 	public void stopScheduledLocationUpdates() {
-		// this.schedulerListening = false;
+		
+		myApp.logd("GpsService.stopScheduledLocationUpdates");
+		
 		this.locationManager.removeUpdates(scheduledLocationListener);
 	}
 
@@ -460,7 +466,7 @@ public class GpsService extends Service {
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
-		// myApp.log("scheduleNextLocationRequest");
+		myApp.logd("GpsService.scheduleNextLocationRequest");
 
 		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
 		nextLocationRequestSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
@@ -484,6 +490,9 @@ public class GpsService extends Service {
 
 			// check scheduler global time limit
 			if (scheduledTrackRecorder.timeLimitReached()) {
+				
+				myApp.logd("Scheduled track recording stopped");
+				
 				stopScheduler();
 			} else {
 				// scheduling next location update
@@ -540,7 +549,8 @@ public class GpsService extends Service {
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
 					Log.d(Constants.TAG, "CANCEL REQUEST");
-					// myApp.log("CANCEL REQUEST");
+
+					myApp.logd("Scheduled request cancelled: NO GPS SIGNAL");
 
 					// canceling current location update request
 
