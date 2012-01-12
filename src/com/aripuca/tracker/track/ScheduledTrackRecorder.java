@@ -24,6 +24,8 @@ public class ScheduledTrackRecorder {
 
 	protected MyApp myApp;
 
+	private boolean recording = false;
+	
 	protected long trackTimeStart;
 
 	/**
@@ -85,7 +87,7 @@ public class ScheduledTrackRecorder {
 	/**
 	 * Id of the track being recorded
 	 */
-	private long trackId;
+	private long trackId = 0;
 
 	public long getTrackId() {
 		return this.trackId;
@@ -202,8 +204,6 @@ public class ScheduledTrackRecorder {
 		}
 
 	}
-
-	private boolean recording = false;
 
 	public boolean isRecording() {
 		return recording;

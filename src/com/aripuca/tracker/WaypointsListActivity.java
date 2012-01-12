@@ -184,6 +184,8 @@ public class WaypointsListActivity extends ListActivity {
 			float newAzimuth = 0;
 			float newBearing = 0;
 
+			String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+			
 			Waypoint wp = items.get(position);
 			if (wp != null) {
 
@@ -235,7 +237,8 @@ public class WaypointsListActivity extends ListActivity {
 							+ Utils.formatLng(wp.getLocation().getLongitude(),
 									Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
 							+ "|"
-							+ Utils.formatNumber(wp.getLocation().getAltitude(), 0) + "|" + bearingStr);
+							+ Utils.formatNumber(wp.getLocation().getAltitude(), 0) + "" + 
+							Utils.getLocalizedElevationUnit(WaypointsListActivity.this, elevationUnit)+"|" + bearingStr);
 				}
 
 				if (waypointDistance != null) {
@@ -358,6 +361,8 @@ public class WaypointsListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 
+		super.onResume();
+		
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter(Constants.ACTION_COMPASS_UPDATES));
 
@@ -368,7 +373,6 @@ public class WaypointsListActivity extends ListActivity {
 		// once bound gpsServiceBoundCallback will be called
 		this.bindGpsService();
 
-		super.onResume();
 	}
 
 	/**
