@@ -137,6 +137,8 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="min_distance_summary">Minimum distance between 2 recorded points</string>
     <string name="min_accuracy_title">Minimum accuracy</string>
     <string name="min_accuracy_summary">Minimum accuracy required for recording</string>
+    <string name="cant_delete_track_being_recorded">You can\'t delete the track which is being recorded</string>
+    <string name="cant_edit_track_being_recorded">You can\'t edit the track which is being recorded</string>
     <!-- Segmenting -->
     <string name="segments">Segments</string>
     <string name="prev_segment">Prev segment</string>
@@ -174,6 +176,7 @@ Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="all_waypoints_deleted">All waypoints deleted</string>
     <string name="waypoint_description">Waypoint description</string>
     <!-- Scheduled track recording -->
+    <string name="track_recording_in_progress">Track recording in progress</string>
     <string name="scheduled_track_recording_in_progress">Scheduled track recording in progress</string>
     <string name="wpt_title">Scheduled track recording</string>
     <string name="wpt_summary">Record track points on schedule and save battery power. No extra statistics recorded.</string>

@@ -6,13 +6,18 @@ import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.service.GpsService;
+import com.aripuca.tracker.track.ScheduledTrackRecorder;
+import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.util.Utils;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.ServiceConnection;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -20,6 +25,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -61,7 +67,7 @@ public class AbstractTracksListActivity extends ListActivity {
 	 * Select all tracks sql query
 	 */
 	protected String sqlSelectAllTracks;
-	
+
 	protected Boolean infoDisplayed = true;
 
 	/**
@@ -202,7 +208,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		myApp = ((MyApp) getApplicationContext());
 
 		registerForContextMenu(this.getListView());
-		
+
 		this.setQuery();
 
 		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
@@ -212,6 +218,29 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	}
 
+	/**
+	 * onResume event handler
+	 */
+	@Override
+	protected void onResume() {
+
+		super.onResume();
+
+		Log.v(Constants.TAG, "AbstractTracksListActivity onResume");
+
+	}
+
+	/**
+	 * onPause event handler
+	 */
+	@Override
+	protected void onPause() {
+
+		Log.v(Constants.TAG, "AbstractTracksListActivity onPause");
+
+		super.onPause();
+	}
+	
 	/**
 	 * 
 	 */
@@ -227,28 +256,6 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		super.onDestroy();
 
-	}
-
-	/**
-	 * onResume event handler
-	 */
-	@Override
-	protected void onResume() {
-
-		Log.v(Constants.TAG, "AbstractTracksListActivity onResume");
-
-		super.onResume();
-	}
-
-	/**
-	 * onPause event handler
-	 */
-	@Override
-	protected void onPause() {
-
-		Log.v(Constants.TAG, "AbstractTracksListActivity onPause");
-
-		super.onPause();
 	}
 
 	/**
@@ -271,6 +278,11 @@ public class AbstractTracksListActivity extends ListActivity {
 		switch (item.getItemId()) {
 
 			case R.id.deleteTracksMenuItem:
+
+				// check if track recording is in progress
+				if (isRecordingTrack()) {
+					return true;
+				}
 
 				// delete all tracks with confirmation dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -402,12 +414,30 @@ public class AbstractTracksListActivity extends ListActivity {
 
 			// edit track info
 			case 2:
+				
+				if (isRecordingTrack(info.id)) {
+					Toast.makeText(AbstractTracksListActivity.this, R.string.cant_edit_track_being_recorded,
+							Toast.LENGTH_SHORT)
+							.show();
+					return true;
+				}
+				
 				this.updateTrack(info.id);
+				
 			break;
 
 			// delete track
 			case 3:
+
+				if (isRecordingTrack(info.id)) {
+					Toast.makeText(AbstractTracksListActivity.this, R.string.cant_delete_track_being_recorded,
+							Toast.LENGTH_SHORT)
+							.show();
+					return true;
+				}
+
 				this.deleteTrack(info.id);
+
 			break;
 
 			// export to GPX
@@ -447,6 +477,41 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		return true;
 
+	}
+
+	protected boolean isRecordingTrack(long trackId) {
+
+		if (TrackRecorder.getInstance(myApp).isRecording()
+				&& TrackRecorder.getInstance(myApp).getTrackId() == trackId) {
+			return true;
+		}
+
+		if (ScheduledTrackRecorder.getInstance(myApp).isRecording()
+				&& ScheduledTrackRecorder.getInstance(myApp).getTrackId() == trackId) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	protected boolean isRecordingTrack() {
+
+		if (TrackRecorder.getInstance(myApp).isRecording()) {
+			Toast.makeText(AbstractTracksListActivity.this, R.string.track_recording_in_progress,
+					Toast.LENGTH_SHORT).show();
+			return true;
+		}
+
+		if (ScheduledTrackRecorder.getInstance(myApp).isRecording()) {
+			Toast.makeText(AbstractTracksListActivity.this, R.string.scheduled_track_recording_in_progress,
+					Toast.LENGTH_SHORT)
+					.show();
+			return true;
+		}
+
+		return false;
+		
 	}
 
 	/**
@@ -668,7 +733,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		trackExportTask.execute(trackId);
 
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -688,7 +753,7 @@ public class AbstractTracksListActivity extends ListActivity {
 	}
 
 	protected void setQuery() {
-		
+
 	}
-	
+
 }

@@ -35,6 +35,15 @@ public class TrackRecorder {
 		return track;
 	}
 
+	public long getTrackId() {
+		
+		if (track!=null) {
+			return track.getTrackId();
+		}
+		
+		return 0;
+	}
+	
 	/**
 	 * Segment statistics object
 	 */
@@ -225,6 +234,9 @@ public class TrackRecorder {
 
 	}
 
+	/**
+	 * Track is being recorded if track statistics object exists
+	 */
 	public boolean isRecording() {
 		return this.track != null;
 	}
