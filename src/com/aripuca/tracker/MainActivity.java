@@ -34,6 +34,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -125,6 +126,7 @@ public class MainActivity extends Activity {
 			// future (started in January 2012)
 			if (fixAge < 0) {
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
+				myApp.logd("MainActivity: location time is one day ahead");
 			}
 
 			String t = Utils.timeToHumanReadableString(MainActivity.this, fixAge);
@@ -440,7 +442,7 @@ public class MainActivity extends Activity {
 		this.bindGpsService();
 
 		// start updating time of tracking every second
-		updateTimeHandler.postDelayed(updateTimeTask, 500);
+		updateTimeHandler.postDelayed(updateTimeTask, 1000);
 
 	}
 
@@ -700,7 +702,7 @@ public class MainActivity extends Activity {
 	protected void enableControlButtons() {
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-//		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
 
 	}
@@ -711,7 +713,7 @@ public class MainActivity extends Activity {
 	protected void disableControlButtons() {
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-//		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
+		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 
 	}
@@ -806,13 +808,14 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * initialize measuring units with up to date values
+	 */
 	private void initializeMeasuringUnits() {
-
 		speedUnit = myApp.getPreferences().getString("speed_units", "kph");
 		distanceUnit = myApp.getPreferences().getString("distance_units", "km");
 		elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 		coordUnit = Integer.parseInt(myApp.getPreferences().getString("coord_units", "0"));
-
 	}
 
 	/**
@@ -1231,12 +1234,12 @@ public class MainActivity extends Activity {
 		if (gpsService.isListening()) {
 			// activate buttons if location updates come from GPS
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-			//((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			this.hideWaitForFixMessage();
 		} else {
 			// disable recording buttons when waiting for new location
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-			//((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
+			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 			this.showWaitForFixMessage();
 		}
 		// //////////////////////////////////////////////////////////////////
@@ -1495,7 +1498,7 @@ public class MainActivity extends Activity {
 				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.getTrackRecorder()
 						.getTrack().getTotalTime(), false));
 			}
-
+			
 			if (findViewById(R.id.movingTime) != null) {
 				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(gpsService.getTrackRecorder()
 						.getTrack().getMovingTime(), false));
@@ -1706,7 +1709,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void run() {
 			updateTime();
-			updateTimeHandler.postDelayed(this, 200);
+			updateTimeHandler.postDelayed(this, 1000);
 		}
 	};
 

@@ -15,8 +15,8 @@ public abstract class AbstractTrack {
 	/**
 	 * Reference to application object for accessing db etc.
 	 */
-	protected MyApp myApp;	
-	
+	protected MyApp myApp;
+
 	protected Context context;
 
 	protected float distance = 0;
@@ -58,7 +58,7 @@ public abstract class AbstractTrack {
 	public AbstractTrack(Context context) {
 
 		this.context = context;
-		
+
 		myApp = ((MyApp) context.getApplicationContext());
 
 		this.trackTimeStart = (new Date()).getTime();

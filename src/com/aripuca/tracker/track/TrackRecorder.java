@@ -342,6 +342,11 @@ public class TrackRecorder {
 
 	}
 
+	public void updateTime() {
+
+	
+	}
+	
 	/**
 	 * 
 	 */
@@ -351,6 +356,7 @@ public class TrackRecorder {
 		this.currentSystemTime = SystemClock.uptimeMillis();
 
 		this.track.setCurrentSystemTime(this.currentSystemTime);
+
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 			this.segment.setCurrentSystemTime(this.currentSystemTime);
 		}
@@ -365,7 +371,7 @@ public class TrackRecorder {
 				this.segment.setStartTime(this.currentSystemTime);
 			}
 		}
-
+		
 		// ------------------------------------------------------------------------------
 		// times are recorded even if accuracy is not acceptable
 		this.processPauseTime();
