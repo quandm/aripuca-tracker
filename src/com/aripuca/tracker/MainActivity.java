@@ -700,7 +700,7 @@ public class MainActivity extends Activity {
 	protected void enableControlButtons() {
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+//		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
 
 	}
@@ -711,7 +711,7 @@ public class MainActivity extends Activity {
 	protected void disableControlButtons() {
 
 		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
+//		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 
 	}
@@ -725,7 +725,7 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(R.drawable.aripuca, getString(R.string.recording_started), when);
+		Notification notification = new Notification(R.drawable.ic_stat_aripuca, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -1095,10 +1095,10 @@ public class MainActivity extends Activity {
 		if (gpsService != null) {
 			if (gpsService.getScheduledTrackRecorder().isRecording()) {
 				scheduledRecordingMenuItem.setTitle(R.string.stop_scheduler);
-				scheduledRecordingMenuItem.setIcon(R.drawable.ic_media_pause);
+				scheduledRecordingMenuItem.setIcon(R.drawable.ic_menu_stoprecording);
 			} else {
 				scheduledRecordingMenuItem.setTitle(R.string.start_scheduler);
-				scheduledRecordingMenuItem.setIcon(R.drawable.ic_media_play);
+				scheduledRecordingMenuItem.setIcon(R.drawable.ic_menu_startrecording);
 			}
 		}
 
@@ -1231,12 +1231,12 @@ public class MainActivity extends Activity {
 		if (gpsService.isListening()) {
 			// activate buttons if location updates come from GPS
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
+			//((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			this.hideWaitForFixMessage();
 		} else {
 			// disable recording buttons when waiting for new location
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
-			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
+			//((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 			this.showWaitForFixMessage();
 		}
 		// //////////////////////////////////////////////////////////////////
