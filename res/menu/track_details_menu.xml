@@ -7,6 +7,6 @@
 
 	<item android:id="@+id/showTrackChart" 
 			android:title="@string/track_chart"
-			android:icon="@android:drawable/ic_menu_agenda" />
+			android:icon="@drawable/ic_menu_trackchart" />
 		
 </menu>

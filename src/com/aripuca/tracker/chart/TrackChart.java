@@ -148,12 +148,14 @@ public class TrackChart {
 
 			String label = Utils.formatDistance(i * step, distanceUnit);
 
-			canvas.drawText(label, offsetLeft + i * step * scaleX, offsetTop + sizeY + 16, paint);
-
-			if (i != 0) {
-				canvas.drawLine(offsetLeft + i * step * scaleX, sizeY + offsetTop, offsetLeft + i * step * scaleX,
-						sizeY + offsetTop + 5, paint);
+			if (step > 0) {
+				canvas.drawText(label, offsetLeft + i * step * scaleX, offsetTop + sizeY + 16, paint);
+				if (i != 0) {
+					canvas.drawLine(offsetLeft + i * step * scaleX, sizeY + offsetTop, offsetLeft + i * step * scaleX,
+							sizeY + offsetTop + 5, paint);
+				}
 			}
+
 		}
 
 	}
