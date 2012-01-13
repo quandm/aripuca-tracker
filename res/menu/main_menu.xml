@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/tracksMenuItem"
-        android:icon="@android:drawable/ic_menu_share"
+        android:icon="@drawable/ic_menu_aripuca"
         android:title="@string/tracks"/>
 
     <item
@@ -27,7 +27,7 @@
     
     <item
         android:id="@+id/aboutMenuItem"
-        android:icon="@android:drawable/ic_menu_info_details"
+        android:icon="@drawable/ic_menu_aripuca2"
         android:title="@string/about"/>
 
     <item
