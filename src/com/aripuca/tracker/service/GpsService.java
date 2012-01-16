@@ -637,7 +637,7 @@ public class GpsService extends Service {
 	 */
 	private void showOngoingNotification() {
 
-		int icon = R.drawable.ic_stat_aripuca2;
+		int icon = R.drawable.ic_stat_notify_aripuca;
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

@@ -727,7 +727,7 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(R.drawable.ic_stat_aripuca, getString(R.string.recording_started), when);
+		Notification notification = new Notification(R.drawable.ic_stat_notify_aripuca, getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
