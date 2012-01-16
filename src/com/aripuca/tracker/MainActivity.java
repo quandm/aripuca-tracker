@@ -1207,6 +1207,7 @@ public class MainActivity extends Activity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.about);
+		builder.setIcon(R.drawable.icon);
 		builder.setView(layout);
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
