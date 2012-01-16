@@ -10,9 +10,7 @@
     <string name="source_url">http://code.google.com/p/aripuca-tracker</string>
     <!-- NOT TRANSLATABLE END -->
     <string name="build_date">Build date</string>
-    <string name="about_dialog_message">Open source GPS tracking app for Android.\n\n
-Official	blog:\nhttp://tracker.aripuca.com/blog\n\n
-Source code:\nhttp://code.google.com/p/aripuca-tracker</string>
+    <string name="about_dialog_message">Open source GPS tracking app for Android.\n\nOfficial blog:\nhttp://tracker.aripuca.com/blog\n\nSource code:\nhttp://code.google.com/p/aripuca-tracker</string>
     <!-- WORDS -->
     <string name="m">m</string>
     <string name="ft">ft</string>

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="build_date">Дата сборки:</string>
-    <string name="about_dialog_message">GPS трекер с открытым исходным кодом для платформы
-		Андроид.\n\nОфициальный
-		блог:\nhttp://tracker.aripuca.com/blog\n\nИсходный
-		код:\nhttp://code.google.com/p/aripuca-tracker</string>
+    <string name="about_dialog_message">GPS трекер с открытым исходным кодом для платформы Андроид.\n\nОфициальный блог:\nhttp://tracker.aripuca.com/blog\n\nИсходный код:\nhttp://code.google.com/p/aripuca-tracker</string>
     <string name="track_details_activity_title">Трек</string>
     <string name="track">Трек</string>
     <string name="tracks">Треки</string>
