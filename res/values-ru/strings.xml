@@ -196,9 +196,9 @@
     <string name="gps_service_not_connected">GPS служба не подключена</string>
     <string name="waypoint_description">Описание путевой точки</string>
     <string name="track_description">Описание трека</string>
-    <string name="email_subject_waypoint">Путевая точка от Aripuca Tracker</string>
-    <string name="email_subject_track">ГПС трек от Aripuca Tracker</string>
-    <string name="email_body_track">Трек записан приложением Aripuca Tracker для операционной системы Андроид</string>
+    <string name="email_subject_waypoint">Путевая точка от Aripuca GPS Tracker</string>
+    <string name="email_subject_track">ГПС трек от Aripuca GPS Tracker</string>
+    <string name="email_body_track">Трек записан приложением Aripuca GPS Tracker для операционной системы Андроид</string>
     <string name="clear_all">Удалить все</string>
     <string name="waypoints_summary">Описание по умолчанию и др.</string>
     <string name="user_interface_summary">Язык приложения, режим экрана и др.</string>
