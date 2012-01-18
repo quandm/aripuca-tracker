@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <!-- NOT TRANSLATABLE -->
-    <string name="main_app_title">Aripuca Tracker</string>
+    <string name="main_app_title">Aripuca GPS Tracker</string>
+    <string name="developer">Vitaly Nikolaychuk</string>
     <string name="company">Aripuca Apps</string>
-    <string name="app_build_date">2012-01-09</string>
+    <string name="app_build_date">2012-01-18</string>
     <string name="app_url">http://tracker.aripuca.com</string>
     <string name="blog_url">http://tracker.aripuca.com/blog</string>
     <string name="market_url">https://market.android.com/details?id=com.aripuca.tracker</string>
@@ -226,9 +227,9 @@
     <string name="show_on_startup">Show on startup</string>
     <!-- EMAIL -->
     <string name="email_to">Email to</string>
-    <string name="email_subject_waypoint">Aripuca Tracker Waypoint</string>
-    <string name="email_subject_track">Aripuca Tracker GPS Track</string>
-    <string name="email_body_track">This track has been recorded by Aripuca Tracker</string>
+    <string name="email_subject_waypoint">Aripuca GPS Tracker Waypoint</string>
+    <string name="email_subject_track">Aripuca GPS Tracker Track</string>
+    <string name="email_body_track">This track has been recorded by Aripuca GPS Tracker</string>
     <string name="sending_email">Sending email</string>
     <string name="send_as_attachment">Send as attachment</string>
     <!-- SORT -->
