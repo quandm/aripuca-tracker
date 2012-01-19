@@ -2,7 +2,7 @@
 <resources>
     <!-- NOT TRANSLATABLE -->
     <string name="main_app_title">Aripuca GPS Tracker</string>
-    <string name="developer">Vitaly Nikolaychuk</string>
+    <string name="developer">VitalNik</string>
     <string name="company">Aripuca Apps</string>
     <string name="app_build_date">2012-01-19</string>
     <string name="app_url">http://tracker.aripuca.com</string>
