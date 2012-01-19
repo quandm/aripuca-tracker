@@ -115,7 +115,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 			String movingTime = Utils.formatInterval(segCursor.getLong(segCursor.getColumnIndex("moving_time")), true);
 
 			pw.println("<segment>");
-			pw.println("<number>" + segCursor.getString(segCursor.getColumnIndex("_id")) + "<number>");
+			pw.println("<number>" + segCursor.getString(segCursor.getColumnIndex("_id")) + "</number>");
 			pw.println("<index>" + segCursor.getString(segCursor.getColumnIndex("_id")) + "</index>");
 			pw.println("<distance>" + segCursor.getInt(segCursor.getColumnIndex("distance")) + "</distance>");
 			pw.println("<total_time>" + totalTime + "</total_time>");
@@ -164,7 +164,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 		pw.println("<time>" + timeStr + "</time>");
 
 		pw.println("<extensions>");
-		pw.println("<number>" + tpCursor.getString(tpCursor.getColumnIndex("_id")) + "<number>");
+		pw.println("<number>" + tpCursor.getString(tpCursor.getColumnIndex("_id")) + "</number>");
 		pw.println("<speed>" + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("speed")), 2) + "</speed>");
 		pw.println("<distance>" + tpCursor.getInt(tpCursor.getColumnIndex("distance")) + "</distance>");
 		pw.println("<accuracy>" + tpCursor.getInt(tpCursor.getColumnIndex("accuracy")) + "</accuracy>");
