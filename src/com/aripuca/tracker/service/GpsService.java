@@ -29,7 +29,6 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -112,6 +111,7 @@ public class GpsService extends Service {
 			listening = true;
 
 			currentLocation = location;
+			myApp.setCurrentLocation(location);
 
 			// update track statistics
 			if (trackRecorder.isRecording()) {
@@ -135,10 +135,12 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -157,18 +159,19 @@ public class GpsService extends Service {
 			schedulerListening = true;
 
 			currentLocation = location;
+			myApp.setCurrentLocation(location);
 
 			// check minimum accuracy  required for recording 
 			if (location.hasAccuracy() && location.getAccuracy() <= scheduledTrackRecorder.getMinAccuracy()) {
 
 				float distance = 0;
 				if (lastRecordedLocation != null) {
-					
+
 					distance = location.distanceTo(lastRecordedLocation);
 
 					// check distance to lastRecordedLocation
 					if (distance < scheduledTrackRecorder.getMinDistance()) {
-						
+
 						myApp.logd("Min distance not accepted: " + distance);
 
 						//
@@ -177,17 +180,17 @@ public class GpsService extends Service {
 						// if current location request was unsuccessful let's try
 						// again in 5 minutes (min request interval time)
 						scheduleNextLocationRequest(5 * 60);
-						
+
 						return;
 					}
-					
+
 				}
 
 				scheduledTrackRecorder.recordTrackPoint(location, distance);
 
 				// save last location for distance calculation
 				lastRecordedLocation = location;
-				
+
 				// let's broadcast location data to any activity waiting for
 				// updates
 				broadcastLocationUpdate(location, Constants.GPS_PROVIDER, Constants.ACTION_SCHEDULED_LOCATION_UPDATES);
@@ -224,13 +227,16 @@ public class GpsService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -323,7 +329,7 @@ public class GpsService extends Service {
 
 		Log.i(Constants.TAG, "GpsService: onCreate");
 
-		this.myApp = (MyApp) getApplicationContext();
+		this.myApp = (MyApp) getApplication();
 
 		// track recorder instance
 		this.trackRecorder = TrackRecorder.getInstance(myApp);
@@ -404,6 +410,8 @@ public class GpsService extends Service {
 		}
 
 		currentLocation = location;
+		this.myApp.setCurrentLocation(location);
+
 	}
 
 	/**
@@ -685,7 +693,7 @@ public class GpsService extends Service {
 
 	/**
 	 * stopping location updates with small delay giving us a chance not to
-	 * restart listener if other activity requires GPS sensor too new activity
+	 * restart listener if other activity requires GPS sensor too. new activity
 	 * has to bind to GpsService and set gpsInUse to true
 	 */
 	private class stopLocationUpdatesThread extends Thread {
@@ -696,7 +704,8 @@ public class GpsService extends Service {
 			try {
 				// wait for other activities to grab location updates
 				sleep(2500);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 
 			// if no activities require location updates - stop them and save
 			// battery

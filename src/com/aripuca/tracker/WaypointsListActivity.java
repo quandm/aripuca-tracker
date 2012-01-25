@@ -111,7 +111,7 @@ public class WaypointsListActivity extends ListActivity {
 			currentLocation = (Location) bundle.getParcelable("location");
 
 			waypointsArrayAdapter.sortByDistance();
-			waypointsArrayAdapter.notifyDataSetChanged();
+			//waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 	/**
@@ -127,7 +127,7 @@ public class WaypointsListActivity extends ListActivity {
 			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
 					bundle.getFloat("roll"));
 
-			waypointsArrayAdapter.notifyDataSetChanged();
+			//waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 
@@ -249,8 +249,7 @@ public class WaypointsListActivity extends ListActivity {
 				CompassImage im = (CompassImage) v.findViewById(R.id.compassImage);
 				im.setAngle(newAzimuth);
 
-				// Log.d(Constants.TAG, "WaypointsListActivity: getView: " +
-				// im.getId());
+				//Log.d(Constants.TAG, "WaypointsListActivity: getView: " + im.getId());
 
 			} else {
 
@@ -290,8 +289,11 @@ public class WaypointsListActivity extends ListActivity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = ((MyApp) getApplicationContext());
+		myApp = (MyApp) getApplication();
 
+		// initializing with last known location, so we can calculate distance to waypoints 
+		currentLocation = myApp.getCurrentLocation();
+		
 		registerForContextMenu(this.getListView());
 
 		updateWaypointsArray();
@@ -318,13 +320,9 @@ public class WaypointsListActivity extends ListActivity {
 
 	}
 
-	/*
-	 * @Override public void onConfigurationChanged(Configuration newConfig) {
-	 * if (orientationHelper!=null) {
-	 * orientationHelper.setRealOrientation(newConfig.orientation); }
-	 * super.onConfigurationChanged(newConfig); }
+	/**
+	 * 
 	 */
-
 	@Override
 	public void onPause() {
 
@@ -751,6 +749,8 @@ public class WaypointsListActivity extends ListActivity {
 
 	private void updateWaypointsArray() {
 
+		Log.d(Constants.TAG, "updateWaypointsArray");
+		
 		if (waypoints != null) {
 			waypoints.clear();
 		} else {

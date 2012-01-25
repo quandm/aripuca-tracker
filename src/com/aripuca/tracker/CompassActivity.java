@@ -70,6 +70,8 @@ public class CompassActivity extends Activity {
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
+		currentLocation = myApp.getCurrentLocation();
+		
 		setContentView(R.layout.compass);
 		
 	}

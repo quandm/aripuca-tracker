@@ -6,14 +6,14 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.content.Intent;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 
 import android.preference.Preference.OnPreferenceChangeListener;
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
+
 import com.aripuca.tracker.util.ArrayUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -58,21 +58,6 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 						// enabling/disabling "show_magnetic" preference
 						CheckBoxPreference showMagnetic = (CheckBoxPreference) findPreference("show_magnetic");
 						showMagnetic.setEnabled(Boolean.parseBoolean(newValue.toString()));
-						
-						return true;
-					}
-				});
-		
-		// setting listener for application language changes
-		ListPreference languagePreference = (ListPreference) findPreference("language");
-		languagePreference.setOnPreferenceChangeListener(
-				new OnPreferenceChangeListener() {
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue) {
-						
-						Intent intent = new Intent(Constants.ACTION_LANGUAGE_UPDATES);
-						// broadcasting language updates 
-						sendBroadcast(intent);
 						
 						return true;
 					}

@@ -4,15 +4,6 @@
 
     <PreferenceScreen android:title="@string/user_interface" android:summary="@string/user_interface_summary">
 
-        <ListPreference
-            android:defaultValue="en-US"
-            android:dialogTitle="@string/app_language"
-            android:entries="@array/language_labels"
-            android:entryValues="@array/language_values"
-            android:key="language"
-            android:title="@string/app_language" >
-        </ListPreference>
-
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="wake_lock"

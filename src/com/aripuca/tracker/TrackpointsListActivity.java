@@ -1,15 +1,10 @@
 package com.aripuca.tracker;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-
 import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.map.WaypointsMapActivity;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.OrientationHelper;
@@ -34,7 +29,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,7 +62,6 @@ public class TrackpointsListActivity extends ListActivity {
 
 	private String elevationUnit;
 	private String distanceUnit;
-	private String speedUnit;
 
 	private int sortMethod;
 
@@ -103,7 +96,7 @@ public class TrackpointsListActivity extends ListActivity {
 			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
 					bundle.getFloat("roll"));
 
-			waypointsArrayAdapter.notifyDataSetChanged();
+			//waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 
@@ -259,12 +252,14 @@ public class TrackpointsListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		Bundle bundle = getIntent().getExtras();
-
-		long trackId = bundle.getLong("track_id", 0);
+		final long trackId = bundle.getLong("track_id", 0);
 
 		sqlSelectAllWaypoints = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 
 		myApp = ((MyApp) getApplicationContext());
+		
+		// initializing with last known location, so we can calculate distance to track points 
+		currentLocation = myApp.getCurrentLocation();
 
 		registerForContextMenu(this.getListView());
 
@@ -280,7 +275,6 @@ public class TrackpointsListActivity extends ListActivity {
 
 		elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
 		distanceUnit = myApp.getPreferences().getString("distance_units", "km");
-		speedUnit = myApp.getPreferences().getString("speed_units", "kph");
 		
 		sortMethod = myApp.getPreferences().getInt("trackpoints_sort", 0);
 	}
@@ -406,6 +400,9 @@ public class TrackpointsListActivity extends ListActivity {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void updateWaypointsArray() {
 
 		if (waypoints != null) {

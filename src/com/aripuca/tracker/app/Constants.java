@@ -65,6 +65,5 @@ public abstract class Constants {
 	public static final String ACTION_LOCATION_UPDATES = "com.aripuca.tracker.ACTION_LOCATION_UPDATES";
 	public static final String ACTION_SCHEDULED_LOCATION_UPDATES = "com.aripuca.tracker.ACTION_SCHEDULED_LOCATION_UPDATES";
 	public static final String ACTION_COMPASS_UPDATES = "com.aripuca.tracker.ACTION_COMPASS_UPDATES";
-	public static final String ACTION_LANGUAGE_UPDATES = "com.aripuca.tracker.ACTION_LANGUAGE_UPDATES";
 	
 }
