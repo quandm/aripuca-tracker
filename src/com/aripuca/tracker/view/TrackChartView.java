@@ -1,7 +1,4 @@
 package com.aripuca.tracker.view;
-import java.util.ArrayList;
-
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.chart.Series;
 import com.aripuca.tracker.chart.TrackChart;
 

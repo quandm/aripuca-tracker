@@ -1,25 +1,14 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.app.Constants;
-import com.aripuca.tracker.chart.TrackChart;
 import com.aripuca.tracker.chart.ChartPoint;
 import com.aripuca.tracker.chart.Series;
 import com.aripuca.tracker.view.TrackChartView;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class TrackChartActivity extends Activity {
 

@@ -44,10 +44,6 @@
         <item>m</item>
         <item>ft</item>
     </string-array>
-    <string-array name="language_values">
-        <item>en-US</item>
-        <item>ru</item>
-    </string-array>
 
     <!-- request location interval in waypoints track mode -->
     <string-array name="wpt_request_interval_values">

@@ -6,7 +6,6 @@ import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.util.Utils;
@@ -14,10 +13,8 @@ import com.aripuca.tracker.util.Utils;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.ServiceConnection;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -25,7 +22,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -205,16 +201,16 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = ((MyApp) getApplicationContext());
+		this.myApp = (MyApp) this.getApplication();
 
-		registerForContextMenu(this.getListView());
+		this.registerForContextMenu(this.getListView());
 
 		this.setQuery();
 
-		cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
+		this.cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
 
-		cursorAdapter = new TracksCursorAdapter(this, cursor, false);
-		setListAdapter(cursorAdapter);
+		this.cursorAdapter = new TracksCursorAdapter(this, cursor, false);
+		this.setListAdapter(cursorAdapter);
 
 	}
 

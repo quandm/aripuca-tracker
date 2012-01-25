@@ -1,6 +1,5 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.app.AppLog;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.GpsService;
@@ -35,7 +34,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -45,11 +43,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.graphics.drawable.GradientDrawable.Orientation;
 import android.location.*;
 
 import android.widget.*;
@@ -128,7 +124,10 @@ public class MainActivity extends Activity {
 			// TODO: for some reason currentLocation.getTime returns date in the
 			// future (started in January 2012)
 			if (fixAge < 0) {
+				
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
+				
+				Log.d(Constants.TAG, "MainActivity: location time is one day ahead");
 				myApp.logd("MainActivity: location time is one day ahead");
 			}
 
@@ -377,10 +376,7 @@ public class MainActivity extends Activity {
 		Log.i(Constants.TAG, "MainActivity: onCreate");
 
 		// reference to application object
-		myApp = ((MyApp) getApplicationContext());
-
-		// DEBUG
-		myApp.logd("MainActivity.onCreate");
+		myApp = ((MyApp) getApplication());//Context());
 
 		orientationHelper = new OrientationHelper(MainActivity.this);
 
@@ -426,8 +422,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 
-		Log.i(Constants.TAG, "MainActivity: onResume");
 		super.onResume();
+		
+		Log.i(Constants.TAG, "MainActivity: onResume");
 
 		this.initializeMeasuringUnits();
 
@@ -452,16 +449,6 @@ public class MainActivity extends Activity {
 
 	}
 
-	protected void tryUnregisterReceiver(BroadcastReceiver receiver) {
-
-		try {
-			unregisterReceiver(receiver);
-		} catch (IllegalArgumentException e) {
-			Log.e(Constants.TAG, e.getMessage());
-		}
-
-	}
-
 	/**
 	 * onPause event handler
 	 */
@@ -469,12 +456,11 @@ public class MainActivity extends Activity {
 	protected void onPause() {
 
 		Log.i(Constants.TAG, "MainActivity: onPause");
-		myApp.logd("MainActivity.onPause");
 
-		this.tryUnregisterReceiver(compassBroadcastReceiver);
-		this.tryUnregisterReceiver(locationBroadcastReceiver);
-		this.tryUnregisterReceiver(scheduledLocationBroadcastReceiver);
-
+		unregisterReceiver(compassBroadcastReceiver);
+		unregisterReceiver(locationBroadcastReceiver);
+		unregisterReceiver(scheduledLocationBroadcastReceiver);
+		
 		if (!this.isFinishing()) {
 
 			// activity will be recreated
@@ -489,8 +475,6 @@ public class MainActivity extends Activity {
 			}
 
 		} else {
-
-			myApp.logd("MainActivity.onPause Finishing");
 
 			// activity will be destroyed and not recreated
 			if (gpsService != null) {
@@ -526,7 +510,7 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 	}
-
+	
 	/**
 	 * onDestroy event handler
 	 */
@@ -534,7 +518,6 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 
 		Log.i(Constants.TAG, "MainActivity: onDestroy");
-		myApp.logd("MainActivity.onDestroy");
 
 		gpsServiceConnection = null;
 
@@ -542,7 +525,7 @@ public class MainActivity extends Activity {
 
 		super.onDestroy();
 	}
-
+	
 	/**
 	 * Restoring data saved in onSaveInstanceState
 	 */
@@ -550,6 +533,7 @@ public class MainActivity extends Activity {
 
 		// Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
 
+		// initializing carousel objects
 		speedContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("speedContainerId"));
 		timeContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("timeContainerId"));
 		distanceContainerCarousel.setCurrentContainerId(savedInstanceState.getInt("distanceContainerId"));
@@ -1127,7 +1111,7 @@ public class MainActivity extends Activity {
 			case R.id.compassMenuItem:
 
 				startActivity(new Intent(this, CompassActivity.class));
-
+				
 				return true;
 
 			case R.id.waypointsMenuItem:
@@ -1139,7 +1123,7 @@ public class MainActivity extends Activity {
 			case R.id.tracksMenuItem:
 
 				startActivity(new Intent(this, TracksTabActivity.class));
-
+				
 				return true;
 
 			case R.id.aboutMenuItem:

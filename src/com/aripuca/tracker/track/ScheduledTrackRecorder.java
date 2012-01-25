@@ -12,7 +12,6 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.SystemClock;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 /**

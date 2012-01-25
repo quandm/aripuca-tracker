@@ -27,10 +27,6 @@
         <item>Custom intervals 1</item>
         <item>Custom intervals 2</item>
     </string-array>
-    <string-array name="language_labels">
-        <item>English</item>
-        <item>Russian</item>
-    </string-array>
     <string-array name="min_accuracy_labels">
         <item>5 m</item>
         <item>10 m</item>

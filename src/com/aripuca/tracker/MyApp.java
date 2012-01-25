@@ -1,45 +1,34 @@
 package com.aripuca.tracker;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.Locale;
 
-import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.AppLog;
 import com.aripuca.tracker.app.Constants;
 
 import com.aripuca.tracker.track.Waypoint;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * 
  */
 public class MyApp extends Application {
-
-	private Locale locale = null;
 
 	/**
 	 * Android shared preferences
@@ -64,21 +53,8 @@ public class MyApp extends Application {
 	 * database object
 	 */
 	private SQLiteDatabase db;
-
-	/**
-	 * location updates broadcast receiver
-	 */
-	protected BroadcastReceiver languageUpdateBroadcastReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			Log.d(Constants.TAG, "languageUpdateBroadcastReceiver");
-			updateLocale();
-
-			Toast.makeText(context, getString(R.string.restart_required), Toast.LENGTH_LONG).show();
-
-		}
-	};
+	
+	private Location currentLocation;
 
 	public SQLiteDatabase getDatabase() {
 		return db;
@@ -111,6 +87,21 @@ public class MyApp extends Application {
 		return appDir;
 	}
 
+	/**
+	 * @return the currentLocation
+	 */
+	public Location getCurrentLocation() {
+		return currentLocation;
+	}
+
+	/**
+	 * @param currentLocation the currentLocation to set
+	 */
+	public void setCurrentLocation(Location currentLocation) {
+		this.currentLocation = currentLocation;
+	}
+	
+	
 	/**
 	 * application database create/open helper class
 	 */
@@ -214,12 +205,6 @@ public class MyApp extends Application {
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		updateLocale();
-
-		// registering receiver for language updates
-		registerReceiver(languageUpdateBroadcastReceiver, new IntentFilter(
-				Constants.ACTION_LANGUAGE_UPDATES));
-
 		// database helper
 		OpenHelper openHelper = new OpenHelper(this);
 
@@ -243,42 +228,12 @@ public class MyApp extends Application {
 		insertFamousWaypoints();
 
 	}
-
-	/**
-	 * 
-	 */
-	protected void updateLocale() {
-
-		// ----------------------------------------------------------------------
-		// setting locale
-		Configuration config = getBaseContext().getResources().getConfiguration();
-		String lang = preferences.getString("language", "en-US");
-
-		if (!config.locale.getLanguage().equals(lang)) {
-
-			locale = new Locale(lang);
-			Locale.setDefault(locale);
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-
-		}
-
-	}
-
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 
-		if (locale != null) {
-
-			newConfig.locale = locale;
-			Locale.setDefault(locale);
-			getBaseContext().getResources().updateConfiguration(newConfig,
-					getBaseContext().getResources().getDisplayMetrics());
-		}
 
 		super.onConfigurationChanged(newConfig);
-
 	}
 
 	/**

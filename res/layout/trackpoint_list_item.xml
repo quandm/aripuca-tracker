@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="3dp" >
+    android:padding="3dp" android:baselineAligned="false" >
 
     <LinearLayout
         android:layout_width="0dp"
@@ -16,13 +16,13 @@
             android:id="@+id/coordinates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17dp" />
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp" />
+            android:textSize="16dp" />
     </LinearLayout>
 
     <LinearLayout
