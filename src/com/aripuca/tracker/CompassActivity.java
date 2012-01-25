@@ -78,6 +78,10 @@ public class CompassActivity extends Activity {
 	public void onResume() {
 
 		super.onResume();
+		
+		if (findViewById(R.id.compassView) != null) {
+			findViewById(R.id.compassView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
+		}
 
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter(Constants.ACTION_COMPASS_UPDATES));

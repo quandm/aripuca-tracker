@@ -29,6 +29,7 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -44,9 +45,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.location.*;
 
 import android.widget.*;
@@ -372,16 +375,20 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Log.i(Constants.TAG, "MainActivity: onCreate");
-		
+
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
-		//DEBUG
+		// DEBUG
 		myApp.logd("MainActivity.onCreate");
-		
+
 		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		initializeHiddenPreferences();
+
+		if (Build.VERSION.SDK_INT > 10) {
+			//this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
 
 		// ----------------------------------------------------------------------
 		// preparing UI
@@ -397,7 +404,6 @@ public class MainActivity extends Activity {
 		this.disableControlButtons();
 
 		gpsServiceConnection = new GpsServiceConnection();
-
 		Log.d(Constants.TAG, "SERVICE CONNECTION CREATED: " + gpsServiceConnection.toString());
 
 		// start GPS service only if not started
@@ -485,10 +491,10 @@ public class MainActivity extends Activity {
 		} else {
 
 			myApp.logd("MainActivity.onPause Finishing");
-			
+
 			// activity will be destroyed and not recreated
 			if (gpsService != null) {
-				
+
 				// stop tracking if active
 				if (gpsService.getTrackRecorder().isRecording()) {
 					myApp.logd("MainActivity.onPause: Recording stopped by the system");
@@ -660,7 +666,7 @@ public class MainActivity extends Activity {
 		dynamicView.removeAllViews();
 		dynamicView.addView(tmpView, 0);
 
-		if (resourceId != R.layout.main_idle2) {
+		if (resourceId != R.layout.main_idle) {
 			setContainer(speedContainerCarousel);
 			setContainer(timeContainerCarousel);
 			setContainer(distanceContainerCarousel);
@@ -727,7 +733,8 @@ public class MainActivity extends Activity {
 
 		long when = System.currentTimeMillis();
 
-		Notification notification = new Notification(R.drawable.ic_stat_notify_aripuca, getString(R.string.recording_started), when);
+		Notification notification = new Notification(R.drawable.ic_stat_notify_aripuca,
+				getString(R.string.recording_started), when);
 
 		// show notification under ongoing title
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
@@ -800,7 +807,7 @@ public class MainActivity extends Activity {
 		gpsService.getTrackRecorder().stop();
 
 		// switching to initial layout
-		this.replaceDynamicView(R.layout.main_idle2);
+		this.replaceDynamicView(R.layout.main_idle);
 
 		this.clearNotification();
 
@@ -1499,7 +1506,7 @@ public class MainActivity extends Activity {
 				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(gpsService.getTrackRecorder()
 						.getTrack().getTotalTime(), false));
 			}
-			
+
 			if (findViewById(R.id.movingTime) != null) {
 				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(gpsService.getTrackRecorder()
 						.getTrack().getMovingTime(), false));
@@ -1761,7 +1768,7 @@ public class MainActivity extends Activity {
 
 		} else {
 
-			this.replaceDynamicView(R.layout.main_idle2);
+			this.replaceDynamicView(R.layout.main_idle);
 
 			// start location updates after service bound if not recording track
 			gpsService.startLocationUpdates();
