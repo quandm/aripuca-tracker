@@ -227,15 +227,10 @@ public class MyApp extends Application {
 		// adding famous waypoints to db if not added yet
 		insertFamousWaypoints();
 
+		this.logd("=================== MyApp: onCreate ===================");
+		
 	}
 	
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-
-
-		super.onConfigurationChanged(newConfig);
-	}
-
 	/**
 	 * Checking if external storage is available and writable
 	 */
