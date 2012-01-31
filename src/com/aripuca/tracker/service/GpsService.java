@@ -323,14 +323,16 @@ public class GpsService extends Service {
 	public void onCreate() {
 
 		super.onCreate();
-
+		
 		registerReceiver(nextTimeLimitCheckReceiver, new IntentFilter(Constants.ACTION_NEXT_TIME_LIMIT_CHECK));
 		registerReceiver(nextLocationRequestReceiver, new IntentFilter(Constants.ACTION_NEXT_LOCATION_REQUEST));
 
 		Log.i(Constants.TAG, "GpsService: onCreate");
 
 		this.myApp = (MyApp) getApplication();
-
+		
+		this.myApp.logd("=================== GpsService: onCreate ===================");
+		
 		// track recorder instance
 		this.trackRecorder = TrackRecorder.getInstance(myApp);
 
@@ -375,6 +377,8 @@ public class GpsService extends Service {
 		unregisterReceiver(nextLocationRequestReceiver);
 		unregisterReceiver(nextTimeLimitCheckReceiver);
 
+		this.myApp.logd("=================== GpsService: onDestroy ===================");
+		
 		super.onDestroy();
 
 	}

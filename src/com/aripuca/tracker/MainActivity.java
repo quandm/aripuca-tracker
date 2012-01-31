@@ -1776,8 +1776,6 @@ public class MainActivity extends Activity {
 
 	private void bindGpsService() {
 
-		// GpsService.LocalBinder.flushPendingCommands();
-
 		if (!bindService(new Intent(MainActivity.this, GpsService.class), gpsServiceConnection, 0)) {
 			Toast.makeText(MainActivity.this, "System error: Can't connect to GPS service", Toast.LENGTH_SHORT).show();
 		}
