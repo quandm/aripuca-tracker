@@ -40,12 +40,12 @@ public class TrackGpxExportTask extends TrackExportTask {
 	/**
 	 * Writes header of gpx file
 	 */
-	protected void writeHeader() {
+	protected void writeHeader() {                           
 
-		String startTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(tCursor.getLong(tCursor
+		String startTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tCursor.getLong(tCursor
 				.getColumnIndex("start_time")));
 
-		String finishTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(tCursor.getLong(tCursor
+		String finishTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tCursor.getLong(tCursor
 				.getColumnIndex("finish_time")));
 
 		String totalTime = Utils.formatInterval(tCursor.getLong(tCursor.getColumnIndex("total_time")), true);
@@ -105,10 +105,10 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		while (segCursor.isAfterLast() == false) {
 
-			String startTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(segCursor.getLong(segCursor
+			String startTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(segCursor.getLong(segCursor
 					.getColumnIndex("start_time")));
 
-			String finishTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(segCursor.getLong(segCursor
+			String finishTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(segCursor.getLong(segCursor
 					.getColumnIndex("finish_time")));
 
 			String totalTime = Utils.formatInterval(segCursor.getLong(segCursor.getColumnIndex("total_time")), true);
@@ -153,7 +153,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 			segmentOpen = false;
 		}
 
-		String timeStr = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(tpCursor.getLong(tpCursor
+		String timeStr = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tpCursor.getLong(tpCursor
 					.getColumnIndex("time")));
 		
 		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
