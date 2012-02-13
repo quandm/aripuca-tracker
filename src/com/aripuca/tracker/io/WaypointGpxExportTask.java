@@ -75,7 +75,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	protected void writeTrackPoint() {
 
-		String wpTime = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(tpCursor.getLong(tpCursor
+		String wpTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tpCursor.getLong(tpCursor
 				.getColumnIndex("time")));
 
 		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
