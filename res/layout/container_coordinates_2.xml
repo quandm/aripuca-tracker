@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Hor.Row" >
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/lat" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/lat"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/lng" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/lng"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

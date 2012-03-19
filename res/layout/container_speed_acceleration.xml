@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Hor.Row" android:baselineAligned="false">
+
+    <LinearLayout
+        style="@style/Cell"
+        android:layout_weight="1" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/speed" >
+        </TextView>
+
+        <LinearLayout
+            style="@style/FillWidth.Hor.CenterBottom"
+            android:layout_height="45dp" >
+
+            <TextView
+                android:id="@+id/speed"
+                style="@style/WrapContent.Text.Text30"
+                android:gravity="right" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/speedUnit"
+                style="@style/WrapContent.Text.Text13"
+                android:gravity="left" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Cell"
+        android:layout_weight="1" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/acceleration" >
+        </TextView>
+
+        <LinearLayout
+            style="@style/FillWidth.Hor.Center"
+            android:layout_height="45dp" >
+
+            <TextView
+                android:id="@+id/acceleration"
+                style="@style/WrapContent.Text.Text30" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

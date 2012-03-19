@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Vert" >
+
+    <LinearLayout style="@style/FillWidth.Vert.Center" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/pace" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
+
+            <TextView
+                android:id="@+id/pace"
+                style="@style/WrapContent.Text.Text30" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+        <LinearLayout style="@style/Cell" >
+
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/average" >
+            </TextView>
+
+            <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
+
+                <TextView
+                    android:id="@+id/averagePace"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell" >
+
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/moving" >
+            </TextView>
+
+            <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
+
+                <TextView
+                    android:id="@+id/averageMovingPace"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell" >
+
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/max" >
+            </TextView>
+
+            <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
+
+                <TextView
+                    android:id="@+id/maxPace"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

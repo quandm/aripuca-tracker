@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="preferExternal"
+    package="com.aripuca.tracker"
+    android:versionCode="13"
+    android:versionName="1.1.8" >
+
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="8" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.compass"
+        android:required="true" />
+
+    <application
+        android:name=".MyApp"
+        android:debuggable="true"
+        android:icon="@drawable/icon"
+        android:label="@string/main_app_title" >
+        <uses-library android:name="com.google.android.maps" />
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/main_app_title" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:label="Notify" >
+        </activity>
+        <activity
+            android:name=".CompassActivity"
+            android:label="@string/compass"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".TracksTabActivity"
+            android:label="@string/tracks" >
+        </activity>
+        <activity
+            android:name=".ScheduledTracksListActivity"
+            android:label="@string/tracks" >
+        </activity>
+        <activity
+            android:name=".TracksListActivity"
+            android:label="@string/tracks" >
+        </activity>
+        <activity
+            android:name=".TrackDetailsActivity"
+            android:label="@string/track_details_activity_title" >
+        </activity>
+        <activity
+            android:name=".TrackChartActivity"
+            android:label="@string/track_chart" >
+        </activity>
+        <activity
+            android:name=".TrackpointsListActivity"
+            android:label="@string/scheduled_track_points" >
+        </activity>
+        <activity
+            android:name=".WaypointsListActivity"
+            android:label="@string/waypoints" >
+        </activity>
+        <activity
+            android:name=".map.MyMapActivity"
+            android:label="@string/main_app_title"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name=".map.WaypointsMapActivity"
+            android:label="@string/main_app_title" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/main_app_title" />
+
+        <service
+            android:name=".service.GpsService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+
+</manifest>

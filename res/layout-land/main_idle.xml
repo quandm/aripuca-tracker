@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    style="@style/FillParent.Vert"
+    android:padding="3dp" >
+
+    <!-- SPEED & PACE -->
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/speed" >
+        </TextView>
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/pace" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/speed"
+                style="@style/WrapContent.Value" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/speedUnit"
+                style="@style/WrapContent.Value.Unit" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/pace"
+                style="@style/WrapContent.Value"
+                android:text="@string/default_pace" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ELEVATION & COMPASS -->
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/elevation" >
+        </TextView>
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/azimuth" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/FillWidth.Hor"
+        android:layout_height="45dp" >
+
+        <LinearLayout
+            style="@style/Cell.Column"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:id="@+id/elevation"
+                style="@style/WrapContent.Value" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/elevationUnit"
+                style="@style/WrapContent.Value.Unit" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Cell.Column"
+            android:layout_height="fill_parent"
+            android:baselineAligned="false" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:gravity="center" >
+
+                <TextView
+                    android:id="@+id/azimuth"
+                    style="@style/WrapContent.Value"
+                    android:text="@string/default_azimuth"
+                    android:textSize="20dp" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <com.aripuca.tracker.view.CompassImage
+                    android:id="@+id/compassImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/arrow36" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- COORDINATES & ACCURACY -->
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/lat" >
+        </TextView>
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/lng" >
+        </TextView>
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/accuracy" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/lat"
+                style="@style/WrapContent.Value.Small" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/lng"
+                style="@style/WrapContent.Value.Small" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/accuracy"
+                style="@style/WrapContent.Value.Small" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/accuracyUnit"
+                style="@style/WrapContent.Value.Unit" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- SUNRISE/SUNSET/LAST FIX TIME -->
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/sunrise" >
+        </TextView>
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/sunset" >
+        </TextView>
+
+        <TextView
+            style="@style/Cell.Label"
+            android:text="@string/last_fix" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillWidth.Hor" >
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/sunrise"
+                style="@style/WrapContent.Value.Small" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/sunset"
+                style="@style/WrapContent.Value.Small" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/Cell.Column" >
+
+            <TextView
+                android:id="@+id/lastFix"
+                style="@style/WrapContent.Value.Small" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+    <!-- MESSAGE BOX -->
+
+    <LinearLayout
+        android:id="@+id/messageBox"
+        style="@style/FillParent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/messageText"
+            style="@style/WrapContent.Text.Text13"
+            android:text="@string/waiting_new_fix" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/fixAge"
+            style="@style/WrapContent.Text.Text13" >
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

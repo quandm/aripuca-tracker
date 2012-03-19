@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Hor.Row" >
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/elevation" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/elevation"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/elevationUnit"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/gain" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/elevationGain"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/loss" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/elevationLoss"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

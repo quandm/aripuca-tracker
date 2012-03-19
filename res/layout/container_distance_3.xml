@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Hor.Row" >
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/distance" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/distance"
+                style="@style/WrapContent.Text.Text13"
+                android:gravity="right" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/distanceUnit"
+                style="@style/WrapContent.Text.Text13"
+                android:gravity="left" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/points" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/pointsCount"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/Cell" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/segments" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+            <TextView
+                android:id="@+id/segmentsCount"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
