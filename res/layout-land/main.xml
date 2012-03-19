@@ -20,20 +20,19 @@
 
 	<!-- CONTROL BUTTONS -->
 
-	<LinearLayout android:id="@+id/buttonControls"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
+	<LinearLayout android:id="@+id/buttonControls" style="@style/FillParent"
 		android:gravity="bottom">
 
 		<Button android:id="@+id/addWaypointButton" android:text="@string/add_waypoint"
-			style="@style/ControlButton_land">
+			style="@style/ControlButton.Land">
 		</Button>
 
 		<Button android:id="@+id/trackRecordingButton" android:text="@string/record_track"
-			style="@style/ControlButton_land">
+			style="@style/ControlButton.Land">
 		</Button>
 
 		<Button android:id="@+id/pauseResumeTrackButton" android:text="@string/pause"
-			style="@style/ControlButton_land" android:visibility="gone">
+			style="@style/ControlButton.Land" android:visibility="gone">
 		</Button>
 
 	</LinearLayout>
