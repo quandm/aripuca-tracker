@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<!-- COORDINATES -->
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_Value">
+				<TextView android:id="@+id/lat" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_Value">
+				<TextView android:id="@+id/lng" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_Value">
+				<TextView android:id="@+id/lastFix" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/accuracy" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_Value">
+				<TextView android:id="@+id/accuracy" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+
+
+</LinearLayout>
+

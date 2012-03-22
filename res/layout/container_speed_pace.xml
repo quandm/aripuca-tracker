@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell"
+			android:layout_weight="1">
+
+			<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits" android:layout_height="45dp">
+
+				<TextView android:id="@+id/speed"
+					android:gravity="right" style="@style/Label30">
+				</TextView>
+
+				<TextView android:id="@+id/speedUnit"
+					android:gravity="left" style="@style/LabelUnit">
+				</TextView>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/TrackDetailsCell"
+			android:layout_weight="1">
+
+			<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_Value" android:layout_height="45dp">
+				<TextView android:id="@+id/pace" style="@style/Label30">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/bg1repeat">
+
+	<ScrollView android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:scrollbars="none"
+		android:layout_marginBottom="55dp" android:paddingTop="2dp">
+
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+			<!-- TRACK TITLE -->
+
+			<LinearLayout style="@style/TrackDetailsRow"
+				android:background="@drawable/border1">
+
+				<LinearLayout style="@style/TrackDetailsCell">
+
+					<TextView android:text="@string/description" style="@style/SmallHeader">
+					</TextView>
+
+					<TextView android:id="@+id/title" style="@style/Label13">
+					</TextView>
+
+					<TextView android:id="@+id/descr" style="@style/Label13">
+					</TextView>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+
+			<!-- TRACK DISTANCE -->
+
+			<LinearLayout style="@style/TrackDetailsRow"
+				android:background="@drawable/border1">
+
+				<LinearLayout style="@style/TrackDetailsCell">
+
+					<TextView android:text="@string/distance" style="@style/SmallHeader">
+					</TextView>
+
+					<TextView android:id="@+id/distance" style="@style/Label13">
+					</TextView>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsCell">
+
+					<TextView android:text="@string/points" style="@style/SmallHeader">
+					</TextView>
+
+					<TextView android:id="@+id/pointsCount" style="@style/Label13">
+					</TextView>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- TIME -->
+
+			<LinearLayout style="@style/TrackDetailsRowOfRows"
+				android:background="@drawable/border1">
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/time" style="@style/SmallHeader">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/total" style="@style/SmallHeader">
+						</TextView>
+
+						<TextView android:id="@+id/totalTime" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/movingTime" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/idle" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/idleTime" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/start_time" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/startTime" style="@style/Label13">
+						</TextView>
+
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/finish_time" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/finishTime" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- SPEED -->
+
+			<LinearLayout style="@style/TrackDetailsRowOfRows"
+				android:background="@drawable/border1">
+
+				<LinearLayout style="@style/TrackDetailsRow">
+					<LinearLayout style="@style/TrackDetailsCell">
+						<TextView android:text="@string/speed" style="@style/SmallHeader">
+						</TextView>
+					</LinearLayout>
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/averageSpeed" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/averageMovingSpeed" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/maxSpeed" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- PACE -->
+
+			<LinearLayout style="@style/TrackDetailsRowOfRows"
+				android:background="@drawable/border1">
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+						<TextView android:text="@string/pace" style="@style/SmallHeader">
+						</TextView>
+					</LinearLayout>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/averagePace" style="@style/Label13">
+						</TextView>
+
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/averageMovingPace" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/maxPace" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<!-- ELEVATION -->
+
+			<LinearLayout style="@style/TrackDetailsRowOfRows"
+				android:background="@drawable/border1">
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+						<TextView android:text="@string/elevation" style="@style/SmallHeader">
+						</TextView>
+					</LinearLayout>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/maxElevation" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/min" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/minElevation" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+				<LinearLayout style="@style/TrackDetailsRow">
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/gain" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/elevationGain" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+					<LinearLayout style="@style/TrackDetailsCell">
+
+						<TextView android:text="@string/loss" style="@style/SmallHeader"></TextView>
+
+						<TextView android:id="@+id/elevationLoss" style="@style/Label13">
+						</TextView>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</ScrollView>
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="horizontal"
+		android:baselineAligned="false" android:gravity="bottom">
+
+		<Button android:id="@+id/prevSegment" android:text="@string/prev_segment"
+			style="@style/ControlButton">
+		</Button>
+
+		<Button android:id="@+id/nextSegment" android:text="@string/next_segment"
+			style="@style/ControlButton">
+		</Button>
+
+		<!-- <ImageButton android:id="@+id/prevSegment" android:src="@drawable/left_arrow_1" 
+			android:layout_width="wrap_content" android:layout_height="wrap_content" 
+			android:layout_weight="1"> </ImageButton> <ImageButton android:id="@+id/nextSegment" 
+			android:src="@drawable/right_arrow_1" android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" android:layout_weight="1"> </ImageButton> -->
+
+	</LinearLayout>
+
+</FrameLayout>

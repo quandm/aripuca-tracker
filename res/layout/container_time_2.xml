@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/total_time" style="@style/SmallHeader">
+			</TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_Value">
+				<TextView android:id="@+id/totalTime" style="@style/Label50">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+

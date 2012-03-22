@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+				<TextView android:id="@+id/pace" style="@style/Label30">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout style="@style/TrackDetailsRow">
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+				<TextView android:id="@+id/averagePace" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+				<TextView android:id="@+id/averageMovingPace" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/TrackDetailsCell">
+
+			<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
+
+			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+				<TextView android:id="@+id/maxPace" style="@style/Label13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+
