@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+    style="@style/FillWidth.Vert.Center" >
 
-	<!-- TRACK DISTANCE -->
+    <TextView
+        style="@style/WrapContent.Text.SmallHeader"
+        android:text="@string/distance" >
+    </TextView>
 
-	<LinearLayout style="@style/TrackDetailsRow">
+    <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+        <TextView
+            android:id="@+id/distance"
+            style="@style/WrapContent.Text.Text50"
+            android:text="@string/zero" >
+        </TextView>
 
-			<TextView android:text="@string/distance" style="@style/SmallHeader"></TextView>
-
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-
-				<TextView android:id="@+id/distance" style="@style/Label50" android:text="0">
-				</TextView>
-
-				<TextView android:id="@+id/distanceUnit" style="@style/LabelUnit"  android:text="km">
-				</TextView>
-
-			</LinearLayout>
-
-
-		</LinearLayout>
-
-	</LinearLayout>
+        <TextView
+            android:id="@+id/distanceUnit"
+            style="@style/WrapContent.Text.Text13"
+            android:text="@string/km" >
+        </TextView>
+    </LinearLayout>
 
 </LinearLayout>
-

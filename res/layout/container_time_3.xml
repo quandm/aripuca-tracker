@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+    style="@style/FillWidth.Hor.Row" >
 
-	<LinearLayout style="@style/TrackDetailsRow">
+    <LinearLayout style="@style/Cell" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/total_time" >
+        </TextView>
 
-			<TextView android:text="@string/total_time" style="@style/SmallHeader">
-			</TextView>
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/totalTime" style="@style/Label30">
-				</TextView>
-			</LinearLayout>
+            <TextView
+                android:id="@+id/totalTime"
+                style="@style/WrapContent.Text.Text30" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
-		</LinearLayout>
+    <LinearLayout style="@style/Cell" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/moving_time" >
+        </TextView>
 
-			<TextView android:text="@string/moving_time" style="@style/SmallHeader"></TextView>
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/movingTime" style="@style/Label30">
-				</TextView>
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+            <TextView
+                android:id="@+id/movingTime"
+                style="@style/WrapContent.Text.Text30" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
-

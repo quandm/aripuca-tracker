@@ -1,51 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+    style="@style/FillWidth.Hor.Row" >
 
-	<LinearLayout style="@style/TrackDetailsRow">
+    <LinearLayout style="@style/Cell" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/distance" >
+        </TextView>
 
-			<TextView android:text="@string/distance" style="@style/SmallHeader"></TextView>
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
+            <TextView
+                android:id="@+id/distance"
+                style="@style/WrapContent.Text.Text13"
+                android:gravity="right" >
+            </TextView>
 
-				<TextView android:id="@+id/distance" style="@style/Label13"
-					android:gravity="right">
-				</TextView>
+            <TextView
+                android:id="@+id/distanceUnit"
+                style="@style/WrapContent.Text.Text13"
+                android:gravity="left" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
-				<TextView android:id="@+id/distanceUnit" android:gravity="left"
-					style="@style/LabelUnit">
-				</TextView>
+    <LinearLayout style="@style/Cell" >
 
-			</LinearLayout>
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/points" >
+        </TextView>
 
-		</LinearLayout>
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+            <TextView
+                android:id="@+id/pointsCount"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
-			<TextView android:text="@string/points" style="@style/SmallHeader"></TextView>
+    <LinearLayout style="@style/Cell" >
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/pointsCount" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/segments" >
+        </TextView>
 
-		</LinearLayout>
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
-
-			<TextView android:text="@string/segments" style="@style/SmallHeader"></TextView>
-
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/segmentsCount" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+            <TextView
+                android:id="@+id/segmentsCount"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+    style="@style/FillWidth.Hor.Row" android:baselineAligned="false">
 
-	<LinearLayout style="@style/TrackDetailsRow" >
+    <LinearLayout
+        style="@style/Cell"
+        android:layout_weight="1" >
 
-		<LinearLayout style="@style/TrackDetailsCell"
-			android:layout_weight="1">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/speed" >
+        </TextView>
 
-			<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
+        <LinearLayout
+            style="@style/FillWidth.Hor.CenterBottom"
+            android:layout_height="45dp" >
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits" android:layout_height="45dp">
+            <TextView
+                android:id="@+id/speed"
+                style="@style/WrapContent.Text.Text30"
+                android:gravity="right" >
+            </TextView>
 
-				<TextView android:id="@+id/speed"
-					android:gravity="right" style="@style/Label30">
-				</TextView>
+            <TextView
+                android:id="@+id/speedUnit"
+                style="@style/WrapContent.Text.Text13"
+                android:gravity="left" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
-				<TextView android:id="@+id/speedUnit"
-					android:gravity="left" style="@style/LabelUnit">
-				</TextView>
+    <LinearLayout
+        style="@style/Cell"
+        android:layout_weight="1" >
 
-			</LinearLayout>
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/acceleration" >
+        </TextView>
 
-		</LinearLayout>
+        <LinearLayout
+            style="@style/FillWidth.Hor.Center"
+            android:layout_height="45dp" >
 
-		<LinearLayout style="@style/TrackDetailsCell" 
-			android:layout_weight="1">
-
-			<TextView android:text="@string/acceleration" style="@style/SmallHeader"></TextView>
-
-			<LinearLayout style="@style/TrackDetailsRow_Value" android:layout_height="45dp">
-				<TextView android:id="@+id/acceleration" style="@style/Label30">
-				</TextView>
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+            <TextView
+                android:id="@+id/acceleration"
+                style="@style/WrapContent.Text.Text30" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
-

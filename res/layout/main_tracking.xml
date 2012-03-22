@@ -4,35 +4,35 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 
-	<LinearLayout style="@style/TrackDetailsRow"
+	<LinearLayout style="@style/FillWidth.Hor.Row"
 		android:background="@drawable/border1" android:id="@+id/speedOrPaceContainer">
 
 		<!-- SPEED OR PACE CONTAINER -->
 
 	</LinearLayout>
 
-	<LinearLayout style="@style/TrackDetailsRow"
+	<LinearLayout style="@style/FillWidth.Hor.Row"
 		android:background="@drawable/border1" android:id="@+id/distanceContainer">
 
 		<!-- TRACK DISTANCE CONTAINER -->
 
 	</LinearLayout>
 
-	<LinearLayout style="@style/TrackDetailsRow"
+	<LinearLayout style="@style/FillWidth.Hor.Row"
 		android:background="@drawable/border1" android:id="@+id/timeContainer">
 
 		<!-- TIME CONTAINER -->
 
 	</LinearLayout>
 
-	<LinearLayout style="@style/TrackDetailsRow"
+	<LinearLayout style="@style/FillWidth.Hor.Row"
 		android:background="@drawable/border1" android:id="@+id/elevationContainer">
 
 		<!-- ELEVATION CONTAINER -->
 
 	</LinearLayout>
 
-	<LinearLayout style="@style/TrackDetailsRow"
+	<LinearLayout style="@style/FillWidth.Hor.Row"
 		android:background="@drawable/border1" android:id="@+id/coordinatesContainer">
 
 		<!-- COORDINATES CONTAINER -->

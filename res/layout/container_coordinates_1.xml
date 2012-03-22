@@ -6,25 +6,25 @@
 
 	<!-- COORDINATES -->
 
-	<LinearLayout style="@style/TrackDetailsRow">
+	<LinearLayout style="@style/FillWidth.Hor.Center">
 
-		<LinearLayout style="@style/TrackDetailsCell">
+		<LinearLayout style="@style/Cell">
 
-			<TextView android:text="@string/lat" style="@style/SmallHeader"></TextView>
+			<TextView android:text="@string/lat" style="@style/WrapContent.Text.SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/lat" style="@style/Label13">
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/lat" style="@style/WrapContent.Text.Text13">
 				</TextView>
 			</LinearLayout>
 
 		</LinearLayout>
 
-		<LinearLayout style="@style/TrackDetailsCell">
+		<LinearLayout style="@style/Cell">
 
-			<TextView android:text="@string/lng" style="@style/SmallHeader"></TextView>
+			<TextView android:text="@string/lng" style="@style/WrapContent.Text.SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/lng" style="@style/Label13">
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/lng" style="@style/WrapContent.Text.Text13">
 				</TextView>
 			</LinearLayout>
 
@@ -32,26 +32,26 @@
 
 	</LinearLayout>
 
-	<LinearLayout style="@style/TrackDetailsRow">
+	<LinearLayout style="@style/FillWidth.Hor.Center">
 
-		<LinearLayout style="@style/TrackDetailsCell">
+		<LinearLayout style="@style/Cell">
 
-			<TextView android:text="@string/last_fix" style="@style/SmallHeader"></TextView>
+			<TextView android:text="@string/last_fix" style="@style/WrapContent.Text.SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/lastFix" style="@style/Label13">
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/lastFix" style="@style/WrapContent.Text.Text13">
 				</TextView>
 			</LinearLayout>
 
 		</LinearLayout>
 
 
-		<LinearLayout style="@style/TrackDetailsCell">
+		<LinearLayout style="@style/Cell">
 
-			<TextView android:text="@string/accuracy" style="@style/SmallHeader"></TextView>
+			<TextView android:text="@string/accuracy" style="@style/WrapContent.Text.SmallHeader"></TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/accuracy" style="@style/Label13">
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/accuracy" style="@style/WrapContent.Text.Text13">
 				</TextView>
 			</LinearLayout>
 
