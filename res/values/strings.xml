@@ -9,6 +9,10 @@
     <string name="blog_url">http://tracker.aripuca.com/blog</string>
     <string name="market_url">https://market.android.com/details?id=com.aripuca.tracker</string>
     <string name="source_url">http://code.google.com/p/aripuca-tracker</string>
+    <string name="default_pace">00:00</string>
+    <string name="default_azimuth">0°N</string>
+    <string name="default_text">xxx</string>
+    <string name="zero">0</string>
     <!-- NOT TRANSLATABLE END -->
     <string name="build_date">Build date</string>
     <string name="about_dialog_message">Open source GPS tracking app for Android.\n\nOfficial blog:\nhttp://tracker.aripuca.com/blog\n\nSource code:\nhttp://code.google.com/p/aripuca-tracker</string>

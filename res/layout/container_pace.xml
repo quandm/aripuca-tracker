@@ -1,60 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-	<LinearLayout style="@style/TrackDetailsRow">
+    <LinearLayout style="@style/FillWidth.Vert.Center" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/pace" >
+        </TextView>
 
-			<TextView android:text="@string/pace" style="@style/SmallHeader"></TextView>
+        <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/pace" style="@style/Label50">
-				</TextView>
-			</LinearLayout>
+            <TextView
+                android:id="@+id/pace"
+                style="@style/WrapContent.Text.Text50" >
+            </TextView>
+        </LinearLayout>
+        
+    </LinearLayout>
 
-		</LinearLayout>
+    <LinearLayout style="@style/FillWidth.Hor.Row" >
 
-	</LinearLayout>
+        <LinearLayout style="@style/Cell" >
 
-	<LinearLayout style="@style/TrackDetailsRow">
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/average" >
+            </TextView>
 
-		<LinearLayout style="@style/TrackDetailsCell">
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
+                <TextView
+                    android:id="@+id/averagePace"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/averagePace" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
+        <LinearLayout style="@style/Cell" >
 
-		</LinearLayout>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/moving" >
+            </TextView>
 
-		<LinearLayout style="@style/TrackDetailsCell">
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
+                <TextView
+                    android:id="@+id/averageMovingPace"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/averageMovingPace" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
+        <LinearLayout style="@style/Cell" >
 
-		</LinearLayout>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/max" >
+            </TextView>
 
-		<LinearLayout style="@style/TrackDetailsCell">
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
-
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/maxPace" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+                <TextView
+                    android:id="@+id/maxPace"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
-

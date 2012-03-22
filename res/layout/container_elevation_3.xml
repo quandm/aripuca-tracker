@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+    style="@style/FillWidth.Vert.Center" >
 
-	<!-- ELEVATION -->
+    <TextView
+        style="@style/WrapContent.Text.SmallHeader"
+        android:text="@string/elevation" >
+    </TextView>
 
-	<LinearLayout style="@style/TrackDetailsRow">
+    <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
 
-		<LinearLayout style="@style/TrackDetailsCell">
+        <TextView
+            android:id="@+id/elevation"
+            style="@style/WrapContent.Text.Text30"
+            android:gravity="right" >
+        </TextView>
 
-			<TextView android:text="@string/elevation" style="@style/SmallHeader"></TextView>
-
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
-
-				<TextView android:id="@+id/elevation" android:gravity="right"
-					style="@style/Label30">
-				</TextView>
-
-				<TextView android:id="@+id/elevationUnit" android:gravity="left"
-					style="@style/LabelUnit">
-				</TextView>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+        <TextView
+            android:id="@+id/elevationUnit"
+            style="@style/WrapContent.Text.Text13"
+            android:gravity="left" >
+        </TextView>
+    </LinearLayout>
 
 </LinearLayout>
-

@@ -1,91 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+    style="@style/FillWidth.Vert.Column" >
 
-	<LinearLayout style="@style/TrackDetailsRowOfRows">
+    <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-		<LinearLayout style="@style/TrackDetailsRow">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/elevation" >
+        </TextView>
+    </LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsCell">
-				<TextView android:text="@string/elevation" style="@style/SmallHeader">
-				</TextView>
-			</LinearLayout>
+    <LinearLayout style="@style/FillWidth.Hor.Row" >
 
-		</LinearLayout>
+        <LinearLayout style="@style/Cell" >
 
-		<LinearLayout style="@style/TrackDetailsRow">
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/current" >
+            </TextView>
 
-			<LinearLayout style="@style/TrackDetailsCell">
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-				<TextView android:text="@string/current" style="@style/SmallHeader"></TextView>
+                <TextView
+                    android:id="@+id/elevation"
+                    style="@style/WrapContent.Text.Text13"
+                    android:gravity="right" >
+                </TextView>
 
-				<LinearLayout style="@style/TrackDetailsRow_Value">
+                <TextView
+                    android:id="@+id/elevationUnit"
+                    style="@style/WrapContent.Text.Text13"
+                    android:gravity="left" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-					<TextView android:id="@+id/elevation" android:gravity="right"
-						style="@style/Label13">
-					</TextView>
+        <LinearLayout style="@style/Cell" >
 
-					<TextView android:id="@+id/elevationUnit" android:gravity="left"
-						style="@style/LabelUnit">
-					</TextView>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/max" >
+            </TextView>
 
-				</LinearLayout>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			</LinearLayout>
+                <TextView
+                    android:id="@+id/maxElevation"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsCell">
+        <LinearLayout style="@style/Cell" >
 
-				<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/min" >
+            </TextView>
 
-				<LinearLayout style="@style/TrackDetailsRow_Value">
-					<TextView android:id="@+id/maxElevation" style="@style/Label13">
-					</TextView>
-				</LinearLayout>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-			</LinearLayout>
+                <TextView
+                    android:id="@+id/minElevation"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
-			<LinearLayout style="@style/TrackDetailsCell">
+    <LinearLayout style="@style/FillWidth.Hor.Row" >
 
-				<TextView android:text="@string/min" style="@style/SmallHeader"></TextView>
+        <LinearLayout style="@style/Cell" >
 
-				<LinearLayout style="@style/TrackDetailsRow_Value">
-					<TextView android:id="@+id/minElevation" style="@style/Label13">
-					</TextView>
-				</LinearLayout>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/gain" >
+            </TextView>
 
-			</LinearLayout>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-		</LinearLayout>
+                <TextView
+                    android:id="@+id/elevationGain"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-		<LinearLayout style="@style/TrackDetailsRow">
+        <LinearLayout style="@style/Cell" >
 
-			<LinearLayout style="@style/TrackDetailsCell">
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/loss" >
+            </TextView>
 
-				<TextView android:text="@string/gain" style="@style/SmallHeader"></TextView>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-				<LinearLayout style="@style/TrackDetailsRow_Value">
-					<TextView android:id="@+id/elevationGain" style="@style/Label13">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-			<LinearLayout style="@style/TrackDetailsCell">
-
-				<TextView android:text="@string/loss" style="@style/SmallHeader"></TextView>
-
-				<LinearLayout style="@style/TrackDetailsRow_Value">
-					<TextView android:id="@+id/elevationLoss" style="@style/Label13">
-					</TextView>
-				</LinearLayout>
-
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+                <TextView
+                    android:id="@+id/elevationLoss"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
-

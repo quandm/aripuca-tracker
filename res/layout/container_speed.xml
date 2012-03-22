@@ -1,71 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+    style="@style/FillWidth.Vert" >
 
-	<LinearLayout style="@style/TrackDetailsRow">
+    <LinearLayout
+        style="@style/FillWidth.Vert.Center"
+        android:baselineAligned="false" >
 
-		<LinearLayout style="@style/TrackDetailsCell"
-			android:layout_weight="1">
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/speed" >
+        </TextView>
 
-			<TextView android:text="@string/speed" style="@style/SmallHeader"></TextView>
+        <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
 
-			<LinearLayout style="@style/TrackDetailsRow_ValueUnits">
+            <TextView
+                android:id="@+id/speed"
+                style="@style/WrapContent.Text.Text50" >
+            </TextView>
 
-				<TextView android:id="@+id/speed"
-					style="@style/Label50">
-				</TextView>
+            <TextView
+                android:id="@+id/speedUnit"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
-				<TextView android:id="@+id/speedUnit"
-					style="@style/LabelUnit">
-				</TextView>
+    <LinearLayout
+        style="@style/FillWidth.Hor.Row"
+        android:baselineAligned="false" >
 
-			</LinearLayout>
+        <LinearLayout
+            style="@style/Cell"
+            android:layout_weight="1" >
 
-		</LinearLayout>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/average" >
+            </TextView>
 
-	</LinearLayout>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-	<LinearLayout style="@style/TrackDetailsRow">
+                <TextView
+                    android:id="@+id/averageSpeed"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-		<LinearLayout style="@style/TrackDetailsCell"
-			android:layout_weight="1">
+        <LinearLayout
+            style="@style/Cell"
+            android:layout_weight="1" >
 
-			<TextView android:text="@string/average" style="@style/SmallHeader"></TextView>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/moving" >
+            </TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/averageSpeed" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-		</LinearLayout>
+                <TextView
+                    android:id="@+id/averageMovingSpeed"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
 
-		<LinearLayout style="@style/TrackDetailsCell"
-			android:layout_weight="1">
+        <LinearLayout
+            style="@style/Cell"
+            android:layout_weight="1" >
 
-			<TextView android:text="@string/moving" style="@style/SmallHeader"></TextView>
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/max" >
+            </TextView>
 
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/averageMovingSpeed" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
 
-		</LinearLayout>
-
-		<LinearLayout style="@style/TrackDetailsCell"
-			android:layout_weight="1">
-
-			<TextView android:text="@string/max" style="@style/SmallHeader"></TextView>
-
-			<LinearLayout style="@style/TrackDetailsRow_Value">
-				<TextView android:id="@+id/maxSpeed" style="@style/Label13">
-				</TextView>
-			</LinearLayout>
-
-		</LinearLayout>
-
-	</LinearLayout>
+                <TextView
+                    android:id="@+id/maxSpeed"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
-
