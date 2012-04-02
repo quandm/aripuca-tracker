@@ -2,21 +2,26 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="fill_parent" android:layout_width="fill_parent"
-	android:background="@drawable/bg1repeat" android:layout_gravity="center">
+	android:background="@drawable/bg1repeat">
 
-	<ScrollView android:layout_width="fill_parent" android:id="@+id/dynamicView"
-		android:layout_height="fill_parent" android:scrollbars="none"
-		android:layout_marginBottom="45dp" android:paddingTop="2dp">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:layout_marginBottom="38dp" android:paddingTop="2dp">
 
-		<!-- This scroll view will be dynamically populated by the required layout 
-			in runtime -->
+		<ScrollView android:layout_width="fill_parent" android:id="@+id/dynamicView"
+			android:layout_height="fill_parent" android:scrollbars="none">
 
-	</ScrollView>
+			<!-- This scroll view will be dynamically populated by the required layout 
+				in runtime -->
+
+		</ScrollView>
+
+	</LinearLayout>
 
 	<!-- CONTROL BUTTONS -->
 
 	<LinearLayout android:id="@+id/buttonControls" style="@style/FillParent"
-		android:gravity="bottom" android:orientation="horizontal" android:baselineAligned="false">
+		android:gravity="bottom">
 
 		<Button android:id="@+id/addWaypointButton" android:text="@string/add_waypoint"
 			style="@style/ControlButton.XL">
