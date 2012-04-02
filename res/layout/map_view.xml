@@ -6,10 +6,11 @@
 	<com.google.android.maps.MapView
 		android:id="@+id/mapview" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:clickable="true"
-		android:apiKey="0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ" />
+		android:apiKey="0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg" />
 	
 		<!-- REPLACE WITH RELEASE KEY -->
-		<!-- Debug Map API Key: 0XQ_7l3D8Jr6nkUDStYf_6GcWo8ZY-cxlCYN1SQ -->
+		<!-- Debug certificate MD5 fingerprint: 7D:67:DE:78:FE:6F:C5:15:E8:78:FE:DA:9F:21:90:CB -->
+		<!-- Debug Map API Key: 0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg -->
 
 	<LinearLayout android:id="@+id/infoPanel" android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:orientation="vertical"

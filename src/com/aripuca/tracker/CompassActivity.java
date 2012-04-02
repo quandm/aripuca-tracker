@@ -19,7 +19,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,11 +31,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	private Location currentLocation;
 
-	static final int MIN_DISTANCE = 10;
-
 	private float downX, downY, upX, upY;
-
-	private int rotateDirection = 1;
 
 	/**
 	 * Location updates broadcast receiver
@@ -55,6 +55,17 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		public void onReceive(Context context, Intent intent) {
 			Bundle bundle = intent.getExtras();
 			updateCompass(bundle.getFloat("azimuth"));
+
+			/*
+			 * if (findViewById(R.id.azimuth) != null) {
+			 * ((TextView)
+			 * findViewById(R.id.azimuth)).setText(Utils.formatNumber
+			 * (bundle.getFloat("azimuth"), 2) + " "
+			 * + Utils.formatNumber(bundle.getFloat("pitch"), 2) + " " +
+			 * Utils.formatNumber(bundle.getFloat("roll"), 2));
+			 * }
+			 */
+
 		}
 	};
 
@@ -66,6 +77,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	private long declinationLastUpdate = 0;
 
 	private float declination;
+
+	private CompassImage compass;
 
 	/**
 	 * Initialize the activity
@@ -82,11 +95,38 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 		currentLocation = myApp.getCurrentLocation();
 
-		if (findViewById(R.id.compassLayout) != null) {
-			findViewById(R.id.compassLayout).setOnTouchListener(this);
+		// magnetic north compass
+		if (findViewById(R.id.compass) != null) {
+
+			compass = (CompassImage) findViewById(R.id.compass);
+
+			compass.setOnTouchListener(this);
+			//	compass.setOnLongClickListener(resetCompass);
+		}
+
+		if (findViewById(R.id.azimuth) != null) {
+			((TextView) findViewById(R.id.azimuth)).setOnLongClickListener(resetCompass);
 		}
 
 	}
+
+	/**
+	 * 
+	 */
+	private OnLongClickListener resetCompass = new OnLongClickListener() {
+
+		@Override
+		public boolean onLongClick(View v) {
+
+			if (compass != null) {
+				compass.setAngle(0);
+				compass.invalidate();
+			}
+
+			return true;
+		}
+
+	};
 
 	@Override
 	public void onResume() {
@@ -119,6 +159,16 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
+		// stop location updates when not recording track
+		if (gpsService != null) {
+
+			if (!gpsService.getTrackRecorder().isRecording()) {
+				gpsService.stopLocationUpdates();
+			}
+
+			gpsService.stopSensorUpdates();
+		}
+
 		this.unbindGpsService();
 
 		super.onPause();
@@ -135,88 +185,24 @@ public class CompassActivity extends Activity implements OnTouchListener {
 				downY = event.getY();
 				return true;
 
-			case MotionEvent.ACTION_UP:
-
-				upX = event.getX();
-				upY = event.getY();
-
-				Log.d(Constants.TAG,
-						"ACTION_UP: " + downX + " " + downY + " " + upX + " " + upY + " " + v.getMeasuredWidth());
-
-				rotateDirection = 0;
-				return true;
-
 			case MotionEvent.ACTION_MOVE:
 
 				upX = event.getX();
 				upY = event.getY();
 
-				float deltaX = upX - downX;
-				float deltaY = upY - downY;
-				
-				double bc = Math.sqrt(Math.pow((double)Math.abs(upX - downX), 2) + Math.pow((double)Math.abs(upY - downY), 2));
-				float angle = (float) (Math.asin( bc/2/v.getMeasuredWidth()/2) * 180 / Math.PI * 2);
-				
-/*				float ad1 = Math.abs(v.getMeasuredHeight()/2 - upY);
-				float bd1 = Math.abs(v.getMeasuredWidth()/2 - upX); 
-				float alpha1 = (float) (Math.atan(bd1/ad1) * 180 / Math.PI);
-				float ad2 = Math.abs(v.getMeasuredWidth()/2 - downX);
-				float cd2 = Math.abs(v.getMeasuredHeight()/2 - downY); 
-				float alpha2 = (float) (Math.atan(cd2/ad2) * 180 / Math.PI); */
-				//float angle = 90 - alpha1 - alpha2;
-				//Log.d(Constants.TAG, "ANGLE: " + alpha1 + " " + alpha2 + " " + angle);
+				double downR = Math.atan2(v.getHeight() / 2 - downY, downX - v.getWidth() / 2);
+				int angle1 = (int) Math.toDegrees(downR);
 
-				// swipe horizontal?
-				//if (Math.abs(deltaX) < MIN_DISTANCE) { return true; }
+				double upR = Math.atan2(v.getHeight() / 2 - upY, upX - v.getWidth() / 2);
+				int angle2 = (int) Math.toDegrees(upR);
 
-				if (upX >= 0 && upX <= v.getMeasuredWidth() / 2 && upY >= 0 && upY <= v.getMeasuredHeight() / 2) {
+				this.rotateCompass(angle1 - angle2);
 
-					if (deltaX > 0 || deltaY < 0) {
-						rotateDirection = 1;
-					} else {
-						rotateDirection = -1;
-					}
+				Log.d(Constants.TAG, "ANGLE: " + angle1 + " " + angle2 + " " + compass.getAngle());
 
-				}
-
-				if (upX > v.getMeasuredWidth() / 2 && upX <= v.getMeasuredWidth() && upY >= 0
-						&& upY <= v.getMeasuredHeight() / 2) {
-
-					if (deltaX > 0 || deltaY > 0) {
-						rotateDirection = 1;
-					} else {
-						rotateDirection = -1;
-					}
-				}
-
-				if (upX > 0 && upX <= v.getMeasuredWidth() && upY > v.getMeasuredHeight() / 2
-						&& upY <= v.getMeasuredHeight()) {
-
-					if (deltaX < 0 || deltaY < 0) {
-						rotateDirection = 1;
-					} else {
-						rotateDirection = -1;
-					}
-				}
-
-				if (upX > v.getMeasuredWidth() / 2 && upX <= v.getMeasuredWidth() && upY > v.getMeasuredHeight() / 2
-						&& upY <= v.getMeasuredHeight()) {
-					if (deltaX < 0 || deltaY > 0) {
-						rotateDirection = 1;
-					} else {
-						rotateDirection = -1;
-					}
-				}
-
-				if (rotateDirection == -1) {
-					this.rotateCompass(-angle);
-
-				}
-				if (rotateDirection == 1) {
-					this.rotateCompass(angle);
-				}
-
-				Log.d(Constants.TAG, "onTouch: " + rotateDirection + " " + downX + " " + downY + " " + upX + " " + upY);
+				// update starting point for next move event
+				downX = upX;
+				downY = upY;
 
 				return true;
 
@@ -229,8 +215,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	private void rotateCompass(float angle) {
 
 		// magnetic north compass
-		if (findViewById(R.id.compass) != null) {
-			CompassImage compass = (CompassImage) findViewById(R.id.compass);
+		if (compass != null) {
 			compass.setAngle(compass.getAngle() + angle);
 			compass.invalidate();
 		}
@@ -307,7 +292,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
@@ -355,12 +342,22 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	 */
 	private void gpsServiceBoundCallback() {
 
-		// this activity is started by MainActivity which is always
-		// listening for location updates
+		if (!gpsService.isListening()) {
 
-		// by setting gpsInUse to true we insure that listening will not stop in
-		// GpsService.stopLocationUpdatesThread
-		gpsService.setGpsInUse(true);
+			// location updates stopped at this time, so let's start them
+			gpsService.startLocationUpdates();
+
+		} else {
+
+			// gpsInUse = false means we are in process of stopping listening
+			if (!gpsService.isGpsInUse()) {
+				gpsService.setGpsInUse(true);
+			}
+
+			// if both isListening and isGpsInUse are true - do nothing
+			// most likely we are in the process of recording track
+
+		}
 
 		// this activity requires compass data
 		gpsService.startSensorUpdates();
