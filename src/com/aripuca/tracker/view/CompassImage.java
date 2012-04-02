@@ -22,7 +22,7 @@ public class CompassImage extends ImageView {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		
-		canvas.rotate(angle, this.getMeasuredWidth()*0.5F, this.getMeasuredHeight()*0.5F);
+		canvas.rotate(angle, this.getMeasuredWidth()/2, this.getMeasuredHeight()/2);
 		super.onDraw(canvas);
 
 	}
