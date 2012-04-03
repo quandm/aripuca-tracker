@@ -6,7 +6,7 @@
 	<com.google.android.maps.MapView
 		android:id="@+id/mapview" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:clickable="true"
-		android:apiKey="0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg" />
+		android:apiKey="0XQ_7l3D8Jr53Kdl__j0p3rB1GnvnVsqJrWGdYw" />
 	
 		<!-- REPLACE WITH RELEASE KEY -->
 		<!-- Debug certificate MD5 fingerprint: 7D:67:DE:78:FE:6F:C5:15:E8:78:FE:DA:9F:21:90:CB -->

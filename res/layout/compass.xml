@@ -8,6 +8,18 @@
     <!-- Compass layout -->
 
     <LinearLayout
+        style="@style/FillParent"
+        android:gravity="center"
+        android:paddingBottom="25dp" >
+
+        <ImageView
+            android:layout_width="300dip"
+            android:layout_height="300dip"
+            android:contentDescription="@string/compass"
+            android:src="@drawable/compass_baseplate" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/compassLayout"
         style="@style/FillParent"
         android:gravity="center"
@@ -19,7 +31,7 @@
             android:layout_width="300dip"
             android:layout_height="300dip"
             android:contentDescription="@string/compass"
-            android:src="@drawable/compass" />
+            android:src="@drawable/compass_bezel" />
     </LinearLayout>
 
     <LinearLayout
@@ -32,7 +44,7 @@
             android:id="@+id/compassImage2"
             android:layout_width="300dip"
             android:layout_height="300dip"
-            android:src="@drawable/compass_arrow"
+            android:src="@drawable/compass_needle"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -46,7 +58,7 @@
             android:id="@+id/compassImage"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:src="@drawable/compass_arrow" />
+            android:src="@drawable/compass_needle" />
     </LinearLayout>
 
     <LinearLayout
@@ -64,6 +76,9 @@
         android:id="@+id/ball"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ball" />
+        android:contentDescription="@string/compass"
+        android:src="@drawable/ball"
+        android:visibility="gone"
+         />
 
 </FrameLayout>

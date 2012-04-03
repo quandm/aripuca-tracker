@@ -19,18 +19,15 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class CompassActivity extends Activity implements OnTouchListener {
 
 	private Location currentLocation;
-
+	
 	private float downX, downY, upX, upY;
 
 	/**
@@ -43,6 +40,20 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
+			
+			// location here is required only for calculating declination
+			// after first location received, no matter the accuracy - turn off gps updates
+			
+			long now = System.currentTimeMillis();
+
+			// let's request declination every 15 minutes, not every compass
+			// update
+			realDeclination = Utils.getDeclination(currentLocation, now);
+			
+			// stop location updates when not recording track
+			if (gpsService != null && !gpsService.getTrackRecorder().isRecording()) {
+				gpsService.stopLocationUpdates();
+			}
 
 		}
 	};
@@ -74,9 +85,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	 */
 	private MyApp myApp;
 
-	private long declinationLastUpdate = 0;
-
-	private float declination;
+	private float realDeclination;
 
 	private CompassImage compass;
 
@@ -162,6 +171,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// stop location updates when not recording track
 		if (gpsService != null) {
 
+			// at this point we most likely received one location update and already stopped listening 
 			if (!gpsService.getTrackRecorder().isRecording()) {
 				gpsService.stopLocationUpdates();
 			}
@@ -231,21 +241,11 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		boolean showMagnetic = myApp.getPreferences().getBoolean("show_magnetic", true);
 
 		float rotation = 0;
-
+		
+		float declination = 0;
+		// are we taking declination into account?
 		if (trueNorth && currentLocation != null) {
-
-			long now = System.currentTimeMillis();
-
-			// let's request declination every 15 minutes, not every compass
-			// update
-			if (now - declinationLastUpdate > 15 * 60 * 1000) {
-				declination = Utils.getDeclination(currentLocation, now);
-				Log.d(Constants.TAG, "declination update: " + declination);
-				declinationLastUpdate = now;
-			}
-
-		} else {
-			declination = 0;
+			declination = realDeclination;
 		}
 
 		// magnetic north to true north

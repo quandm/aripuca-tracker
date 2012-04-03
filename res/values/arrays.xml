@@ -134,6 +134,7 @@
         <item>Record new waypoint and use address from Google Geocoder as default description.</item>
         <item>Developers, application supports 4 levels of logging: Errors, Warnings, Info and Debug. Check out the content of \'logs\' folder.</item>
         <item>You can simultaneously record tracks in both real-time and scheduled modes.</item>
+        <item>Compass dial can be rotated to set required bearing. Reset compass by long-clicking on azimuth value.</item>
     </string-array>
     <string-array name="logging_level_labels">
         <item>No logging</item>
