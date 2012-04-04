@@ -4,6 +4,7 @@ import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.view.BubbleSurfaceView;
 import com.aripuca.tracker.view.CompassImage;
 
 import android.app.Activity;
@@ -29,7 +30,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	private Location currentLocation;
 	
 	private float downX, downY, upX, upY;
-
+	
+	protected BubbleSurfaceView bubbleView;
+	
 	/**
 	 * Location updates broadcast receiver
 	 */
@@ -64,9 +67,15 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			
 			Bundle bundle = intent.getExtras();
+			
 			updateCompass(bundle.getFloat("azimuth"));
-
+			
+			if (bubbleView!=null) {
+				bubbleView.setSensorData(bundle.getFloat("azimuth"), bundle.getFloat("roll"), bundle.getFloat("pitch"));
+			}
+			
 			/*
 			 * if (findViewById(R.id.azimuth) != null) {
 			 * ((TextView)
@@ -102,6 +111,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
+        bubbleView = (BubbleSurfaceView) findViewById(R.id.bubbleSurfaceView);
+		
 		currentLocation = myApp.getCurrentLocation();
 
 		// magnetic north compass
@@ -141,6 +152,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	public void onResume() {
 
 		super.onResume();
+		
+		bubbleView.resume();
 
 		if (findViewById(R.id.compassView) != null) {
 			findViewById(R.id.compassView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
@@ -165,6 +178,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	@Override
 	public void onPause() {
 
+		bubbleView.pause();
+		
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
@@ -222,6 +237,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	}
 
+	/**
+	 * rotate compass bezel
+	 */
 	private void rotateCompass(float angle) {
 
 		// magnetic north compass
@@ -257,33 +275,33 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		}
 
 		// true north compass
-		if (findViewById(R.id.compassImage) != null) {
+		if (findViewById(R.id.compassNeedle) != null) {
 
-			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
+			CompassImage compassNeedle = (CompassImage) findViewById(R.id.compassNeedle);
 
-			if (compassImage.getVisibility() == View.VISIBLE) {
-				compassImage.setAngle(360 - rotation);
-				compassImage.invalidate();
+			if (compassNeedle.getVisibility() == View.VISIBLE) {
+				compassNeedle.setAngle(360 - rotation);
+				compassNeedle.invalidate();
 			}
 		}
 
 		// magnetic north compass
-		if (findViewById(R.id.compassImage2) != null) {
+		if (findViewById(R.id.compassNeedleMagnetic) != null) {
 
-			CompassImage compassImage2 = (CompassImage) findViewById(R.id.compassImage2);
+			CompassImage compassNeedleMagnetic = (CompassImage) findViewById(R.id.compassNeedleMagnetic);
 
 			if (showMagnetic) {
 
-				if (compassImage2.getVisibility() != View.VISIBLE) {
-					compassImage2.setVisibility(View.VISIBLE);
+				if (compassNeedleMagnetic.getVisibility() != View.VISIBLE) {
+					compassNeedleMagnetic.setVisibility(View.VISIBLE);
 				}
 
-				compassImage2.setAngle(360 - rotation + declination);
-				compassImage2.setAlpha(50);
-				compassImage2.invalidate();
+				compassNeedleMagnetic.setAngle(360 - rotation + declination);
+				compassNeedleMagnetic.setAlpha(50);
+				compassNeedleMagnetic.invalidate();
 
 			} else {
-				compassImage2.setVisibility(View.INVISIBLE);
+				compassNeedleMagnetic.setVisibility(View.INVISIBLE);
 			}
 
 		}
