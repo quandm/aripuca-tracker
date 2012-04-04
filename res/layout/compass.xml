@@ -1,63 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/compassView"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    style="@style/FillParent"
     android:background="@drawable/bg1repeat" >
 
     <!-- Compass layout -->
 
     <LinearLayout
-        style="@style/FillParent"
-        android:gravity="center"
-        android:paddingBottom="25dp" >
-
-        <ImageView
-            android:layout_width="300dip"
-            android:layout_height="300dip"
-            android:contentDescription="@string/compass"
-            android:src="@drawable/compass_baseplate" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/compassLayout"
-        style="@style/FillParent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="25dp" >
+        style="@style/FillParent.Center" >
 
         <com.aripuca.tracker.view.CompassImage
             android:id="@+id/compass"
-            android:layout_width="300dip"
-            android:layout_height="300dip"
+            android:layout_width="310dip"
+            android:layout_height="310dip"
             android:contentDescription="@string/compass"
             android:src="@drawable/compass_bezel" />
     </LinearLayout>
 
-    <LinearLayout
-        style="@style/FillParent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="25dp" >
+    <LinearLayout style="@style/FillParent.Center" >
+
+        <ImageView
+            android:layout_width="310dip"
+            android:layout_height="310dip"
+            android:contentDescription="@string/compass"
+            android:src="@drawable/compass_baseplate" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillParent.Center" >
 
         <com.aripuca.tracker.view.CompassImage
             android:id="@+id/compassImage2"
-            android:layout_width="300dip"
-            android:layout_height="300dip"
+            android:layout_width="310dip"
+            android:layout_height="310dip"
             android:src="@drawable/compass_needle"
             android:visibility="invisible" />
     </LinearLayout>
 
-    <LinearLayout
-        style="@style/FillParent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="25dp" >
+    <LinearLayout style="@style/FillParent.Center" >
 
         <com.aripuca.tracker.view.CompassImage
             android:id="@+id/compassImage"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="310dp"
+            android:layout_height="310dp"
             android:src="@drawable/compass_needle" />
     </LinearLayout>
 
@@ -70,15 +55,7 @@
             style="@style/WrapContent.Text.Text30"
             android:text="@string/default_azimuth" >
         </TextView>
+        
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ball"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:contentDescription="@string/compass"
-        android:src="@drawable/ball"
-        android:visibility="gone"
-         />
 
 </FrameLayout>
