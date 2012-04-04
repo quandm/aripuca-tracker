@@ -4,7 +4,14 @@
     style="@style/FillParent"
     android:background="@drawable/bg1repeat" >
 
-    <!-- Compass layout -->
+    <LinearLayout style="@style/FillParent" >
+
+        <com.aripuca.tracker.view.BubbleSurfaceView
+            android:id="@+id/bubbleSurfaceView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#00FF0000" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/compassLayout"
@@ -30,7 +37,7 @@
     <LinearLayout style="@style/FillParent.Center" >
 
         <com.aripuca.tracker.view.CompassImage
-            android:id="@+id/compassImage2"
+            android:id="@+id/compassNeedleMagnetic"
             android:layout_width="310dip"
             android:layout_height="310dip"
             android:src="@drawable/compass_needle"
@@ -40,7 +47,7 @@
     <LinearLayout style="@style/FillParent.Center" >
 
         <com.aripuca.tracker.view.CompassImage
-            android:id="@+id/compassImage"
+            android:id="@+id/compassNeedle"
             android:layout_width="310dp"
             android:layout_height="310dp"
             android:src="@drawable/compass_needle" />
@@ -55,7 +62,6 @@
             style="@style/WrapContent.Text.Text30"
             android:text="@string/default_azimuth" >
         </TextView>
-        
     </LinearLayout>
 
 </FrameLayout>
