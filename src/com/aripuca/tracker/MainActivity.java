@@ -54,6 +54,7 @@ import android.text.SpannableString;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -124,9 +125,9 @@ public class MainActivity extends Activity {
 			// TODO: for some reason currentLocation.getTime returns date in the
 			// future (started in January 2012)
 			if (fixAge < 0) {
-				
+
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
-				
+
 				Log.d(Constants.TAG, "MainActivity: location time is one day ahead");
 				myApp.logd("MainActivity: location time is one day ahead");
 			}
@@ -376,14 +377,19 @@ public class MainActivity extends Activity {
 		Log.i(Constants.TAG, "MainActivity: onCreate");
 
 		// reference to application object
-		myApp = ((MyApp) getApplication());//Context());
+		myApp = ((MyApp) getApplication());// Context());
 
+		
+		DisplayMetrics metrics = new DisplayMetrics();
+		 getWindowManager().getDefaultDisplay().getMetrics(metrics);		
+		
+		
 		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		initializeHiddenPreferences();
 
 		if (Build.VERSION.SDK_INT > 10) {
-			//this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			// this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 
 		// ----------------------------------------------------------------------
@@ -423,7 +429,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 
 		super.onResume();
-		
+
 		Log.i(Constants.TAG, "MainActivity: onResume");
 
 		this.initializeMeasuringUnits();
@@ -460,7 +466,7 @@ public class MainActivity extends Activity {
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 		unregisterReceiver(scheduledLocationBroadcastReceiver);
-		
+
 		if (!this.isFinishing()) {
 
 			// activity will be recreated
@@ -510,7 +516,7 @@ public class MainActivity extends Activity {
 
 		super.onPause();
 	}
-	
+
 	/**
 	 * onDestroy event handler
 	 */
@@ -525,7 +531,7 @@ public class MainActivity extends Activity {
 
 		super.onDestroy();
 	}
-	
+
 	/**
 	 * Restoring data saved in onSaveInstanceState
 	 */
@@ -1111,7 +1117,7 @@ public class MainActivity extends Activity {
 			case R.id.compassMenuItem:
 
 				startActivity(new Intent(this, CompassActivity.class));
-				
+
 				return true;
 
 			case R.id.waypointsMenuItem:
@@ -1123,7 +1129,7 @@ public class MainActivity extends Activity {
 			case R.id.tracksMenuItem:
 
 				startActivity(new Intent(this, TracksTabActivity.class));
-				
+
 				return true;
 
 			case R.id.aboutMenuItem:

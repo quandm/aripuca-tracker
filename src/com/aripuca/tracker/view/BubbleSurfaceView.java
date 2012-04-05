@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -22,7 +23,7 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 	private boolean isRunning = false;
 
-	private Bitmap bubble;
+	private Bitmap bubble, bubbleCircle;
 
 	float azimuth, roll, pitch;
 
@@ -60,6 +61,7 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 		holder.setFormat(PixelFormat.TRANSPARENT);
 
 		bubble = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
+		bubbleCircle = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle);
 
 	}
 
@@ -75,31 +77,32 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 			try {
 				Thread.sleep(300);
 			} catch (Exception e) {
-				
+
 			}
 
 			Canvas canvas = holder.lockCanvas();
 
-			//canvas.drawCircle(cx, cy, 300, );
-			
-			canvas.drawARGB(255, 0, 0, 0);
+			// canvas.drawCircle(cx, cy, 300, );
 
-			Matrix m = new Matrix();
-			m.setScale(0.25F, 0.25F);
+			// canvas.drawARGB(128, 0, 0, 0);
+			canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
-			float scaleRoll = 90F / this.getWidth();
-			float scalePitch = 90F / this.getHeight();
+			float scaleRoll = (float) (180F / (this.getWidth() - bubble.getWidth()));
+			float scalePitch = (float) (180F / (this.getHeight() - bubble.getHeight()));
 
 			x = this.roll / scaleRoll + this.getWidth() / 2;
 			y = this.pitch / scalePitch + this.getHeight() / 2;
 
-			Log.d(Constants.TAG, "Scale: " + scaleRoll + " x: " + x + " y: " + y
-					+ " roll: " + this.roll + " pitch: " + this.pitch);
+			// Log.d(Constants.TAG, "Width: " + bubble.getWidth() + " x: " + x +
+			// " y: " + y
+			// + " roll: " + this.roll + " pitch: " + this.pitch);
 
-			//canvas.drawBitmap(bubble, m, null);
-			canvas.drawBitmap(bubble, x + bubble.getWidth()/2, y + bubble.getHeight()/2, null);
+			canvas.drawBitmap(bubbleCircle, 0, 0, null);
 
-			//canvas.drawBitmap(bubble, 10, 10, null);
+			// canvas.drawBitmap(bubble, m, null);
+			canvas.drawBitmap(bubble, x - bubble.getWidth() / 2, y - bubble.getHeight() / 2, null);
+
+			// canvas.drawBitmap(bubble, 10, 10, null);
 
 			holder.unlockCanvasAndPost(canvas);
 
