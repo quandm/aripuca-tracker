@@ -4,15 +4,6 @@
     style="@style/FillParent"
     android:background="@drawable/bg1repeat" >
 
-    <LinearLayout style="@style/FillParent" >
-
-        <com.aripuca.tracker.view.BubbleSurfaceView
-            android:id="@+id/bubbleSurfaceView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="#00FF0000" />
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/compassLayout"
         style="@style/FillParent.Center" >
@@ -64,4 +55,12 @@
         </TextView>
     </LinearLayout>
 
+    <LinearLayout style="@style/FillParent" >
+
+        <com.aripuca.tracker.view.BubbleSurfaceView
+            android:id="@+id/bubbleSurfaceView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+    </LinearLayout>
+    
 </FrameLayout>
