@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,7 +24,7 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 	private boolean isRunning = false;
 
-	private Bitmap bubble, bubbleCircle;
+	private Bitmap bubble, bubbleCircle, bubbleCircleRed, bubbleCircleGreen;
 
 	float azimuth, roll, pitch;
 
@@ -32,14 +33,6 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 	public BubbleSurfaceView(Context context) {
 		super(context);
 		init();
-	}
-
-	public void setSensorData(float a, float r, float p) {
-
-		this.azimuth = a;
-		this.roll = r;
-		this.pitch = p;
-
 	}
 
 	public BubbleSurfaceView(Context context, AttributeSet attrs, int defStyle) {
@@ -62,7 +55,18 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 		bubble = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
 		bubbleCircle = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle);
+		bubbleCircleRed = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle_red);
+		bubbleCircleGreen = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle_green);
 
+		// center of the circle
+		x = y = this.getWidth() / 2;
+
+	}
+
+	public void setSensorData(float a, float r, float p) {
+		this.azimuth = a;
+		this.roll = r;
+		this.pitch = p;
 	}
 
 	@Override
@@ -75,34 +79,57 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 			}
 
 			try {
-				Thread.sleep(300);
+				Thread.sleep(100);
 			} catch (Exception e) {
 
 			}
 
 			Canvas canvas = holder.lockCanvas();
 
-			// canvas.drawCircle(cx, cy, 300, );
+			// scale
+			float scaleRoll = this.getWidth() * 0.7F / 90F;
+			float scalePitch = this.getHeight() * 0.7F / 90F;
 
-			// canvas.drawARGB(128, 0, 0, 0);
+			synchronized (this) {
+				// controlling the circle bounds
+				while (Math.sqrt(this.roll * this.roll + this.pitch * this.pitch) > 26) {
+					if (this.roll < 0)
+						this.roll += 0.01;
+					else
+						this.roll -= 0.01;
+					if (this.pitch < 0)
+						this.pitch += 0.01;
+					else
+						this.pitch -= 0.01;
+				}
+				// top left corner of the bubble
+				x = this.roll * scaleRoll + this.getWidth() / 2 - bubble.getWidth() / 2;
+				y = this.pitch * scalePitch + this.getHeight() / 2 - bubble.getHeight() / 2;
+			}
+
+			// clearing canvas
 			canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
-			float scaleRoll = (float) (180F / (this.getWidth() - bubble.getWidth()));
-			float scalePitch = (float) (180F / (this.getHeight() - bubble.getHeight()));
+			// distance between center of the circle and center of the
+			// bubble
+			float dist = (float) Math.sqrt(Math.pow(x + bubble.getWidth() / 2 - (this.getWidth() / 2), 2)
+					+ Math.pow(y + bubble.getHeight() / 2 - (this.getHeight() / 2), 2));
 
-			x = this.roll / scaleRoll + this.getWidth() / 2;
-			y = this.pitch / scalePitch + this.getHeight() / 2;
+			
+			if (dist + bubble.getWidth() / 2 > this.getHeight() / 3) {
+				// drawing bubble circle
+				canvas.drawBitmap(bubbleCircleRed, 0, 0, null);
+			} else {
+				if (dist + bubble.getWidth() / 2 > this.getHeight() / 4) {
+					// drawing bubble circle
+					canvas.drawBitmap(bubbleCircleGreen, 0, 0, null);
+				} else {
+					// drawing bubble circle
+					canvas.drawBitmap(bubbleCircle, 0, 0, null);
+				}
+			}
 
-			// Log.d(Constants.TAG, "Width: " + bubble.getWidth() + " x: " + x +
-			// " y: " + y
-			// + " roll: " + this.roll + " pitch: " + this.pitch);
-
-			canvas.drawBitmap(bubbleCircle, 0, 0, null);
-
-			// canvas.drawBitmap(bubble, m, null);
-			canvas.drawBitmap(bubble, x - bubble.getWidth() / 2, y - bubble.getHeight() / 2, null);
-
-			// canvas.drawBitmap(bubble, 10, 10, null);
+			canvas.drawBitmap(bubble, x, y, null);
 
 			holder.unlockCanvasAndPost(canvas);
 

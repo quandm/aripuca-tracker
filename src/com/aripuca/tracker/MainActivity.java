@@ -379,11 +379,6 @@ public class MainActivity extends Activity {
 		// reference to application object
 		myApp = ((MyApp) getApplication());// Context());
 
-		
-		DisplayMetrics metrics = new DisplayMetrics();
-		 getWindowManager().getDefaultDisplay().getMetrics(metrics);		
-		
-		
 		orientationHelper = new OrientationHelper(MainActivity.this);
 
 		initializeHiddenPreferences();
