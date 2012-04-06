@@ -52,7 +52,7 @@ public class MyApp extends Application {
 	 * database object
 	 */
 	private SQLiteDatabase db;
-	
+
 	private Location currentLocation;
 
 	public SQLiteDatabase getDatabase() {
@@ -99,8 +99,7 @@ public class MyApp extends Application {
 	public void setCurrentLocation(Location currentLocation) {
 		this.currentLocation = currentLocation;
 	}
-	
-	
+
 	/**
 	 * application database create/open helper class
 	 */
@@ -223,13 +222,16 @@ public class MyApp extends Application {
 			// Toast.LENGTH_SHORT).show();
 		}
 
+		// display density
+		// density = getContext().getResources().getDisplayMetrics().density;
+
 		// adding famous waypoints to db if not added yet
 		insertFamousWaypoints();
 
 		this.logd("=================== MyApp: onCreate ===================");
-		
+
 	}
-	
+
 	/**
 	 * Checking if external storage is available and writable
 	 */
@@ -291,19 +293,22 @@ public class MyApp extends Application {
 		AppLog appLog = new AppLog(this);
 		appLog.e(message);
 	}
+
 	public void logw(String message) {
 		AppLog appLog = new AppLog(this);
 		appLog.w(message);
 	}
+
 	public void logi(String message) {
 		AppLog appLog = new AppLog(this);
 		appLog.i(message);
 	}
+
 	public void logd(String message) {
 		AppLog appLog = new AppLog(this);
 		appLog.d(message);
 	}
-	
+
 	/**
 	 * Create application folders
 	 */
