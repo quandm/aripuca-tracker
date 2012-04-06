@@ -216,4 +216,7 @@
     <string name="sort">Сортировать</string>
     <string name="logging_level_summary">Уровень записи в системный журнал</string>
     <string name="logging_level">Уровень записи в журнал</string>
+    <string name="compass_vibration">Включить вибратор</string>
+    <string name="compass_vibration_summary">Вибрировать при повороте кольца компаса</string>
+    <string name="segment_vibration">Вибрировать для нового сегмента</string>
 </resources>
