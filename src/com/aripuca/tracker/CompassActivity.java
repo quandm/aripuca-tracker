@@ -72,9 +72,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			
 			updateCompass(bundle.getFloat("azimuth"));
 			
-			if (bubbleView!=null) {
-				bubbleView.setSensorData(bundle.getFloat("azimuth"), bundle.getFloat("roll"), bundle.getFloat("pitch"));
-			}
+			bubbleView.setSensorData(bundle.getFloat("azimuth"), bundle.getFloat("roll"), bundle.getFloat("pitch"));
 			
 			/*
 			 * if (findViewById(R.id.azimuth) != null) {
@@ -111,7 +109,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
-        bubbleView = (BubbleSurfaceView) findViewById(R.id.bubbleSurfaceView);
+		if (findViewById(R.id.bubbleSurfaceView)!=null) {
+			bubbleView = (BubbleSurfaceView) findViewById(R.id.bubbleSurfaceView);
+		}
 		
 		currentLocation = myApp.getCurrentLocation();
 

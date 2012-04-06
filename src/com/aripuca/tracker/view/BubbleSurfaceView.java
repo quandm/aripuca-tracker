@@ -41,6 +41,9 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 		init();
 	}
 
+	/**
+	 * initialization
+	 */
 	private void init() {
 
 		holder = getHolder();
@@ -59,12 +62,22 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 	}
 
+	/**
+	 * sets sensor data from activity
+	 * 
+	 * @param a
+	 * @param r
+	 * @param p
+	 */
 	public void setSensorData(float a, float r, float p) {
 		this.azimuth = a;
 		this.roll = r;
 		this.pitch = p;
 	}
 
+	/**
+	 * thread's run method
+	 */
 	@Override
 	public void run() {
 
@@ -106,12 +119,10 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 			// clearing canvas
 			canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
-			// distance between center of the circle and center of the
-			// bubble
+			// distance between center of the circle and center of the bubble
 			float dist = (float) Math.sqrt(Math.pow(x + bubble.getWidth() / 2 - (this.getWidth() / 2), 2)
 					+ Math.pow(y + bubble.getHeight() / 2 - (this.getHeight() / 2), 2));
 
-			
 			if (dist + bubble.getWidth() / 2 > this.getHeight() / 3) {
 				// drawing bubble circle
 				canvas.drawBitmap(bubbleCircleRed, 0, 0, null);
@@ -125,6 +136,7 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 				}
 			}
 
+			// drawing bubble last
 			canvas.drawBitmap(bubble, x, y, null);
 
 			holder.unlockCanvasAndPost(canvas);
@@ -133,26 +145,28 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 	}
 
+	/**
+	 * pause drawing to the surface
+	 */
 	public void pause() {
 
 		isRunning = false;
 
 		while (true) {
-
 			try {
 				thread.join();
 			} catch (InterruptedException e) {
 
 			}
-
 			break;
-
 		}
 
 		thread = null;
-
 	}
 
+	/**
+	 * resume drawing
+	 */
 	public void resume() {
 
 		isRunning = true;
