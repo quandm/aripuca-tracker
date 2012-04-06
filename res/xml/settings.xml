@@ -60,7 +60,7 @@
         </ListPreference>
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="@string/compass" android:summary="@string/compass_summary">
+    <PreferenceScreen android:title="@string/compass" android:summary="@string/compass_summary" android:defaultValue="true">
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -76,6 +76,7 @@
             android:summary="@string/show_magnetic_summary"
             android:title="@string/show_magnetic" >
         </CheckBoxPreference>
+        <CheckBoxPreference android:key="compass_vibration" android:title="@string/compass_vibration" android:summary="@string/compass_vibration_summary" android:defaultValue="true"/>
     </PreferenceScreen>
 
     <PreferenceScreen android:title="@string/waypoints" android:summary="@string/waypoints_summary">

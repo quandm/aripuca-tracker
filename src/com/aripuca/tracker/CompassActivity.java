@@ -17,6 +17,7 @@ import android.content.ServiceConnection;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +33,21 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	private float downX, downY, upX, upY;
 	
 	protected BubbleSurfaceView bubbleView;
+
+	protected Vibrator vibrator;			
+
+	/**
+	 * Reference to Application object
+	 */
+	private MyApp myApp;
+
+	private float realDeclination;
+
+	private CompassImage compass;
+	
+	private boolean vibrationOn;
+	
+
 	
 	/**
 	 * Location updates broadcast receiver
@@ -88,15 +104,6 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	};
 
 	/**
-	 * Reference to Application object
-	 */
-	private MyApp myApp;
-
-	private float realDeclination;
-
-	private CompassImage compass;
-
-	/**
 	 * Initialize the activity
 	 */
 	@Override
@@ -109,6 +116,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
+		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		
+		vibrationOn = myApp.getPreferences().getBoolean("compass_vibration", true);
+		
 		if (findViewById(R.id.bubbleSurfaceView)!=null) {
 			bubbleView = (BubbleSurfaceView) findViewById(R.id.bubbleSurfaceView);
 		}
@@ -222,8 +233,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 				int angle2 = (int) Math.toDegrees(upR);
 
 				this.rotateCompass(angle1 - angle2);
-
-				Log.d(Constants.TAG, "ANGLE: " + angle1 + " " + angle2 + " " + compass.getAngle());
+				
+				if (vibrationOn) {
+					vibrator.vibrate(5);	
+				}
 
 				// update starting point for next move event
 				downX = upX;
