@@ -113,7 +113,7 @@
     <string name="track_points">Track points</string>
     <string name="scheduled_track_points">Scheduled track points</string>
     <string name="tracks">Tracks</string>
-    <string name="scheduled_tracks">Scheduled tracks</string>
+    <string name="scheduled_tracks">Scheduled Tracks</string>
     <string name="track_details_activity_title">Track details</string>
     <string name="show_track">Show track</string>
     <string name="track_chart">Track chart</string>
@@ -252,7 +252,7 @@
     <string name="please_wait">Please wait</string>
     <string name="deleting_records">Deleting records...</string>
     <string name="stop_scheduler">Stop scheduler</string>
-    <string name="start_scheduler">Start scheduler</string>
+    <string name="start_scheduler">Start Scheduler</string>
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
 </resources>
