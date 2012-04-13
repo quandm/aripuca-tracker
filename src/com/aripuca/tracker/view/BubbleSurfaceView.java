@@ -20,7 +20,7 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 	private boolean isRunning = false;
 
-	private Bitmap bubble, bubbleCircle, bubbleCircleRed, bubbleCircleGreen, bubbleCover;
+	private Bitmap bubble, bubbleCircle, bubbleCircleRed, bubbleCircleGreen;
 
 	float azimuth, roll, pitch;
 
@@ -56,7 +56,6 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 		bubbleCircle = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle);
 		bubbleCircleRed = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle_red);
 		bubbleCircleGreen = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_circle_green);
-		bubbleCover = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_cover);
 
 		// center of the circle
 		x = y = this.getWidth() / 2;
