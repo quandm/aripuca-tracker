@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillParent"
+    android:background="@drawable/bg1repeat" >
+
+    <ScrollView
+        style="@style/FillParent"
+        android:layout_marginBottom="55dp"
+        android:paddingTop="2dp"
+        android:scrollbars="none" >
+
+        <LinearLayout style="@style/FillWidth.Vert" >
+
+            <!-- TRACK TITLE -->
+
+            <LinearLayout
+                style="@style/FillWidth.Vert.Center"
+                android:background="@drawable/border1" >
+
+                <TextView
+                    style="@style/WrapContent.Text.SmallHeader"
+                    android:text="@string/description" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/WrapContent.Text.Text13"
+                    android:text="@string/default_text" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/descr"
+                    style="@style/WrapContent.Text.Text13"
+                    android:text="@string/default_text" >
+                </TextView>
+            </LinearLayout>
+
+            <!-- TRACK DISTANCE -->
+
+            <LinearLayout
+                style="@style/FillWidth.Hor.Row"
+                android:background="@drawable/border1" >
+
+                <LinearLayout style="@style/Cell" >
+
+                    <TextView
+                        style="@style/WrapContent.Text.SmallHeader"
+                        android:text="@string/distance" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/distance"
+                        style="@style/WrapContent.Text.Text13" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout style="@style/Cell" >
+
+                    <TextView
+                        style="@style/WrapContent.Text.SmallHeader"
+                        android:text="@string/points" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/pointsCount"
+                        style="@style/WrapContent.Text.Text13" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- TIME -->
+
+            <LinearLayout
+                style="@style/FillWidth.Vert.Column"
+                android:background="@drawable/border1" >
+
+                <LinearLayout style="@style/FillWidth.Vert.Center" >
+
+                    <TextView
+                        style="@style/WrapContent.Text.SmallHeader"
+                        android:text="@string/time" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/total" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/totalTime"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/moving" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/movingTime"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/idle" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/idleTime"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/start_time" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/startTime"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/finish_time" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/finishTime"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- SPEED -->
+
+            <LinearLayout
+                style="@style/FillWidth.Vert.Column"
+                android:background="@drawable/border1" >
+
+                <LinearLayout style="@style/FillWidth.Vert.Center" >
+
+                    <TextView
+                        style="@style/WrapContent.Text.SmallHeader"
+                        android:text="@string/speed" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/average" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/averageSpeed"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/moving" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/averageMovingSpeed"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/max" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/maxSpeed"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- PACE -->
+
+            <LinearLayout
+                style="@style/FillWidth.Vert.Column"
+                android:background="@drawable/border1" >
+
+                <LinearLayout style="@style/FillWidth.Vert.Center" >
+
+                    <TextView
+                        style="@style/WrapContent.Text.SmallHeader"
+                        android:text="@string/pace" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/average" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/averagePace"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/moving" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/averageMovingPace"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/max" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/maxPace"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ELEVATION -->
+
+            <LinearLayout
+                style="@style/FillWidth.Vert.Column"
+                android:background="@drawable/border1" >
+
+                <LinearLayout style="@style/FillWidth.Vert.Center" >
+
+                    <TextView
+                        style="@style/WrapContent.Text.SmallHeader"
+                        android:text="@string/elevation" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/max" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/maxElevation"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/min" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/minElevation"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout style="@style/FillWidth.Hor.Row" >
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/gain" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/elevationGain"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout style="@style/Cell" >
+
+                        <TextView
+                            style="@style/WrapContent.Text.SmallHeader"
+                            android:text="@string/loss" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/elevationLoss"
+                            style="@style/WrapContent.Text.Text13" >
+                        </TextView>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        style="@style/FillParent.Hor"
+        android:baselineAligned="false"
+        android:gravity="bottom" >
+
+        <Button
+            android:id="@+id/prevSegment"
+            style="@style/ControlButton"
+            android:text="@string/prev_segment" >
+        </Button>
+
+        <Button
+            android:id="@+id/nextSegment"
+            style="@style/ControlButton"
+            android:text="@string/next_segment" >
+        </Button>
+    </LinearLayout>
+
+</FrameLayout>

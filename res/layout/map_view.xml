@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent">
+
+	<com.google.android.maps.MapView
+		android:id="@+id/mapview" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:clickable="true"
+		android:apiKey="0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg" />
+	
+		<!-- REPLACE WITH RELEASE KEY -->
+		<!-- Debug certificate MD5 fingerprint: 7D:67:DE:78:FE:6F:C5:15:E8:78:FE:DA:9F:21:90:CB -->
+		<!-- Debug Map API Key: 0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg -->
+		
+	<LinearLayout android:id="@+id/infoPanel" android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:orientation="vertical"
+		android:background="#33000000" android:padding="2dp">
+
+		<TextView android:id="@+id/distance" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:textColor="#FF000000">
+		</TextView>
+
+	</LinearLayout>
+
+</FrameLayout>

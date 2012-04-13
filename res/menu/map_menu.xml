@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item android:id="@+id/showWaypoint" 
+			android:title="@string/show_waypoint"
+			android:icon="@android:drawable/ic_menu_mylocation" />
+
+	<item android:id="@+id/showTrack" 
+			android:title="@string/show_track"
+			android:icon="@android:drawable/ic_menu_share" />
+
+	<item android:id="@+id/mapMode" 
+			android:title="@string/satellite"
+			android:icon="@android:drawable/ic_menu_mapmode" />
+
+</menu>

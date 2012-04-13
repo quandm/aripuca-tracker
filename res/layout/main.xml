@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:background="@drawable/bg1repeat">
+
+	<ScrollView android:layout_width="fill_parent" android:id="@+id/dynamicView"
+		android:layout_height="fill_parent" android:scrollbars="none"
+		android:layout_marginBottom="45dp" android:paddingTop="2dp">
+
+		<!-- This scroll view will be dynamically populated by the required layout 
+			in runtime -->
+
+	</ScrollView>
+
+	<!-- CONTROL BUTTONS -->
+
+	<LinearLayout android:id="@+id/buttonControls" style="@style/FillParent"
+		android:gravity="bottom" android:orientation="horizontal" android:baselineAligned="false">
+
+		<Button android:id="@+id/addWaypointButton" android:text="@string/add_waypoint"
+			style="@style/ControlButton">
+		</Button>
+
+		<Button android:id="@+id/trackRecordingButton" android:text="@string/record_track"
+			style="@style/ControlButton">
+		</Button>
+
+		<Button android:id="@+id/pauseResumeTrackButton" android:text="@string/pause"
+			style="@style/ControlButton" android:visibility="gone">
+		</Button>
+
+	</LinearLayout>
+	
+</FrameLayout>

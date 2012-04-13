@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SeparatorLine">
+        <item name="android:layout_height">2dip</item>
+        <item name="android:background">#333</item>
+    </style>
+
+    <!-- FillParent Layouts -->
+
+    <style name="FillParent">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+    </style>
+
+    <style name="FillParent.Vert">
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="FillParent.Hor">
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="FillParent.Center">
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <!-- FillWidth Layouts -->
+
+    <style name="FillWidth">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FillWidth.Hor">
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="FillWidth.Vert">
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="FillWidth.Vert.Center">
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- WrapContent Layouts -->
+
+    <style name="WrapContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="WrapContent.Value">
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="WrapContent.Value.Small">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="WrapContent.Value.Unit">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <!-- BUTTONS -->
+
+    <style name="ControlButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">42dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/button_1</item>
+    </style>
+
+    <style name="ControlButton.Land">
+        <item name="android:layout_height">35dp</item>
+    </style>
+
+    <style name="ControlButton.XL">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <!-- TRACK DETAILS LAYOUT STYLES -->
+
+    <style name="FillWidth.Hor.Row">
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+
+    <style name="FillWidth.Hor.Center">
+        <item name="android:background">#A222</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FillWidth.Hor.CenterBottom">
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:background">#A222</item>
+        <item name="android:gravity">center|bottom</item>
+    </style>
+
+    <style name="FillWidth.Vert.Column">
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+
+    <style name="Cell">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Cell.Left">
+        <item name="android:layout_marginRight">1dp</item>
+    </style>
+
+    <style name="Cell.Right">
+        <item name="android:layout_marginLeft">1dp</item>
+    </style>
+
+    <style name="Cell.Label">
+        <item name="android:textColor">@color/label</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Cell.Column">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">#A222</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:gravity">center|bottom</item>
+    </style>
+
+    <!-- LABELS -->
+
+    <style name="WrapContent.Text">
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="WrapContent.Text.Text13">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="WrapContent.Text.Text17">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="WrapContent.Text.Text20">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="WrapContent.Text.Text30">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="WrapContent.Text.Text40">
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="WrapContent.Text.Text50">
+        <item name="android:textSize">50sp</item>
+    </style>
+
+    <!-- HEADERS -->
+
+    <style name="WrapContent.Text.SmallHeader">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/label</item>
+    </style>
+
+</resources>
