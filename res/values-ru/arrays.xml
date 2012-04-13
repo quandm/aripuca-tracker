@@ -116,23 +116,20 @@
         <item>30000 футов</item>
     </string-array>
     <string-array name="quick_help">
-        <item>Tap on any control in track recording mode to change its view. The created layout will be saved for next session.</item>
-        <item>Recorded tracks can be exported to GPX and KML formats.</item>
-        <item>Built-in compass displays two arrows pointing to True and Magnetic North.</item>
-        <item>Tracks can be automatically segmented by distance, time and custom intervals.</item>
-        <item>Track segments are displayed on a map with different colors.</item>
-        <item>The entire application database can be backed up and restored in SQLite format. Go to Menu->More.</item>
-        <item>Complete source code of this app is available for download at http://code.google.com/p/aripuca-tracker/.</item>
-        <item>For more information please visit our blog at http://tracker.aripuca.com/blog/.</item>
-        <item>The word \'Aripuca\' derives from the name of a trap made by the Guaraní natives and used to catch animals without hurting them.</item>
-        <item>Aripuca GPS Tracker supports many languages. Not found yours? No problem, become a translator!</item>
-        <item>Learn more about application functionality by looking through its Settings menu.</item>
-        <item>Please send all your questions and concerns to tracker@aripuca.com.</item>
-        <item>Record track on schedule and save battery power. New track point recorded every N minutes for M hours with X accuracy and D minimum distance between points.</item>
-        <item>Record new waypoint and use address from Google Geocoder as default description.</item>
-        <item>Developers, application supports 4 levels of logging: Errors, Warnings, Info and Debug. Check out the content of \'logs\' folder.</item>
-        <item>You can simultaneously record tracks in both real-time and scheduled modes.</item>
-        <item>Compass dial can be rotated to set required bearing. Reset compass by long-clicking on azimuth value.</item>
+        <item>Нажмите на любое показание в режиме записи трека, чтобы изменить его вид. Созданная схема будет автоматически сохранена.</item>        <item>Записанные треки можно экспортировать в GPX и KML формате.</item>
+        <item>Встроенный компас показывает две стрелки, указывающие на Истинный и Магнитный Север.</item>
+        <item>Треки могут быть автоматически разделены на сегменты по расстоянию или времени.</item>
+        <item>Сегменты трека отображаются на карте разными цветами.</item>
+        <item>База данных приложения может быть сохранена и восстановлена в формате SQLite.</item>
+        <item>Полный исходный код этого приложения доступен для загрузки на http://code.google.com/p/aripuca-tracker/.</item>
+        <item>Для получения дополнительной информации, пожалуйста, посетите наш блог на http://tracker.aripuca.com/blog/.</item>
+        <item>Слово \'Aripuca\' происходит от названия ловушки которую делали туземцы Guaraní для ловли животных не нанося им вреда.</item>
+        <item>Пожалуйста, направляйте все ваши вопросы и пожелания на tracker@aripuca.com.</item>
+        <item>Для экономии заряда аккумулятора можно записывать трек по рассписанию. Новая точка трека записывается каждые N минут в течение М часов, с точностью X и минимальным расстоянием между точками D.</item>
+        <item>Используйте адрес Google Geocoder как описание по умолчанию для путевой точки.</item>
+        <item>Для разработчиков: приложение поддерживает 4 уровня протоколирования: ошибки, предупреждения, информация и отладочные сообщения.</item>
+        <item>Вы можете одновременно записывать треки в реальном времени и по расписанию.</item>
+        <item>Диск компаса может вращаться для запоминания необходимого азимута. Сбросить компас можно нжатием на значение азимута.</item>
     </string-array>
 
 </resources>
