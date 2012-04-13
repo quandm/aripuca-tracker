@@ -140,14 +140,14 @@
     <string name="show_waypoint">Показать путевую точку</string>
     <string name="waypoint_default_description">Описание по умолчанию</string>
     <string name="waypoint_default_description_summary">Использовать адрес из Google Geocoder как описание точки waypoint description</string>
-    <string name="wpt_title">Waypoint track</string>
-    <string name="wpt_summary">Record track as a set of waypoints and save battery power</string>
-    <string name="wpt_request_interval_title">GPS request interval</string>
+    <string name="wpt_title">Запись точек по рассписанию</string>
+    <string name="wpt_summary">Записывать отдельные путевые по рассписанию</string>
+    <string name="wpt_request_interval_title">Интервал запроса данных GPS</string>
     <string name="wpt_request_interval_summary">Request GPS location every N minutes. GPS stays off in between requests.</string>
     <string name="wpt_fix_wait_time_title">GPS fix wait time</string>
     <string name="wpt_fix_wait_time_summary">Wait time for new GPS fix of acceptable accuracy</string>
-    <string name="wpt_stop_recording_after_title">Stop recording after</string>
-    <string name="wpt_stop_recording_after_summary">Recording will be stopped after N hours of recording unless stopped manually</string>
+    <string name="wpt_stop_recording_after_title">Остановить зарись после</string>
+    <string name="wpt_stop_recording_after_summary">Запись будет остановлена по прошествии N часов</string>
     <string name="online_sync_summary">Synchronize your data with online resource</string>
     <string name="online_sync_url">Sync URL</string>
     <string name="user_name">Login name</string>
@@ -219,4 +219,5 @@
     <string name="compass_vibration">Включить вибратор</string>
     <string name="compass_vibration_summary">Вибрировать при повороте кольца компаса</string>
     <string name="segment_vibration">Вибрировать для нового сегмента</string>
+    <string name="track_recording_in_progress">Идет запись трека</string>
 </resources>

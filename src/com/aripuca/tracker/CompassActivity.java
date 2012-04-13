@@ -14,11 +14,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -29,26 +31,33 @@ import android.widget.Toast;
 public class CompassActivity extends Activity implements OnTouchListener {
 
 	private Location currentLocation;
-	
+
 	private float downX, downY, upX, upY;
-	
+
 	protected BubbleSurfaceView bubbleView;
 
-	protected Vibrator vibrator;			
+	protected Vibrator vibrator;
 
 	/**
 	 * Reference to Application object
 	 */
 	private MyApp myApp;
 
-	private float realDeclination;
+	/**
+	 * declination
+	 */
+	private float declination;
 
+	/**
+	 * reference to compass image
+	 */
 	private CompassImage compass;
-	
-	private boolean vibrationOn;
-	
 
-	
+	/**
+	 * vibration flag
+	 */
+	private boolean vibrationOn;
+
 	/**
 	 * Location updates broadcast receiver
 	 */
@@ -59,16 +68,15 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			Bundle bundle = intent.getExtras();
 
 			currentLocation = (Location) bundle.getParcelable("location");
-			
+
 			// location here is required only for calculating declination
-			// after first location received, no matter the accuracy - turn off gps updates
-			
+			// after first location received, no matter the accuracy - turn off
+			// gps updates
+
 			long now = System.currentTimeMillis();
 
-			// let's request declination every 15 minutes, not every compass
-			// update
-			realDeclination = Utils.getDeclination(currentLocation, now);
-			
+			declination = Utils.getDeclination(currentLocation, now);
+
 			// stop location updates when not recording track
 			if (gpsService != null && !gpsService.getTrackRecorder().isRecording()) {
 				gpsService.stopLocationUpdates();
@@ -83,21 +91,19 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			Bundle bundle = intent.getExtras();
-			
+
 			updateCompass(bundle.getFloat("azimuth"));
-			
+
 			bubbleView.setSensorData(bundle.getFloat("azimuth"), bundle.getFloat("roll"), bundle.getFloat("pitch"));
-			
+
 			/*
-			 * if (findViewById(R.id.azimuth) != null) {
-			 * ((TextView)
+			 * if (findViewById(R.id.azimuth) != null) { ((TextView)
 			 * findViewById(R.id.azimuth)).setText(Utils.formatNumber
-			 * (bundle.getFloat("azimuth"), 2) + " "
-			 * + Utils.formatNumber(bundle.getFloat("pitch"), 2) + " " +
-			 * Utils.formatNumber(bundle.getFloat("roll"), 2));
-			 * }
+			 * (bundle.getFloat("azimuth"), 2) + " " +
+			 * Utils.formatNumber(bundle.getFloat("pitch"), 2) + " " +
+			 * Utils.formatNumber(bundle.getFloat("roll"), 2)); }
 			 */
 
 		}
@@ -113,17 +119,24 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 		setContentView(R.layout.compass);
 
+		// set activity orientation to default device orientation
+		// required for level and compass to work correctly
+
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 		// reference to application object
 		myApp = ((MyApp) getApplicationContext());
 
+		// reference to vibrator service
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		
+
+		// vibrate or not?
 		vibrationOn = myApp.getPreferences().getBoolean("compass_vibration", true);
-		
-		if (findViewById(R.id.bubbleSurfaceView)!=null) {
+
+		if (findViewById(R.id.bubbleSurfaceView) != null) {
 			bubbleView = (BubbleSurfaceView) findViewById(R.id.bubbleSurfaceView);
 		}
-		
+
 		currentLocation = myApp.getCurrentLocation();
 
 		// magnetic north compass
@@ -132,7 +145,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			compass = (CompassImage) findViewById(R.id.compass);
 
 			compass.setOnTouchListener(this);
-			//	compass.setOnLongClickListener(resetCompass);
+			// compass.setOnLongClickListener(resetCompass);
 		}
 
 		if (findViewById(R.id.azimuth) != null) {
@@ -163,7 +176,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	public void onResume() {
 
 		super.onResume();
-		
+
 		bubbleView.resume();
 
 		if (findViewById(R.id.compassView) != null) {
@@ -183,6 +196,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// bind to GPS service
 		// once bound gpsServiceBoundCallback will be called
 		this.bindGpsService();
+		
+		Display display;
+		display = getWindow().getWindowManager().getDefaultDisplay();
+		Log.d(Constants.TAG, "W: " + display.getWidth() + " H: " + display.getHeight());
 
 	}
 
@@ -190,14 +207,15 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	public void onPause() {
 
 		bubbleView.pause();
-		
+
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
 		// stop location updates when not recording track
 		if (gpsService != null) {
 
-			// at this point we most likely received one location update and already stopped listening 
+			// at this point we most likely received one location update and
+			// already stopped listening
 			if (!gpsService.getTrackRecorder().isRecording()) {
 				gpsService.stopLocationUpdates();
 			}
@@ -233,9 +251,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 				int angle2 = (int) Math.toDegrees(upR);
 
 				this.rotateCompass(angle1 - angle2);
-				
+
 				if (vibrationOn) {
-					vibrator.vibrate(5);	
+					vibrator.vibrate(5);
 				}
 
 				// update starting point for next move event
@@ -272,11 +290,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		boolean showMagnetic = myApp.getPreferences().getBoolean("show_magnetic", true);
 
 		float rotation = 0;
-		
-		float declination = 0;
+
 		// are we taking declination into account?
-		if (trueNorth && currentLocation != null) {
-			declination = realDeclination;
+		if (!trueNorth || currentLocation == null) {
+			declination = 0;
 		}
 
 		// magnetic north to true north
@@ -323,9 +340,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 
