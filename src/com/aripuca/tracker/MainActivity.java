@@ -1,11 +1,11 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.GpsService;
 
 import com.aripuca.tracker.util.ContainerCarousel;
-import com.aripuca.tracker.util.OrientationHelper;
 import com.aripuca.tracker.util.SunriseSunset;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -28,7 +28,7 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -78,8 +78,6 @@ public class MainActivity extends Activity {
 	private String importDatabaseFileName;
 
 	private Handler mainHandler = new Handler();
-
-	private OrientationHelper orientationHelper;
 
 	private long declinationLastUpdate = 0;
 
@@ -171,9 +169,6 @@ public class MainActivity extends Activity {
 			if (myApp == null) { return; }
 
 			Bundle bundle = intent.getExtras();
-
-			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
-					bundle.getFloat("roll"));
 
 			updateCompass(bundle.getFloat("azimuth"));
 
@@ -378,13 +373,7 @@ public class MainActivity extends Activity {
 		// reference to application object
 		myApp = ((MyApp) getApplication());// Context());
 
-		orientationHelper = new OrientationHelper(MainActivity.this);
-
 		initializeHiddenPreferences();
-
-		if (Build.VERSION.SDK_INT > 10) {
-			// this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
 
 		// ----------------------------------------------------------------------
 		// preparing UI
@@ -1432,9 +1421,10 @@ public class MainActivity extends Activity {
 	 */
 	public void updateCompass(float azimuth) {
 
-		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
-
 		float trueAzimuth = 0;
+
+		// true or magnetic north?
+		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
 
 		// let's not request declination on every compass update
 		float declination = 0;
@@ -1459,15 +1449,13 @@ public class MainActivity extends Activity {
 					+ " " + Utils.getDirectionCode(trueAzimuth));
 		}
 
-		int orientationAdjustment = 0;
-		if (orientationHelper != null) {
-			orientationAdjustment = orientationHelper.getOrientationAdjustment();
-		}
-
 		// update compass image
 		if (findViewById(R.id.compassImage) != null) {
+
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
-			compassImage.setAngle(360 - trueAzimuth - orientationAdjustment);
+
+			compassImage.setAngle(360 - trueAzimuth - ApiLevelFactory.getApiLevel().getDeviceRotation(this));
+
 			compassImage.invalidate();
 		}
 

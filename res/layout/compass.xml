@@ -4,6 +4,14 @@
     style="@style/FillParent"
     android:background="@drawable/bg1repeat" >
 
+    <LinearLayout style="@style/FillParent" >
+
+        <com.aripuca.tracker.view.BubbleSurfaceView
+            android:id="@+id/bubbleSurfaceView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+    </LinearLayout>
+    
     <LinearLayout
         android:id="@+id/compassLayout"
         style="@style/FillParent.Center" >
@@ -12,16 +20,13 @@
             android:id="@+id/compass"
             android:layout_width="310dip"
             android:layout_height="310dip"
-            android:contentDescription="@string/compass"
             android:src="@drawable/compass_bezel" />
     </LinearLayout>
 
     <LinearLayout style="@style/FillParent.Center" >
-
         <ImageView
             android:layout_width="310dip"
             android:layout_height="310dip"
-            android:contentDescription="@string/compass"
             android:src="@drawable/compass_baseplate" />
     </LinearLayout>
 
@@ -55,12 +60,5 @@
         </TextView>
     </LinearLayout>
 
-    <LinearLayout style="@style/FillParent" >
 
-        <com.aripuca.tracker.view.BubbleSurfaceView
-            android:id="@+id/bubbleSurfaceView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
-    </LinearLayout>
-    
 </FrameLayout>
