@@ -19,6 +19,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -54,7 +55,7 @@ public class MyApp extends Application {
 	private SQLiteDatabase db;
 
 	private Location currentLocation;
-
+	
 	public SQLiteDatabase getDatabase() {
 		return db;
 	}

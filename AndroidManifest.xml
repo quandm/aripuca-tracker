@@ -5,6 +5,7 @@
     android:versionCode="18"
     android:versionName="1.2.3" >
 
+    <!-- let's support all devices tah support multiple screens API Level 4 -->
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="8" />
@@ -44,7 +45,8 @@
         </activity>
         <activity
             android:name=".CompassActivity"
-            android:label="@string/compass">
+            android:label="@string/compass"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TracksTabActivity"

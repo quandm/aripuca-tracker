@@ -31,12 +31,13 @@ import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.map.WaypointsMapActivity;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.Waypoint;
-import com.aripuca.tracker.util.OrientationHelper;
+
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
@@ -92,8 +93,6 @@ public class WaypointsListActivity extends ListActivity {
 
 	private ArrayList<Waypoint> waypoints;
 
-	private OrientationHelper orientationHelper;
-
 	private Location currentLocation;
 
 	/**
@@ -111,7 +110,7 @@ public class WaypointsListActivity extends ListActivity {
 			currentLocation = (Location) bundle.getParcelable("location");
 
 			waypointsArrayAdapter.sortByDistance();
-			//waypointsArrayAdapter.notifyDataSetChanged();
+			// waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 	/**
@@ -124,10 +123,6 @@ public class WaypointsListActivity extends ListActivity {
 			Bundle bundle = intent.getExtras();
 			setAzimuth(bundle.getFloat("azimuth"));
 
-			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
-					bundle.getFloat("roll"));
-
-			//waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 
@@ -185,7 +180,7 @@ public class WaypointsListActivity extends ListActivity {
 			float newBearing = 0;
 
 			String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
-			
+
 			Waypoint wp = items.get(position);
 			if (wp != null) {
 
@@ -206,12 +201,10 @@ public class WaypointsListActivity extends ListActivity {
 						newBearing = 360 - Math.abs((int) newBearing);
 					}
 
-					int orientationAdjustment = 0;
-					if (orientationHelper != null) {
-						orientationAdjustment = orientationHelper.getOrientationAdjustment();
-					}
-
-					newAzimuth = newBearing - getAzimuth() - orientationAdjustment;
+					// newAzimuth = newBearing - getAzimuth() -
+					// orientationAdjustment;
+					newAzimuth = newBearing - getAzimuth()
+							- ApiLevelFactory.getApiLevel().getDeviceRotation(WaypointsListActivity.this);
 					if ((int) newAzimuth < 0) {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}
@@ -237,8 +230,11 @@ public class WaypointsListActivity extends ListActivity {
 							+ Utils.formatLng(wp.getLocation().getLongitude(),
 									Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
 							+ "|"
-							+ Utils.formatNumber(wp.getLocation().getAltitude(), 0) + "" + 
-							Utils.getLocalizedElevationUnit(WaypointsListActivity.this, elevationUnit)+"|" + bearingStr);
+							+ Utils.formatNumber(wp.getLocation().getAltitude(), 0)
+							+ ""
+							+ Utils.getLocalizedElevationUnit(WaypointsListActivity.this, elevationUnit)
+							+ "|"
+							+ bearingStr);
 				}
 
 				if (waypointDistance != null) {
@@ -249,7 +245,8 @@ public class WaypointsListActivity extends ListActivity {
 				CompassImage im = (CompassImage) v.findViewById(R.id.compassImage);
 				im.setAngle(newAzimuth);
 
-				//Log.d(Constants.TAG, "WaypointsListActivity: getView: " + im.getId());
+				// Log.d(Constants.TAG, "WaypointsListActivity: getView: " +
+				// im.getId());
 
 			} else {
 
@@ -291,14 +288,13 @@ public class WaypointsListActivity extends ListActivity {
 
 		myApp = (MyApp) getApplication();
 
-		// initializing with last known location, so we can calculate distance to waypoints 
+		// initializing with last known location, so we can calculate distance
+		// to waypoints
 		currentLocation = myApp.getCurrentLocation();
-		
+
 		registerForContextMenu(this.getListView());
 
 		updateWaypointsArray();
-
-		orientationHelper = new OrientationHelper(this);
 
 		// cursorAdapter = new WaypointsCursorAdapter(this, cursor);
 		waypointsArrayAdapter = new WaypointsArrayAdapter(this, R.layout.waypoint_list_item, waypoints);
@@ -345,7 +341,7 @@ public class WaypointsListActivity extends ListActivity {
 			waypoints = null;
 		}
 
-		gpsServiceConnection = null;		
+		gpsServiceConnection = null;
 
 		myApp = null;
 
@@ -360,7 +356,7 @@ public class WaypointsListActivity extends ListActivity {
 	protected void onResume() {
 
 		super.onResume();
-		
+
 		// registering receiver for compass updates
 		registerReceiver(compassBroadcastReceiver, new IntentFilter(Constants.ACTION_COMPASS_UPDATES));
 
@@ -589,7 +585,8 @@ public class WaypointsListActivity extends ListActivity {
 				Waypoint wp = new Waypoint(tmpCursor.getString(tmpCursor.getColumnIndex("title")),
 						tmpCursor.getLong(tmpCursor.getColumnIndex("time")), tmpCursor.getDouble(tmpCursor
 								.getColumnIndex("lat")), tmpCursor.getDouble(tmpCursor.getColumnIndex("lng")),
-						tmpCursor.getDouble(tmpCursor.getColumnIndex("elevation")), tmpCursor.getFloat(tmpCursor.getColumnIndex("accuracy")));
+						tmpCursor.getDouble(tmpCursor.getColumnIndex("elevation")), tmpCursor.getFloat(tmpCursor
+								.getColumnIndex("accuracy")));
 
 				tmpCursor.close();
 
@@ -750,7 +747,7 @@ public class WaypointsListActivity extends ListActivity {
 	private void updateWaypointsArray() {
 
 		Log.d(Constants.TAG, "updateWaypointsArray");
-		
+
 		if (waypoints != null) {
 			waypoints.clear();
 		} else {
@@ -765,8 +762,7 @@ public class WaypointsListActivity extends ListActivity {
 			Waypoint wp = new Waypoint(cursor.getString(cursor.getColumnIndex("title")), cursor.getLong(cursor
 					.getColumnIndex("time")), cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
 					cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6, cursor.getDouble(cursor
-							.getColumnIndex("elevation")), cursor.getFloat(cursor
-									.getColumnIndex("accuracy")));
+							.getColumnIndex("elevation")), cursor.getFloat(cursor.getColumnIndex("accuracy")));
 
 			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
 
@@ -1036,15 +1032,15 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	private void unbindGpsService() {
-		
+
 		if (isGpsServiceBound) {
 			// Detach our existing connection.
 			unbindService(gpsServiceConnection);
 			isGpsServiceBound = false;
 		}
-		
+
 		gpsService = null;
-		
+
 	}
 
 	/**
@@ -1058,7 +1054,7 @@ public class WaypointsListActivity extends ListActivity {
 		// by setting gpsInUse to true we insure that listening will not stop in
 		// GpsService.stopLocationUpdatesThread
 		gpsService.setGpsInUse(true);
-		
+
 		// this activity requires compass data
 		gpsService.startSensorUpdates();
 

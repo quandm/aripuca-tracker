@@ -63,8 +63,6 @@ public class OrientationHelper {
 			return;
 		}
 
-//		Log.d(Constants.TAG, "getRoll(): "+orientationValues.getRoll());
-		
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
 			if (orientationValues.getRoll() >= 25
