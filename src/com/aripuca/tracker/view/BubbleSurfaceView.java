@@ -1,6 +1,7 @@
 package com.aripuca.tracker.view;
 
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.compatibility.ApiLevelFactory;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -43,13 +44,17 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 	/**
 	 * initialization
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SecurityException
 	 */
 	private void init() {
 
 		holder = getHolder();
 
+		ApiLevelFactory.getApiLevel().setZOrderOnTop(this, true);
+
 		// making surface transparent
-		this.setZOrderOnTop(true);
 		holder.setFormat(PixelFormat.TRANSPARENT);
 
 		bubble = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
@@ -102,10 +107,12 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 			synchronized (this) {
 				// controlling the circle bounds
 				while (Math.sqrt(this.roll * this.roll + this.pitch * this.pitch) > 26) {
+
 					if (this.roll < 0)
 						this.roll += 0.01;
 					else
 						this.roll -= 0.01;
+
 					if (this.pitch < 0)
 						this.pitch += 0.01;
 					else
@@ -138,9 +145,9 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 			// drawing bubble last
 			canvas.drawBitmap(bubble, x, y, null);
-			
+
 			// drawing bubble cover
-			//canvas.drawBitmap(bubbleCover, 0, 0, null);
+			// canvas.drawBitmap(bubbleCover, 0, 0, null);
 
 			holder.unlockCanvasAndPost(canvas);
 

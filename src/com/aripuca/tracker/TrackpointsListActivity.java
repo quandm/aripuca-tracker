@@ -5,9 +5,10 @@ import java.util.Comparator;
 import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.track.Waypoint;
-import com.aripuca.tracker.util.OrientationHelper;
+
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
@@ -56,8 +57,6 @@ public class TrackpointsListActivity extends ListActivity {
 
 	private ArrayList<Waypoint> waypoints;
 
-	private OrientationHelper orientationHelper;
-
 	private Location currentLocation;
 
 	private String elevationUnit;
@@ -93,10 +92,6 @@ public class TrackpointsListActivity extends ListActivity {
 			Bundle bundle = intent.getExtras();
 			setAzimuth(bundle.getFloat("azimuth"));
 
-			orientationHelper.setOrientationValues(bundle.getFloat("azimuth"), bundle.getFloat("pitch"),
-					bundle.getFloat("roll"));
-
-			//waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
 
@@ -177,12 +172,7 @@ public class TrackpointsListActivity extends ListActivity {
 						newBearing = 360 - Math.abs((int) newBearing);
 					}
 
-					int orientationAdjustment = 0;
-					if (orientationHelper != null) {
-						orientationAdjustment = orientationHelper.getOrientationAdjustment();
-					}
-
-					newAzimuth = newBearing - getAzimuth() - orientationAdjustment;
+					newAzimuth = newBearing - getAzimuth() - ApiLevelFactory.getApiLevel().getDeviceRotation(TrackpointsListActivity.this);
 					if ((int) newAzimuth < 0) {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}
@@ -264,8 +254,6 @@ public class TrackpointsListActivity extends ListActivity {
 		registerForContextMenu(this.getListView());
 
 		updateWaypointsArray();
-
-		orientationHelper = new OrientationHelper(this);
 
 		// cursorAdapter = new WaypointsCursorAdapter(this, cursor);
 		waypointsArrayAdapter = new WaypointsArrayAdapter(this, R.layout.waypoint_list_item, waypoints);
