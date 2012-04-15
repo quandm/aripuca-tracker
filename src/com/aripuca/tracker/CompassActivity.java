@@ -2,6 +2,8 @@ package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.compatibility.ApiLevelFactory;
+
 import com.aripuca.tracker.service.GpsService;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.BubbleSurfaceView;
@@ -14,7 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -96,15 +97,21 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 			updateCompass(bundle.getFloat("azimuth"));
 
-			bubbleView.setSensorData(bundle.getFloat("azimuth"), bundle.getFloat("roll"), bundle.getFloat("pitch"));
+			float roll, pitch;
+			//
+			int rotation = ApiLevelFactory.getApiLevel().getDeviceRotation(CompassActivity.this);
+			if (rotation == 90) {
+				roll = bundle.getFloat("pitch");
+				pitch = -bundle.getFloat("roll");
+			} else if (rotation == 270) {
+				roll = -bundle.getFloat("pitch");
+				pitch = bundle.getFloat("roll");
+			} else  {
+				roll = bundle.getFloat("roll");
+				pitch = bundle.getFloat("pitch");
+			} 
 
-			/*
-			 * if (findViewById(R.id.azimuth) != null) { ((TextView)
-			 * findViewById(R.id.azimuth)).setText(Utils.formatNumber
-			 * (bundle.getFloat("azimuth"), 2) + " " +
-			 * Utils.formatNumber(bundle.getFloat("pitch"), 2) + " " +
-			 * Utils.formatNumber(bundle.getFloat("roll"), 2)); }
-			 */
+			bubbleView.setSensorData(bundle.getFloat("azimuth"), roll, pitch);
 
 		}
 	};
@@ -196,7 +203,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// bind to GPS service
 		// once bound gpsServiceBoundCallback will be called
 		this.bindGpsService();
-		
+
 		Display display;
 		display = getWindow().getWindowManager().getDefaultDisplay();
 		Log.d(Constants.TAG, "W: " + display.getWidth() + " H: " + display.getHeight());
@@ -310,7 +317,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			CompassImage compassNeedle = (CompassImage) findViewById(R.id.compassNeedle);
 
 			if (compassNeedle.getVisibility() == View.VISIBLE) {
-				compassNeedle.setAngle(360 - rotation);
+				compassNeedle.setAngle(360 - rotation - ApiLevelFactory.getApiLevel().getDeviceRotation(this));
 				compassNeedle.invalidate();
 			}
 		}
@@ -326,7 +333,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 					compassNeedleMagnetic.setVisibility(View.VISIBLE);
 				}
 
-				compassNeedleMagnetic.setAngle(360 - rotation + declination);
+				compassNeedleMagnetic.setAngle(360 - rotation + declination
+						- ApiLevelFactory.getApiLevel().getDeviceRotation(this));
 				compassNeedleMagnetic.setAlpha(50);
 				compassNeedleMagnetic.invalidate();
 
