@@ -106,10 +106,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			} else if (rotation == 270) {
 				roll = -bundle.getFloat("pitch");
 				pitch = bundle.getFloat("roll");
-			} else  {
+			} else {
 				roll = bundle.getFloat("roll");
 				pitch = bundle.getFloat("pitch");
-			} 
+			}
 
 			bubbleView.setSensorData(bundle.getFloat("azimuth"), roll, pitch);
 
@@ -303,8 +303,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			declination = 0;
 		}
 
-		// magnetic north to true north
-		rotation = getAzimuth(azimuth + declination);
+		// magnetic north to true north, compensate for device's physical rotation 
+		rotation = getAzimuth(azimuth + declination + ApiLevelFactory.getApiLevel().getDeviceRotation(this));
 
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0) + Utils.DEGREE_CHAR + " "
@@ -317,7 +317,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			CompassImage compassNeedle = (CompassImage) findViewById(R.id.compassNeedle);
 
 			if (compassNeedle.getVisibility() == View.VISIBLE) {
-				compassNeedle.setAngle(360 - rotation - ApiLevelFactory.getApiLevel().getDeviceRotation(this));
+				compassNeedle.setAngle(360 - rotation);
 				compassNeedle.invalidate();
 			}
 		}
@@ -333,8 +333,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 					compassNeedleMagnetic.setVisibility(View.VISIBLE);
 				}
 
-				compassNeedleMagnetic.setAngle(360 - rotation + declination
-						- ApiLevelFactory.getApiLevel().getDeviceRotation(this));
+				compassNeedleMagnetic.setAngle(360 - rotation + declination);
 				compassNeedleMagnetic.setAlpha(50);
 				compassNeedleMagnetic.invalidate();
 
@@ -348,7 +347,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 

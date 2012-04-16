@@ -166,7 +166,9 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (myApp == null) { return; }
+			if (myApp == null) {
+				return;
+			}
 
 			Bundle bundle = intent.getExtras();
 
@@ -284,9 +286,9 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 
 			if (gpsService == null) {
-				return;				
+				return;
 			}
-			
+
 			if (gpsService.getTrackRecorder().isRecordingPaused()) {
 
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
@@ -851,7 +853,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -995,7 +997,7 @@ public class MainActivity extends Activity {
 				values.put("time", currentLocation.getTime());
 
 				// if track recording started assign track_id
-				if (gpsService.getTrackRecorder().isRecording()) {
+				if (gpsService != null && gpsService.getTrackRecorder().isRecording()) {
 					values.put("track_id", gpsService.getTrackRecorder().getTrack().getTrackId());
 				}
 
@@ -1041,7 +1043,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-				break;
+			break;
 
 			default:
 				dialog = null;
@@ -1216,7 +1218,9 @@ public class MainActivity extends Activity {
 	 */
 	public void updateActivity() {
 
-		if (currentLocation == null || gpsService == null) { return; }
+		if (currentLocation == null || gpsService == null) {
+			return;
+		}
 
 		// ///////////////////////////////////////////////////////////////////
 		if (gpsService.isListening()) {
@@ -1300,7 +1304,9 @@ public class MainActivity extends Activity {
 	 */
 	private void updateTrackRecording() {
 
-		if (gpsService == null || !gpsService.getTrackRecorder().isRecording()) { return; }
+		if (gpsService == null || !gpsService.getTrackRecorder().isRecording()) {
+			return;
+		}
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
