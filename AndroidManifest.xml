@@ -98,7 +98,8 @@
         </activity>
         <activity
             android:name=".map.WaypointsMapActivity"
-            android:label="@string/main_app_title" >
+            android:label="@string/main_app_title"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name=".SettingsActivity"
