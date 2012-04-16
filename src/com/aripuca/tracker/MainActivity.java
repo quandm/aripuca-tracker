@@ -245,11 +245,13 @@ public class MainActivity extends Activity {
 			// disable pause/resume button when tracking started or stopped
 			((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
 
-			if (gpsService.getTrackRecorder().isRecording()) {
-				stopTracking();
-				updateSunriseSunset();
-			} else {
-				startTracking();
+			if (gpsService != null) {
+				if (gpsService.getTrackRecorder().isRecording()) {
+					stopTracking();
+					updateSunriseSunset();
+				} else {
+					startTracking();
+				}
 			}
 
 			return true;
@@ -261,10 +263,12 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
-			if (gpsService.getTrackRecorder().isRecording()) {
-				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_stop, Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(MainActivity.this, R.string.press_and_hold_to_start, Toast.LENGTH_SHORT).show();
+			if (gpsService != null) {
+				if (gpsService.getTrackRecorder().isRecording()) {
+					Toast.makeText(MainActivity.this, R.string.press_and_hold_to_stop, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(MainActivity.this, R.string.press_and_hold_to_start, Toast.LENGTH_SHORT).show();
+				}
 			}
 
 		}
@@ -279,6 +283,10 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
+			if (gpsService == null) {
+				return;				
+			}
+			
 			if (gpsService.getTrackRecorder().isRecordingPaused()) {
 
 				((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
@@ -296,7 +304,6 @@ public class MainActivity extends Activity {
 				Toast.makeText(MainActivity.this, R.string.recording_paused, Toast.LENGTH_SHORT).show();
 
 			}
-
 		}
 	};
 
