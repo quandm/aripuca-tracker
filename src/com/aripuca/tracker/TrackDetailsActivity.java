@@ -3,7 +3,6 @@ package com.aripuca.tracker;
 import java.util.ArrayList;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.util.Utils;
 import android.app.Activity;
@@ -27,9 +26,9 @@ import android.widget.Toast;
 public class TrackDetailsActivity extends Activity {
 
 	/**
-	 * Reference to myApp object
+	 * Reference to app object
 	 */
-	private MyApp myApp;
+	private App app;
 
 	private long trackId;
 
@@ -107,7 +106,7 @@ public class TrackDetailsActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = ((MyApp) getApplicationContext());
+		app = ((App) getApplicationContext());
 
 		setContentView(R.layout.track_details);
 
@@ -130,7 +129,7 @@ public class TrackDetailsActivity extends Activity {
 		// get track data
 		String sql = "SELECT _id FROM segments WHERE track_id=" + this.trackId;
 
-		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
 		this.numberOfSegments = cursor.getCount();
@@ -174,7 +173,7 @@ public class TrackDetailsActivity extends Activity {
 				" WHERE " +
 				" tracks._id=" + this.trackId;
 
-		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
 		((TextView) findViewById(R.id.title)).setText(cursor.getString(cursor.getColumnIndex("title")));
@@ -200,7 +199,7 @@ public class TrackDetailsActivity extends Activity {
 				" AND track_points.segment_index=" + (segmentIndex - 1) +
 				" AND segments.track_id = track_points.track_id";
 
-		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
 		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
@@ -214,12 +213,12 @@ public class TrackDetailsActivity extends Activity {
 	private void updateActivity(Cursor cursor) {
 
 		// measuring units
-		String speedUnit = myApp.getPreferences().getString("speed_units", "kph");
+		String speedUnit = app.getPreferences().getString("speed_units", "kph");
 		String speedUnitLocalized = Utils.getLocalizedSpeedUnit(TrackDetailsActivity.this, speedUnit);
 
-		String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+		String distanceUnit = app.getPreferences().getString("distance_units", "km");
 
-		String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+		String elevationUnit = app.getPreferences().getString("elevation_units", "m");
 		String elevationUnitLocalized = Utils.getLocalizedElevationUnit(TrackDetailsActivity.this, elevationUnit);
 
 		// total distance

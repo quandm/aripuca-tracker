@@ -11,9 +11,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -29,7 +29,7 @@ public class WaypointsMapActivity extends MapActivity {
 	/**
 	 * 
 	 */
-	private MyApp myApp;
+	private App app;
 
 	/**
 	 * 
@@ -91,7 +91,7 @@ public class WaypointsMapActivity extends MapActivity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = ((MyApp) getApplicationContext());
+		app = ((App) getApplicationContext());
 
 		setContentView(R.layout.map_view);
 
@@ -119,7 +119,7 @@ public class WaypointsMapActivity extends MapActivity {
 
 	protected void loadWaypoints(MyItemizedOverlay itemizedOverlay) {
 		
-		Cursor cursor = myApp.getDatabase().rawQuery("SELECT * FROM waypoints", null);
+		Cursor cursor = app.getDatabase().rawQuery("SELECT * FROM waypoints", null);
 		cursor.moveToFirst();
 
 		while (cursor.isAfterLast() == false) {
@@ -127,10 +127,10 @@ public class WaypointsMapActivity extends MapActivity {
 			GeoPoint point = new GeoPoint(cursor.getInt(cursor.getColumnIndex("lat")), cursor.getInt(cursor.getColumnIndex("lng")));
 			
 			String snippet = Utils.formatLat(cursor.getDouble(cursor.getColumnIndex("lat"))/1E6,
-					Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
+					Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 					+ "\n"
 					+ Utils.formatLng(cursor.getDouble(cursor.getColumnIndex("lng"))/1E6,
-							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")));
+							Integer.parseInt(app.getPreferences().getString("coord_units", "0")));
 			
 			if (cursor.getString(cursor.getColumnIndex("descr"))!=null) {
 				

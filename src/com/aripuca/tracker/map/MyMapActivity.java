@@ -18,9 +18,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
@@ -37,7 +37,7 @@ public class MyMapActivity extends MapActivity {
 	/**
 	 * 
 	 */
-	private MyApp myApp;
+	private App app;
 
 	/**
 	 * 
@@ -241,7 +241,7 @@ public class MyMapActivity extends MapActivity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = ((MyApp) getApplicationContext());
+		app = ((App) getApplicationContext());
 
 		setContentView(R.layout.map_view);
 
@@ -294,10 +294,10 @@ public class MyMapActivity extends MapActivity {
 			String sql = "SELECT tracks.*, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
 					+ this.trackId + " AND tracks._id = track_points.track_id";
 
-			Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
+			Cursor cursor = app.getDatabase().rawQuery(sql, null);
 			cursor.moveToFirst();
 
-			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+			String distanceUnit = app.getPreferences().getString("distance_units", "km");
 			float distance = cursor.getInt(cursor.getColumnIndex("distance"));
 
 			// track distance
@@ -327,7 +327,7 @@ public class MyMapActivity extends MapActivity {
 	private void createPath(long trackId) {
 
 		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
-		Cursor tpCursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor tpCursor = app.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
 
 		points = new ArrayList<TrackPoint>();

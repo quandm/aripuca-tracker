@@ -15,9 +15,9 @@ public class TrackChartActivity extends Activity {
 	private long trackId;
 
 	/**
-	 * Reference to myApp object
+	 * Reference to app object
 	 */
-	private MyApp myApp;
+	private App app;
 
 	private Series elevationSeries;
 	private Series speedSeries;
@@ -32,7 +32,7 @@ public class TrackChartActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = ((MyApp) getApplicationContext());
+		app = ((App) getApplicationContext());
 		
 		setContentView(R.layout.track_chart);
 
@@ -57,7 +57,7 @@ public class TrackChartActivity extends Activity {
 		// get track data
 		String sql = "SELECT distance, elevation, speed FROM track_points WHERE track_id=" + this.trackId;
 
-		Cursor cursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
 
 		elevationSeries = new Series(0xFFF2811D, getString(R.string.elevation));

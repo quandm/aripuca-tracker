@@ -29,7 +29,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
-		File outputFolder = new File(myApp.getAppDir() + "/waypoints");
+		File outputFolder = new File(app.getAppDir() + "/waypoints");
 
 		file = new File(outputFolder, filename + "."+extension);
 
@@ -46,7 +46,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 		// track cursor
 		String sql = "SELECT * FROM waypoints;";
-		tpCursor = myApp.getDatabase().rawQuery(sql, null);
+		tpCursor = app.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
 
 	}

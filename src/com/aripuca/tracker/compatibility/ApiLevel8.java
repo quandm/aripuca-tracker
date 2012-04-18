@@ -1,7 +1,7 @@
 package com.aripuca.tracker.compatibility;
 
 import android.app.Activity;
-import android.content.res.Configuration;
+
 import android.view.Display;
 import android.view.Surface;
 

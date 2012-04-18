@@ -1,6 +1,6 @@
 package com.aripuca.tracker.dialog;
 
-import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.App;
 import com.aripuca.tracker.R;
 
 import android.app.Dialog;
@@ -26,7 +26,7 @@ public class QuickHelpDialog extends Dialog {
 	/**
 	 * Reference to Application object
 	 */
-	private MyApp myApp;
+	private App app;
 
 	public QuickHelpDialog(Context context) {
 		
@@ -34,7 +34,7 @@ public class QuickHelpDialog extends Dialog {
 
 		this.context = context;
 
-		myApp = ((MyApp) context.getApplicationContext());
+		app = ((App) context.getApplicationContext());
 
 	}
 
@@ -55,7 +55,7 @@ public class QuickHelpDialog extends Dialog {
 		
 		// setting "showNextTime" initial value
 		CheckBox checkBox = (CheckBox) findViewById(R.id.showNextTime);
-		checkBox.setChecked(myApp.getPreferences().getBoolean("quick_help", true));
+		checkBox.setChecked(app.getPreferences().getBoolean("quick_help", true));
 
 		TextView text = (TextView) findViewById(R.id.helpText);
 		text.setText(getNextHelpAdvice());
@@ -70,16 +70,16 @@ public class QuickHelpDialog extends Dialog {
 				CheckBox checkBox = (CheckBox) findViewById(R.id.showNextTime);
 				if (!checkBox.isChecked()) {
 
-					if (myApp.getPreferences().getBoolean("quick_help", true) == true) {
-						SharedPreferences.Editor editor = myApp.getPreferences().edit();
+					if (app.getPreferences().getBoolean("quick_help", true) == true) {
+						SharedPreferences.Editor editor = app.getPreferences().edit();
 						editor.putBoolean("quick_help", false);
 						editor.commit();
 					}
 
 				} else {
 
-					if (myApp.getPreferences().getBoolean("quick_help", true) == false) {
-						SharedPreferences.Editor editor = myApp.getPreferences().edit();
+					if (app.getPreferences().getBoolean("quick_help", true) == false) {
+						SharedPreferences.Editor editor = app.getPreferences().edit();
 						editor.putBoolean("quick_help", true);
 						editor.commit();
 					}

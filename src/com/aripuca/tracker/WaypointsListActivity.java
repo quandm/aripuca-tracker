@@ -30,12 +30,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.map.WaypointsMapActivity;
-import com.aripuca.tracker.service.GpsService;
+import com.aripuca.tracker.service.AppService;
+import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.track.Waypoint;
 
 import com.aripuca.tracker.util.Utils;
@@ -44,13 +44,13 @@ import com.aripuca.tracker.view.CompassImage;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
@@ -58,7 +58,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
+
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -83,9 +83,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class WaypointsListActivity extends ListActivity {
 
 	/**
-	 * Reference to myApp object
+	 * Reference to app object
 	 */
-	private MyApp myApp;
+	private App app;
 
 	private String importWaypointsFileName;
 
@@ -94,6 +94,11 @@ public class WaypointsListActivity extends ListActivity {
 	private ArrayList<Waypoint> waypoints;
 
 	private Location currentLocation;
+
+	/**
+	 * Service connection object
+	 */
+	private AppServiceConnection serviceConnection;
 
 	/**
 	 * Location updates broadcast receiver
@@ -179,7 +184,7 @@ public class WaypointsListActivity extends ListActivity {
 			float newAzimuth = 0;
 			float newBearing = 0;
 
-			String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+			String elevationUnit = app.getPreferences().getString("elevation_units", "m");
 
 			Waypoint wp = items.get(position);
 			if (wp != null) {
@@ -188,7 +193,7 @@ public class WaypointsListActivity extends ListActivity {
 
 					float distanceTo = currentLocation.distanceTo(wp.getLocation());
 
-					String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+					String distanceUnit = app.getPreferences().getString("distance_units", "km");
 
 					distStr = Utils.formatDistance(distanceTo, distanceUnit) + " "
 							+ Utils.getLocalizedDistanceUnit(WaypointsListActivity.this, distanceTo, distanceUnit);
@@ -225,10 +230,10 @@ public class WaypointsListActivity extends ListActivity {
 				// set value for the second text field
 				if (waypointDetails != null) {
 					waypointDetails.setText(Utils.formatLat(wp.getLocation().getLatitude(),
-							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
+							Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 							+ "|"
 							+ Utils.formatLng(wp.getLocation().getLongitude(),
-									Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
+									Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 							+ "|"
 							+ Utils.formatNumber(wp.getLocation().getAltitude(), 0)
 							+ ""
@@ -286,11 +291,13 @@ public class WaypointsListActivity extends ListActivity {
 
 		super.onCreate(savedInstanceState);
 
-		myApp = (MyApp) getApplication();
+		app = (App) getApplication();
 
 		// initializing with last known location, so we can calculate distance
 		// to waypoints
-		currentLocation = myApp.getCurrentLocation();
+		currentLocation = app.getCurrentLocation();
+
+		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
 		registerForContextMenu(this.getListView());
 
@@ -303,6 +310,32 @@ public class WaypointsListActivity extends ListActivity {
 		setListAdapter(waypointsArrayAdapter);
 
 	}
+
+	private Runnable appServiceConnectionCallback = new Runnable() {
+
+		@Override
+		public void run() {
+
+			AppService appService = serviceConnection.getService();
+
+			if (appService == null) {
+				Toast.makeText(WaypointsListActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+
+			// this activity is started by MainActivity which is always
+			// listening for location updates
+
+			// by setting gpsInUse to true we insure that listening will not
+			// stop in AppService.stopLocationUpdatesThread
+			appService.setGpsInUse(true);
+
+			// this activity requires compass data
+			appService.startSensorUpdates();
+
+		}
+	};
 
 	/**
 	 * Edit waypoint
@@ -325,7 +358,7 @@ public class WaypointsListActivity extends ListActivity {
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
-		this.unbindGpsService();
+		serviceConnection.unbindAppService();
 
 		super.onPause();
 	}
@@ -341,9 +374,9 @@ public class WaypointsListActivity extends ListActivity {
 			waypoints = null;
 		}
 
-		gpsServiceConnection = null;
+		serviceConnection = null;
 
-		myApp = null;
+		app = null;
 
 		super.onDestroy();
 
@@ -363,9 +396,9 @@ public class WaypointsListActivity extends ListActivity {
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter(Constants.ACTION_LOCATION_UPDATES));
 
-		// bind to GPS service
-		// once bound gpsServiceBoundCallback will be called
-		this.bindGpsService();
+		// bind to AppService
+		// appServiceConnectionCallback will be called once bound
+		serviceConnection.bindAppService();
 
 	}
 
@@ -398,7 +431,7 @@ public class WaypointsListActivity extends ListActivity {
 
 								// delete all waypoints
 								String sql = "DELETE FROM waypoints";
-								myApp.getDatabase().execSQL(sql);
+								app.getDatabase().execSQL(sql);
 
 								updateWaypointsArray();// cursor.requery();
 								waypointsArrayAdapter.setItems(waypoints);
@@ -498,7 +531,7 @@ public class WaypointsListActivity extends ListActivity {
 							public void onClick(DialogInterface dialog, int id) {
 								// delete waypoint from db
 								String sql = "DELETE FROM waypoints WHERE _id=" + waypointId + ";";
-								myApp.getDatabase().execSQL(sql);
+								app.getDatabase().execSQL(sql);
 
 								// cursor.requery();
 								updateWaypointsArray();
@@ -523,11 +556,11 @@ public class WaypointsListActivity extends ListActivity {
 
 				// email waypoint data using default email client
 
-				String elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
+				String elevationUnit = app.getPreferences().getString("elevation_units", "m");
 				String elevationUnitLocalized = Utils.getLocalizedElevationUnit(this, elevationUnit);
 
 				sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-				tmpCursor = myApp.getDatabase().rawQuery(sql, null);
+				tmpCursor = app.getDatabase().rawQuery(sql, null);
 				tmpCursor.moveToFirst();
 
 				double lat1 = tmpCursor.getDouble(tmpCursor.getColumnIndex("lat")) / 1E6;
@@ -578,7 +611,7 @@ public class WaypointsListActivity extends ListActivity {
 				// sync one waypoint data with remote server
 
 				sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-				tmpCursor = myApp.getDatabase().rawQuery(sql, null);
+				tmpCursor = app.getDatabase().rawQuery(sql, null);
 				tmpCursor.moveToFirst();
 
 				// create temp waypoint from current record
@@ -597,8 +630,8 @@ public class WaypointsListActivity extends ListActivity {
 					String lng = Location.convert(wp.getLocation().getLongitude(), 0);
 					String title = URLEncoder.encode(wp.getTitle());
 
-					String userName = myApp.getPreferences().getString("user_name", "");
-					String userPassword = myApp.getPreferences().getString("user_password", "");
+					String userName = app.getPreferences().getString("user_name", "");
+					String userPassword = app.getPreferences().getString("user_password", "");
 					String sessionValue = userName + "@" + Utils.md5("aripuca_session" + userPassword);
 
 					if (userName.equals("") || userPassword.equals("")) {
@@ -613,7 +646,7 @@ public class WaypointsListActivity extends ListActivity {
 					// http connection
 					HttpClient httpClient = new DefaultHttpClient();
 					HttpContext localContext = new BasicHttpContext();
-					HttpGet httpGet = new HttpGet(myApp.getPreferences().getString("online_sync_url",
+					HttpGet httpGet = new HttpGet(app.getPreferences().getString("online_sync_url",
 							"http://tracker.aripuca.com")
 							+ queryString);
 					HttpResponse response = httpClient.execute(httpGet, localContext);
@@ -660,7 +693,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		// update waypoint in db
 		String sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-		Cursor wpCursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor wpCursor = app.getDatabase().rawQuery(sql, null);
 		wpCursor.moveToFirst();
 
 		String title = wpCursor.getString(wpCursor.getColumnIndex("title"));
@@ -717,7 +750,7 @@ public class WaypointsListActivity extends ListActivity {
 				values.put("lng", lngE6);
 
 				try {
-					myApp.getDatabase().update("waypoints", values, "_id=" + wpId, null);
+					app.getDatabase().update("waypoints", values, "_id=" + wpId, null);
 					Toast.makeText(WaypointsListActivity.this, R.string.waypoint_updated, Toast.LENGTH_SHORT).show();
 
 					// cursor.requery();
@@ -754,7 +787,7 @@ public class WaypointsListActivity extends ListActivity {
 			waypoints = new ArrayList<Waypoint>();
 		}
 
-		Cursor cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllWaypoints, null);
+		Cursor cursor = app.getDatabase().rawQuery(this.sqlSelectAllWaypoints, null);
 		cursor.moveToFirst();
 
 		while (cursor.isAfterLast() == false) {
@@ -780,7 +813,7 @@ public class WaypointsListActivity extends ListActivity {
 	 */
 	protected void importFromXMLFile() {
 
-		File importFolder = new File(myApp.getAppDir() + "/waypoints");
+		File importFolder = new File(app.getAppDir() + "/waypoints");
 
 		final String importFiles[] = importFolder.list();
 
@@ -807,7 +840,7 @@ public class WaypointsListActivity extends ListActivity {
 
 					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 					DocumentBuilder db = dbf.newDocumentBuilder();
-					File file = new File(myApp.getAppDir() + "/waypoints", importWaypointsFileName);
+					File file = new File(app.getAppDir() + "/waypoints", importWaypointsFileName);
 
 					Document doc = db.parse(file);
 					doc.getDocumentElement().normalize();
@@ -862,7 +895,7 @@ public class WaypointsListActivity extends ListActivity {
 							values.put("time", time);
 
 							try {
-								myApp.getDatabase().insertOrThrow("waypoints", null, values);
+								app.getDatabase().insertOrThrow("waypoints", null, values);
 							} catch (SQLiteException e) {
 								Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 							}
@@ -913,7 +946,7 @@ public class WaypointsListActivity extends ListActivity {
 	protected void showOnMap(long waypointId) {
 
 		String sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-		Cursor tmpCursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor tmpCursor = app.getDatabase().rawQuery(sql, null);
 		tmpCursor.moveToFirst();
 
 		Intent i = new Intent(this, MyMapActivity.class);
@@ -986,7 +1019,7 @@ public class WaypointsListActivity extends ListActivity {
 				}
 
 				waypointToGpx = new WaypointGpxExportTask(WaypointsListActivity.this, filenameStr);
-				waypointToGpx.setApp(myApp);
+				waypointToGpx.setApp(app);
 				waypointToGpx.execute(0L);
 
 				dialog.dismiss();
@@ -1005,61 +1038,5 @@ public class WaypointsListActivity extends ListActivity {
 		dialog.show();
 
 	}
-
-	// //////////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * GPS service connection
-	 */
-	private GpsService gpsService;
-	private boolean isGpsServiceBound = false;
-	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			gpsService = ((GpsService.LocalBinder) service).getService();
-			gpsServiceBoundCallback();
-			isGpsServiceBound = true;
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			isGpsServiceBound = false;
-		}
-	};
-
-	private void bindGpsService() {
-		if (!bindService(new Intent(this, GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE)) {
-			Toast.makeText(this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	private void unbindGpsService() {
-
-		if (isGpsServiceBound) {
-			// Detach our existing connection.
-			unbindService(gpsServiceConnection);
-			isGpsServiceBound = false;
-		}
-
-		gpsService = null;
-
-	}
-
-	/**
-	 * called when gpsService bound
-	 */
-	private void gpsServiceBoundCallback() {
-
-		// this activity is started by MainActivity which is always
-		// listening for location updates
-
-		// by setting gpsInUse to true we insure that listening will not stop in
-		// GpsService.stopLocationUpdatesThread
-		gpsService.setGpsInUse(true);
-
-		// this activity requires compass data
-		gpsService.startSensorUpdates();
-
-	}
-
-	// //////////////////////////////////////////////////////////////////////////////////////////////
 
 }

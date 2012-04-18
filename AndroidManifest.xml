@@ -40,7 +40,7 @@
         android:required="false" />
 
     <application
-        android:name=".MyApp"
+        android:name=".App"
         android:icon="@drawable/icon"
         android:label="@string/main_app_title" >
         <uses-library android:name="com.google.android.maps" />
@@ -106,7 +106,7 @@
             android:label="@string/main_app_title" />
 
         <service
-            android:name=".service.GpsService"
+            android:name=".service.AppService"
             android:enabled="true"
             android:exported="false" />
     </application>

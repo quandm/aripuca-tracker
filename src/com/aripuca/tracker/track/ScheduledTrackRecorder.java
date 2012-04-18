@@ -3,8 +3,8 @@ package com.aripuca.tracker.track;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.aripuca.tracker.MyApp;
-import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 
 import com.aripuca.tracker.util.Utils;
 
@@ -21,7 +21,7 @@ public class ScheduledTrackRecorder {
 
 	private static ScheduledTrackRecorder instance = null;
 
-	protected MyApp myApp;
+	protected App app;
 
 	private boolean recording = false;
 	
@@ -95,7 +95,7 @@ public class ScheduledTrackRecorder {
 	/**
 	 * Singleton pattern
 	 */
-	public static ScheduledTrackRecorder getInstance(MyApp app) {
+	public static ScheduledTrackRecorder getInstance(App app) {
 
 		if (instance == null) {
 			instance = new ScheduledTrackRecorder(app);
@@ -105,28 +105,28 @@ public class ScheduledTrackRecorder {
 
 	}
 
-	public ScheduledTrackRecorder(MyApp app) {
+	public ScheduledTrackRecorder(App app) {
 
-		this.myApp = app;
+		this.app = app;
 
 	}
 
 	public void initialize() {
 
 		// interval between requests in seconds
-		requestInterval = Integer.parseInt(myApp.getPreferences().getString("wpt_request_interval", "10")) * 60;
+		requestInterval = Integer.parseInt(app.getPreferences().getString("wpt_request_interval", "10")) * 60;
 
 		// milliseconds
-		requestWaitTime = Integer.parseInt(myApp.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
+		requestWaitTime = Integer.parseInt(app.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
 
 		// acceptable accuracy
-		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("wpt_min_accuracy", "30"));
+		minAccuracy = Integer.parseInt(app.getPreferences().getString("wpt_min_accuracy", "30"));
 
 		// minimum distance between two recorded points
-		minDistance = Integer.parseInt(myApp.getPreferences().getString("wpt_min_distance", "200"));
+		minDistance = Integer.parseInt(app.getPreferences().getString("wpt_min_distance", "200"));
 
 		// stop scheduler after 
-		stopRecordingAfter = Integer.parseInt(myApp.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
+		stopRecordingAfter = Integer.parseInt(app.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
 
 	}
 
@@ -144,7 +144,7 @@ public class ScheduledTrackRecorder {
 
 		try {
 			// setting track id
-			trackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
+			trackId = app.getDatabase().insertOrThrow("tracks", null, values);
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
@@ -170,7 +170,7 @@ public class ScheduledTrackRecorder {
 
 		try {
 
-			myApp.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
+			app.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
 
 		} catch (SQLiteException e) {
 
@@ -196,7 +196,7 @@ public class ScheduledTrackRecorder {
 
 		try {
 
-			myApp.getDatabase().insertOrThrow("track_points", null, values);
+			app.getDatabase().insertOrThrow("track_points", null, values);
 
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
@@ -263,7 +263,7 @@ public class ScheduledTrackRecorder {
 
 	public boolean requestTimeLimitReached() {
 
-		myApp.logd("requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
+		app.logd("requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
 				+ Utils.formatInterval(SystemClock.elapsedRealtime(), true) + " Wait: "
 				+ Utils.formatInterval(requestWaitTime, true));
 

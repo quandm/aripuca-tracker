@@ -1,7 +1,7 @@
 package com.aripuca.tracker.track;
 
-import com.aripuca.tracker.MyApp;
-import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 
 import android.location.Location;
 import android.os.SystemClock;
@@ -16,7 +16,7 @@ public class TrackRecorder {
 	/**
 	 * Reference to Application object
 	 */
-	private MyApp myApp;
+	private App app;
 	
 	private int minDistance;
 
@@ -100,7 +100,7 @@ public class TrackRecorder {
 	/**
 	 * Singleton pattern
 	 */
-	public static TrackRecorder getInstance(MyApp app) {
+	public static TrackRecorder getInstance(App app) {
 
 		if (instance == null) {
 			instance = new TrackRecorder(app);
@@ -113,9 +113,9 @@ public class TrackRecorder {
 	/**
 	 * Private constructor
 	 */
-	private TrackRecorder(MyApp app) {
+	private TrackRecorder(App app) {
 
-		myApp = app;
+		app = app;
 
 	}
 
@@ -135,33 +135,33 @@ public class TrackRecorder {
 
 		segmentIndex = 0;
 
-		minDistance = Integer.parseInt(myApp.getPreferences().getString("min_distance", "15"));
-		minAccuracy = Integer.parseInt(myApp.getPreferences().getString("min_accuracy", "15"));
+		minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
+		minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
 
 		// create new track statistics object
-		this.track = new Track(myApp);
+		this.track = new Track(app);
 
-		this.segmentingMode = Integer.parseInt(myApp.getPreferences().getString("segmenting_mode", "0"));
+		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "0"));
 
 		// creating default segment
 		// if no segments will be created during track recording
 		// we won't insert segment data to db
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
-			this.segment = new Segment(myApp);
+			this.segment = new Segment(app);
 
 			switch (this.segmentingMode) {
 
 				case Constants.SEGMENT_DISTANCE:
 
 					// setting segment interval
-					segmentInterval = Float.parseFloat(myApp.getPreferences().getString("segment_distance", "5"));
+					segmentInterval = Float.parseFloat(app.getPreferences().getString("segment_distance", "5"));
 					break;
 
 				case Constants.SEGMENT_TIME:
 
 					// default time segmenting: 10 minutes
-					segmentTimeInterval = Float.parseFloat(myApp.getPreferences().getString("segment_time", "10"));
+					segmentTimeInterval = Float.parseFloat(app.getPreferences().getString("segment_time", "10"));
 					break;
 
 				case Constants.SEGMENT_CUSTOM_1:
@@ -230,7 +230,7 @@ public class TrackRecorder {
 
 		this.segmentIndex++;
 
-		this.segment = new Segment(myApp);
+		this.segment = new Segment(app);
 
 	}
 
@@ -521,7 +521,7 @@ public class TrackRecorder {
 			return;
 		}
 
-		String[] tmpArr = myApp.getPreferences().getString(segmentIntervalsKey, "").split(",");
+		String[] tmpArr = app.getPreferences().getString(segmentIntervalsKey, "").split(",");
 
 		segmentIntervals = new float[tmpArr.length];
 

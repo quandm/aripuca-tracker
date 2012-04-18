@@ -12,10 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.TracksListActivity;
-import com.aripuca.tracker.app.Constants;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
-	protected MyApp myApp;
+	protected App app;
 
 	protected Context context;
 
@@ -81,9 +81,9 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 	}
 
-	public void setApp(MyApp m) {
+	public void setApp(App m) {
 
-		myApp = m;
+		app = m;
 
 	}
 
@@ -102,7 +102,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
-		File outputFolder = new File(myApp.getAppDir() + "/tracks");
+		File outputFolder = new File(app.getAppDir() + "/tracks");
 
 		String fileName = (new SimpleDateFormat("yyyy-MM-dd_HH-mm")).format(tCursor.getLong(tCursor
 				.getColumnIndex("start_time")));
@@ -125,12 +125,12 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 		// tracks table cursor
 		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
-		tCursor = myApp.getDatabase().rawQuery(sql, null);
+		tCursor = app.getDatabase().rawQuery(sql, null);
 		tCursor.moveToFirst();
 
 		// track points table cursor
 		sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
-		tpCursor = myApp.getDatabase().rawQuery(sql, null);
+		tpCursor = app.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
 
 	}
@@ -224,7 +224,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 		Log.d(Constants.TAG, "onCancelled");
 
-		myApp = null;
+		app = null;
 		progressDialog = null;
 
 	}
@@ -268,7 +268,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 			
 		}
 
-		myApp = null;
+		app = null;
 		progressDialog = null;
 
 	}
@@ -279,7 +279,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	protected void zipAndSendAttachment() {
 
 		// let's compress file before attaching
-		File outputFolder = new File(myApp.getAppDir() + "/tracks");
+		File outputFolder = new File(app.getAppDir() + "/tracks");
 		File zipFile = new File(outputFolder, file.getName() + ".zip");
 
 		//TODO: bug: zip file created incorrectly

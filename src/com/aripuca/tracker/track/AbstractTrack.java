@@ -2,8 +2,8 @@ package com.aripuca.tracker.track;
 
 import java.util.Date;
 
-import com.aripuca.tracker.MyApp;
-import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.util.Population;
 
 import android.content.Context;
@@ -15,7 +15,7 @@ public abstract class AbstractTrack {
 	/**
 	 * Reference to application object for accessing db etc.
 	 */
-	protected MyApp myApp;
+	protected App app;
 
 	protected Context context;
 
@@ -59,7 +59,7 @@ public abstract class AbstractTrack {
 
 		this.context = context;
 
-		myApp = ((MyApp) context.getApplicationContext());
+		app = ((App) context.getApplicationContext());
 
 		this.trackTimeStart = (new Date()).getTime();
 

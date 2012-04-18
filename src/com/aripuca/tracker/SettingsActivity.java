@@ -18,7 +18,7 @@ import com.aripuca.tracker.util.ArrayUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-	protected MyApp myApp;
+	protected App app;
 
 	/**
 	 * Called when the activity created
@@ -31,7 +31,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		addPreferencesFromResource(R.xml.settings);
 
 		// reference to application object
-		myApp = ((MyApp) getApplicationContext());
+		app = ((App) getApplicationContext());
 
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		preferences.registerOnSharedPreferenceChangeListener(this);

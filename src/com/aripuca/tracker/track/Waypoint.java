@@ -58,7 +58,7 @@ public class Waypoint extends Object {
 	 */
 	public Location getLocation() {
 
-		Location loc = new Location("MyAPP");
+		Location loc = new Location("app");
 
 		loc.setLatitude(latitude);
 		loc.setLongitude(longitude);
