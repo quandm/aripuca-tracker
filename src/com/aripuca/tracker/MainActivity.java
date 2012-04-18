@@ -4,6 +4,7 @@ import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
+import com.aripuca.tracker.track.Track;
 
 import com.aripuca.tracker.util.ContainerCarousel;
 import com.aripuca.tracker.util.SunriseSunset;
@@ -121,12 +122,11 @@ public class MainActivity extends Activity {
 
 			long fixAge = System.currentTimeMillis() - currentLocation.getTime();
 
-			// TODO: for some reason currentLocation.getTime returns date in the
-			// future (started in January 2012)
+			// for some reason currentLocation.getTime is one day off
+			// this is leap year bug on Nexus S and other Samsund devices
+			// fixed in ICS 4.0.4
 			if (fixAge < 0) {
-
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
-
 				Log.d(Constants.TAG, "MainActivity: location time is one day ahead");
 				app.logd("MainActivity: location time is one day ahead");
 			}
@@ -354,8 +354,7 @@ public class MainActivity extends Activity {
 		timeContainerCarousel.setCurrentContainerId(app.getPreferences().getInt("time_container_id", 0));
 		distanceContainerCarousel.setCurrentContainerId(app.getPreferences().getInt("distance_container_id", 0));
 		elevationContainerCarousel.setCurrentContainerId(app.getPreferences().getInt("elavation_container_id", 0));
-		coordinatesContainerCarousel
-				.setCurrentContainerId(app.getPreferences().getInt("coordinates_container_id", 0));
+		coordinatesContainerCarousel.setCurrentContainerId(app.getPreferences().getInt("coordinates_container_id", 0));
 
 	}
 
@@ -405,7 +404,7 @@ public class MainActivity extends Activity {
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
 		// start GPS service only if not started
-		startGpsService();
+		startAppService();
 
 		// show quick help only when activity first started
 		if (savedInstanceState == null) {
@@ -552,7 +551,7 @@ public class MainActivity extends Activity {
 		if (this.isFinishing()) {
 
 			// if activity is not going to be recreated - stop service
-			stopGpsService();
+			stopAppService();
 
 			// save layout for next session
 			this.saveHiddenPreferences();
@@ -716,26 +715,19 @@ public class MainActivity extends Activity {
 	/**
 	 * start GPS listener service
 	 */
-	private void startGpsService() {
+	private void startAppService() {
 
-		if (!AppService.isRunning()) {
-
-			Log.i(Constants.TAG, "startGPSService");
-
-			// starting GPS listener service
-			startService(new Intent(this, AppService.class));
-		}
+		// starting GPS listener service
+		serviceConnection.startService();
 
 	}
 
 	/**
 	 * stop GPS listener service
 	 */
-	private void stopGpsService() {
+	private void stopAppService() {
 
-		Log.i(Constants.TAG, "stopGPSService");
-
-		stopService(new Intent(this, AppService.class));
+		serviceConnection.stopService();
 
 	}
 
@@ -805,12 +797,12 @@ public class MainActivity extends Activity {
 	private void startTracking() {
 
 		this.initializeMeasuringUnits();
-		
+
 		AppService appService = serviceConnection.getService();
-		
-		if (appService==null) {
+
+		if (appService == null) {
 			Toast.makeText(this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
-			return;			
+			return;
 		}
 
 		// Change button label from Record to Stop
@@ -839,12 +831,12 @@ public class MainActivity extends Activity {
 	private void stopTracking() {
 
 		AppService appService = serviceConnection.getService();
-		
-		if (appService==null) {
+
+		if (appService == null) {
 			Toast.makeText(this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
-			return;			
+			return;
 		}
-		
+
 		// disabling pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
@@ -891,8 +883,7 @@ public class MainActivity extends Activity {
 			// disable "add waypoint" button for the time of request
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 
-			if (app.checkInternetConnection()
-					&& app.getPreferences().getBoolean("waypoint_default_description", false)) {
+			if (app.checkInternetConnection() && app.getPreferences().getBoolean("waypoint_default_description", false)) {
 
 				// processing is done in separate thread
 				geocodeLocation(currentLocation, MainActivity.this, new GeocoderHandler());
@@ -1155,7 +1146,7 @@ public class MainActivity extends Activity {
 		MenuItem scheduledRecordingMenuItem = (MenuItem) menu.findItem(R.id.scheduledRecordingMenuItem);
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (appService != null) {
 			if (appService.getScheduledTrackRecorder().isRecording()) {
 				scheduledRecordingMenuItem.setTitle(R.string.stop_scheduler);
@@ -1291,7 +1282,7 @@ public class MainActivity extends Activity {
 	public void updateActivity() {
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (currentLocation == null || appService == null) { return; }
 
 		// ///////////////////////////////////////////////////////////////////
@@ -1377,8 +1368,10 @@ public class MainActivity extends Activity {
 	private void updateTrackRecording() {
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (appService == null || !appService.getTrackRecorder().isRecording()) { return; }
+
+		Track track = appService.getTrackRecorder().getTrack();
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
@@ -1395,83 +1388,73 @@ public class MainActivity extends Activity {
 		// ------------------------------------------------------------------
 		// elevation gain
 		if (findViewById(R.id.elevationGain) != null) {
-			((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(appService.getTrackRecorder()
-					.getTrack().getElevationGain(), elevationUnit));
+			((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(track.getElevationGain(),
+					elevationUnit));
 		}
 
 		// elevation loss
 		if (findViewById(R.id.elevationLoss) != null) {
-			((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(appService.getTrackRecorder()
-					.getTrack().getElevationLoss(), elevationUnit));
+			((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(track.getElevationLoss(),
+					elevationUnit));
 		}
 
 		// max elevation
 		if (findViewById(R.id.maxElevation) != null) {
-			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(appService.getTrackRecorder()
-					.getTrack().getMaxElevation(), elevationUnit));
+			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(track.getMaxElevation(), elevationUnit));
 		}
 
 		// min elevation
 		if (findViewById(R.id.minElevation) != null) {
-			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(appService.getTrackRecorder()
-					.getTrack().getMinElevation(), elevationUnit));
+			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(track.getMinElevation(), elevationUnit));
 		}
 		// ------------------------------------------------------------------
 
 		// average speed
 		if (findViewById(R.id.averageSpeed) != null) {
-			((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(appService.getTrackRecorder()
-					.getTrack().getAverageSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(track.getAverageSpeed(), speedUnit));
 		}
 
 		// average moving speed
 		if (findViewById(R.id.averageMovingSpeed) != null) {
-			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(appService.getTrackRecorder()
-					.getTrack().getAverageMovingSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(track.getAverageMovingSpeed(), speedUnit));
 		}
 
 		// max speed
 		if (findViewById(R.id.maxSpeed) != null) {
-			((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(appService.getTrackRecorder().getTrack()
-					.getMaxSpeed(), speedUnit));
+			((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(track.getMaxSpeed(), speedUnit));
 		}
 
 		// acceleration
 		if (findViewById(R.id.acceleration) != null) {
 
 			// let's display last non-zero acceleration
-			((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(appService.getTrackRecorder()
-					.getTrack().getAcceleration(), 2));
+			((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(track.getAcceleration(), 2));
 
 		}
 
 		// average pace
 		if (findViewById(R.id.averagePace) != null) {
-			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(appService.getTrackRecorder()
-					.getTrack().getAverageSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(track.getAverageSpeed(), speedUnit));
 		}
 
 		// average moving pace
 		if (findViewById(R.id.averageMovingPace) != null) {
-			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(appService.getTrackRecorder()
-					.getTrack().getAverageMovingSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(track.getAverageMovingSpeed(), speedUnit));
 		}
 
 		// max pace
 		if (findViewById(R.id.maxPace) != null) {
-			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(appService.getTrackRecorder().getTrack()
-					.getMaxSpeed(), speedUnit));
+			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(track.getMaxSpeed(), speedUnit));
 		}
 
 		// total distance
 		if (findViewById(R.id.distance) != null) {
-			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(appService.getTrackRecorder()
-					.getTrack().getDistance(), distanceUnit));
+			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(track.getDistance(), distanceUnit));
 		}
 
 		if (findViewById(R.id.distanceUnit) != null) {
-			((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalizedDistanceUnit(this, appService
-					.getTrackRecorder().getTrack().getDistance(), distanceUnit));
+			((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalizedDistanceUnit(this,
+					track.getDistance(), distanceUnit));
 		}
 
 	}
@@ -1556,7 +1539,7 @@ public class MainActivity extends Activity {
 	public void updateTime() {
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (appService != null && appService.getTrackRecorder().isRecording()) {
 
 			if (findViewById(R.id.totalTime) != null) {
@@ -1581,7 +1564,7 @@ public class MainActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (appService != null) {
 
@@ -1609,8 +1592,8 @@ public class MainActivity extends Activity {
 	private void backupDatabase() {
 
 		AppService appService = serviceConnection.getService();
-		
-		if (appService==null || appService.getTrackRecorder().isRecording()) {
+
+		if (appService == null || appService.getTrackRecorder().isRecording()) {
 			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -1663,7 +1646,7 @@ public class MainActivity extends Activity {
 	private void restoreDatabase() {
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (appService == null || appService.getTrackRecorder().isRecording()) {
 			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
 			return;
@@ -1709,8 +1692,8 @@ public class MainActivity extends Activity {
 			try {
 
 				// open database in readonly mode
-				SQLiteDatabase db = SQLiteDatabase.openDatabase(
-						app.getAppDir() + "/backup/" + importDatabaseFileName, null, SQLiteDatabase.OPEN_READONLY);
+				SQLiteDatabase db = SQLiteDatabase.openDatabase(app.getAppDir() + "/backup/" + importDatabaseFileName,
+						null, SQLiteDatabase.OPEN_READONLY);
 
 				// check version compatibility
 				// only same version of the db can be restored

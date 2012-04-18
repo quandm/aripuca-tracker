@@ -115,7 +115,7 @@ public class TrackRecorder {
 	 */
 	private TrackRecorder(App app) {
 
-		app = app;
+		this.app = app;
 
 	}
 
