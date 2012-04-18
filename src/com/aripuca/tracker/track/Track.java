@@ -3,7 +3,7 @@ package com.aripuca.tracker.track;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
@@ -55,11 +55,11 @@ public class Track extends AbstractTrack {
 		values.put("start_time", this.trackTimeStart);
 
 		try {
-			long newTrackId = myApp.getDatabase().insertOrThrow("tracks", null, values);
+			long newTrackId = app.getDatabase().insertOrThrow("tracks", null, values);
 			this.setTrackId(newTrackId);
 		} catch (SQLiteException e) {
 			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-			myApp.loge("Track.insertNewTrack:  SQLiteException: " + e.getMessage());
+			app.loge("Track.insertNewTrack:  SQLiteException: " + e.getMessage());
 		}
 
 	}
@@ -89,7 +89,7 @@ public class Track extends AbstractTrack {
 
 		try {
 
-			myApp.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
+			app.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
 
 		} catch (SQLiteException e) {
 
@@ -120,7 +120,7 @@ public class Track extends AbstractTrack {
 
 		try {
 
-			myApp.getDatabase().insertOrThrow("track_points", null, values);
+			app.getDatabase().insertOrThrow("track_points", null, values);
 
 			//			this.lastRecordedLocation = location;
 

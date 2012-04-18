@@ -1,4 +1,4 @@
-package com.aripuca.tracker.app;
+package com.aripuca.tracker;
 
 public abstract class Constants {
 

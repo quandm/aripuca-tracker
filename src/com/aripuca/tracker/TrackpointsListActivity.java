@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import com.aripuca.tracker.R;
 
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.compatibility.ApiLevelFactory;
-import com.aripuca.tracker.service.GpsService;
+import com.aripuca.tracker.service.AppService;
+import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.track.Waypoint;
 
 import com.aripuca.tracker.util.Utils;
@@ -15,12 +15,12 @@ import com.aripuca.tracker.view.CompassImage;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
+
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -28,7 +28,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
+
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,9 +49,9 @@ import android.widget.Toast;
 public class TrackpointsListActivity extends ListActivity {
 
 	/**
-	 * Reference to myApp object
+	 * Reference to app object
 	 */
-	private MyApp myApp;
+	private App app;
 
 	private WaypointsArrayAdapter waypointsArrayAdapter;
 
@@ -63,6 +63,11 @@ public class TrackpointsListActivity extends ListActivity {
 	private String distanceUnit;
 
 	private int sortMethod;
+
+	/**
+	 * Service connection object
+	 */
+	private AppServiceConnection serviceConnection;
 
 	/**
 	 * Location updates broadcast receiver
@@ -172,7 +177,8 @@ public class TrackpointsListActivity extends ListActivity {
 						newBearing = 360 - Math.abs((int) newBearing);
 					}
 
-					newAzimuth = newBearing - getAzimuth() - ApiLevelFactory.getApiLevel().getDeviceRotation(TrackpointsListActivity.this);
+					newAzimuth = newBearing - getAzimuth()
+							- ApiLevelFactory.getApiLevel().getDeviceRotation(TrackpointsListActivity.this);
 					if ((int) newAzimuth < 0) {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}
@@ -198,10 +204,10 @@ public class TrackpointsListActivity extends ListActivity {
 				// setting track point coordinates
 				if (coordinatesTextView != null) {
 					coordinatesTextView.setText(Utils.formatLat(wp.getLatitude(),
-							Integer.parseInt(myApp.getPreferences().getString("coord_units", "0")))
+							Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 							+ " "
 							+ Utils.formatLng(wp.getLongitude(),
-									Integer.parseInt(myApp.getPreferences().getString("coord_units", "0"))));
+									Integer.parseInt(app.getPreferences().getString("coord_units", "0"))));
 
 				}
 
@@ -246,10 +252,13 @@ public class TrackpointsListActivity extends ListActivity {
 
 		sqlSelectAllWaypoints = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 
-		myApp = ((MyApp) getApplicationContext());
-		
-		// initializing with last known location, so we can calculate distance to track points 
-		currentLocation = myApp.getCurrentLocation();
+		app = ((App) getApplicationContext());
+
+		// initializing with last known location, so we can calculate distance
+		// to track points
+		currentLocation = app.getCurrentLocation();
+
+		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
 		registerForContextMenu(this.getListView());
 
@@ -261,11 +270,48 @@ public class TrackpointsListActivity extends ListActivity {
 		// setListAdapter(cursorAdapter);
 		setListAdapter(waypointsArrayAdapter);
 
-		elevationUnit = myApp.getPreferences().getString("elevation_units", "m");
-		distanceUnit = myApp.getPreferences().getString("distance_units", "km");
-		
-		sortMethod = myApp.getPreferences().getInt("trackpoints_sort", 0);
+		elevationUnit = app.getPreferences().getString("elevation_units", "m");
+		distanceUnit = app.getPreferences().getString("distance_units", "km");
+
+		sortMethod = app.getPreferences().getInt("trackpoints_sort", 0);
 	}
+
+	private Runnable appServiceConnectionCallback = new Runnable() {
+
+		@Override
+		public void run() {
+
+			AppService appService = serviceConnection.getService();
+
+			if (appService == null) {
+				Toast.makeText(TrackpointsListActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+
+			if (!appService.isListening()) {
+
+				// location updates stopped at this time, so let's start them
+				appService.startLocationUpdates();
+
+			} else {
+
+				// gpsInUse = false means we are in process of stopping
+				// listening
+				if (!appService.isGpsInUse()) {
+					appService.setGpsInUse(true);
+				}
+
+				// if both isListening and isGpsInUse are true - do nothing
+				// most likely we are in the process of recording track
+
+			}
+
+			// this activity requires compass data
+			appService.startSensorUpdates();
+
+		}
+	};
 
 	/**
 	 * onResume event handler
@@ -280,8 +326,8 @@ public class TrackpointsListActivity extends ListActivity {
 		registerReceiver(locationBroadcastReceiver, new IntentFilter(Constants.ACTION_LOCATION_UPDATES));
 
 		// bind to GPS service
-		// once bound gpsServiceBoundCallback will be called
-		this.bindGpsService();
+		// once bound appServiceConnectionCallback will be called
+		serviceConnection.bindAppService();
 
 		super.onResume();
 	}
@@ -292,17 +338,20 @@ public class TrackpointsListActivity extends ListActivity {
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
 
-		// stop location updates when not recording track
-		if (gpsService != null) {
+		AppService appService = serviceConnection.getService();
+		
+		if (appService != null) {
 
-			if (!gpsService.getTrackRecorder().isRecording()) {
-				gpsService.stopLocationUpdates();
+			// stop location updates when not recording track
+			if (!appService.getTrackRecorder().isRecording()) {
+				appService.stopLocationUpdates();
 			}
 
-			gpsService.stopSensorUpdates();
+			// stop compass updates in any case
+			appService.stopSensorUpdates();
 		}
 
-		this.unbindGpsService();
+		serviceConnection.unbindAppService();
 
 		super.onPause();
 	}
@@ -318,9 +367,9 @@ public class TrackpointsListActivity extends ListActivity {
 			waypoints = null;
 		}
 
-		gpsServiceConnection = null;
+		serviceConnection = null;
 
-		myApp = null;
+		app = null;
 
 		super.onDestroy();
 
@@ -366,17 +415,17 @@ public class TrackpointsListActivity extends ListActivity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.sort_by);
-		
+
 		builder.setSingleChoiceItems(sortMethods, sortMethod, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				
+
 				sortMethod = whichButton;
-				
+
 				// save current sort method in preferences
-				SharedPreferences.Editor editor = myApp.getPreferences().edit();
+				SharedPreferences.Editor editor = app.getPreferences().edit();
 				editor.putInt("trackpoints_sort", sortMethod);
 				editor.commit();
-				
+
 				// resort the list
 				waypointsArrayAdapter.notifyDataSetChanged();
 				dialog.dismiss();
@@ -399,7 +448,7 @@ public class TrackpointsListActivity extends ListActivity {
 			waypoints = new ArrayList<Waypoint>();
 		}
 
-		Cursor cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllWaypoints, null);
+		Cursor cursor = app.getDatabase().rawQuery(this.sqlSelectAllWaypoints, null);
 		cursor.moveToFirst();
 
 		int i = 1;
@@ -441,70 +490,5 @@ public class TrackpointsListActivity extends ListActivity {
 	public float getAzimuth() {
 		return azimuth;
 	}
-
-	// //////////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * GPS service connection
-	 */
-	private GpsService gpsService;
-	private boolean isGpsServiceBound = false;
-	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			gpsService = ((GpsService.LocalBinder) service).getService();
-			gpsServiceBoundCallback();
-			isGpsServiceBound = true;
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			isGpsServiceBound = false;
-		}
-	};
-
-	private void bindGpsService() {
-		if (!bindService(new Intent(this, GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE)) {
-			Toast.makeText(this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	private void unbindGpsService() {
-		if (isGpsServiceBound) {
-			// Detach our existing connection.
-			unbindService(gpsServiceConnection);
-			isGpsServiceBound = false;
-		}
-
-		gpsService = null;
-
-	}
-
-	/**
-	 * called when gpsService bound
-	 */
-	private void gpsServiceBoundCallback() {
-
-		if (!gpsService.isListening()) {
-
-			// location updates stopped at this time, so let's start them
-			gpsService.startLocationUpdates();
-
-		} else {
-
-			// gpsInUse = false means we are in process of stopping listening
-			if (!gpsService.isGpsInUse()) {
-				gpsService.setGpsInUse(true);
-			}
-
-			// if both isListening and isGpsInUse are true - do nothing
-			// most likely we are in the process of recording track
-
-		}
-
-		// this activity requires compass data
-		gpsService.startSensorUpdates();
-
-	}
-
-	// //////////////////////////////////////////////////////////////////////////////////////////////
 
 }

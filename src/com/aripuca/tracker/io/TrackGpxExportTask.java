@@ -32,7 +32,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		// track cursor
 		String sql = "SELECT * FROM segments WHERE track_id=" + trackId;
-		segCursor = myApp.getDatabase().rawQuery(sql, null);
+		segCursor = app.getDatabase().rawQuery(sql, null);
 		segCursor.moveToFirst();
 
 	}

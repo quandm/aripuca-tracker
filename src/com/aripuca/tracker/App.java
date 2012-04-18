@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.aripuca.tracker.app.AppLog;
-import com.aripuca.tracker.app.Constants;
 
 import com.aripuca.tracker.track.Waypoint;
+import com.aripuca.tracker.util.AppLog;
 
 import android.app.Application;
 import android.content.ContentValues;
@@ -19,7 +18,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.net.ConnectivityManager;
-import android.os.Build;
+
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -28,7 +27,7 @@ import android.util.Log;
 /**
  * 
  */
-public class MyApp extends Application {
+public class App extends Application {
 
 	/**
 	 * Android shared preferences
@@ -229,7 +228,7 @@ public class MyApp extends Application {
 		// adding famous waypoints to db if not added yet
 		insertFamousWaypoints();
 
-		this.logd("=================== MyApp: onCreate ===================");
+		this.logd("=================== app: onCreate ===================");
 
 	}
 

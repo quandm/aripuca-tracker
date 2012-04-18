@@ -1,33 +1,32 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.compatibility.ApiLevelFactory;
 
-import com.aripuca.tracker.service.GpsService;
+import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.BubbleSurfaceView;
 import com.aripuca.tracker.view.CompassImage;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
+
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
+
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.Display;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class CompassActivity extends Activity implements OnTouchListener {
 
@@ -42,7 +41,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	/**
 	 * Reference to Application object
 	 */
-	private MyApp myApp;
+	private App app;
 
 	/**
 	 * declination
@@ -58,6 +57,12 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	 * vibration flag
 	 */
 	private boolean vibrationOn;
+	
+	/**
+	 * Service connection object
+	 */
+	private AppServiceConnection serviceConnection; 
+	
 
 	/**
 	 * Location updates broadcast receiver
@@ -79,8 +84,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			declination = Utils.getDeclination(currentLocation, now);
 
 			// stop location updates when not recording track
-			if (gpsService != null && !gpsService.getTrackRecorder().isRecording()) {
-				gpsService.stopLocationUpdates();
+			if (serviceConnection.getService().getTrackRecorder().isRecording()) {
+				serviceConnection.getService().stopLocationUpdates();
 			}
 
 		}
@@ -132,19 +137,21 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// reference to application object
-		myApp = ((MyApp) getApplicationContext());
+		app = ((App) getApplicationContext());
 
 		// reference to vibrator service
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 		// vibrate or not?
-		vibrationOn = myApp.getPreferences().getBoolean("compass_vibration", true);
+		vibrationOn = app.getPreferences().getBoolean("compass_vibration", true);
 
 		if (findViewById(R.id.bubbleSurfaceView) != null) {
 			bubbleView = (BubbleSurfaceView) findViewById(R.id.bubbleSurfaceView);
 		}
 
-		currentLocation = myApp.getCurrentLocation();
+		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
+		
+		currentLocation = app.getCurrentLocation();
 
 		// magnetic north compass
 		if (findViewById(R.id.compass) != null) {
@@ -161,6 +168,40 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	}
 
+	private Runnable appServiceConnectionCallback = new Runnable() {
+		
+		@Override
+		public void run() {
+			
+			Log.d(Constants.TAG, "AppServiceConnection");
+			
+			if (serviceConnection.getService()==null) {
+				Log.e(Constants.TAG, "AppService not available");
+				return;
+			}
+			
+			if (!serviceConnection.getService().isListening()) {
+
+				// location updates stopped at this time, so let's start them
+				serviceConnection.getService().startLocationUpdates();
+
+			} else {
+
+				// gpsInUse = false means we are in process of stopping listening
+				if (!serviceConnection.getService().isGpsInUse()) {
+					serviceConnection.getService().setGpsInUse(true);
+				}
+
+				// if both isListening and isGpsInUse are true - do nothing
+				// most likely we are in the process of recording track
+
+			}
+
+			// this activity requires compass data
+			serviceConnection.getService().startSensorUpdates();
+		
+	}};
+	
 	/**
 	 * 
 	 */
@@ -187,7 +228,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		bubbleView.resume();
 
 		if (findViewById(R.id.compassView) != null) {
-			findViewById(R.id.compassView).setKeepScreenOn(myApp.getPreferences().getBoolean("wake_lock", true));
+			findViewById(R.id.compassView).setKeepScreenOn(app.getPreferences().getBoolean("wake_lock", true));
 		}
 
 		// registering receiver for compass updates
@@ -196,18 +237,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		// registering receiver for location updates
 		registerReceiver(locationBroadcastReceiver, new IntentFilter(Constants.ACTION_LOCATION_UPDATES));
 
-		// staring compass updates in GpsService
-		// Intent intent = new Intent(Constants.ACTION_START_SENSOR_UPDATES);
-		// sendBroadcast(intent);
-
-		// bind to GPS service
-		// once bound gpsServiceBoundCallback will be called
-		this.bindGpsService();
-
-		Display display;
-		display = getWindow().getWindowManager().getDefaultDisplay();
-		Log.d(Constants.TAG, "W: " + display.getWidth() + " H: " + display.getHeight());
-
+		this.serviceConnection.bindAppService();
+		
 	}
 
 	@Override
@@ -219,18 +250,19 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		unregisterReceiver(locationBroadcastReceiver);
 
 		// stop location updates when not recording track
-		if (gpsService != null) {
+		if (serviceConnection.getService() != null) {
 
 			// at this point we most likely received one location update and
 			// already stopped listening
-			if (!gpsService.getTrackRecorder().isRecording()) {
-				gpsService.stopLocationUpdates();
+			if (!serviceConnection.getService().getTrackRecorder().isRecording()) {
+				serviceConnection.getService().stopLocationUpdates();
 			}
 
-			gpsService.stopSensorUpdates();
+			serviceConnection.getService().stopSensorUpdates();
+			
 		}
 
-		this.unbindGpsService();
+		this.serviceConnection.unbindAppService();
 
 		super.onPause();
 
@@ -293,8 +325,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	 */
 	public void updateCompass(float azimuth) {
 
-		boolean trueNorth = myApp.getPreferences().getBoolean("true_north", true);
-		boolean showMagnetic = myApp.getPreferences().getBoolean("show_magnetic", true);
+		boolean trueNorth = app.getPreferences().getBoolean("true_north", true);
+		boolean showMagnetic = app.getPreferences().getBoolean("show_magnetic", true);
 
 		float rotation = 0;
 
@@ -352,70 +384,6 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		}
 
 		return az;
-
-	}
-
-	// //////////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * GPS service connection
-	 */
-	private GpsService gpsService;
-	private boolean isGpsServiceBound = false;
-	private ServiceConnection gpsServiceConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			gpsService = ((GpsService.LocalBinder) service).getService();
-			gpsServiceBoundCallback();
-			isGpsServiceBound = true;
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			isGpsServiceBound = false;
-		}
-	};
-
-	private void bindGpsService() {
-		if (!bindService(new Intent(this, GpsService.class), gpsServiceConnection, Context.BIND_AUTO_CREATE)) {
-			Toast.makeText(this, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	private void unbindGpsService() {
-
-		if (isGpsServiceBound) {
-			// Detach our existing connection.
-			unbindService(gpsServiceConnection);
-			isGpsServiceBound = false;
-		}
-
-		gpsService = null;
-
-	}
-
-	/**
-	 * called when gpsService bound
-	 */
-	private void gpsServiceBoundCallback() {
-
-		if (!gpsService.isListening()) {
-
-			// location updates stopped at this time, so let's start them
-			gpsService.startLocationUpdates();
-
-		} else {
-
-			// gpsInUse = false means we are in process of stopping listening
-			if (!gpsService.isGpsInUse()) {
-				gpsService.setGpsInUse(true);
-			}
-
-			// if both isListening and isGpsInUse are true - do nothing
-			// most likely we are in the process of recording track
-
-		}
-
-		// this activity requires compass data
-		gpsService.startSensorUpdates();
 
 	}
 

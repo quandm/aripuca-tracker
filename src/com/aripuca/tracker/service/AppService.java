@@ -2,10 +2,10 @@ package com.aripuca.tracker.service;
 
 import java.util.Calendar;
 
-import com.aripuca.tracker.MyApp;
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.NotificationActivity;
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
@@ -36,11 +36,11 @@ import android.util.Log;
  * this service handles real time and scheduled track recording as well as
  * compass updates
  */
-public class GpsService extends Service {
+public class AppService extends Service {
 
 	private static boolean running = false;
 
-	private MyApp myApp;
+	private App app;
 
 	private LocationManager locationManager;
 
@@ -111,7 +111,7 @@ public class GpsService extends Service {
 			listening = true;
 
 			currentLocation = location;
-			myApp.setCurrentLocation(location);
+			app.setCurrentLocation(location);
 
 			// update track statistics
 			if (trackRecorder.isRecording()) {
@@ -159,7 +159,7 @@ public class GpsService extends Service {
 			schedulerListening = true;
 
 			currentLocation = location;
-			myApp.setCurrentLocation(location);
+			app.setCurrentLocation(location);
 
 			// check minimum accuracy  required for recording 
 			if (location.hasAccuracy() && location.getAccuracy() <= scheduledTrackRecorder.getMinAccuracy()) {
@@ -172,7 +172,7 @@ public class GpsService extends Service {
 					// check distance to lastRecordedLocation
 					if (distance < scheduledTrackRecorder.getMinDistance()) {
 
-						myApp.logd("Min distance not accepted: " + distance);
+						app.logd("Min distance not accepted: " + distance);
 
 						//
 						stopScheduledLocationUpdates();
@@ -198,14 +198,14 @@ public class GpsService extends Service {
 				// location of acceptable accuracy received - stop GPS
 				stopScheduledLocationUpdates();
 
-				myApp.logd("Scheduled location recorded. Accuracy: " + location.getAccuracy());
+				app.logd("Scheduled location recorded. Accuracy: " + location.getAccuracy());
 
 				// schedule next location update
 				scheduleNextLocationRequest((int) scheduledTrackRecorder.getRequestInterval());
 
 			} else {
 
-				myApp.logd("Accuracy not accepted: " + location.getAccuracy());
+				app.logd("Accuracy not accepted: " + location.getAccuracy());
 
 				// waiting for acceptable accuracy
 
@@ -214,7 +214,7 @@ public class GpsService extends Service {
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
 
-					myApp.logd("Scheduled request cancelled: UNACCEPTABLE ACCURACY");
+					app.logd("Scheduled request cancelled: UNACCEPTABLE ACCURACY");
 
 					// schedule next location update
 					// if current location request was unsuccessful let's try
@@ -295,7 +295,7 @@ public class GpsService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 
-		Log.d(Constants.TAG, "BOUND");
+		Log.d(Constants.TAG, "AppService: BOUND "+this.toString());
 
 		return mBinder;
 	}
@@ -303,14 +303,14 @@ public class GpsService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 
-		Log.d(Constants.TAG, "UNBIND");
+		Log.d(Constants.TAG, "AppService: UNBOUND "+this.toString());
 
 		return true;
 	}
 
 	public class LocalBinder extends Binder {
-		public GpsService getService() {
-			return GpsService.this;
+		public AppService getService() {
+			return AppService.this;
 		}
 	}
 
@@ -327,17 +327,15 @@ public class GpsService extends Service {
 		registerReceiver(nextTimeLimitCheckReceiver, new IntentFilter(Constants.ACTION_NEXT_TIME_LIMIT_CHECK));
 		registerReceiver(nextLocationRequestReceiver, new IntentFilter(Constants.ACTION_NEXT_LOCATION_REQUEST));
 
-		Log.i(Constants.TAG, "GpsService: onCreate");
+		Log.i(Constants.TAG, "AppService: onCreate");
 
-		this.myApp = (MyApp) getApplication();
-		
-		this.myApp.logd("=================== GpsService: onCreate ===================");
+		this.app = (App) getApplication();
 		
 		// track recorder instance
-		this.trackRecorder = TrackRecorder.getInstance(myApp);
+		this.trackRecorder = TrackRecorder.getInstance(app);
 
 		// scheduled track recorder instance
-		this.scheduledTrackRecorder = ScheduledTrackRecorder.getInstance(myApp);
+		this.scheduledTrackRecorder = ScheduledTrackRecorder.getInstance(app);
 
 		// location sensor
 		// first time we call startLocationUpdates from MainActivity
@@ -346,7 +344,7 @@ public class GpsService extends Service {
 		// orientation sensor
 		this.sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-		GpsService.running = true;
+		AppService.running = true;
 
 		this.requestLastKnownLocation();
 
@@ -358,9 +356,9 @@ public class GpsService extends Service {
 	@Override
 	public void onDestroy() {
 
-		Log.i(Constants.TAG, "GpsService: onDestroy");
+		Log.i(Constants.TAG, "AppService: onDestroy");
 
-		GpsService.running = false;
+		AppService.running = false;
 
 		if (scheduledTrackRecorder.isRecording()) {
 			stopScheduler();
@@ -377,8 +375,6 @@ public class GpsService extends Service {
 		unregisterReceiver(nextLocationRequestReceiver);
 		unregisterReceiver(nextTimeLimitCheckReceiver);
 
-		this.myApp.logd("=================== GpsService: onDestroy ===================");
-		
 		super.onDestroy();
 
 	}
@@ -414,7 +410,7 @@ public class GpsService extends Service {
 		}
 
 		currentLocation = location;
-		this.myApp.setCurrentLocation(location);
+		this.app.setCurrentLocation(location);
 
 	}
 
@@ -463,7 +459,7 @@ public class GpsService extends Service {
 	 */
 	public void startScheduledLocationUpdates() {
 
-		myApp.logd("GpsService.startScheduledLocationUpdates");
+		app.logd("AppService.startScheduledLocationUpdates");
 
 		this.schedulerListening = false;
 
@@ -506,10 +502,10 @@ public class GpsService extends Service {
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
-		myApp.logd("GpsService.scheduleNextLocationRequest interval:" + interval);
+		app.logd("AppService.scheduleNextLocationRequest interval:" + interval);
 
 		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
-		nextLocationRequestSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
+		nextLocationRequestSender = PendingIntent.getBroadcast(AppService.this, 0, intent, 0);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
@@ -531,7 +527,7 @@ public class GpsService extends Service {
 			// check scheduler global time limit
 			if (scheduledTrackRecorder.timeLimitReached()) {
 
-				myApp.logd("Scheduled track recording stopped: timeLimitReached");
+				app.logd("Scheduled track recording stopped: timeLimitReached");
 
 				stopScheduler();
 
@@ -557,10 +553,10 @@ public class GpsService extends Service {
 	 */
 	private void scheduleNextRequestTimeLimitCheck() {
 
-		myApp.logd("GpsService.scheduleNextRequestTimeLimitCheck");
+		app.logd("AppService.scheduleNextRequestTimeLimitCheck");
 
 		Intent intent = new Intent(Constants.ACTION_NEXT_TIME_LIMIT_CHECK);
-		nextTimeLimitCheckSender = PendingIntent.getBroadcast(GpsService.this, 0, intent, 0);
+		nextTimeLimitCheckSender = PendingIntent.getBroadcast(AppService.this, 0, intent, 0);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
@@ -582,11 +578,11 @@ public class GpsService extends Service {
 
 				Log.d(Constants.TAG, "nextTimeLimitCheckReceiver FALSE");
 
-				// myApp.log("CHECK REQUEST TIME LIMIT");
+				// app.log("CHECK REQUEST TIME LIMIT");
 
 				if (scheduledTrackRecorder.requestTimeLimitReached()) {
 
-					myApp.logd("Scheduled request cancelled: NO GPS SIGNAL");
+					app.logd("Scheduled request cancelled: NO GPS SIGNAL");
 
 					// canceling current location update request
 
@@ -614,7 +610,7 @@ public class GpsService extends Service {
 
 	public void startScheduler() {
 
-		myApp.logd("GpsService.startScheduler");
+		app.logd("AppService.startScheduler");
 
 		this.scheduledTrackRecorder.start();
 
@@ -630,7 +626,7 @@ public class GpsService extends Service {
 	 */
 	public void stopScheduler() {
 
-		myApp.logd("GpsService.stopScheduler");
+		app.logd("AppService.stopScheduler");
 
 		this.scheduledTrackRecorder.stop();
 
@@ -667,7 +663,7 @@ public class GpsService extends Service {
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-		notification.setLatestEventInfo(myApp, contentTitle, contentText, contentIntent);
+		notification.setLatestEventInfo(app, contentTitle, contentText, contentIntent);
 
 		mNotificationManager.notify(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING, notification);
 
@@ -698,7 +694,7 @@ public class GpsService extends Service {
 	/**
 	 * stopping location updates with small delay giving us a chance not to
 	 * restart listener if other activity requires GPS sensor too. new activity
-	 * has to bind to GpsService and set gpsInUse to true
+	 * has to bind to AppService and set gpsInUse to true
 	 */
 	private class stopLocationUpdatesThread extends Thread {
 

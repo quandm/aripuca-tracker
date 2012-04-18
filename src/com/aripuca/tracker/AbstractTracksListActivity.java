@@ -1,7 +1,6 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.app.Constants;
 import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
@@ -50,9 +49,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class AbstractTracksListActivity extends ListActivity {
 
 	/**
-	 * Reference to myApp object
+	 * Reference to app object
 	 */
-	protected MyApp myApp;
+	protected App app;
 
 	protected TracksCursorAdapter cursorAdapter;
 
@@ -150,14 +149,14 @@ public class AbstractTracksListActivity extends ListActivity {
 				return;
 			}
 
-			String distanceUnit = myApp.getPreferences().getString("distance_units", "km");
+			String distanceUnit = app.getPreferences().getString("distance_units", "km");
 
 			float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
 			String distanceStr = Utils.formatDistance(distance, distanceUnit)
 					+ Utils.getLocalizedDistanceUnit(AbstractTracksListActivity.this, distance, distanceUnit);
 
-			String elevationUnits = myApp.getPreferences().getString("elevation_units", "m");
+			String elevationUnits = app.getPreferences().getString("elevation_units", "m");
 
 			String elevationGain = Utils.formatElevation(cursor.getFloat(cursor.getColumnIndex("elevation_gain")),
 					elevationUnits) + Utils.getLocalizedElevationUnit(AbstractTracksListActivity.this, elevationUnits);
@@ -201,13 +200,13 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		super.onCreate(savedInstanceState);
 
-		this.myApp = (MyApp) this.getApplication();
+		this.app = (App) this.getApplication();
 
 		this.registerForContextMenu(this.getListView());
 
 		this.setQuery();
 
-		this.cursor = myApp.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
+		this.cursor = app.getDatabase().rawQuery(this.sqlSelectAllTracks, null);
 
 		this.cursorAdapter = new TracksCursorAdapter(this, cursor, false);
 		this.setListAdapter(cursorAdapter);
@@ -248,7 +247,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		cursor.close();
 		cursor = null;
 
-		myApp = null;
+		app = null;
 
 		super.onDestroy();
 
@@ -477,13 +476,13 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	protected boolean isRecordingTrack(long trackId) {
 
-		if (TrackRecorder.getInstance(myApp).isRecording()
-				&& TrackRecorder.getInstance(myApp).getTrackId() == trackId) {
+		if (TrackRecorder.getInstance(app).isRecording()
+				&& TrackRecorder.getInstance(app).getTrackId() == trackId) {
 			return true;
 		}
 
-		if (ScheduledTrackRecorder.getInstance(myApp).isRecording()
-				&& ScheduledTrackRecorder.getInstance(myApp).getTrackId() == trackId) {
+		if (ScheduledTrackRecorder.getInstance(app).isRecording()
+				&& ScheduledTrackRecorder.getInstance(app).getTrackId() == trackId) {
 			return true;
 		}
 
@@ -493,13 +492,13 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	protected boolean isRecordingTrack() {
 
-		if (TrackRecorder.getInstance(myApp).isRecording()) {
+		if (TrackRecorder.getInstance(app).isRecording()) {
 			Toast.makeText(AbstractTracksListActivity.this, R.string.track_recording_in_progress,
 					Toast.LENGTH_SHORT).show();
 			return true;
 		}
 
-		if (ScheduledTrackRecorder.getInstance(myApp).isRecording()) {
+		if (ScheduledTrackRecorder.getInstance(app).isRecording()) {
 			Toast.makeText(AbstractTracksListActivity.this, R.string.scheduled_track_recording_in_progress,
 					Toast.LENGTH_SHORT)
 					.show();
@@ -521,7 +520,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		// update track in db
 		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
-		Cursor tmpCursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor tmpCursor = app.getDatabase().rawQuery(sql, null);
 		tmpCursor.moveToFirst();
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -558,7 +557,7 @@ public class AbstractTracksListActivity extends ListActivity {
 				String sql = "UPDATE tracks SET " + "title = '" + titleStr + "', " + "descr = '" + descrStr + "' "
 						+ "WHERE _id='" + trackId + "';";
 
-				myApp.getDatabase().execSQL(sql);
+				app.getDatabase().execSQL(sql);
 
 				cursor.requery();
 
@@ -596,15 +595,15 @@ public class AbstractTracksListActivity extends ListActivity {
 
 						// delete all track points first
 						String sql = "DELETE FROM track_points WHERE track_id=" + trackId + ";";
-						myApp.getDatabase().execSQL(sql);
+						app.getDatabase().execSQL(sql);
 
 						// delete track segments
 						sql = "DELETE FROM segments WHERE track_id=" + trackId + ";";
-						myApp.getDatabase().execSQL(sql);
+						app.getDatabase().execSQL(sql);
 
 						// delete track
 						sql = "DELETE FROM tracks WHERE _id=" + trackId + ";";
-						myApp.getDatabase().execSQL(sql);
+						app.getDatabase().execSQL(sql);
 
 						cursor.requery();
 
@@ -651,7 +650,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		// getting total number of points for progress bar
 		String sql = "SELECT COUNT(*) AS total FROM track_points WHERE track_id=" + trackId + ";";
-		Cursor tmpCursor = myApp.getDatabase().rawQuery(sql, null);
+		Cursor tmpCursor = app.getDatabase().rawQuery(sql, null);
 		tmpCursor.moveToFirst();
 
 		int totalPoints = tmpCursor.getInt(tmpCursor.getColumnIndex("total"));
@@ -700,7 +699,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		// starting track exporting in separate thread
 		trackExportTask = new TrackGpxExportTask(this);
 		trackExportTask.setSendAttachment(sendAttachment);
-		trackExportTask.setApp(myApp);
+		trackExportTask.setApp(app);
 		trackExportTask.setProgressDialog(progressDialog);
 
 		trackExportTask.execute(trackId);
@@ -722,7 +721,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		// starting track exporting in separate thread
 		trackExportTask = new TrackKmlExportTask(this);
-		trackExportTask.setApp(myApp);
+		trackExportTask.setApp(app);
 		trackExportTask.setSendAttachment(sendAttachment);
 		trackExportTask.setProgressDialog(progressDialog);
 

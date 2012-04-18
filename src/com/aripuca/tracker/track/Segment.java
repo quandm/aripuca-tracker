@@ -2,7 +2,7 @@ package com.aripuca.tracker.track;
 
 import java.util.Date;
 
-import com.aripuca.tracker.app.Constants;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.util.Utils;
 
 import android.content.ContentValues;
@@ -58,7 +58,7 @@ public class Segment extends AbstractTrack {
 		long newSegmentId = -1;
 		try {
 
-			newSegmentId = myApp.getDatabase().insertOrThrow("segments", null, values);
+			newSegmentId = app.getDatabase().insertOrThrow("segments", null, values);
 
 		} catch (SQLiteException e) {
 

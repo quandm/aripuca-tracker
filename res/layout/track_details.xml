@@ -5,7 +5,7 @@
 
     <ScrollView
         style="@style/FillParent"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="45dp"
         android:paddingTop="2dp"
         android:scrollbars="none" >
 

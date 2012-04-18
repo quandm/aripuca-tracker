@@ -1,10 +1,12 @@
-package com.aripuca.tracker.app;
+package com.aripuca.tracker.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+
+import com.aripuca.tracker.Constants;
 
 import android.content.Context;
 import android.content.SharedPreferences;
