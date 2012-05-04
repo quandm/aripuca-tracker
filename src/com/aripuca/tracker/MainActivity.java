@@ -1092,6 +1092,7 @@ public class MainActivity extends Activity {
 
 	}
 
+	@Override
 	protected Dialog onCreateDialog(int id) {
 
 		Context mContext = this;
