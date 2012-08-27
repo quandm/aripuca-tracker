@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:textColor="#FF000000" >
         </TextView>
+
     </LinearLayout>
 
 </merge>

@@ -38,8 +38,6 @@ public abstract class AbstractTrack {
 
 	protected double elevationLoss = 0;
 
-	protected int trackPointsCount = 0;
-
 	protected Population speedPopulation;
 
 	protected Population elevationPopulation;

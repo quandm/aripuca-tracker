@@ -363,6 +363,7 @@ public class TrackDetailsActivity extends Activity {
 				b = new Bundle();
 				b.putInt("mode", Constants.SHOW_TRACK);
 				b.putLong("track_id", this.trackId);
+				b.putBoolean("display_info", true);
 
 				i.putExtras(b);
 				startActivity(i);
