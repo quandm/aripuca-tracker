@@ -17,7 +17,7 @@ public class TrackRecorder {
 	 * Reference to Application object
 	 */
 	private App app;
-	
+
 	private int minDistance;
 
 	private int minAccuracy;
@@ -36,14 +36,12 @@ public class TrackRecorder {
 	}
 
 	public long getTrackId() {
-		
-		if (track!=null) {
-			return track.getTrackId();
-		}
-		
+
+		if (track != null) { return track.getTrackId(); }
+
 		return 0;
 	}
-	
+
 	/**
 	 * Segment statistics object
 	 */
@@ -141,7 +139,7 @@ public class TrackRecorder {
 		// create new track statistics object
 		this.track = new Track(app);
 
-		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "0"));
+		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
 
 		// creating default segment
 		// if no segments will be created during track recording
@@ -191,7 +189,7 @@ public class TrackRecorder {
 		}
 
 		// updating track statistics in db
-		this.track.updateNewTrack();
+		this.track.finishNewTrack();
 		this.track = null;
 
 	}
@@ -261,15 +259,16 @@ public class TrackRecorder {
 			return;
 		}
 
+		// distance between current and last location
+		float distanceIncrement;
+
 		// calculating total distance starting from 2nd update
 		if (this.lastLocation != null) {
 
-			// distance between current and last location
-			float distanceIncrement = this.lastLocation.distanceTo(location);
+			distanceIncrement = this.lastLocation.distanceTo(location);
 
 			// check for standing still
-			if (distanceIncrement < Constants.MIN_DISTANCE &&
-					location.getSpeed() < Constants.MIN_SPEED) {
+			if (distanceIncrement < Constants.MIN_DISTANCE && location.getSpeed() < Constants.MIN_SPEED) {
 
 				// update last location and wait for next update
 				this.lastLocation = location;
@@ -304,6 +303,13 @@ public class TrackRecorder {
 		// add new track point to db
 		this.recordTrackPoint(location);
 
+		// TODO: ???
+		// update new track to avoid losing total statistics in case of
+		// application failure
+		if (this.pointsCount % 10 == 0) {
+			this.track.updateNewTrack();
+		}
+
 		// update new last location
 		this.lastLocation = location;
 
@@ -314,7 +320,7 @@ public class TrackRecorder {
 		// SEGMENTING
 		switch (this.segmentingMode) {
 
-			// segmenting track by distance
+		// segmenting track by distance
 			case Constants.SEGMENT_DISTANCE:
 			case Constants.SEGMENT_CUSTOM_1:
 			case Constants.SEGMENT_CUSTOM_2:
@@ -344,9 +350,8 @@ public class TrackRecorder {
 
 	public void updateTime() {
 
-	
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -371,7 +376,7 @@ public class TrackRecorder {
 				this.segment.setStartTime(this.currentSystemTime);
 			}
 		}
-		
+
 		// ------------------------------------------------------------------------------
 		// times are recorded even if accuracy is not acceptable
 		this.processPauseTime();

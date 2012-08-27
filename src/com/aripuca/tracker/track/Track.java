@@ -39,10 +39,6 @@ public class Track extends AbstractTrack {
 		return this.trackId;
 	}
 
-	public int getTrackPointsCount() {
-		return trackPointsCount;
-	}
-
 	/**
 	 * Add new track to application db after recording started
 	 */
@@ -67,7 +63,7 @@ public class Track extends AbstractTrack {
 	/**
 	 * Update track data after recording finished
 	 */
-	protected void updateNewTrack() {
+	protected void finishNewTrack() {
 
 		long finishTime = (new Date()).getTime();
 
@@ -101,6 +97,34 @@ public class Track extends AbstractTrack {
 	}
 
 	/**
+	 * Update track data during recording
+	 */
+	protected void updateNewTrack() {
+
+		ContentValues values = new ContentValues();
+		values.put("distance", Utils.formatNumber(this.getDistance(), 1));
+		values.put("total_time", this.getTotalTime());
+		values.put("moving_time", this.getMovingTime());
+		values.put("max_speed", Utils.formatNumber(this.getMaxSpeed(), 2));
+		values.put("max_elevation", Utils.formatNumber(this.getMaxElevation(), 1));
+		values.put("min_elevation", Utils.formatNumber(this.getMinElevation(), 1));
+		values.put("elevation_gain", this.getElevationGain());
+		values.put("elevation_loss", this.getElevationLoss());
+
+		try {
+
+			app.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
+
+		} catch (SQLiteException e) {
+
+			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+		}
+
+	}
+	
+	/**
 	 * Record one track point
 	 * 
 	 * @param location Current location
@@ -122,16 +146,12 @@ public class Track extends AbstractTrack {
 
 			app.getDatabase().insertOrThrow("track_points", null, values);
 
-			//			this.lastRecordedLocation = location;
-
-			this.trackPointsCount++;
-
 		} catch (SQLiteException e) {
 
 			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
-
+			
 		}
 
 	}
