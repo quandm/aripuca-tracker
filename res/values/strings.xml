@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
+
     <!-- NOT TRANSLATABLE -->
     <string name="main_app_title">Aripuca GPS Tracker</string>
     <string name="developer">VitalNik</string>
@@ -96,6 +97,8 @@
     <string name="satellite">Satellite</string>
     <string name="next">Next</string>
     <string name="clear_all">Clear all</string>
+    <string name="close">Close</string>    
+    
     <!-- User interface -->
     <string name="app_settings_title">Application settings</string>
     <string name="user_interface">User interface</string>
@@ -255,4 +258,6 @@
     <string name="start_scheduler">Start Scheduler</string>
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
+
+
 </resources>

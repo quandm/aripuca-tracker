@@ -22,7 +22,7 @@ public class TrackKmlExportTask extends TrackExportTask {
 		pw.print(" xmlns=\"http://earth.google.com/kml/2.0\"");
 		pw.println(" xmlns:atom=\"http://www.w3.org/2005/Atom\">");
 		pw.println("<Document>");
-		pw.println("<atom:author><atom:name>AripucaTracker for Android"
+		pw.println("<atom:author><atom:name>Aripuca GPS Tracker for Android"
 						+ "</atom:name></atom:author>");
 		pw.println("<name>" + tCursor.getString(tCursor.getColumnIndex("title")) + "</name>");
 		pw.println("<description>" + tCursor.getString(tCursor.getColumnIndex("descr")) + "</description>");

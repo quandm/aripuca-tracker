@@ -57,7 +57,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 		pw.println("<?xml-stylesheet type=\"text/xsl\" href=\"details.xsl\"?>");
 		pw.println("<gpx");
 		pw.println(" version=\"1.1\"");
-		pw.println(" creator=\"AripucaTracker for Android\"");
+		pw.println(" creator=\"Aripuca GPS Tracker for Android\"");
 		pw.println(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
 		pw.println(" xmlns=\"http://www.topografix.com/GPX/1/1\"");
 		pw.print(" xmlns:topografix=\"http://www.topografix.com/GPX/Private/TopoGrafix/0/1\"");
