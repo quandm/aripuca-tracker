@@ -24,7 +24,7 @@
     <style name="FillParent.Center">
         <item name="android:gravity">center</item>
     </style>
-    
+
     <!-- FillWidth Layouts -->
 
     <style name="FillWidth">

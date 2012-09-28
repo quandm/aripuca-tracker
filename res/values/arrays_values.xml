@@ -92,7 +92,6 @@
         <item>5000</item>
         <item>10000</item>
     </string-array>
-
     <string-array name="logging_level_values">
         <item>0</item>
         <item>1</item>
@@ -100,5 +99,5 @@
         <item>3</item>
         <item>4</item>
     </string-array>
-    
+
 </resources>

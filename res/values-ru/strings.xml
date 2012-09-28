@@ -143,9 +143,9 @@
     <string name="wpt_title">Запись точек по рассписанию</string>
     <string name="wpt_summary">Записывать отдельные путевые по рассписанию</string>
     <string name="wpt_request_interval_title">Интервал запроса данных GPS</string>
-    <string name="wpt_request_interval_summary">Request GPS location every N minutes. GPS stays off in between requests.</string>
+    <string name="wpt_request_interval_summary">Запрашивать координаты каждые N минут. GPS остается выключенным между запросами.</string>
     <string name="wpt_fix_wait_time_title">GPS fix wait time</string>
-    <string name="wpt_fix_wait_time_summary">Wait time for new GPS fix of acceptable accuracy</string>
+    <string name="wpt_fix_wait_time_summary">Время ожидания нового GPS фикса с приемлемой точностью.</string>
     <string name="wpt_stop_recording_after_title">Остановить зарись после</string>
     <string name="wpt_stop_recording_after_summary">Запись будет остановлена по прошествии N часов</string>
     <string name="online_sync_summary">Synchronize your data with online resource</string>
@@ -161,7 +161,7 @@
     <string name="waypoint_updated">Путевая точка сохранена</string>
     <string name="waypoint_deleted">Путевая точка удалена</string>
     <string name="all_waypoints_deleted">Все путевые точки удалены</string>
-    <string name="track_title_required">Track title required</string>
+    <string name="track_title_required">Название трека обязательно</string>
     <string name="edit_track">Изменить трек</string>
     <string name="track_updated">Трек обновлен</string>
     <string name="track_deleted">Трек удален</string>
@@ -191,8 +191,8 @@
     <string name="waiting_new_fix">Ожидание нового фикса...</string>
     <string name="fix_age">Последний фикс был получен %s назад</string>
     <string name="location_received_on_schedule">New location received on schedule</string>
-    <string name="scheduled_recording_started">Scheduled recording started</string>
-    <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
+    <string name="scheduled_recording_started">Начало записи трека по рассписанию</string>
+    <string name="scheduled_recording_stopped">Конец записи трека по рассписанию</string>
     <string name="gps_service_not_connected">GPS служба не подключена</string>
     <string name="waypoint_description">Описание путевой точки</string>
     <string name="track_description">Описание трека</string>
@@ -220,4 +220,9 @@
     <string name="compass_vibration_summary">Вибрировать при повороте кольца компаса</string>
     <string name="segment_vibration">Вибрировать для нового сегмента</string>
     <string name="track_recording_in_progress">Идет запись трека</string>
+    <string name="close">Закрыть</string>
+    <string name="scheduled_track_points">Точки по рассписанию</string>
+    <string name="segment_vibration_summary">Вибрировать после начала нового сегмента</string>
+    <string name="track_chart">График трека</string>
+    <string name="track_points">Точки трека</string>
 </resources>
