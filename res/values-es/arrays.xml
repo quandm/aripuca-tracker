@@ -4,7 +4,7 @@
     <string-array name="speed_units_labels">
         <item>km/h</item>
         <item>mph</item>
-        <item>knot</item>
+        <item>nudos</item>
     </string-array>
     <string-array name="distance_units_labels">
         <item>kilómetros</item>
@@ -37,13 +37,13 @@
         <item>1000 m</item>
     </string-array>
     <string-array name="min_accuracy_labels_ft">
-        <item>15 ft</item>
-        <item>30 ft</item>
-        <item>60 ft</item>
-        <item>90 ft (recommended)</item>
-        <item>150 ft</item>
-        <item>300 ft</item>
-        <item>3000 ft</item>
+        <item>15 pies</item>
+        <item>30 pies</item>
+        <item>60 pies</item>
+        <item>90 pies (recommended)</item>
+        <item>150 pies</item>
+        <item>300 pies</item>
+        <item>3000 pies</item>
     </string-array>
     <string-array name="min_distance_labels">
         <item>5 m</item>
@@ -54,12 +54,12 @@
         <item>100 m</item>
     </string-array>
     <string-array name="min_distance_labels_ft">
-        <item>15 ft</item>
-        <item>30 ft</item>
-        <item>60 ft (recommended)</item>
-        <item>90 ft</item>
-        <item>150 ft</item>
-        <item>300 ft</item>
+        <item>15 pies</item>
+        <item>30 pies</item>
+        <item>60 pies (recommended)</item>
+        <item>90 pies</item>
+        <item>150 pies</item>
+        <item>300 pies</item>
     </string-array>
     <string-array name="wpt_request_interval_labels">
         <item>5 min</item>
@@ -104,36 +104,36 @@
         <item>10 km</item>
     </string-array>
     <string-array name="wpt_min_distance_labels_ft">
-        <item>300 ft</item>
-        <item>600 ft</item>
-        <item>900 ft</item>
-        <item>1200 ft</item>
-        <item>1500 ft</item>
-        <item>3000 ft</item>
-        <item>6000 ft</item>
-        <item>12000 ft</item>
-        <item>15000 ft</item>
-        <item>30000 ft</item>
+        <item>300 pies</item>
+        <item>600 pies</item>
+        <item>900 pies</item>
+        <item>1200 pies</item>
+        <item>1500 pies</item>
+        <item>3000 pies</item>
+        <item>6000 pies</item>
+        <item>12000 pies</item>
+        <item>15000 pies</item>
+        <item>30000 pies</item>
     </string-array>
 
     <!-- Quick help dialog data source -->
     <string-array name="quick_help">
-        <item>Toque en cualquier control en el modo de pista de grabación para cambiar su punto de vista. El diseño creado se guardará para la próxima sesión.</item>
-        <item>Las pistas grabadas pueden exportarse a formatos GPX y KML.</item>
+        <item>Toque en cualquier control en el modo de grabación de track para cambiar su punto de vista. El diseño creado se guardará para la próxima sesión.</item>
+        <item>Las tracks grabadas pueden exportarse a formatos GPX y KML.</item>
         <item>La brújula incorporada muestra dos flechas que señalan el norte verdadero y el magnético.</item>
-        <item>Las pistas pueden ser automáticamente segmentadas por distancia, tiempo e intervalos personalizados.</item>
-        <item>Los segmentos de pista se visualizan en un mapa con diferentes colores.</item>
+        <item>Las tracks pueden ser automáticamente segmentadas por distancia, tiempo e intervalos personalizados.</item>
+        <item>Los segmentos de track se visualizan en un mapa con diferentes colores.</item>
         <item>Puede realizar una copia de seguridad y restauración de la base de datos de la aplicación en formato SQLite. Ir a Menu->Más.</item>
         <item>El código fuente completo de esta aplicación está disponible para su descarga en http://code.google.com/p/aripuca-tracker/.</item>
         <item>Para obtener más información, por favor visite nuestro blog en http://tracker.aripuca.com/blog/.</item>
-        <item>La palabra \ "Aripuca \ 'se deriva del nombre de una trampa hecha por los indígenas guaraníes y se utiliza para capturar animales sin lastimarlos.</item>
-        <item>Aripuca GPS Tracker soporta muchos idiomas. ¿No se encontró el suyo? ¡No hay problema, sea traductor!</item>
+        <item>La palabra \'Aripuca\' se deriva del nombre de una trampa hecha por los indígenas guaraníes y se utiliza para capturar animales sin lastimarlos.</item>
+        <item>Aripuca GPS Tracker soporta muchos idiomas. No se encontró el suyo? No hay problema, sea traductor!</item>
         <item>Más información sobre la funcionalidad de la aplicación al mirar a través de su menú de Configuración.</item>
         <item>Por favor envíe sus preguntas e inquietudes a tracker@aripuca.com.</item>
-        <item>Grabe pistas planificadas y ahorre batería. Se grabarán los puntos de paso cada N minutos por M hora con una precisión X y una distáncia mínima D entre puntos.</item>
+        <item>Grabe tracks planificadas y ahorre batería. Se grabarán los puntos de paso cada N minutos por M hora con una precisión X y una distáncia mínima D entre puntos.</item>
         <item>Grabe nuevos puntos de paso y use la dirección de Google Geocoder como descripción por defecto.</item>
-        <item>Desarrolladores, la aplicación soporta 4 niveles de registro: Errores, Advertencias, Información y Depuración. Mira los contenidos en la carpeta \'logs \'.</item>
-        <item>Puede grabar simultáneamente pistas tanto en modo real como en modo planificado.</item>
+        <item>Desarrolladores, la aplicación soporta 4 niveles de registro: Errores, Advertencias, Información y Depuración. Mira los contenidos en la carpeta \'logs\'.</item>
+        <item>Puede grabar simultáneamente tracks tanto en modo real como en modo planificado.</item>
         <item>La brújula se puede orientar para establecerse en una posición fija. Configure la brújula haciendo un clic largo en el valor de acimut.</item>
     </string-array>
     <string-array name="logging_level_labels">
