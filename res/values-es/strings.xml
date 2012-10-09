@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-
-
     <string name="build_date">Fecha de compilación</string>
     <string name="about_dialog_message">Aplicación Open source de registro de GPS para Android.\n\nBlog oficial:\nhttp://tracker.aripuca.com/blog\n\nCódigo fuente:\nhttp://code.google.com/p/aripuca-tracker</string>
     <!-- WORDS -->
     <string name="m">m</string>
-    <string name="ft">ft</string>
+    <string name="ft">pies</string>
     <string name="km">km</string>
     <string name="mi">mi</string>
-    <string name="kn">kn</string>
+    <string name="kn">nudos</string>
     <string name="kph">kph</string>
     <string name="mph">mph</string>
     <string name="days">dia(s)</string>
@@ -57,14 +55,14 @@
     <string name="file">Fichero</string>
     <string name="filename">Nombre de fichero</string>
     <string name="show_on_map">Mostrar en mapa</string>
-    <string name="elevation">Elevación</string>
+    <string name="elevation">Altitud</string>
     <string name="gain">Ganancia</string>
     <string name="loss">Pérdida</string>
     <string name="elevation_gain_loss">Ganancia/Pérdida</string>
-    <string name="elevation_gain">Ganancia de elevación</string>
-    <string name="elevation_loss">Pérdida de elevación</string>
+    <string name="elevation_gain">Ganancia de altitud</string>
+    <string name="elevation_loss">Pérdida de altitud</string>
     <string name="speed">Velocidad</string>
-    <string name="average_speed">Lev. Media</string>
+    <string name="average_speed">Vel. Media</string>
     <string name="average_moving_speed">Velocidad de movimiento</string>
     <string name="max_speed">Vel. máxima</string>
     <string name="acceleration">Aceleración</string>
@@ -72,8 +70,8 @@
     <string name="average_pace">Ritmo medio</string>
     <string name="max_pace">Ritmo máximo</string>
     <string name="speed_and_pace">Velocidad y ritmo</string>
-    <string name="total_time">Tiempo total</string>
-    <string name="moving_time">Tiempo de movimiento</string>
+    <string name="total_time">Hora de total</string>
+    <string name="moving_time">Hora de movimiento</string>
     <string name="idle_time">Tiempo inactivo</string>
     <string name="start_time">Tiempo de inicio</string>
     <string name="finish_time">Tiempo de final</string>
@@ -84,53 +82,53 @@
     <string name="satellite">Satélite</string>
     <string name="next">Siguiente</string>
     <string name="clear_all">Limpiar todo</string>
-    <string name="close">Cerrar</string>        
+    <string name="close">Cerrar</string>
     <!-- User interface -->
     <string name="app_settings_title">Configuración de aplicación</string>
     <string name="user_interface">Interface de usuario</string>
     <string name="user_interface_summary">Modo de pantalla, idioma, etc</string>
     <string name="app_language">Idioma</string>
     <string name="wake_lock_title">Mantener activo</string>
-    <string name="wake_lock_summary">Evitar paras a inactividad del teléfono</string>
+    <string name="wake_lock_summary">Evitar pasar a inactividad del teléfono</string>
     <string name="quick_help_title">Ayuda rápida</string>
     <string name="quick_help_summary">Mostrar ayuda rápida en cada inicio de la aplicación</string>
     <!-- Units -->
     <string name="units">Unidades</string>
     <string name="units_summary">Unidades de medida (coordenadas, distáncia, velocidad, etc)</string>
     <!-- Tracks -->
-    <string name="track">itinerario</string>
-    <string name="track_points">Puntos de itinerario</string>
-    <string name="scheduled_track_points">Puntos de itinerario planificados</string>
+    <string name="track">Track</string>
+    <string name="track_points">Puntos de track</string>
+    <string name="scheduled_track_points">Puntos de track planificados</string>
     <string name="tracks">Pistas</string>
     <string name="scheduled_tracks">Pistas planificadas</string>
-    <string name="track_details_activity_title">Detalles de itinerario</string>
-    <string name="show_track">Mostrar itinerario</string>
-    <string name="track_chart">Gráfico de itinerario</string>
-    <string name="record_track">Grabar itinerario</string>
-    <string name="recording_track">Grabando itinerario</string>
-    <string name="track_recording_title">Grabación de itinerario</string>
-    <string name="track_recording_summary">Grabar puntos de itinerario en tiempo real y recoger estadísticas de itinerario</string>
-    <string name="recording_started">Grabación de itinerario iniciada</string>
-    <string name="recording_paused">Grabación de itinerario pausada</string>
-    <string name="recording_resumed">Grabación de itinerario resumida</string>
-    <string name="recording_finished">Nuevo itinerario grabado</string>
-    <string name="track_title_required">Título de itinerario necesario</string>
-    <string name="edit_track">Editar itinerario</string>
-    <string name="track_updated">itinerario actualizada</string>
-    <string name="track_deleted">itinerario borrada</string>
-    <string name="all_tracks_deleted">Todas las pistas borradas</string>
-    <string name="press_and_hold_to_stop">Pulsar y mantener para parar grabación de itinerario</string>
-    <string name="press_and_hold_to_start">Pulsar y mantener para iniciar grabación de itinerario</string>
-    <string name="press_again_to_exit">Pulsar otra vez para parar grabación de itinerario y salir</string>
-    <string name="stop_track_recording">Por favor, detener grabación de itinerario antes de salir</string>
-    <string name="stop_scheduled_track_recording">La grabación de itinerario planificada sigue funcionando. Por favor, detenerla antes de salir.</string>
-    <string name="track_description">Introducir descripción de itinerario</string>
+    <string name="track_details_activity_title">Detalles de track</string>
+    <string name="show_track">Mostrar track</string>
+    <string name="track_chart">Gráfico de track</string>
+    <string name="record_track">Grabar track</string>
+    <string name="recording_track">Grabando track</string>
+    <string name="track_recording_title">Grabación de track</string>
+    <string name="track_recording_summary">Grabar puntos de track en tiempo real y recoger estadísticas de track</string>
+    <string name="recording_started">Grabación de track iniciada</string>
+    <string name="recording_paused">Grabación de track pausada</string>
+    <string name="recording_resumed">Continuar grabación de track</string>
+    <string name="recording_finished">Nuevo track grabado</string>
+    <string name="track_title_required">Título de track necesario</string>
+    <string name="edit_track">Editar track</string>
+    <string name="track_updated">Track actualizado</string>
+    <string name="track_deleted">Track borrada</string>
+    <string name="all_tracks_deleted">Todos los tracks borrados</string>
+    <string name="press_and_hold_to_stop">Pulsar y mantener para parar grabación de track</string>
+    <string name="press_and_hold_to_start">Pulsar y mantener para iniciar grabación de track</string>
+    <string name="press_again_to_exit">Pulsar otra vez para parar grabación de track y salir</string>
+    <string name="stop_track_recording">Por favor, detener grabación de track antes de salir</string>
+    <string name="stop_scheduled_track_recording">La grabación de track planificada sigue funcionando. Por favor, detenerla antes de salir.</string>
+    <string name="track_description">Introducir descripción de track</string>
     <string name="min_distance_title">Distancia mínima</string>
     <string name="min_distance_summary">Distancia mínima entre 2 puntos de grabación</string>
     <string name="min_accuracy_title">Precisión mínima</string>
     <string name="min_accuracy_summary">Precisión mínima necesaria para la grabación</string>
-    <string name="cant_delete_track_being_recorded">No puede borrar el itinerario que está siendo grabado</string>
-    <string name="cant_edit_track_being_recorded">No puede editar el itinerario que está siendo grabado</string>
+    <string name="cant_delete_track_being_recorded">No puede borrar el track que está siendo grabado</string>
+    <string name="cant_edit_track_being_recorded">No puede editar el track que está siendo grabado</string>
     <!-- Segmenting -->
     <string name="segments">Segmentos</string>
     <string name="prev_segment">Segmento previo</string>
@@ -138,13 +136,13 @@
     <string name="segmenting">Segmentación</string>
     <string name="segmenting_mode">Modo de segmentación</string>
     <string name="segment_distance">Por distancia</string>
-    <string name="segment_distance_summary">Segmentar itinerario en distancias iguales</string>
+    <string name="segment_distance_summary">Segmentar track en distancias iguales</string>
     <string name="segment_time">Por tiempo</string>
-    <string name="segment_time_summary">Segmentar itinerario cada N minutos</string>
+    <string name="segment_time_summary">Segmentar track cada N minutos</string>
     <string name="segment_custom_1">Intérvalos a medida 1</string>
     <string name="segment_custom_2">Intérvalos a medida 2</string>
     <string name="segment_custom_summary">Segmentar por distancias predefinidas</string>
-    <string name="no_segments">No se han creado segmentos para esta itinerario</string>
+    <string name="no_segments">No se han creado segmentos para esta track</string>
     <string name="segment_vibration">Vibrar para nuevo segmento</string>
     <string name="segment_vibration_summary">Vibrar cuando se inicia un nuevo segmento</string>
     <!-- Compass -->
@@ -172,10 +170,10 @@
     <string name="all_waypoints_deleted">Todos los waypoints borrados</string>
     <string name="waypoint_description">Descripción de Waypoint</string>
     <!-- Scheduled track recording -->
-    <string name="track_recording_in_progress">Grabación de itinerario en curso</string>
-    <string name="scheduled_track_recording_in_progress">Grabación de itinerario planificada en curso</string>
-    <string name="wpt_title">Grabación de itinerario planificada</string>
-    <string name="wpt_summary">Grabar puntos de itinerario en planificación y ahorrar batería. No se grabarán estadísticas extra.</string>
+    <string name="track_recording_in_progress">Grabación de track en curso</string>
+    <string name="scheduled_track_recording_in_progress">Grabación de track planificada en curso</string>
+    <string name="wpt_title">Grabación de track planificada</string>
+    <string name="wpt_summary">Grabar puntos de track en planificación y ahorrar batería. No se grabarán estadísticas extra.</string>
     <string name="wpt_request_interval_title">Intérvalos de petición de GPS</string>
     <string name="wpt_request_interval_summary">Pedir localización de GPS cada N minutos. El GPS se apaga entre peticiones.</string>
     <string name="wpt_fix_wait_time_title">Tiempo de espera de GPS</string>
@@ -235,8 +233,9 @@
     <string name="sort_by_time">tiempo</string>
     <string name="sort_by_distance">distancia</string>
     <!-- MISC -->
-    <string name="are_you_sure">¿Está seguro?</string>
-    <string name="do_you_know">¿Sabía qué?</string>
+    <string name="are_you_sure">
+Está seguro?</string>
+    <string name="do_you_know">Sabía qué?</string>
     <string name="coming_soon">Próximamente...</string>
     <string name="please_wait">Por favor, espere</string>
     <string name="deleting_records">Borrando registros...</string>
@@ -244,5 +243,4 @@
     <string name="start_scheduler">Iniciar Planificador</string>
     <string name="logging_level">Nivel de registro</string>
     <string name="logging_level_summary">Registrar errores, advertencias, información y mensajes de depuración</string>
-
 </resources>

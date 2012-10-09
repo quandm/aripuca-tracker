@@ -1605,7 +1605,7 @@ public class MainActivity extends Activity {
 
 			if (app.getExternalStorageWriteable()) {
 
-				String currentDBPath = "/data/com.aripuca.tracker/databases/" + Constants.APP_NAME + ".db";
+				String currentDBPath = Constants.PATH_DB + Constants.APP_NAME + ".db";
 
 				String dateStr = (String) DateFormat.format("yyyyMMdd_kkmmss", new Date());
 
@@ -1727,7 +1727,7 @@ public class MainActivity extends Activity {
 					String restoreDBPath = app.getAppDir() + "/backup/" + importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
-					File currentDB = new File(data, "/data/com.aripuca.tracker/databases/AripucaTracker.db");
+					File currentDB = new File(data, Constants.PATH_DB + Constants.APP_NAME + ".db");
 
 					FileChannel src = new FileInputStream(restoreDB).getChannel();
 					FileChannel dst = new FileOutputStream(currentDB).getChannel();

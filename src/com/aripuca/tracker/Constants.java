@@ -5,6 +5,7 @@ public abstract class Constants {
 	public static final String TAG = "AripucaTracker";
 	
 	public static final String APP_NAME = "AripucaTracker";
+	public static final String PATH_DB = "/data/com.aripuca.tracker/databases/";
 	
 	public static final int NOTIFICATION_TRACK_RECORDING = 1;
 	public static final int NOTIFICATION_SCHEDULED_TRACK_RECORDING = 2;
