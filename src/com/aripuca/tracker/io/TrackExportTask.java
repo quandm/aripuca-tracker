@@ -320,12 +320,15 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		String messageBody = context.getString(R.string.email_body_track) + "\n\n"
 				+ context.getString(R.string.market_url);
 
+		// sending file by email using default Android email client
+		
 		final Intent emailIntent = new Intent(Intent.ACTION_SEND);
 		emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		emailIntent.setType("plain/text");
 		emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject_track));
 		emailIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
 		emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + zipFile.getAbsolutePath()));
+		
 		context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.sending_email)));
 
 	}

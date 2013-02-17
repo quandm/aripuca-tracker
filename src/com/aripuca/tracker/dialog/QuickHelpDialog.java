@@ -16,8 +16,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 /**
- * Quick help custom dialog
- * Shows random help advice every time it's shown 
+ * Quick help custom dialog Shows random help advice every time it's shown
  */
 public class QuickHelpDialog extends Dialog {
 
@@ -29,7 +28,7 @@ public class QuickHelpDialog extends Dialog {
 	private App app;
 
 	public QuickHelpDialog(Context context) {
-		
+
 		super(context);
 
 		this.context = context;
@@ -39,8 +38,7 @@ public class QuickHelpDialog extends Dialog {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.quick_help_dialog);
@@ -48,11 +46,11 @@ public class QuickHelpDialog extends Dialog {
 
 		LayoutParams params = getWindow().getAttributes();
 
-		//params.height = LayoutParams.FILL_PARENT;
+		// params.height = LayoutParams.FILL_PARENT;
 		params.width = LayoutParams.FILL_PARENT;
 
 		getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-		
+
 		// setting "showNextTime" initial value
 		CheckBox checkBox = (CheckBox) findViewById(R.id.showNextTime);
 		checkBox.setChecked(app.getPreferences().getBoolean("quick_help", true));
@@ -88,8 +86,7 @@ public class QuickHelpDialog extends Dialog {
 
 				dismiss();
 			}
-		}
-				);
+		});
 
 		// set next button event listener
 		Button nextButton = (Button) findViewById(R.id.nextButton);
@@ -102,8 +99,7 @@ public class QuickHelpDialog extends Dialog {
 				text.setText(getNextHelpAdvice());
 
 			}
-		}
-				);
+		});
 
 	}
 

@@ -180,7 +180,7 @@
             android:title="@string/wpt_stop_recording_after_title" />
 
         <ListPreference
-            android:defaultValue="2"
+            android:defaultValue="3"
             android:entries="@array/wpt_fix_wait_time_labels"
             android:entryValues="@array/wpt_fix_wait_time_values"
             android:key="wpt_gps_fix_wait_time"

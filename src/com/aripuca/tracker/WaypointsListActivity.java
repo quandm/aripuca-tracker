@@ -813,7 +813,7 @@ public class WaypointsListActivity extends ListActivity {
 	 */
 	protected void importFromXMLFile() {
 
-		File importFolder = new File(app.getAppDir() + "/waypoints");
+		File importFolder = new File(app.getAppDir() + "/" + Constants.PATH_WAYPOINTS);
 
 		final String importFiles[] = importFolder.list();
 
@@ -823,6 +823,7 @@ public class WaypointsListActivity extends ListActivity {
 		}
 
 		// first file is preselected
+		// TODO: remove class variable
 		importWaypointsFileName = importFiles[0];
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -840,7 +841,7 @@ public class WaypointsListActivity extends ListActivity {
 
 					DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 					DocumentBuilder db = dbf.newDocumentBuilder();
-					File file = new File(app.getAppDir() + "/waypoints", importWaypointsFileName);
+					File file = new File(app.getAppDir() + "/" + Constants.PATH_WAYPOINTS, importWaypointsFileName);
 
 					Document doc = db.parse(file);
 					doc.getDocumentElement().normalize();

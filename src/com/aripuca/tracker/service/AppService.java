@@ -9,6 +9,7 @@ import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.util.Utils;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -135,12 +136,10 @@ public class AppService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
@@ -149,11 +148,11 @@ public class AppService extends Service {
 	 */
 	private LocationListener scheduledLocationListener = new LocationListener() {
 
-		// Called when a new location is found by the network location provider.
+		/**
+		 * Called when a new location is found by the network location provider.
+		 */
 		@Override
 		public void onLocationChanged(Location location) {
-
-			Log.i(Constants.TAG, "scheduledLocationListener: " + location.getAccuracy());
 
 			// first location update received
 			schedulerListening = true;
@@ -161,7 +160,7 @@ public class AppService extends Service {
 			currentLocation = location;
 			app.setCurrentLocation(location);
 
-			// check minimum accuracy  required for recording 
+			// check minimum accuracy required for recording
 			if (location.hasAccuracy() && location.getAccuracy() <= scheduledTrackRecorder.getMinAccuracy()) {
 
 				float distance = 0;
@@ -172,13 +171,15 @@ public class AppService extends Service {
 					// check distance to lastRecordedLocation
 					if (distance < scheduledTrackRecorder.getMinDistance()) {
 
+						// we are too close to previous location - no point to
+						// record one more
+
 						app.logd("Min distance not accepted: " + distance);
 
-						//
 						stopScheduledLocationUpdates();
-						// schedule next location update
-						// if current location request was unsuccessful let's try
-						// again in 5 minutes (min request interval time)
+
+						// schedule next location update in 5 minutes (min
+						// request interval time)
 						scheduleNextLocationRequest(5 * 60);
 
 						return;
@@ -208,8 +209,9 @@ public class AppService extends Service {
 				app.logd("Accuracy not accepted: " + location.getAccuracy());
 
 				// waiting for acceptable accuracy
-
-				if (scheduledTrackRecorder.requestTimeLimitReached()) {
+				// when we wait for acceptable accuracy GPS stays ON until we
+				// receive accepted accuracy or request time limit reached
+				if (scheduledTrackRecorder.gpsFixWaitTimeLimitReached()) {
 
 					// stop trying to receive GPX signal
 					stopScheduledLocationUpdates();
@@ -227,16 +229,13 @@ public class AppService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 		@Override
-		public void onProviderEnabled(String provider) {
-		}
+		public void onProviderEnabled(String provider) {}
 
 		@Override
-		public void onProviderDisabled(String provider) {
-		}
+		public void onProviderDisabled(String provider) {}
 
 	};
 
@@ -258,6 +257,9 @@ public class AppService extends Service {
 
 	}
 
+	/**
+	 * 
+	 */
 	private SensorEventListener sensorListener = new SensorEventListener() {
 
 		@Override
@@ -295,7 +297,7 @@ public class AppService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 
-		Log.d(Constants.TAG, "AppService: BOUND "+this.toString());
+		Log.d(Constants.TAG, "AppService: BOUND " + this.toString());
 
 		return mBinder;
 	}
@@ -303,7 +305,7 @@ public class AppService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 
-		Log.d(Constants.TAG, "AppService: UNBOUND "+this.toString());
+		Log.d(Constants.TAG, "AppService: UNBOUND " + this.toString());
 
 		return true;
 	}
@@ -323,14 +325,17 @@ public class AppService extends Service {
 	public void onCreate() {
 
 		super.onCreate();
-		
+
+		//
 		registerReceiver(nextTimeLimitCheckReceiver, new IntentFilter(Constants.ACTION_NEXT_TIME_LIMIT_CHECK));
+
+		//
 		registerReceiver(nextLocationRequestReceiver, new IntentFilter(Constants.ACTION_NEXT_LOCATION_REQUEST));
 
 		Log.i(Constants.TAG, "AppService: onCreate");
 
 		this.app = (App) getApplication();
-		
+
 		// track recorder instance
 		this.trackRecorder = TrackRecorder.getInstance(app);
 
@@ -498,11 +503,13 @@ public class AppService extends Service {
 	private PendingIntent nextLocationRequestSender;
 
 	/**
+	 * Schedules next request for GPS location
 	 * 
+	 * @param interval Interval between 2 consecutive requests (in seconds)
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
-		app.logd("AppService.scheduleNextLocationRequest interval:" + interval);
+		app.logd("AppService.scheduleNextLocationRequest interval: " + Utils.formatInterval(interval * 1000, false));
 
 		Intent intent = new Intent(Constants.ACTION_NEXT_LOCATION_REQUEST);
 		nextLocationRequestSender = PendingIntent.getBroadcast(AppService.this, 0, intent, 0);
@@ -517,7 +524,11 @@ public class AppService extends Service {
 
 	}
 
+	/**
+	 * Receives broadcast event for next location request
+	 */
 	private BroadcastReceiver nextLocationRequestReceiver = new BroadcastReceiver() {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -549,7 +560,7 @@ public class AppService extends Service {
 	private PendingIntent nextTimeLimitCheckSender;
 
 	/**
-	 * 
+	 * Scheduling regular (every 5 seconds) checks for GPS signal
 	 */
 	private void scheduleNextRequestTimeLimitCheck() {
 
@@ -568,37 +579,39 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * 
+	 * Receives broadcast event every 5 seconds in order to control presence of
+	 * GPS signal
 	 */
 	private BroadcastReceiver nextTimeLimitCheckReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (!schedulerListening) {
+			// if first location update received by LocationListener - stop
+			// controlling the time passed since requestStartTime
+			if (schedulerListening) {
+				// now we have to wait for acceptable GPS accuracy
+				return;
+			}
 
-				Log.d(Constants.TAG, "nextTimeLimitCheckReceiver FALSE");
+			if (scheduledTrackRecorder.gpsFixWaitTimeLimitReached()) {
 
-				// app.log("CHECK REQUEST TIME LIMIT");
+				// we were unable to receive any GPS location update in this
+				// session
 
-				if (scheduledTrackRecorder.requestTimeLimitReached()) {
+				app.logd("Scheduled request cancelled: NO GPS SIGNAL");
 
-					app.logd("Scheduled request cancelled: NO GPS SIGNAL");
+				// canceling current location update request
 
-					// canceling current location update request
+				// stop trying to receive GPX signal
+				stopScheduledLocationUpdates();
 
-					// stop trying to receive GPX signal
-					stopScheduledLocationUpdates();
+				// schedule next location update
+				// let's try again in 5 minutes (min request interval time)
+				scheduleNextLocationRequest(5 * 60);
 
-					// schedule next location update
-					// if current location request was unsuccessful let's try
-					// again in 5 minutes (min request interval time)
-					scheduleNextLocationRequest(5 * 60);
-
-				} else {
-					// check request time limit in 5 seconds
-					scheduleNextRequestTimeLimitCheck();
-				}
-
+			} else {
+				// check request time limit in 5 seconds
+				scheduleNextRequestTimeLimitCheck();
 			}
 
 		}
@@ -608,6 +621,9 @@ public class AppService extends Service {
 	// ///////////////////////////////////////////////////////////////////////////////////////////////
 	// ///////////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * Starts GPS scheduler
+	 */
 	public void startScheduler() {
 
 		app.logd("AppService.startScheduler");
@@ -704,8 +720,7 @@ public class AppService extends Service {
 			try {
 				// wait for other activities to grab location updates
 				sleep(2500);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 
 			// if no activities require location updates - stop them and save
 			// battery

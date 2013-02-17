@@ -73,8 +73,8 @@
     </string-array>
     <string-array name="wpt_fix_wait_time_labels">
         <item>1 мин</item>
-        <item>2 мин (рекомендуется)</item>
-        <item>3 мин</item>
+        <item>2 мин</item>
+        <item>3 мин (рекомендуется)</item>
         <item>4 мин</item>
         <item>5 мин</item>
     </string-array>

@@ -14,38 +14,25 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 
-
 public class AppLog {
 
-	private Context context;
-	
-	private String appDir;
-	
-	private static final int ERROR = 1;//;
-	private static final int WARNING = 2;//;
-	private static final int INFO = 3;//;
-	private static final int DEBUG = 4;//;
-	
-	private String[] loggingLevels = new String[]{"no logging", "errors", "warning", "info", "debug"};
-	
-	/**
-	 * Private constructor
-	 */
-	public AppLog(Context context) {
-		
-		this.context = context;
-		// set application external storage folder
-		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
-	}
-	
-	private void log(int loggingLevel, String message) {
-		
+	private static final int ERROR = 1;
+	private static final int WARNING = 2;
+	private static final int INFO = 3;
+	private static final int DEBUG = 4;
+
+	private static String[] loggingLevels = new String[] { "no logging", "errors", "warning", "info", "debug" };
+
+	private static void log(Context context, int loggingLevel, String message) {
+
+		String appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
+
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		if (loggingLevel > Integer.parseInt(preferences.getString("logging_level", "0"))) {
-			return;
-		}
-	
-		String fileName = loggingLevels[loggingLevel]+"_"+DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
+		int currentLoggingLevel = Integer.parseInt(preferences.getString("logging_level", "0"));
+
+		if (loggingLevel > currentLoggingLevel) { return; }
+
+		String fileName = loggingLevels[loggingLevel] + "_" + DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(DateFormat.format("yyyy-MM-dd kk-mm-ss", new Date()));
@@ -70,20 +57,23 @@ public class AppLog {
 		} catch (IOException e) {
 			return;
 		}
-		
+
 	}
-	
-	public void e(String message) {
-		this.log(ERROR, message);
+
+	public static void e(Context context, String message) {
+		AppLog.log(context, ERROR, message);
 	}
-	public void w(String message) {
-		this.log(WARNING, message);
+
+	public static void w(Context context, String message) {
+		AppLog.log(context, WARNING, message);
 	}
-	public void i(String message) {
-		this.log(INFO, message);
+
+	public static void i(Context context, String message) {
+		AppLog.log(context, INFO, message);
 	}
-	public void d(String message) {
-		this.log(DEBUG, message);
+
+	public static void d(Context context, String message) {
+		AppLog.log(context, DEBUG, message);
 	}
-	
+
 }
