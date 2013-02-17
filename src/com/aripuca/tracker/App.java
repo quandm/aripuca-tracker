@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.AppLog;
 
@@ -54,7 +53,7 @@ public class App extends Application {
 	private SQLiteDatabase db;
 
 	private Location currentLocation;
-	
+
 	public SQLiteDatabase getDatabase() {
 		return db;
 	}
@@ -290,23 +289,19 @@ public class App extends Application {
 	}
 
 	public void loge(String message) {
-		AppLog appLog = new AppLog(this);
-		appLog.e(message);
+		AppLog.e(this, message);
 	}
 
 	public void logw(String message) {
-		AppLog appLog = new AppLog(this);
-		appLog.w(message);
+		AppLog.w(this, message);
 	}
 
 	public void logi(String message) {
-		AppLog appLog = new AppLog(this);
-		appLog.i(message);
+		AppLog.i(this, message);
 	}
 
 	public void logd(String message) {
-		AppLog appLog = new AppLog(this);
-		appLog.d(message);
+		AppLog.d(this, message);
 	}
 
 	/**
@@ -314,11 +309,11 @@ public class App extends Application {
 	 */
 	private void createFolderStructure() {
 		createFolder(getAppDir());
-		createFolder(getAppDir() + "/tracks");
-		createFolder(getAppDir() + "/waypoints");
-		createFolder(getAppDir() + "/backup");
-		createFolder(getAppDir() + "/debug");
-		createFolder(getAppDir() + "/logs");
+		createFolder(getAppDir() + "/" + Constants.PATH_TRACKS);
+		createFolder(getAppDir() + "/" + Constants.PATH_WAYPOINTS);
+		createFolder(getAppDir() + "/" + Constants.PATH_BACKUP);
+		createFolder(getAppDir() + "/" + Constants.PATH_DEBUG);
+		createFolder(getAppDir() + "/" + Constants.PATH_LOGS);
 	}
 
 	/**

@@ -24,21 +24,21 @@ public class ScheduledTrackRecorder {
 	protected App app;
 
 	private boolean recording = false;
-	
+
 	protected long trackTimeStart;
 
 	/**
-	 * wait time for GPS signal of acceptable accuracy
+	 * wait time for GPS fix of acceptable accuracy
 	 */
-	private long requestWaitTime;
-
+	private long gpsFixWaitTime;
+	
 	/**
-	 * new scheduler session start time
+	 * new scheduler session start time in milliseconds
 	 */
 	private long startTime;
 
 	/**
-	 * new location request start time
+	 * new location request start time in milliseconds
 	 */
 	private long requestStartTime;
 
@@ -117,7 +117,7 @@ public class ScheduledTrackRecorder {
 		requestInterval = Integer.parseInt(app.getPreferences().getString("wpt_request_interval", "10")) * 60;
 
 		// milliseconds
-		requestWaitTime = Integer.parseInt(app.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
+		gpsFixWaitTime = Integer.parseInt(app.getPreferences().getString("wpt_gps_fix_wait_time", "2")) * 60 * 1000;
 
 		// acceptable accuracy
 		minAccuracy = Integer.parseInt(app.getPreferences().getString("wpt_min_accuracy", "30"));
@@ -125,9 +125,9 @@ public class ScheduledTrackRecorder {
 		// minimum distance between two recorded points
 		minDistance = Integer.parseInt(app.getPreferences().getString("wpt_min_distance", "200"));
 
-		// stop scheduler after 
+		// stop scheduler after
 		stopRecordingAfter = Integer.parseInt(app.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
-
+		
 	}
 
 	/**
@@ -231,7 +231,8 @@ public class ScheduledTrackRecorder {
 	}
 
 	/**
-	 * sets new location request time
+	 * sets new location request start time that's how wait time for each
+	 * location request is measured
 	 */
 	public void setRequestStartTime() {
 		requestStartTime = SystemClock.elapsedRealtime();
@@ -253,6 +254,7 @@ public class ScheduledTrackRecorder {
 	 */
 	public boolean timeLimitReached() {
 
+		// if stopRecordingAfter == 0 scheduler will run indefinitely
 		if (stopRecordingAfter != 0 && startTime + stopRecordingAfter < SystemClock.elapsedRealtime()) {
 			return true;
 		} else {
@@ -261,18 +263,24 @@ public class ScheduledTrackRecorder {
 
 	}
 
-	public boolean requestTimeLimitReached() {
+	/**
+	 * Checking if acceptable accuracy   
+	 * 
+	 * @return boolean
+	 */
+	public boolean gpsFixWaitTimeLimitReached() {
 
 		app.logd("requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
 				+ Utils.formatInterval(SystemClock.elapsedRealtime(), true) + " Wait: "
-				+ Utils.formatInterval(requestWaitTime, true));
+				+ Utils.formatInterval(this.gpsFixWaitTime, true));
 
-		if (requestStartTime + requestWaitTime < SystemClock.elapsedRealtime()) {
+		if (this.requestStartTime + this.gpsFixWaitTime < SystemClock.elapsedRealtime()) {
 			return true;
 		} else {
 			return false;
 		}
 
 	}
+
 
 }

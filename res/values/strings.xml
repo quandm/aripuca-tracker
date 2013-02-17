@@ -100,7 +100,7 @@
     <!-- User interface -->
     <string name="app_settings_title">Application settings</string>
     <string name="user_interface">User interface</string>
-    <string name="user_interface_summary">Screen mode, application language, etc</string>
+    <string name="user_interface_summary">Screen mode and other settings</string>
     <string name="app_language">Application language</string>
     <string name="wake_lock_title">Stay awake</string>
     <string name="wake_lock_summary">Prevents phone from sleeping</string>
