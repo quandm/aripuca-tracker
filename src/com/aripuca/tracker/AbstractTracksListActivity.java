@@ -81,8 +81,7 @@ public class AbstractTracksListActivity extends ListActivity {
 	/**
 	 * Overridden in child classes
 	 */
-	protected void deleteAllTracks() {
-	}
+	protected void deleteAllTracks() {}
 
 	/**
 	 * View track details
@@ -145,9 +144,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 
-			if (cursor.getCount() == 0) {
-				return;
-			}
+			if (cursor.getCount() == 0) { return; }
 
 			String distanceUnit = app.getPreferences().getString("distance_units", "km");
 
@@ -181,9 +178,9 @@ public class AbstractTracksListActivity extends ListActivity {
 			if (scheduledTrackDetails != null) {
 				scheduledTrackDetails.setText(DateFormat.format("yyyy-MM-dd kk:mm",
 						cursor.getLong(cursor.getColumnIndex("start_time")))
-						+ " - " +
-						DateFormat.format("yyyy-MM-dd kk:mm", cursor.getLong(cursor.getColumnIndex("finish_time"))));
-				//"Points: " + cursor.getInt(cursor.getColumnIndex("count"))
+						+ " - "
+						+ DateFormat.format("yyyy-MM-dd kk:mm", cursor.getLong(cursor.getColumnIndex("finish_time"))));
+				// "Points: " + cursor.getInt(cursor.getColumnIndex("count"))
 			}
 
 		}
@@ -235,7 +232,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		super.onPause();
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -275,9 +272,7 @@ public class AbstractTracksListActivity extends ListActivity {
 			case R.id.deleteTracksMenuItem:
 
 				// check if track recording is in progress
-				if (isRecordingTrack()) {
-					return true;
-				}
+				if (isRecordingTrack()) { return true; }
 
 				// delete all tracks with confirmation dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -405,66 +400,64 @@ public class AbstractTracksListActivity extends ListActivity {
 		// view track info
 			case 1:
 				this.viewTrackDetails(info.id);
-			break;
+				break;
 
 			// edit track info
 			case 2:
-				
+
 				if (isRecordingTrack(info.id)) {
 					Toast.makeText(AbstractTracksListActivity.this, R.string.cant_edit_track_being_recorded,
-							Toast.LENGTH_SHORT)
-							.show();
+							Toast.LENGTH_SHORT).show();
 					return true;
 				}
-				
+
 				this.updateTrack(info.id);
-				
-			break;
+
+				break;
 
 			// delete track
 			case 3:
 
 				if (isRecordingTrack(info.id)) {
 					Toast.makeText(AbstractTracksListActivity.this, R.string.cant_delete_track_being_recorded,
-							Toast.LENGTH_SHORT)
-							.show();
+							Toast.LENGTH_SHORT).show();
 					return true;
 				}
 
 				this.deleteTrack(info.id);
 
-			break;
+				break;
 
 			// export to GPX
 			case 41:
 				this.exportTrackToGpx(info.id, false);
-			break;
+				break;
 
 			// export to KML
 			case 42:
 				this.exportTrackToKml(info.id, false);
-			break;
+				break;
 
 			// export to GPX and send as attachment
 			case 51:
 				this.exportTrackToGpx(info.id, true);
-			break;
+				break;
 
 			// export to KML and send as attachment
 			case 52:
 				this.exportTrackToKml(info.id, true);
-			break;
+				break;
 
 			// sync track online
 			case 5:
 
-			break;
+				break;
 
 			case 6:
 
 				this.showTrackOnMap(info.id);
 
-			break;
+				break;
 
 			default:
 				return super.onContextItemSelected(item);
@@ -476,15 +469,10 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	protected boolean isRecordingTrack(long trackId) {
 
-		if (TrackRecorder.getInstance(app).isRecording()
-				&& TrackRecorder.getInstance(app).getTrackId() == trackId) {
-			return true;
-		}
+		if (TrackRecorder.getInstance(app).isRecording() && TrackRecorder.getInstance(app).getTrackId() == trackId) { return true; }
 
 		if (ScheduledTrackRecorder.getInstance(app).isRecording()
-				&& ScheduledTrackRecorder.getInstance(app).getTrackId() == trackId) {
-			return true;
-		}
+				&& ScheduledTrackRecorder.getInstance(app).getTrackId() == trackId) { return true; }
 
 		return false;
 
@@ -493,20 +481,19 @@ public class AbstractTracksListActivity extends ListActivity {
 	protected boolean isRecordingTrack() {
 
 		if (TrackRecorder.getInstance(app).isRecording()) {
-			Toast.makeText(AbstractTracksListActivity.this, R.string.track_recording_in_progress,
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(AbstractTracksListActivity.this, R.string.track_recording_in_progress, Toast.LENGTH_SHORT)
+					.show();
 			return true;
 		}
 
 		if (ScheduledTrackRecorder.getInstance(app).isRecording()) {
 			Toast.makeText(AbstractTracksListActivity.this, R.string.scheduled_track_recording_in_progress,
-					Toast.LENGTH_SHORT)
-					.show();
+					Toast.LENGTH_SHORT).show();
 			return true;
 		}
 
 		return false;
-		
+
 	}
 
 	/**
@@ -632,10 +619,10 @@ public class AbstractTracksListActivity extends ListActivity {
 		switch (this.getResources().getConfiguration().orientation) {
 			case Configuration.ORIENTATION_PORTRAIT:
 				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			break;
+				break;
 			case Configuration.ORIENTATION_LANDSCAPE:
 				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			break;
+				break;
 		}
 
 	}

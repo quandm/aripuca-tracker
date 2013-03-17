@@ -1401,12 +1401,14 @@ public class MainActivity extends Activity {
 
 		// max elevation
 		if (findViewById(R.id.maxElevation) != null) {
-			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(track.getMaxElevation(), elevationUnit));
+			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(track.getMaxElevation(),
+					elevationUnit));
 		}
 
 		// min elevation
 		if (findViewById(R.id.minElevation) != null) {
-			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(track.getMinElevation(), elevationUnit));
+			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(track.getMinElevation(),
+					elevationUnit));
 		}
 		// ------------------------------------------------------------------
 
@@ -1417,7 +1419,8 @@ public class MainActivity extends Activity {
 
 		// average moving speed
 		if (findViewById(R.id.averageMovingSpeed) != null) {
-			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(track.getAverageMovingSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(track.getAverageMovingSpeed(),
+					speedUnit));
 		}
 
 		// max speed
@@ -1440,7 +1443,8 @@ public class MainActivity extends Activity {
 
 		// average moving pace
 		if (findViewById(R.id.averageMovingPace) != null) {
-			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(track.getAverageMovingSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(track.getAverageMovingSpeed(),
+					speedUnit));
 		}
 
 		// max pace
@@ -1493,7 +1497,7 @@ public class MainActivity extends Activity {
 		float trueAzimuth = 0;
 
 		// true or magnetic north?
-		boolean trueNorth = app.getPreferences().getBoolean("true_north", true);
+		boolean trueNorth = app.getPreferences().getBoolean(getString(R.string.settings_true_north), true);
 
 		// let's not request declination on every compass update
 		float declination = 0;
@@ -1610,7 +1614,7 @@ public class MainActivity extends Activity {
 				String dateStr = (String) DateFormat.format("yyyyMMdd_kkmmss", new Date());
 
 				File currentDB = new File(data, currentDBPath);
-				File backupDB = new File(app.getAppDir() + "/backup/" + dateStr + ".db");
+				File backupDB = new File(app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + dateStr + ".db");
 
 				if (currentDB.exists()) {
 					FileChannel src = new FileInputStream(currentDB).getChannel();
@@ -1693,8 +1697,8 @@ public class MainActivity extends Activity {
 			try {
 
 				// open database in readonly mode
-				SQLiteDatabase db = SQLiteDatabase.openDatabase(app.getAppDir() + "/backup/" + importDatabaseFileName,
-						null, SQLiteDatabase.OPEN_READONLY);
+				SQLiteDatabase db = SQLiteDatabase.openDatabase(app.getAppDir() + "/" + Constants.PATH_BACKUP + "/"
+						+ importDatabaseFileName, null, SQLiteDatabase.OPEN_READONLY);
 
 				// check version compatibility
 				// only same version of the db can be restored
@@ -1724,7 +1728,7 @@ public class MainActivity extends Activity {
 
 				if (app.getExternalStorageWriteable()) {
 
-					String restoreDBPath = app.getAppDir() + "/backup/" + importDatabaseFileName;
+					String restoreDBPath = app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
 					File currentDB = new File(data, Constants.PATH_DB + Constants.APP_NAME + ".db");

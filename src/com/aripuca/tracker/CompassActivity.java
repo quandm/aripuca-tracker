@@ -27,7 +27,6 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
-
 public class CompassActivity extends Activity implements OnTouchListener {
 
 	private Location currentLocation;
@@ -57,12 +56,11 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	 * vibration flag
 	 */
 	private boolean vibrationOn;
-	
+
 	/**
 	 * Service connection object
 	 */
-	private AppServiceConnection serviceConnection; 
-	
+	private AppServiceConnection serviceConnection;
 
 	/**
 	 * Location updates broadcast receiver
@@ -150,7 +148,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		}
 
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
-		
+
 		currentLocation = app.getCurrentLocation();
 
 		// magnetic north compass
@@ -169,17 +167,17 @@ public class CompassActivity extends Activity implements OnTouchListener {
 	}
 
 	private Runnable appServiceConnectionCallback = new Runnable() {
-		
+
 		@Override
 		public void run() {
-			
+
 			Log.d(Constants.TAG, "AppServiceConnection");
-			
-			if (serviceConnection.getService()==null) {
+
+			if (serviceConnection.getService() == null) {
 				Log.e(Constants.TAG, "AppService not available");
 				return;
 			}
-			
+
 			if (!serviceConnection.getService().isListening()) {
 
 				// location updates stopped at this time, so let's start them
@@ -187,7 +185,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 			} else {
 
-				// gpsInUse = false means we are in process of stopping listening
+				// gpsInUse = false means we are in process of stopping
+				// listening
 				if (!serviceConnection.getService().isGpsInUse()) {
 					serviceConnection.getService().setGpsInUse(true);
 				}
@@ -199,9 +198,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 			// this activity requires compass data
 			serviceConnection.getService().startSensorUpdates();
-		
-	}};
-	
+
+		}
+	};
+
 	/**
 	 * 
 	 */
@@ -238,7 +238,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		registerReceiver(locationBroadcastReceiver, new IntentFilter(Constants.ACTION_LOCATION_UPDATES));
 
 		this.serviceConnection.bindAppService();
-		
+
 	}
 
 	@Override
@@ -259,7 +259,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			}
 
 			serviceConnection.getService().stopSensorUpdates();
-			
+
 		}
 
 		this.serviceConnection.unbindAppService();
@@ -335,7 +335,8 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			declination = 0;
 		}
 
-		// magnetic north to true north, compensate for device's physical rotation 
+		// magnetic north to true north, compensate for device's physical
+		// rotation
 		rotation = getAzimuth(azimuth + declination + ApiLevelFactory.getApiLevel().getDeviceRotation(this));
 
 		if (findViewById(R.id.azimuth) != null) {
@@ -379,9 +380,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) {
-			return az - 360;
-		}
+		if (az > 360) { return az - 360; }
 
 		return az;
 

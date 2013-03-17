@@ -12,26 +12,25 @@ import com.aripuca.tracker.util.Utils;
 
 import android.content.Context;
 
-
 public class WaypointGpxExportTask extends TrackExportTask {
-	
+
 	private String filename;
-	
+
 	public WaypointGpxExportTask(Context c, String fn) {
 		super(c);
 
 		extension = "gpx";
-		
+
 		filename = fn;
 
 	}
-	
+
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
 		File outputFolder = new File(app.getAppDir() + "/waypoints");
 
-		file = new File(outputFolder, filename + "."+extension);
+		file = new File(outputFolder, filename + "." + extension);
 
 		if (!file.exists()) {
 			file.createNewFile();
@@ -41,7 +40,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		pw = new PrintWriter(new FileWriter(file, false));
 
 	}
-	
+
 	protected void prepareCursors() {
 
 		// track cursor
@@ -50,14 +49,13 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		tpCursor.moveToFirst();
 
 	}
-	
+
 	protected void writeHeader() {
 
 		String todayDate = (new SimpleDateFormat("yyyy-MM-dd")).format((new Date()).getTime());
-		
+
 		// write gpx header
-		pw.format("<?xml version=\"1.0\" encoding=\"%s\" standalone=\"yes\"?>\n", Charset.defaultCharset()
-				.name());
+		pw.format("<?xml version=\"1.0\" encoding=\"%s\" standalone=\"yes\"?>\n", Charset.defaultCharset().name());
 		pw.println("<gpx");
 		pw.println(" version=\"1.1\"");
 		pw.println(" creator=\"AripucaTracker for Android\"");
@@ -78,17 +76,18 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		String wpTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tpCursor.getLong(tpCursor
 				.getColumnIndex("time")));
 
-		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
-		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
-		
+		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat")) / 1E6);
+		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng")) / 1E6);
+
 		pw.println("<wpt lat=\"" + lat + "\" lon=\"" + lng + "\">");
-		pw.println("<ele>" + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + "</ele>");
+		pw.println("<ele>" + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")), 1)
+				+ "</ele>");
 		pw.println("<time>" + wpTime + "</time>");
 		pw.println("<name>" + tpCursor.getString(tpCursor.getColumnIndex("title")) + "</name>");
 		pw.println("<desc>" + tpCursor.getString(tpCursor.getColumnIndex("descr")) + "</desc>");
-		//					pw.println("<type>" +  + "</type>");
+		// pw.println("<type>" + + "</type>");
 		pw.println("</wpt>");
-		
+
 	}
 
 	protected void writeFooter() {

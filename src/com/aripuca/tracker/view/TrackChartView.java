@@ -1,4 +1,5 @@
 package com.aripuca.tracker.view;
+
 import com.aripuca.tracker.chart.Series;
 import com.aripuca.tracker.chart.TrackChart;
 
@@ -15,11 +16,11 @@ public class TrackChartView extends View {
 	public TrackChartView(Context context) {
 		super(context);
 	}
-	
+
 	public TrackChartView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 
@@ -29,7 +30,7 @@ public class TrackChartView extends View {
 		trackChart.draw(canvas);
 
 	}
-	
+
 	public void setElevationSeries(Series es) {
 		this.elevationSeries = es;
 	}
@@ -37,5 +38,5 @@ public class TrackChartView extends View {
 	public void setSpeedSeries(Series ss) {
 		this.speedSeries = ss;
 	}
-	
+
 }

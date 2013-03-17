@@ -263,9 +263,9 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 		// send email with file attached
 		if (this.sendAttachment) {
-			
+
 			this.zipAndSendAttachment();
-			
+
 		}
 
 		app = null;
@@ -282,7 +282,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		File outputFolder = new File(app.getAppDir() + "/tracks");
 		File zipFile = new File(outputFolder, file.getName() + ".zip");
 
-		//TODO: bug: zip file created incorrectly
+		// TODO: bug: zip file created incorrectly
 		try {
 
 			final int BUFFER = 2048;
@@ -321,14 +321,14 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 				+ context.getString(R.string.market_url);
 
 		// sending file by email using default Android email client
-		
+
 		final Intent emailIntent = new Intent(Intent.ACTION_SEND);
 		emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		emailIntent.setType("plain/text");
 		emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.email_subject_track));
 		emailIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
 		emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + zipFile.getAbsolutePath()));
-		
+
 		context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.sending_email)));
 
 	}

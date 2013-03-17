@@ -22,8 +22,7 @@ public class TrackKmlExportTask extends TrackExportTask {
 		pw.print(" xmlns=\"http://earth.google.com/kml/2.0\"");
 		pw.println(" xmlns:atom=\"http://www.w3.org/2005/Atom\">");
 		pw.println("<Document>");
-		pw.println("<atom:author><atom:name>Aripuca GPS Tracker for Android"
-						+ "</atom:name></atom:author>");
+		pw.println("<atom:author><atom:name>Aripuca GPS Tracker for Android" + "</atom:name></atom:author>");
 		pw.println("<name>" + tCursor.getString(tCursor.getColumnIndex("title")) + "</name>");
 		pw.println("<description>" + tCursor.getString(tCursor.getColumnIndex("descr")) + "</description>");
 
@@ -36,22 +35,23 @@ public class TrackKmlExportTask extends TrackExportTask {
 	}
 
 	protected void writeTrackPoint() {
-		
+
 		if (!segmentOpen) {
 			prevSegmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
 			segmentOpen = true;
-		} 
-		
+		}
+
 		if (prevSegmentIndex != tpCursor.getInt(tpCursor.getColumnIndex("segment_index"))) {
 			pw.println("</coordinates></LineString>");
 			pw.println("<LineString><coordinates>");
 			segmentOpen = false;
 		}
-		
-		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat"))/1E6);
-		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng"))/1E6);
-		
-		pw.println(lng + "," + lat + "," + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")),1) + " ");
+
+		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat")) / 1E6);
+		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng")) / 1E6);
+
+		pw.println(lng + "," + lat + ","
+				+ Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")), 1) + " ");
 
 	}
 

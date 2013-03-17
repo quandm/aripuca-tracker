@@ -4,18 +4,18 @@ import android.app.Activity;
 import android.view.SurfaceView;
 
 /**
- * ApiLevel compatibility interface 
+ * ApiLevel compatibility interface
  */
 public interface ApiLevel {
 
 	/**
-	 * return device rotation angle 
+	 * return device rotation angle
 	 */
 	public int getDeviceRotation(Activity activity);
 
 	/**
-	 * SurfaceView.setZOrderOnTop call through reflection 
+	 * SurfaceView.setZOrderOnTop call through reflection
 	 */
 	public void setZOrderOnTop(SurfaceView surfaceView, boolean onTop);
-	
+
 }

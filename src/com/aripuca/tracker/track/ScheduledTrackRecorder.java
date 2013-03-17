@@ -31,7 +31,7 @@ public class ScheduledTrackRecorder {
 	 * wait time for GPS fix of acceptable accuracy
 	 */
 	private long gpsFixWaitTime;
-	
+
 	/**
 	 * new scheduler session start time in milliseconds
 	 */
@@ -127,7 +127,7 @@ public class ScheduledTrackRecorder {
 
 		// stop scheduler after
 		stopRecordingAfter = Integer.parseInt(app.getPreferences().getString("wpt_stop_recording_after", "1")) * 60 * 60 * 1000;
-		
+
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class ScheduledTrackRecorder {
 	}
 
 	/**
-	 * Checking if acceptable accuracy   
+	 * Checking if acceptable accuracy
 	 * 
 	 * @return boolean
 	 */
@@ -281,6 +281,5 @@ public class ScheduledTrackRecorder {
 		}
 
 	}
-
 
 }

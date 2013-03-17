@@ -258,7 +258,7 @@ public class MyMapActivity extends MapActivity {
 		Bundle b = getIntent().getExtras();
 
 		this.mode = b.getInt("mode");
-		
+
 		// show waypoint
 		if (this.mode == Constants.SHOW_WAYPOINT) {
 

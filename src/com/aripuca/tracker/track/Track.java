@@ -67,8 +67,8 @@ public class Track extends AbstractTrack {
 
 		long finishTime = (new Date()).getTime();
 
-		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-" +
-				(new SimpleDateFormat("H:mm")).format(finishTime);
+		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-"
+				+ (new SimpleDateFormat("H:mm")).format(finishTime);
 
 		ContentValues values = new ContentValues();
 		values.put("title", trackTitle);
@@ -123,7 +123,7 @@ public class Track extends AbstractTrack {
 		}
 
 	}
-	
+
 	/**
 	 * Record one track point
 	 * 
@@ -151,7 +151,7 @@ public class Track extends AbstractTrack {
 			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
-			
+
 		}
 
 	}
