@@ -29,7 +29,7 @@ public class ApiLevel4 implements ApiLevel {
 
 		Display display = activity.getWindowManager().getDefaultDisplay();
 
-		// determining orientation based on display width and height 
+		// determining orientation based on display width and height
 		if (display.getWidth() == display.getHeight()) {
 			orientation = Configuration.ORIENTATION_SQUARE;
 		} else {

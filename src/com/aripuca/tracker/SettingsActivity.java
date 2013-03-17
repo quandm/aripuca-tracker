@@ -7,6 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
+import android.app.backup.BackupManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import com.aripuca.tracker.util.ArrayUtils;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
+	/**
+	 * Reference to Application object
+	 */
 	protected App app;
 
 	/**
@@ -37,42 +41,40 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		preferences.registerOnSharedPreferenceChangeListener(this);
 
 		// Initializing preferences with current values
-		//		onSharedPreferenceChanged(preferences, "user_name");
-		//		onSharedPreferenceChanged(preferences, "user_password");
-		//		onSharedPreferenceChanged(preferences, "sync_url");
+		// onSharedPreferenceChanged(preferences, "user_name");
+		// onSharedPreferenceChanged(preferences, "user_password");
+		// onSharedPreferenceChanged(preferences, "sync_url");
 
-		onSharedPreferenceChanged(preferences, "coord_units");
-		onSharedPreferenceChanged(preferences, "distance_units");
-		onSharedPreferenceChanged(preferences, "speed_units");
-		onSharedPreferenceChanged(preferences, "elevation_units");
+		onSharedPreferenceChanged(preferences, getString(R.string.settings_coord_units));
+		onSharedPreferenceChanged(preferences, getString(R.string.settings_distance_units));
+		onSharedPreferenceChanged(preferences, getString(R.string.settings_speed_units));
+		onSharedPreferenceChanged(preferences, getString(R.string.settings_elevation_units));
 
-		onSharedPreferenceChanged(preferences, "segmenting_mode");
+		onSharedPreferenceChanged(preferences, getString(R.string.settings_segmenting_mode));
 
 		// setting listener for true north changes
 		CheckBoxPreference trueNorthPreference = (CheckBoxPreference) findPreference("true_north");
-		trueNorthPreference.setOnPreferenceChangeListener(
-				new OnPreferenceChangeListener() {
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue) {
+		trueNorthPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-						// enabling/disabling "show_magnetic" preference
-						CheckBoxPreference showMagnetic = (CheckBoxPreference) findPreference("show_magnetic");
-						showMagnetic.setEnabled(Boolean.parseBoolean(newValue.toString()));
-						
-						return true;
-					}
-				});
-		
+				// enabling/disabling "show_magnetic" preference
+				CheckBoxPreference showMagnetic = (CheckBoxPreference) findPreference("show_magnetic");
+				showMagnetic.setEnabled(Boolean.parseBoolean(newValue.toString()));
+
+				return true;
+			}
+		});
+
 		// setting listener for distance units changes
 		ListPreference distanceUnitsPreference = (ListPreference) findPreference("distance_units");
-		distanceUnitsPreference.setOnPreferenceChangeListener(
-				new OnPreferenceChangeListener() {
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue) {
-						updatePreferenceLists(newValue.toString());
-						return true;
-					}
-				});
+		distanceUnitsPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				updatePreferenceLists(newValue.toString());
+				return true;
+			}
+		});
 
 		// update preference lists dependent on distance units
 		String distanceUnit = distanceUnitsPreference.getValue();
@@ -89,18 +91,21 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	 */
 	private void updatePreferenceLists(String distanceUnit) {
 
-		// changing labels for min_accuracy 
+		// changing labels for min_accuracy
 		final ListPreference minAccuracy = (ListPreference) findPreference("min_accuracy");
-		minAccuracy.setEntries(distanceUnit.equals("km") ? R.array.min_accuracy_labels : R.array.min_accuracy_labels_ft);
+		minAccuracy
+				.setEntries(distanceUnit.equals("km") ? R.array.min_accuracy_labels : R.array.min_accuracy_labels_ft);
 
-		// changing labels for min_distance 
+		// changing labels for min_distance
 		final ListPreference minDistance = (ListPreference) findPreference("min_distance");
-		minDistance.setEntries(distanceUnit.equals("km") ? R.array.min_distance_labels : R.array.min_distance_labels_ft);
-		
-		// changing labels for wpt_min_distance 
+		minDistance
+				.setEntries(distanceUnit.equals("km") ? R.array.min_distance_labels : R.array.min_distance_labels_ft);
+
+		// changing labels for wpt_min_distance
 		final ListPreference wptMinDistance = (ListPreference) findPreference("wpt_min_distance");
-		wptMinDistance.setEntries(distanceUnit.equals("km") ? R.array.wpt_min_distance_labels : R.array.wpt_min_distance_labels_ft);
-		
+		wptMinDistance.setEntries(distanceUnit.equals("km") ? R.array.wpt_min_distance_labels
+				: R.array.wpt_min_distance_labels_ft);
+
 	}
 
 	/**
@@ -111,8 +116,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 		Preference pref = findPreference(key);
 
-		//----------------------------------------------------------------------
-		// validate user input 
+		// ----------------------------------------------------------------------
+		// validate user input
 		if (key.equals("segment_custom_1") || key.equals("segment_custom_2")) {
 
 			if (pref instanceof EditTextPreference) {
@@ -125,7 +130,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 					try {
 
-						// check if values entered are in ascending order and unique
+						// check if values entered are in ascending order and
+						// unique
 						if (tmpArr.length > 1 && i < tmpArr.length - 1) {
 							if (Double.parseDouble(tmpArr[i]) >= Double.parseDouble(tmpArr[i + 1])) {
 								textPref.setText("5,10,15,20");
@@ -137,7 +143,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 						}
 
 					} catch (NumberFormatException e) {
-						//TODO: show error message to user with explanation
+						// TODO: show error message to user with explanation
 						// setting default values
 						textPref.setText("5,10,15,20");
 						return;
@@ -146,35 +152,30 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 			}
 		}
-		//----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 
 		if (pref instanceof ListPreference) {
 
 			String[] prefKeys = { "speed_units", "distance_units", "elevation_units", "coord_units", "segmenting_mode" };
-			// show set values only for defined keys 
-			if (!ArrayUtils.contains(prefKeys, key)) {
-				return;
-			}
+			// show set values only for defined keys
+			if (!ArrayUtils.contains(prefKeys, key)) { return; }
 
 			ListPreference listPref = (ListPreference) pref;
 			listPref.setSummary(listPref.getEntry());
 
 		}
 
+		// requesting backup to the cloud
+		BackupManager bm = new BackupManager(this);
+		bm.dataChanged();
+		
 		/*
-		 * if (pref instanceof EditTextPreference) {
-		 * 
-		 * EditTextPreference textPref = (EditTextPreference) pref;
-		 * 
-		 * if (textPref.getText() == null || textPref.getText().equals("")) {
-		 * 
-		 * textPref.setSummary("not set");
-		 * 
-		 * } else { if (textPref.getKey().equals("user_password")) {
+		 * if (pref instanceof EditTextPreference) { EditTextPreference textPref
+		 * = (EditTextPreference) pref; if (textPref.getText() == null ||
+		 * textPref.getText().equals("")) { textPref.setSummary("not set"); }
+		 * else { if (textPref.getKey().equals("user_password")) {
 		 * textPref.setSummary(""); } else { // all fields except password will
-		 * display current value textPref.setSummary(textPref.getText()); } }
-		 * 
-		 * }
+		 * display current value textPref.setSummary(textPref.getText()); } } }
 		 */
 
 	}

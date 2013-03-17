@@ -12,32 +12,29 @@ public class OrientationHelper {
 	 * reverse landscape orientation workaround
 	 */
 	private int realOrientation;
-	
+
 	private Context context;
-	
+
 	public OrientationHelper(Context context) {
-		
+
 		this.context = context;
 
 	}
-	
+
 	public void setOrientationValues(float azimuth, float pitch, float roll) {
-		
+
 		orientationValues = new OrientationValues(azimuth, pitch, roll);
 
 		setRealOrientation(this.context.getResources().getConfiguration().orientation);
-		
+
 	}
-	
-	
+
 	/**
 	 * Returns compass rotation angle when orientation of the phone changes
 	 */
 	public int getOrientationAdjustment() {
 
-		if (orientationValues == null) {
-			return 0;
-		}
+		if (orientationValues == null) { return 0; }
 
 		switch (realOrientation) {
 
@@ -52,7 +49,7 @@ public class OrientationHelper {
 
 		return 0;
 	}
-	
+
 	/**
 	 * reverse landscape orientation workaround
 	 * 
@@ -60,20 +57,16 @@ public class OrientationHelper {
 	 */
 	private void setRealOrientation(int orientation) {
 
-		if (orientationValues == null) {
-			return;
-		}
+		if (orientationValues == null) { return; }
 
 		if (orientation != Configuration.ORIENTATION_PORTRAIT) {
 
-			if (orientationValues.getRoll() >= 25
-					&& realOrientation != Constants.ORIENTATION_LANDSCAPE) {
-				
+			if (orientationValues.getRoll() >= 25 && realOrientation != Constants.ORIENTATION_LANDSCAPE) {
+
 				realOrientation = Constants.ORIENTATION_LANDSCAPE;
 			}
 
-			if (orientationValues.getRoll() <= -25
-					&& realOrientation != Constants.ORIENTATION_REVERSE_LANDSCAPE) {
+			if (orientationValues.getRoll() <= -25 && realOrientation != Constants.ORIENTATION_REVERSE_LANDSCAPE) {
 
 				realOrientation = Constants.ORIENTATION_REVERSE_LANDSCAPE;
 			}
@@ -83,5 +76,5 @@ public class OrientationHelper {
 		}
 
 	}
-	
+
 }

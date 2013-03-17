@@ -8,7 +8,7 @@ public abstract class ContainerCarousel {
 	protected int current = 0;
 
 	protected List<Integer> containers;
-	
+
 	protected int resourceId;
 
 	public ContainerCarousel() {
@@ -16,15 +16,15 @@ public abstract class ContainerCarousel {
 		containers = new ArrayList<Integer>();
 
 		initialize();
-		
+
 	}
 
 	protected abstract void initialize();
-	
+
 	public int getResourceId() {
-		
+
 		return resourceId;
-		
+
 	}
 
 	public int getCurrentContainer() {

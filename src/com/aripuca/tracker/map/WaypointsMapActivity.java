@@ -37,7 +37,7 @@ public class WaypointsMapActivity extends MapActivity {
 	private MapView mapView;
 
 	private int mapMode;
-	
+
 	/**
 	 * Map overlay class
 	 */
@@ -80,7 +80,7 @@ public class WaypointsMapActivity extends MapActivity {
 			dialog.show();
 			return true;
 		}
-		
+
 	}
 
 	/**
@@ -106,49 +106,50 @@ public class WaypointsMapActivity extends MapActivity {
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
 		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-		
+
 		MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
-		
+
 		loadWaypoints(itemizedOverlay);
-		
-		mapOverlays.add(itemizedOverlay);	
-		
+
+		mapOverlays.add(itemizedOverlay);
+
 		mapView.invalidate();
-		
+
 	}
 
 	protected void loadWaypoints(MyItemizedOverlay itemizedOverlay) {
-		
+
 		Cursor cursor = app.getDatabase().rawQuery("SELECT * FROM waypoints", null);
 		cursor.moveToFirst();
 
 		while (cursor.isAfterLast() == false) {
 
-			GeoPoint point = new GeoPoint(cursor.getInt(cursor.getColumnIndex("lat")), cursor.getInt(cursor.getColumnIndex("lng")));
-			
-			String snippet = Utils.formatLat(cursor.getDouble(cursor.getColumnIndex("lat"))/1E6,
+			GeoPoint point = new GeoPoint(cursor.getInt(cursor.getColumnIndex("lat")), cursor.getInt(cursor
+					.getColumnIndex("lng")));
+
+			String snippet = Utils.formatLat(cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
 					Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 					+ "\n"
-					+ Utils.formatLng(cursor.getDouble(cursor.getColumnIndex("lng"))/1E6,
+					+ Utils.formatLng(cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6,
 							Integer.parseInt(app.getPreferences().getString("coord_units", "0")));
-			
-			if (cursor.getString(cursor.getColumnIndex("descr"))!=null) {
-				
-				snippet=cursor.getString(cursor.getColumnIndex("descr"))+"\n"+snippet;
-				
+
+			if (cursor.getString(cursor.getColumnIndex("descr")) != null) {
+
+				snippet = cursor.getString(cursor.getColumnIndex("descr")) + "\n" + snippet;
+
 			}
-			
+
 			OverlayItem overlayitem = new OverlayItem(point, cursor.getString(cursor.getColumnIndex("title")), snippet);
-			
+
 			itemizedOverlay.addOverlay(overlayitem);
-			
+
 			cursor.moveToNext();
 		}
 
 		cursor.close();
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -156,7 +157,7 @@ public class WaypointsMapActivity extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
-	
+
 	/**
 	 * onCreateOptionsMenu handler
 	 */
@@ -216,6 +217,6 @@ public class WaypointsMapActivity extends MapActivity {
 				return super.onOptionsItemSelected(item);
 
 		}
-	}	
-	
+	}
+
 }

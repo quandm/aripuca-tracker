@@ -167,11 +167,9 @@ public class TrackDetailsActivity extends Activity {
 	protected void updateTrack() {
 
 		// get track data
-		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count " +
-				" FROM tracks" +
-				" LEFT JOIN track_points ON tracks._id = track_points.track_id " +
-				" WHERE " +
-				" tracks._id=" + this.trackId;
+		String sql = "SELECT tracks.*, COUNT(track_points._id) AS count " + " FROM tracks"
+				+ " LEFT JOIN track_points ON tracks._id = track_points.track_id " + " WHERE " + " tracks._id="
+				+ this.trackId;
 
 		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -193,11 +191,10 @@ public class TrackDetailsActivity extends Activity {
 		int segmentId = segmentIds.get(segmentIndex - 1);
 
 		// get track data
-		String sql = "SELECT segments.*, COUNT(track_points._id) AS count FROM segments, track_points WHERE" +
-				" segments._id=" + segmentId +
-				" AND segments.track_id=" + this.trackId +
-				" AND track_points.segment_index=" + (segmentIndex - 1) +
-				" AND segments.track_id = track_points.track_id";
+		String sql = "SELECT segments.*, COUNT(track_points._id) AS count FROM segments, track_points WHERE"
+				+ " segments._id=" + segmentId + " AND segments.track_id=" + this.trackId
+				+ " AND track_points.segment_index=" + (segmentIndex - 1)
+				+ " AND segments.track_id = track_points.track_id";
 
 		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -224,9 +221,10 @@ public class TrackDetailsActivity extends Activity {
 		// total distance
 		float distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
-		// localized distance unit depends on distance value  
-		String distanceUnitLocalized = Utils.getLocalizedDistanceUnit(TrackDetailsActivity.this, distance, distanceUnit);
-		
+		// localized distance unit depends on distance value
+		String distanceUnitLocalized = Utils
+				.getLocalizedDistanceUnit(TrackDetailsActivity.this, distance, distanceUnit);
+
 		// average speed
 		float averageSpeed = 0;
 		long totalTime = cursor.getLong(cursor.getColumnIndex("total_time"));
@@ -246,8 +244,8 @@ public class TrackDetailsActivity extends Activity {
 		// --------------------------------------------------------
 		// distance
 		// --------------------------------------------------------
-		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(
-				distance, distanceUnit) + " " + distanceUnitLocalized);
+		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit) + " "
+				+ distanceUnitLocalized);
 
 		((TextView) findViewById(R.id.pointsCount)).setText(cursor.getString(cursor.getColumnIndex("count")));
 
@@ -264,24 +262,23 @@ public class TrackDetailsActivity extends Activity {
 				cursor.getLong(cursor.getColumnIndex("total_time"))
 						- cursor.getLong(cursor.getColumnIndex("moving_time")), true));
 
-		((TextView) findViewById(R.id.startTime)).setText(DateFormat.format("yyyy-MM-dd k:mm", cursor
-				.getLong(cursor.getColumnIndex("start_time"))));
+		((TextView) findViewById(R.id.startTime)).setText(DateFormat.format("yyyy-MM-dd k:mm",
+				cursor.getLong(cursor.getColumnIndex("start_time"))));
 
-		((TextView) findViewById(R.id.finishTime)).setText(DateFormat.format("yyyy-MM-dd k:mm", cursor
-				.getLong(cursor.getColumnIndex("finish_time"))));
+		((TextView) findViewById(R.id.finishTime)).setText(DateFormat.format("yyyy-MM-dd k:mm",
+				cursor.getLong(cursor.getColumnIndex("finish_time"))));
 
 		// --------------------------------------------------------
 		// speed
 		// --------------------------------------------------------
-		((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(averageSpeed, speedUnit) + " " +
-				speedUnitLocalized);
+		((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(averageSpeed, speedUnit) + " "
+				+ speedUnitLocalized);
 
 		((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(averageMovingSpeed, speedUnit)
-				+ " " +
-				speedUnitLocalized);
+				+ " " + speedUnitLocalized);
 
-		((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed, speedUnit) + " " +
-				speedUnitLocalized);
+		((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed, speedUnit) + " "
+				+ speedUnitLocalized);
 
 		// --------------------------------------------------------
 		// pace
@@ -291,34 +288,31 @@ public class TrackDetailsActivity extends Activity {
 		}
 
 		if (averageMovingSpeed != 0) {
-			((TextView) findViewById(R.id.averageMovingPace)).setText(
-					Utils.formatPace(averageMovingSpeed, speedUnit));
+			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(averageMovingSpeed, speedUnit));
 		}
 
 		if (maxSpeed != 0) {
-			((TextView) findViewById(R.id.maxPace)).setText(
-					Utils.formatPace(maxSpeed, speedUnit));
+			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(maxSpeed, speedUnit));
 		}
 
 		// --------------------------------------------------------
 		// elevation
 		// --------------------------------------------------------
 		((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(
-				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit) + " " +
-				elevationUnitLocalized);
+				cursor.getFloat(cursor.getColumnIndex("max_elevation")), elevationUnit)
+				+ " " + elevationUnitLocalized);
 
 		((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(
-				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit) + " " + elevationUnitLocalized);
+				cursor.getFloat(cursor.getColumnIndex("min_elevation")), elevationUnit)
+				+ " " + elevationUnitLocalized);
 
-		((TextView) findViewById(R.id.elevationGain))
-				.setText(Utils.formatElevation(
-						cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit) + " " +
-						elevationUnitLocalized);
+		((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(
+				cursor.getFloat(cursor.getColumnIndex("elevation_gain")), elevationUnit)
+				+ " " + elevationUnitLocalized);
 
-		((TextView) findViewById(R.id.elevationLoss))
-				.setText(Utils.formatElevation(
-						cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit) + " " +
-						elevationUnitLocalized);
+		((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(
+				cursor.getFloat(cursor.getColumnIndex("elevation_loss")), elevationUnit)
+				+ " " + elevationUnitLocalized);
 
 	}
 
@@ -351,7 +345,7 @@ public class TrackDetailsActivity extends Activity {
 
 		Intent i;
 		Bundle b;
-		
+
 		// Handle item selection
 		switch (item.getItemId()) {
 
@@ -382,7 +376,7 @@ public class TrackDetailsActivity extends Activity {
 				startActivity(i);
 
 				return true;
-				
+
 			default:
 
 				return super.onOptionsItemSelected(item);

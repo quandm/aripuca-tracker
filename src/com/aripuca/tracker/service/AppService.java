@@ -466,6 +466,8 @@ public class AppService extends Service {
 
 		app.logd("AppService.startScheduledLocationUpdates");
 
+		// schedulerListening is false until first location update received in
+		// LocationListener
 		this.schedulerListening = false;
 
 		// control the time of location request before any updates received
@@ -560,7 +562,7 @@ public class AppService extends Service {
 	private PendingIntent nextTimeLimitCheckSender;
 
 	/**
-	 * Scheduling regular (every 5 seconds) checks for GPS signal
+	 * Scheduling regular checks for GPS signal availability
 	 */
 	private void scheduleNextRequestTimeLimitCheck() {
 
@@ -574,6 +576,8 @@ public class AppService extends Service {
 		calendar.add(Calendar.SECOND, 5);
 
 		// schedule single alarm
+		// if GPS signal is not available we will schedule this event again in
+		// receiver
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), nextTimeLimitCheckSender);
 	}

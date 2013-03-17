@@ -121,20 +121,41 @@ public class App extends Application {
 		/**
 		 * tracks table create sql
 		 */
-		private static final String TRACKS_TABLE_CREATE = "CREATE TABLE " + TRACKS_TABLE
-				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT," + "title TEXT NOT NULL," + "descr TEXT,"
-				+ "activity INTEGER," + "distance REAL," + "total_time INTEGER," + "moving_time INTEGER,"
-				+ "max_speed REAL," + "max_elevation REAL," + "min_elevation REAL," + "elevation_gain REAL,"
-				+ "elevation_loss REAL," + "recording INTEGER NOT NULL," + "start_time INTEGER NOT NULL,"
-				+ "finish_time INTEGER)";
+		private static final String TRACKS_TABLE_CREATE =
+				"CREATE TABLE " + TRACKS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"title TEXT NOT NULL," +
+						"descr TEXT," +
+						"activity INTEGER," +
+						"distance REAL," +
+						"total_time INTEGER," +
+						"moving_time INTEGER," +
+						"max_speed REAL," +
+						"max_elevation REAL," +
+						"min_elevation REAL," +
+						"elevation_gain REAL," +
+						"elevation_loss REAL," +
+						"recording INTEGER NOT NULL," +
+						"start_time INTEGER NOT NULL," +
+						"finish_time INTEGER)";
 
 		private static final String SEGMENTS_TABLE = "segments";
 
-		private static final String SEGMENTS_TABLE_CREATE = "CREATE TABLE " + SEGMENTS_TABLE
-				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT," + "track_id INTEGER NOT NULL," + "segment_index INTEGER,"
-				+ "distance REAL," + "total_time INTEGER," + "moving_time INTEGER," + "max_speed REAL,"
-				+ "max_elevation REAL," + "min_elevation REAL," + "elevation_gain REAL," + "elevation_loss REAL,"
-				+ "start_time INTEGER NOT NULL," + "finish_time INTEGER)";
+		private static final String SEGMENTS_TABLE_CREATE =
+				"CREATE TABLE " + SEGMENTS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"track_id INTEGER NOT NULL," +
+						"segment_index INTEGER," +
+						"distance REAL," +
+						"total_time INTEGER," +
+						"moving_time INTEGER," +
+						"max_speed REAL," +
+						"max_elevation REAL," +
+						"min_elevation REAL," +
+						"elevation_gain REAL," +
+						"elevation_loss REAL," +
+						"start_time INTEGER NOT NULL," +
+						"finish_time INTEGER)";
 
 		/**
 		 * track points table
@@ -143,10 +164,18 @@ public class App extends Application {
 		/**
 		 * track points table create sql
 		 */
-		private static final String TRACKPOINTS_TABLE_CREATE = "CREATE TABLE " + TRACKPOINTS_TABLE
-				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT," + "track_id INTEGER NOT NULL," + "segment_index INTEGER,"
-				+ "distance REAL," + "lat INTEGER NOT NULL," + "lng INTEGER NOT NULL," + "accuracy REAL,"
-				+ "elevation REAL," + "speed REAL," + "time INTEGER NOT NULL)";
+		private static final String TRACKPOINTS_TABLE_CREATE =
+				"CREATE TABLE " + TRACKPOINTS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"track_id INTEGER NOT NULL," +
+						"segment_index INTEGER," +
+						"distance REAL," +
+						"lat INTEGER NOT NULL," +
+						"lng INTEGER NOT NULL," +
+						"accuracy REAL," +
+						"elevation REAL," +
+						"speed REAL," +
+						"time INTEGER NOT NULL)";
 
 		/**
 		 * waypoints sql table
@@ -156,10 +185,17 @@ public class App extends Application {
 		/**
 		 * waypointss table create sql
 		 */
-		private static final String WAYPOINTS_TABLE_CREATE = "CREATE TABLE " + WAYPOINTS_TABLE
-				+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "track_id INTEGER," + "title TEXT NOT NULL, "
-				+ "descr TEXT, " + "lat INTEGER NOT NULL, " + "lng INTEGER NOT NULL, " + "accuracy REAL,"
-				+ "elevation REAL," + "time INTEGER NOT NULL)";
+		private static final String WAYPOINTS_TABLE_CREATE =
+				"CREATE TABLE " + WAYPOINTS_TABLE +
+						" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+						"track_id INTEGER," +
+						"title TEXT NOT NULL, " +
+						"descr TEXT, " +
+						"lat INTEGER NOT NULL, " +
+						"lng INTEGER NOT NULL, " +
+						"accuracy REAL," +
+						"elevation REAL," +
+						"time INTEGER NOT NULL)";
 
 		/**
 		 * OpenHelper constructor
@@ -339,7 +375,9 @@ public class App extends Application {
 	private void insertFamousWaypoints() {
 
 		// adding famous waypoints only once
-		if (getPreferences().contains("famous_waypoints")) { return; }
+		if (getPreferences().contains("famous_waypoints")) {
+			return;
+		}
 
 		// create array of waypoints
 		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();

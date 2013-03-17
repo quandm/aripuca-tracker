@@ -339,7 +339,7 @@ public class TrackpointsListActivity extends ListActivity {
 		unregisterReceiver(locationBroadcastReceiver);
 
 		AppService appService = serviceConnection.getService();
-		
+
 		if (appService != null) {
 
 			// stop location updates when not recording track

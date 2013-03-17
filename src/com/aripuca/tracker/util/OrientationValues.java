@@ -1,7 +1,7 @@
 package com.aripuca.tracker.util;
 
 /**
- * Orientation sensor values holder class 
+ * Orientation sensor values holder class
  */
 public class OrientationValues {
 
@@ -19,7 +19,7 @@ public class OrientationValues {
 	 * roll value
 	 */
 	private float roll;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -32,6 +32,7 @@ public class OrientationValues {
 		this.pitch = pitch;
 		this.roll = roll;
 	}
+
 	/**
 	 * @return the azimuth
 	 */

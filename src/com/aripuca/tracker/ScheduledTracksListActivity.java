@@ -11,35 +11,32 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 	// instance initialization block
 	{
 		listItemResourceId = R.layout.scheduled_track_list_item;
-		
+
 		infoDisplayed = false;
 	}
 
 	@Override
 	public void deleteAllTracks() {
-		
+
 		// delete from segments table
-		String sql = "DELETE FROM segments WHERE track_id IN " +
-						"(SELECT track_id FROM tracks WHERE activity=1);";
+		String sql = "DELETE FROM segments WHERE track_id IN " + "(SELECT track_id FROM tracks WHERE activity=1);";
 		app.getDatabase().execSQL(sql);
 
 		// delete from track_points table
-		sql = "DELETE FROM track_points WHERE track_id IN " +
-				"(SELECT track_id FROM tracks WHERE activity=1);";
+		sql = "DELETE FROM track_points WHERE track_id IN " + "(SELECT track_id FROM tracks WHERE activity=1);";
 		app.getDatabase().execSQL(sql);
-		
+
 		// clear track_id in waypoints table
-		sql = "UPDATE waypoints SET track_id=NULL WHERE track_id IN " + 
-				"(SELECT track_id FROM tracks WHERE activity=1);";
+		sql = "UPDATE waypoints SET track_id=NULL WHERE track_id IN "
+				+ "(SELECT track_id FROM tracks WHERE activity=1);";
 		app.getDatabase().execSQL(sql);
-		
+
 		// delete from tracks table
 		sql = "DELETE FROM tracks WHERE activity=1";
 		app.getDatabase().execSQL(sql);
-		
+
 	}
-	
-	
+
 	/**
 	 * Start the track details activity
 	 * 
@@ -62,17 +59,18 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 
 	@Override
 	protected void setQuery() {
-		
-//		sqlSelectAllTracks = "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks " +
-//		"LEFT JOIN track_points ON tracks._id = track_points.track_id "+
-//		"WHERE recording=0 AND activity=1";
 
-		if (app.getPreferences().getBoolean("debug_on", false )) {
+		// sqlSelectAllTracks =
+		// "SELECT tracks.*, COUNT(track_points._id) AS count FROM tracks " +
+		// "LEFT JOIN track_points ON tracks._id = track_points.track_id "+
+		// "WHERE recording=0 AND activity=1";
+
+		if (app.getPreferences().getBoolean("debug_on", false)) {
 			sqlSelectAllTracks = "SELECT * FROM tracks WHERE activity=1";
 		} else {
 			sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND activity=1";
 		}
-		
+
 	}
-	
+
 }

@@ -42,11 +42,11 @@ public class Segment extends AbstractTrack {
 		ContentValues values = new ContentValues();
 		values.put("track_id", trackId);
 		values.put("segment_index", segmentIndex);
-		values.put("distance", Utils.formatNumber(this.getDistance(),1));
+		values.put("distance", Utils.formatNumber(this.getDistance(), 1));
 		values.put("total_time", this.getTotalTime());
 		values.put("moving_time", this.getMovingTime());
 		values.put("max_speed", Utils.formatNumber(this.getMaxSpeed(), 2));
-		values.put("max_elevation", Utils.formatNumber(this.getMaxElevation(),1));
+		values.put("max_elevation", Utils.formatNumber(this.getMaxElevation(), 1));
 		values.put("min_elevation", Utils.formatNumber(this.getMinElevation(), 1));
 		values.put("elevation_gain", this.getElevationGain());
 		values.put("elevation_loss", this.getElevationLoss());
@@ -66,7 +66,7 @@ public class Segment extends AbstractTrack {
 			Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 
 		}
-		
+
 		return newSegmentId;
 
 	}

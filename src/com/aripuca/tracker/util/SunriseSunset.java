@@ -179,16 +179,10 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /******************************************************************************
- * class: SunriseSunset class
- ******************************************************************************* 
- * 
- * This Java class performs calculations to determine the time of sunrise and
- * sunset given lat, long, and date.
- * 
- * It is assumed that the data provided are within value ranges (i.e. latitude
- * between -90 and +90, longitude between 0 and 360, a valid date, and time zone
- * between -14 and +14.
- * 
+ * class: SunriseSunset class This Java class performs calculations to determine
+ * the time of sunrise and sunset given lat, long, and date. It is assumed that
+ * the data provided are within value ranges (i.e. latitude between -90 and +90,
+ * longitude between 0 and 360, a valid date, and time zone between -14 and +14.
  * ----------------------------------------------------------------------------
  */
 public class SunriseSunset {
@@ -205,7 +199,7 @@ public class SunriseSunset {
 	private boolean bSunsetToday = false; // flag for sunset on this date
 	private boolean bSunUpAllDay = false; // flag for sun up all day
 	private boolean bSunDownAllDay = false; // flag for sun down all day
-	private boolean bDaytime = false; // flag for daytime, given 
+	private boolean bDaytime = false; // flag for daytime, given
 	// hour and min in dateInput
 	private boolean bSunrise = false; // sunrise during hour checked
 	private boolean bSunset = false; // sunset during hour checked
@@ -220,12 +214,12 @@ public class SunriseSunset {
 	private double dfMinRise, dfMinSet; // minute of event: SUNUP.BAS M3
 	private double dfSinLat, dfCosLat; // sin and cos of latitude
 	private double dfZenith; // SUNUP.BAS Z: Zenith
-	//	private	SimpleDateFormat dfmtDate;		// formatting for date alone
+	// private SimpleDateFormat dfmtDate; // formatting for date alone
 	private SimpleDateFormat dfmtDateTime; // formatting for date and time
 	private SimpleDateFormat dfmtYear; // formatting for year
 	private SimpleDateFormat dfmtMonth; // formatting for month
 	private SimpleDateFormat dfmtDay; // formatting for day
-	// Many variables in SUNUP.BAS have undocumented meanings, 
+	// Many variables in SUNUP.BAS have undocumented meanings,
 	// and so are translated rather directly to avoid confusion:
 	private double dfAA1 = 0, dfAA2 = 0; // SUNUP.BAS A(2)
 	private double dfDD1 = 0, dfDD2 = 0; // SUNUP.BAS D(2)
@@ -247,26 +241,22 @@ public class SunriseSunset {
 	private double origTimeZone;
 
 	/******************************************************************************
-	 * method: SunriseSunset
-	 ******************************************************************************* 
-	 * 
-	 * Constructor for SunriseSunset class.
-	 * 
+	 * method: SunriseSunset Constructor for SunriseSunset class.
 	 * ------------------------------------------------------------------------
 	 * ----
 	 */
-	public SunriseSunset(double dfLatIn, // latitude 
-			double dfLonIn, // longitude 
+	public SunriseSunset(double dfLatIn, // latitude
+			double dfLonIn, // longitude
 			Date dateInputIn, // date
 			double dfTimeZoneIn // time zone
 	) {
 		// Copy values supplied as agruments to local variables.
 		dfLat = dfLatIn;
-		
-		if (dfLonIn<0) {
-			dfLonIn = 360 + dfLonIn;			
+
+		if (dfLonIn < 0) {
+			dfLonIn = 360 + dfLonIn;
 		}
-		
+
 		dfLon = dfLonIn;
 		dateInput = dateInputIn;
 		dfTimeZone = dfTimeZoneIn;
@@ -278,11 +268,8 @@ public class SunriseSunset {
 	} // end of class constructor
 
 	/******************************************************************************
-	 * method: doCalculations
-	 ******************************************************************************* 
-	 * 
-	 * Method for performing the calculations done in SUNUP.BAS.
-	 * 
+	 * method: doCalculations Method for performing the calculations done in
+	 * SUNUP.BAS.
 	 * ------------------------------------------------------------------------
 	 * ----
 	 */
@@ -311,10 +298,10 @@ public class SunriseSunset {
 			dfTimeZone = dfTimeZone / 24.0;
 
 			// NOTE: (7 Feb 2001) Here is a non-standard part of SUNUP.BAS:
-			// It (and this algorithm) assumes that the time zone is 
+			// It (and this algorithm) assumes that the time zone is
 			// positive west, instead of the standard negative west.
-			// Classes calling SunriseSunset will be assuming that 
-			// times zones are specified in negative west, so here the 
+			// Classes calling SunriseSunset will be assuming that
+			// times zones are specified in negative west, so here the
 			// sign is changed so that the SUNUP algorithm works:
 			dfTimeZone = -dfTimeZone;
 
@@ -330,10 +317,8 @@ public class SunriseSunset {
 			// SUNUP.BAS 1210
 			dfJ = -Math.floor(7.0 // SUNUP used INT, not floor
 					* (Math.floor((iMonth + 9.0) / 12.0) + iYear) / 4.0)
-					// add SUNUP.BAS 1240 and 1250 for G = 0
-					+ Math.floor(iMonth * 275.0 / 9.0)
-					+ iDay
-					+ 1721027.0 + iYear * 367.0;
+			// add SUNUP.BAS 1240 and 1250 for G = 0
+					+ Math.floor(iMonth * 275.0 / 9.0) + iDay + 1721027.0 + iYear * 367.0;
 
 			if (bGregorian) {
 				// SUNUP.BAS 1230
@@ -344,9 +329,7 @@ public class SunriseSunset {
 				dfA = Math.abs(iMonth - 9.0);
 				// SUNUP.BAS 1240 and 1250
 				dfJ3 = -Math
-						.floor((Math.floor(Math.floor(iYear
-								+ (double) iSign
-								* Math.floor(dfA / 7.0)) / 100.0) + 1.0) * 0.75);
+						.floor((Math.floor(Math.floor(iYear + (double) iSign * Math.floor(dfA / 7.0)) / 100.0) + 1.0) * 0.75);
 				// correct dfJ as in SUNUP.BAS 1240 and 1250 for G = 1
 				dfJ = dfJ + dfJ3 + 2.0;
 			}
@@ -359,8 +342,7 @@ public class SunriseSunset {
 
 			// Calculate local sidereal time at 0h in zone time
 			// SUNUP.BAS 410 through 460
-			dfT0 = (dfT * 8640184.813 / 36525.0 + 24110.5 + dfTimeZone
-					* 86636.6 + dfLon * 86400.0) / 86400.0;
+			dfT0 = (dfT * 8640184.813 / 36525.0 + 24110.5 + dfTimeZone * 86636.6 + dfLon * 86400.0) / 86400.0;
 			dfT0 = dfT0 - Math.floor(dfT0); // NOTE: SUNUP.BAS uses INT()
 			dfT0 = dfT0 * 2.0 * Math.PI;
 			// SUNUP.BAS 90
@@ -370,9 +352,9 @@ public class SunriseSunset {
 			for (iCount = 0; iCount <= 1; iCount++) // Loop thru only twice
 			{
 				// Calculate Sun's right ascension and declination
-				//   at the start and end of each day.
+				// at the start and end of each day.
 				// SUNUP.BAS 910 - 1160: Fundamental arguments
-				//   from van Flandern and Pulkkinen, 1979
+				// from van Flandern and Pulkkinen, 1979
 
 				// declare local temporary doubles for calculations
 				double dfGG; // SUNUP.BAS G
@@ -390,27 +372,18 @@ public class SunriseSunset {
 				dfGG = dfGG - Math.floor(dfGG);
 				dfGG = dfGG * 2.0 * Math.PI;
 
-				dfVV = 0.39785 * Math.sin(dfLL) - 0.01000
-						* Math.sin(dfLL - dfGG) + 0.00333
-						* Math.sin(dfLL + dfGG) - 0.00021
-						* Math.sin(dfLL) * dfTT;
+				dfVV = 0.39785 * Math.sin(dfLL) - 0.01000 * Math.sin(dfLL - dfGG) + 0.00333 * Math.sin(dfLL + dfGG)
+						- 0.00021 * Math.sin(dfLL) * dfTT;
 
-				dfUU = 1 - 0.03349 * Math.cos(dfGG) - 0.00014
-						* Math.cos(dfLL * 2.0) + 0.00008
-						* Math.cos(dfLL);
+				dfUU = 1 - 0.03349 * Math.cos(dfGG) - 0.00014 * Math.cos(dfLL * 2.0) + 0.00008 * Math.cos(dfLL);
 
-				dfWW = -0.00010 - 0.04129 * Math.sin(dfLL * 2.0)
-						+ 0.03211 * Math.sin(dfGG) - 0.00104
-						* Math.sin(2.0 * dfLL - dfGG) - 0.00035
-						* Math.sin(2.0 * dfLL + dfGG) - 0.00008
+				dfWW = -0.00010 - 0.04129 * Math.sin(dfLL * 2.0) + 0.03211 * Math.sin(dfGG) - 0.00104
+						* Math.sin(2.0 * dfLL - dfGG) - 0.00035 * Math.sin(2.0 * dfLL + dfGG) - 0.00008
 						* Math.sin(dfGG) * dfTT;
 
 				// Compute Sun's RA and Dec; SUNUP.BAS 1120 - 1140
 				dfSS = dfWW / Math.sqrt(dfUU - dfVV * dfVV);
-				dfA5 = dfLL
-						+ Math
-								.atan(dfSS
-										/ Math.sqrt(1.0 - dfSS * dfSS));
+				dfA5 = dfLL + Math.atan(dfSS / Math.sqrt(1.0 - dfSS * dfSS));
 
 				dfSS = dfVV / Math.sqrt(dfUU);
 				dfD5 = Math.atan(dfSS / Math.sqrt(1 - dfSS * dfSS));
@@ -453,7 +426,7 @@ public class SunriseSunset {
 			dfV2 = 0.0; // initialization implied by absence in SUNUP.BAS
 
 			// Test each hour to see if the Sun crosses the horizon
-			//   and which way it is heading.
+			// and which way it is heading.
 			for (iCount = 0; iCount < 24; iCount++) // SUNUP.BAS 210
 			{
 				double tempA; // SUNUP.BAS A
@@ -474,19 +447,17 @@ public class SunriseSunset {
 				// declination at half hour
 				dfD1 = (dfD2 + dfD0) / 2.0; // SUNUP.BAS 530
 
-				// Set value of dfV0 only if this is the first hour, 
+				// Set value of dfV0 only if this is the first hour,
 				// otherwise, it will get set to the last dfV2 (SUNUP.BAS 250)
 				if (iCount == 0) // SUNUP.BAS 550
 				{
-					dfV0 = dfSinLat * Math.sin(dfD0) + dfCosLat
-							* Math.cos(dfD0) * Math.cos(dfH0)
-							- Math.cos(dfZenith); // SUNUP.BAS 560
+					dfV0 = dfSinLat * Math.sin(dfD0) + dfCosLat * Math.cos(dfD0) * Math.cos(dfH0) - Math.cos(dfZenith); // SUNUP.BAS
+																														// 560
 				} else
 					dfV0 = dfV2; // That is, dfV2 from the previous hour.
 
-				dfV2 = dfSinLat * Math.sin(dfD2) + dfCosLat
-						* Math.cos(dfD2) * Math.cos(dfH2)
-						- Math.cos(dfZenith); // SUNUP.BAS 570
+				dfV2 = dfSinLat * Math.sin(dfD2) + dfCosLat * Math.cos(dfD2) * Math.cos(dfH2) - Math.cos(dfZenith); // SUNUP.BAS
+																													// 570
 
 				// if dfV0 and dfV2 have the same sign, then proceed to next hr
 				if ((dfV0 >= 0.0 && dfV2 >= 0.0) // both are positive
@@ -499,9 +470,8 @@ public class SunriseSunset {
 					continue; // SUNUP.BAS 610
 				}
 
-				dfV1 = dfSinLat * Math.sin(dfD1) + dfCosLat
-						* Math.cos(dfD1) * Math.cos(dfH1)
-						- Math.cos(dfZenith); // SUNUP.BAS 590
+				dfV1 = dfSinLat * Math.sin(dfD1) + dfCosLat * Math.cos(dfD1) * Math.cos(dfH1) - Math.cos(dfZenith); // SUNUP.BAS
+																													// 590
 
 				tempA = 2.0 * dfV2 - 4.0 * dfV1 + 2.0 * dfV0;
 				// SUNUP.BAS 600
@@ -519,9 +489,9 @@ public class SunriseSunset {
 
 				// Determine occurence of sunrise or sunset.
 
-				// Flags to identify occurrence during this day are 
+				// Flags to identify occurrence during this day are
 				// bSunriseToday and bSunsetToday, and are initialized false.
-				// These are set true only if sunrise or sunset occurs 
+				// These are set true only if sunrise or sunset occurs
 				// at any point in the hourly loop. Never set to false.
 
 				// Flags to identify occurrence during this hour:
@@ -541,28 +511,27 @@ public class SunriseSunset {
 				}
 
 				tempE = (tempD - tempB) / (2.0 * tempA);
-				if (tempE > 1.0 || tempE < 0.0) // SUNUP.BAS 670, 680
+				if (tempE > 1.0 || tempE < 0.0)
+					// SUNUP.BAS 670, 680
 					tempE = (-tempD - tempB) / (2.0 * tempA);
 
 				// Set values of hour and minute of sunset or sunrise
 				// only if sunrise/set occurred this hour.
 				if (bSunrise) {
 					dfHourRise = Math.floor(dfC0 + tempE + 1.0 / 120.0);
-					dfMinRise = Math
-							.floor((dfC0 + tempE + 1.0 / 120.0 - dfHourRise) * 60.0);
+					dfMinRise = Math.floor((dfC0 + tempE + 1.0 / 120.0 - dfHourRise) * 60.0);
 				}
 
 				if (bSunset) {
 					dfHourSet = Math.floor(dfC0 + tempE + 1.0 / 120.0);
-					dfMinSet = Math
-							.floor((dfC0 + tempE + 1.0 / 120.0 - dfHourSet) * 60.0);
+					dfMinSet = Math.floor((dfC0 + tempE + 1.0 / 120.0 - dfHourSet) * 60.0);
 				}
 
 				// Change settings of variables for next loop
 				dfA0 = dfA2; // SUNUP.BAS 250
 				dfD0 = dfD2; // SUNUP.BAS 250
 
-			} // end of loop testing each hour for an event	
+			} // end of loop testing each hour for an event
 
 			// After having checked all hours, set flags if no rise or set
 			// bSunUpAllDay and bSundownAllDay are initialized as false
@@ -576,15 +545,13 @@ public class SunriseSunset {
 			// Load dateSunrise with data
 			dfmtDateTime = new SimpleDateFormat("d M yyyy HH:mm z");
 			if (bSunriseToday) {
-				dateSunrise = dfmtDateTime.parse(iDay + " " + iMonth
-						+ " " + iYear + " " + (int) dfHourRise + ":"
+				dateSunrise = dfmtDateTime.parse(iDay + " " + iMonth + " " + iYear + " " + (int) dfHourRise + ":"
 						+ (int) dfMinRise + " GMT+" + origTimeZone);
 			}
 
 			// Load dateSunset with data
 			if (bSunsetToday) {
-				dateSunset = dfmtDateTime.parse(iDay + " " + iMonth
-						+ " " + iYear + " " + (int) dfHourSet + ":"
+				dateSunset = dfmtDateTime.parse(iDay + " " + iMonth + " " + iYear + " " + (int) dfHourSet + ":"
 						+ (int) dfMinSet + " GMT+" + origTimeZone);
 			}
 		} // end of try
@@ -599,13 +566,8 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: getSunrise()
-	 ******************************************************************************* 
-	 * 
-	 * Gets the date and time of sunrise. If there is no sunrise, returns null.
-	 * 
-	 * Member of SunriseSunset class
-	 * 
+	 * method: getSunrise() Gets the date and time of sunrise. If there is no
+	 * sunrise, returns null. Member of SunriseSunset class
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
@@ -617,13 +579,8 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: getSunset()
-	 ******************************************************************************* 
-	 * 
-	 * Gets the date and time of sunset. If there is no sunset, returns null.
-	 * 
-	 * Member of SunriseSunset class
-	 * 
+	 * method: getSunset() Gets the date and time of sunset. If there is no
+	 * sunset, returns null. Member of SunriseSunset class
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
@@ -635,13 +592,8 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: isSunrise()
-	 ******************************************************************************* 
-	 * 
-	 * Returns a boolean identifying if there was a sunrise.
-	 * 
+	 * method: isSunrise() Returns a boolean identifying if there was a sunrise.
 	 * Member of SunriseSunset class
-	 * 
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
@@ -650,13 +602,8 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: isSunset()
-	 ******************************************************************************* 
-	 * 
-	 * Returns a boolean identifying if there was a sunset.
-	 * 
+	 * method: isSunset() Returns a boolean identifying if there was a sunset.
 	 * Member of SunriseSunset class
-	 * 
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
@@ -665,13 +612,8 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: isSunUp()
-	 ******************************************************************************* 
-	 * 
-	 * Returns a boolean identifying if the sun is up all day.
-	 * 
+	 * method: isSunUp() Returns a boolean identifying if the sun is up all day.
 	 * Member of SunriseSunset class
-	 * 
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
@@ -680,13 +622,8 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: isSunDown()
-	 ******************************************************************************* 
-	 * 
-	 * Returns a boolean identifying if the sun is down all day.
-	 * 
-	 * Member of SunriseSunset class
-	 * 
+	 * method: isSunDown() Returns a boolean identifying if the sun is down all
+	 * day. Member of SunriseSunset class
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
@@ -695,36 +632,31 @@ public class SunriseSunset {
 	}
 
 	/******************************************************************************
-	 * method: isDaytime()
-	 ******************************************************************************* 
-	 * 
-	 * Returns a boolean identifying if it is daytime at the hour contained in
-	 * the Date object passed to SunriseSunset on construction.
-	 * 
-	 * Member of SunriseSunset class
-	 * 
+	 * method: isDaytime() Returns a boolean identifying if it is daytime at the
+	 * hour contained in the Date object passed to SunriseSunset on
+	 * construction. Member of SunriseSunset class
 	 * ------------------------------------------------------------------------
 	 * --
 	 */
 	public boolean isDaytime() {
-		// Determine if it is daytime (at sunrise or later) 
-		//	or nighttime (at sunset or later) at the location of interest
-		//	but expressed in the time zone requested.
+		// Determine if it is daytime (at sunrise or later)
+		// or nighttime (at sunset or later) at the location of interest
+		// but expressed in the time zone requested.
 		if (bSunriseToday && bSunsetToday) // sunrise and sunset
 		{
 			if (dateSunrise.before(dateSunset)) // sunrise < sunset
 			{
-				if ((dateInput.after(dateSunrise) || dateInput
-						.equals(dateSunrise))
-						&& dateInput.before(dateSunset))
+				if ((dateInput.after(dateSunrise) || dateInput.equals(dateSunrise)) && dateInput.before(dateSunset))
 					bDaytime = true;
 				else
 					bDaytime = false;
 			} else // sunrise comes after sunset (in opposite time zones)
 			{
-				if ((dateInput.after(dateSunrise) || dateInput
-						.equals(dateSunrise))
-						|| // use OR rather than AND
+				if ((dateInput.after(dateSunrise) || dateInput.equals(dateSunrise)) || // use
+																						// OR
+																						// rather
+																						// than
+																						// AND
 						dateInput.before(dateSunset))
 					bDaytime = true;
 				else
@@ -752,4 +684,4 @@ public class SunriseSunset {
 		return (bDaytime);
 	}
 
-} // end of class 
+} // end of class

@@ -36,9 +36,7 @@ public class Population {
 	public double getAverage() {
 
 		int totalValues = isFull ? values.length : nextIndex;
-		if (totalValues == 0) {
-			return 0;
-		}
+		if (totalValues == 0) { return 0; }
 
 		double sum = 0;
 		for (int i = 0; i < totalValues; i++) {
