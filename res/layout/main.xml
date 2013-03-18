@@ -18,8 +18,10 @@
 	<LinearLayout android:id="@+id/buttonControls" style="@style/FillParent"
 		android:gravity="bottom" android:orientation="horizontal" android:baselineAligned="false">
 
-		<Button android:id="@+id/addWaypointButton" android:text="@string/add_waypoint"
-			style="@style/ControlButton">
+		<Button
+		    android:id="@+id/addWaypointButton"
+		    style="@style/ControlButton"
+		    android:text="@string/add_waypoint" >
 		</Button>
 
 		<Button android:id="@+id/trackRecordingButton" android:text="@string/record_track"

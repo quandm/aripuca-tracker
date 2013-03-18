@@ -168,7 +168,9 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (app == null) { return; }
+			if (app == null) {
+				return;
+			}
 
 			Bundle bundle = intent.getExtras();
 
@@ -292,7 +294,9 @@ public class MainActivity extends Activity {
 
 			AppService appService = serviceConnection.getService();
 
-			if (appService == null) { return; }
+			if (appService == null) {
+				return;
+			}
 
 			if (appService.getTrackRecorder().isRecordingPaused()) {
 
@@ -736,7 +740,7 @@ public class MainActivity extends Activity {
 	 */
 	protected void enableControlButtons() {
 
-		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+		//		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
 
@@ -747,7 +751,7 @@ public class MainActivity extends Activity {
 	 */
 	protected void disableControlButtons() {
 
-		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+		//		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 
@@ -876,11 +880,16 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 
+			if (currentLocation == null) {
+				Toast.makeText(MainActivity.this, R.string.waiting_new_fix, Toast.LENGTH_SHORT).show();
+				return;
+			}
+
 			// let's make reverse geocoder request and then show Add Waypoint
 			// dialog
 			// address will be inserted as default description for this waypoint
 
-			// disable "add waypoint" button for the time of request
+			// disable "add waypoint" button to avoid creating extra dialog on double click
 			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 
 			if (app.checkInternetConnection() && app.getPreferences().getBoolean("waypoint_default_description", false)) {
@@ -913,7 +922,7 @@ public class MainActivity extends Activity {
 				case 1:
 					Bundle bundle = message.getData();
 					addressStr = bundle.getString("address");
-					break;
+				break;
 				default:
 					addressStr = null;
 			}
@@ -1026,8 +1035,7 @@ public class MainActivity extends Activity {
 		wpLat.setText(Utils.formatCoord(currentLocation.getLatitude()));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-		// wpLng.setText(Location.convert(location.getLongitude(),
-		// 0));
+		// wpLng.setText(Location.convert(location.getLongitude(), 0));
 		wpLng.setText(Utils.formatCoord(currentLocation.getLongitude()));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -1072,7 +1080,7 @@ public class MainActivity extends Activity {
 				Toast.makeText(MainActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
 
 				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-
+				
 				dialog.dismiss();
 
 			}
@@ -1082,16 +1090,21 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 
+				// enable "add waypoint" button
 				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 				dialog.dismiss();
 			}
 		});
 
 		AlertDialog dialog = builder.create();
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.show();
 
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	protected Dialog onCreateDialog(int id) {
 
@@ -1105,7 +1118,7 @@ public class MainActivity extends Activity {
 
 				dialog = new QuickHelpDialog(mContext);
 
-				break;
+			break;
 
 			default:
 				dialog = null;
@@ -1284,17 +1297,19 @@ public class MainActivity extends Activity {
 
 		AppService appService = serviceConnection.getService();
 
-		if (currentLocation == null || appService == null) { return; }
+		if (currentLocation == null || appService == null) {
+			return;
+		}
 
 		// ///////////////////////////////////////////////////////////////////
 		if (appService.isListening()) {
 			// activate buttons if location updates come from GPS
-			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+			//			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			this.hideWaitForFixMessage();
 		} else {
 			// disable recording buttons when waiting for new location
-			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+			//			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 			this.showWaitForFixMessage();
 		}
@@ -1370,7 +1385,9 @@ public class MainActivity extends Activity {
 
 		AppService appService = serviceConnection.getService();
 
-		if (appService == null || !appService.getTrackRecorder().isRecording()) { return; }
+		if (appService == null || !appService.getTrackRecorder().isRecording()) {
+			return;
+		}
 
 		Track track = appService.getTrackRecorder().getTrack();
 

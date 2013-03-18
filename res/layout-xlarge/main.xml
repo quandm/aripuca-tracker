@@ -19,15 +19,15 @@
 		android:gravity="bottom" android:orientation="horizontal" android:baselineAligned="false">
 
 		<Button android:id="@+id/addWaypointButton" android:text="@string/add_waypoint"
-			style="@style/ControlButton.XL">
+			style="@style/ControlButton">
 		</Button>
 
 		<Button android:id="@+id/trackRecordingButton" android:text="@string/record_track"
-			style="@style/ControlButton.XL">
+			style="@style/ControlButton">
 		</Button>
 
 		<Button android:id="@+id/pauseResumeTrackButton" android:text="@string/pause"
-			style="@style/ControlButton.XL" android:visibility="gone">
+			style="@style/ControlButton" android:visibility="gone">
 		</Button>
 
 	</LinearLayout>

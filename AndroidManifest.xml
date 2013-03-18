@@ -8,7 +8,7 @@
     <!-- support for all devices with multiple screens, started in API Level 4 -->
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="8" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -42,7 +42,10 @@
     <application
         android:name=".App"
         android:icon="@drawable/icon"
-        android:label="@string/main_app_title" >
+        android:label="@string/main_app_title" 
+        android:backupAgent=".io.MyBackupAgent"
+        android:allowBackup="true"
+        >
         <uses-library android:name="com.google.android.maps" />
 
         <meta-data
