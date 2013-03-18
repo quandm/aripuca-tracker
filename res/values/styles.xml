@@ -69,18 +69,12 @@
 
     <style name="ControlButton">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">42dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/button_1</item>
-    </style>
-
-    <style name="ControlButton.Land">
-        <item name="android:layout_height">35dp</item>
-    </style>
-
-    <style name="ControlButton.XL">
-        <item name="android:layout_height">60dp</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:layout_height">42dp</item>
+        <!--
+        <item name="android:background">@drawable/button_1</item> 
+        <item name="android:layout_height">wrap_content</item>
+        -->
     </style>
 
     <!-- TRACK DETAILS LAYOUT STYLES -->

@@ -1,12 +1,16 @@
-package com.aripuca.tracker;
+package com.aripuca.tracker.io;
+
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.R.string;
 
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
 
 public class MyBackupAgent extends BackupAgentHelper {
 
-	static final String MY_PREFS_BACKUP_KEY = "app_settings";
+	static final String SETTINGS_BACKUP_KEY = "app_settings";
 
+	@Override
 	public void onCreate() {
 
 		SharedPreferencesBackupHelper helper = new SharedPreferencesBackupHelper(this,
@@ -36,7 +40,7 @@ public class MyBackupAgent extends BackupAgentHelper {
 				getString(R.string.settings_debug_on)
 				);
 
-		addHelper(MY_PREFS_BACKUP_KEY, helper);
+		addHelper(SETTINGS_BACKUP_KEY, helper);
 
 	}
 
