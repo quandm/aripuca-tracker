@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import com.aripuca.tracker.R;
 
-import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.track.Waypoint;
@@ -178,7 +177,7 @@ public class TrackpointsListActivity extends ListActivity {
 					}
 
 					newAzimuth = newBearing - getAzimuth()
-							- ApiLevelFactory.getApiLevel().getDeviceRotation(TrackpointsListActivity.this);
+							- Utils.getDeviceRotation(TrackpointsListActivity.this);
 					if ((int) newAzimuth < 0) {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}

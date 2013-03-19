@@ -9,9 +9,12 @@ import java.util.Locale;
 
 import com.aripuca.tracker.R;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.GeomagneticField;
 import android.location.Location;
+import android.view.Display;
+import android.view.Surface;
 
 public class Utils {
 
@@ -85,10 +88,14 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
-			if (value > 100000) { return Utils.formatNumber(value / 1000, 1); }
+			if (value > 100000) {
+				return Utils.formatNumber(value / 1000, 1);
+			}
 
 			// convert to km
-			if (value > 1000) { return Utils.formatNumber(value / 1000, 2, 1); }
+			if (value > 1000) {
+				return Utils.formatNumber(value / 1000, 2, 1);
+			}
 
 			// leave value in meters
 			return Utils.formatNumber(value, 0);
@@ -97,10 +104,14 @@ public class Utils {
 
 		if (unit.equals("mi")) {
 
-			if (value > 100 * MI_TO_M) { return Utils.formatNumber(value / 1000, 1); }
+			if (value > 100 * MI_TO_M) {
+				return Utils.formatNumber(value / 1000, 1);
+			}
 
 			// convert to miles
-			if (value > MI_TO_M) { return Utils.formatNumber(value / MI_TO_M, 2, 1); }
+			if (value > MI_TO_M) {
+				return Utils.formatNumber(value / MI_TO_M, 2, 1);
+			}
 
 			// value is in feet
 			return Utils.formatNumber(value * M_TO_FT, 0);
@@ -114,12 +125,16 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
-			if (value > 1000) { return context.getString(R.string.km); }
+			if (value > 1000) {
+				return context.getString(R.string.km);
+			}
 			return context.getString(R.string.m);
 		}
 
 		if (unit.equals("mi")) {
-			if (value > MI_TO_M) { return context.getString(R.string.mi); }
+			if (value > MI_TO_M) {
+				return context.getString(R.string.mi);
+			}
 			return context.getString(R.string.ft);
 		}
 
@@ -129,18 +144,26 @@ public class Utils {
 
 	public static String formatElevation(double value, String unit) {
 
-		if (unit.equals("m")) { return Utils.formatNumber(value, 0); }
+		if (unit.equals("m")) {
+			return Utils.formatNumber(value, 0);
+		}
 
-		if (unit.equals("ft")) { return Utils.formatNumber(value * M_TO_FT, 0); }
+		if (unit.equals("ft")) {
+			return Utils.formatNumber(value * M_TO_FT, 0);
+		}
 
 		return "";
 	}
 
 	public static String getLocalizedElevationUnit(Context context, String unit) {
 
-		if (unit.equals("m")) { return context.getString(R.string.m); }
+		if (unit.equals("m")) {
+			return context.getString(R.string.m);
+		}
 
-		if (unit.equals("ft")) { return context.getString(R.string.ft); }
+		if (unit.equals("ft")) {
+			return context.getString(R.string.ft);
+		}
 
 		return "";
 	}
@@ -150,13 +173,21 @@ public class Utils {
 	 */
 	public static String formatSpeed(float value, String unit) {
 
-		if (value < 0.224) { return "0"; }
+		if (value < 0.224) {
+			return "0";
+		}
 
-		if (unit.equals("kph")) { return Utils.formatNumber(value * 3.6, 1, 1); }
+		if (unit.equals("kph")) {
+			return Utils.formatNumber(value * 3.6, 1, 1);
+		}
 
-		if (unit.equals("mph")) { return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1, 1); }
+		if (unit.equals("mph")) {
+			return Utils.formatNumber(value * 3.6 * KM_TO_MI, 1, 1);
+		}
 
-		if (unit.equals("kn")) { return Utils.formatNumber(value * 3.6 * KMH_TO_KNOTS, 1); }
+		if (unit.equals("kn")) {
+			return Utils.formatNumber(value * 3.6 * KMH_TO_KNOTS, 1);
+		}
 
 		return "";
 
@@ -164,30 +195,46 @@ public class Utils {
 
 	public static String getLocalizedSpeedUnit(Context context, String unit) {
 
-		if (unit.equals("kph")) { return context.getString(R.string.kph); }
+		if (unit.equals("kph")) {
+			return context.getString(R.string.kph);
+		}
 
-		if (unit.equals("mph")) { return context.getString(R.string.mph); }
+		if (unit.equals("mph")) {
+			return context.getString(R.string.mph);
+		}
 
-		if (unit.equals("kn")) { return context.getString(R.string.kn); }
+		if (unit.equals("kn")) {
+			return context.getString(R.string.kn);
+		}
 
 		return "";
 
 	}
 
 	/**
-	 * @param value Speed value is in meters per second
-	 * @param unit kph or mph
+	 * @param value
+	 *            Speed value is in meters per second
+	 * @param unit
+	 *            kph or mph
 	 * @return
 	 */
 	public static String formatPace(float value, String unit) {
 
-		if (value < 0.224) { return "00:00"; }
+		if (value < 0.224) {
+			return "00:00";
+		}
 
-		if (unit.equals("kph")) { return formatInterval((long) (1000000 / value), false); }
+		if (unit.equals("kph")) {
+			return formatInterval((long) (1000000 / value), false);
+		}
 
-		if (unit.equals("mph")) { return formatInterval((long) (1000000 / (value * KMH_TO_MPH)), false); }
+		if (unit.equals("mph")) {
+			return formatInterval((long) (1000000 / (value * KMH_TO_MPH)), false);
+		}
 
-		if (unit.equals("kn")) { return formatInterval((long) (1000000 / (value * KMH_TO_KNOTS)), false); }
+		if (unit.equals("kn")) {
+			return formatInterval((long) (1000000 / (value * KMH_TO_KNOTS)), false);
+		}
 
 		return "";
 
@@ -230,8 +277,7 @@ public class Utils {
 	}
 
 	/**
-	 * Formats coordinate value to string based on output type (modified version
-	 * from Android API)
+	 * Formats coordinate value to string based on output type (modified version from Android API)
 	 */
 	public static String formatCoord(double coordinate, int outputType) {
 
@@ -287,7 +333,9 @@ public class Utils {
 
 	public static String shortenStr(String s, int maxLength) {
 
-		if (s.length() > maxLength) { return s.substring(0, maxLength) + "..."; }
+		if (s.length() > maxLength) {
+			return s.substring(0, maxLength) + "...";
+		}
 
 		return s;
 	}
@@ -300,7 +348,8 @@ public class Utils {
 	/**
 	 * Get md5 hash
 	 * 
-	 * @param s String to be md5-ed
+	 * @param s
+	 *            String to be md5-ed
 	 * @return md5 hash
 	 */
 	public static String md5(String s) {
@@ -379,8 +428,7 @@ public class Utils {
 	}
 
 	/**
-	 * Converts time (in milliseconds) to human-readable format
-	 * "<w> days, <x> hours, <y> minutes and (z) seconds"
+	 * Converts time (in milliseconds) to human-readable format "<w> days, <x> hours, <y> minutes and (z) seconds"
 	 */
 	public static String timeToHumanReadableString(long duration) {
 
@@ -481,7 +529,9 @@ public class Utils {
 		int place = Integer.toString(number).length() - 2;
 
 		int i = 1;
-		if (place <= 0) { return number; }
+		if (place <= 0) {
+			return number;
+		}
 
 		while (place > 0) {
 			i = i * 10;
@@ -503,7 +553,9 @@ public class Utils {
 		int place = Integer.toString(number).length() - 2;
 
 		int i = 1;
-		if (place <= 0) { return number; }
+		if (place <= 0) {
+			return number;
+		}
 
 		while (place > 0) {
 			i = i * 10;
@@ -513,6 +565,26 @@ public class Utils {
 		int r = number % i;
 
 		return number - r;
+
+	}
+
+	/**
+	 * Returns device rotation as integer number from 0 to 270
+	 * 
+	 * @param activity
+	 * @return
+	 */
+	public static int getDeviceRotation(Activity activity) {
+		
+		int[] rotations = {0,90,180,270}; 
+
+		final int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+
+		if (rotation>0 && rotation<=3) {
+			return rotations[rotation];
+		} else {
+			return 0;
+		}
 
 	}
 

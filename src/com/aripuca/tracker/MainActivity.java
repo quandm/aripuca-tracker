@@ -1,6 +1,5 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
@@ -58,8 +57,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 
@@ -419,6 +420,19 @@ public class MainActivity extends Activity {
 
 		this.setControlButtonListeners();
 
+		// touch on small compass will open compass activity 
+		CompassImage compassImageView = (CompassImage) findViewById(R.id.compassImage);
+		if (compassImageView != null) {
+			compassImageView.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					startActivity(new Intent(MainActivity.this, CompassActivity.class));
+					return true;
+				}
+			});
+			
+		}
+
 	}
 
 	private Runnable appServiceConnectionCallback = new Runnable() {
@@ -666,10 +680,12 @@ public class MainActivity extends Activity {
 	 */
 	private void setContainer(ContainerCarousel carousel) {
 
+		final ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
+		
 		// assigning click event listener to container
-		if (findViewById(carousel.getResourceId()) != null) {
+		if (containerView != null) {
 
-			ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
+//			ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
 
 			final int resourceId = carousel.getResourceId();
 			final ContainerCarousel car = carousel;
@@ -706,6 +722,7 @@ public class MainActivity extends Activity {
 		dynamicView.removeAllViews();
 		dynamicView.addView(tmpView, 0);
 
+		// in track recording mode the view will be switched to R.layout.main_tracking
 		if (resourceId != R.layout.main_idle) {
 			setContainer(speedContainerCarousel);
 			setContainer(timeContainerCarousel);
@@ -740,7 +757,7 @@ public class MainActivity extends Activity {
 	 */
 	protected void enableControlButtons() {
 
-		//		((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+		// ((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(true);
 
@@ -751,7 +768,7 @@ public class MainActivity extends Activity {
 	 */
 	protected void disableControlButtons() {
 
-		//		((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+		// ((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 		((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
 
@@ -906,8 +923,8 @@ public class MainActivity extends Activity {
 	};
 
 	/**
-	 * Geocoder handler class. Receives a message from geocoder thread and
-	 * displays "Add Waypoint" dialog even if geocoding request failed
+	 * Geocoder handler class. Receives a message from geocoder thread and displays "Add Waypoint" dialog even if
+	 * geocoding request failed
 	 */
 	private class GeocoderHandler extends Handler {
 
@@ -919,12 +936,12 @@ public class MainActivity extends Activity {
 
 			String addressStr;
 			switch (message.what) {
-				case 1:
-					Bundle bundle = message.getData();
-					addressStr = bundle.getString("address");
+			case 1:
+				Bundle bundle = message.getData();
+				addressStr = bundle.getString("address");
 				break;
-				default:
-					addressStr = null;
+			default:
+				addressStr = null;
 			}
 
 			showAddWaypointDialog(addressStr);
@@ -933,8 +950,8 @@ public class MainActivity extends Activity {
 	};
 
 	/**
-	 * Running geocoder request as a separate thread. The thread will send a
-	 * message to provided Handler object in order to update UI
+	 * Running geocoder request as a separate thread. The thread will send a message to provided Handler object in order
+	 * to update UI
 	 * 
 	 * @param location
 	 * @param context
@@ -1004,7 +1021,8 @@ public class MainActivity extends Activity {
 	/**
 	 * Add Waypoint dialog
 	 * 
-	 * @param address Address string returned from geocoder thread
+	 * @param address
+	 *            Address string returned from geocoder thread
 	 */
 	private void showAddWaypointDialog(String address) {
 
@@ -1080,7 +1098,7 @@ public class MainActivity extends Activity {
 				Toast.makeText(MainActivity.this, R.string.waypoint_saved, Toast.LENGTH_SHORT).show();
 
 				((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
-				
+
 				dialog.dismiss();
 
 			}
@@ -1114,14 +1132,14 @@ public class MainActivity extends Activity {
 
 		switch (id) {
 
-			case Constants.QUICK_HELP_DIALOG_ID:
+		case Constants.QUICK_HELP_DIALOG_ID:
 
-				dialog = new QuickHelpDialog(mContext);
+			dialog = new QuickHelpDialog(mContext);
 
 			break;
 
-			default:
-				dialog = null;
+		default:
+			dialog = null;
 		}
 
 		return dialog;
@@ -1183,60 +1201,60 @@ public class MainActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.compassMenuItem:
+		case R.id.compassMenuItem:
 
-				startActivity(new Intent(this, CompassActivity.class));
+			startActivity(new Intent(this, CompassActivity.class));
 
-				return true;
+			return true;
 
-			case R.id.waypointsMenuItem:
+		case R.id.waypointsMenuItem:
 
-				startActivity(new Intent(this, WaypointsListActivity.class));
+			startActivity(new Intent(this, WaypointsListActivity.class));
 
-				return true;
+			return true;
 
-			case R.id.tracksMenuItem:
+		case R.id.tracksMenuItem:
 
-				startActivity(new Intent(this, TracksTabActivity.class));
+			startActivity(new Intent(this, TracksTabActivity.class));
 
-				return true;
+			return true;
 
-			case R.id.aboutMenuItem:
+		case R.id.aboutMenuItem:
 
-				this.showAboutDialog();
+			this.showAboutDialog();
 
-				return true;
+			return true;
 
-			case R.id.settingsMenuItem:
+		case R.id.settingsMenuItem:
 
-				startActivity(new Intent(this, SettingsActivity.class));
+			startActivity(new Intent(this, SettingsActivity.class));
 
-				return true;
+			return true;
 
-			case R.id.quickHelp:
+		case R.id.quickHelp:
 
-				showQuickHelp();
+			showQuickHelp();
 
-				return true;
+			return true;
 
-			case R.id.backupMenuItem:
+		case R.id.backupMenuItem:
 
-				backupDatabase();
-				return true;
+			backupDatabase();
+			return true;
 
-			case R.id.restoreMenuItem:
+		case R.id.restoreMenuItem:
 
-				restoreDatabase();
-				return true;
+			restoreDatabase();
+			return true;
 
-			case R.id.scheduledRecordingMenuItem:
+		case R.id.scheduledRecordingMenuItem:
 
-				this.startStopScheduledTrackRecording();
-				return true;
+			this.startStopScheduledTrackRecording();
+			return true;
 
-			default:
+		default:
 
-				return super.onOptionsItemSelected(item);
+			return super.onOptionsItemSelected(item);
 
 		}
 
@@ -1304,12 +1322,12 @@ public class MainActivity extends Activity {
 		// ///////////////////////////////////////////////////////////////////
 		if (appService.isListening()) {
 			// activate buttons if location updates come from GPS
-			//			((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
+			// ((Button) findViewById(R.id.addWaypointButton)).setEnabled(true);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			this.hideWaitForFixMessage();
 		} else {
 			// disable recording buttons when waiting for new location
-			//			((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
+			// ((Button) findViewById(R.id.addWaypointButton)).setEnabled(false);
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(false);
 			this.showWaitForFixMessage();
 		}
@@ -1482,8 +1500,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Update sunrise/sunset times We update this only after GpsService bound or
-	 * track recording stopped
+	 * Update sunrise/sunset times We update this only after GpsService bound or track recording stopped
 	 */
 	private void updateSunriseSunset() {
 
@@ -1544,7 +1561,7 @@ public class MainActivity extends Activity {
 
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
 
-			compassImage.setAngle(360 - trueAzimuth - ApiLevelFactory.getApiLevel().getDeviceRotation(this));
+			compassImage.setAngle(360 - trueAzimuth - Utils.getDeviceRotation(this));
 
 			compassImage.invalidate();
 		}
@@ -1579,8 +1596,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Intercepting Back button click to prevent accidental exit in track
-	 * recording mode
+	 * Intercepting Back button click to prevent accidental exit in track recording mode
 	 */
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -1704,8 +1720,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Runnable performing restoration of the application database from external
-	 * source
+	 * Runnable performing restoration of the application database from external source
 	 */
 	private Runnable restoreDatabaseRunnable = new Runnable() {
 		@Override
