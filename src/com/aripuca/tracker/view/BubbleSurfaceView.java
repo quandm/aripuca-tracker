@@ -1,7 +1,6 @@
 package com.aripuca.tracker.view;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.compatibility.ApiLevelFactory;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -52,7 +51,7 @@ public class BubbleSurfaceView extends SurfaceView implements Runnable {
 
 		holder = getHolder();
 
-		ApiLevelFactory.getApiLevel().setZOrderOnTop(this, true);
+		this.setZOrderOnTop(true);
 
 		// making surface transparent
 		holder.setFormat(PixelFormat.TRANSPARENT);

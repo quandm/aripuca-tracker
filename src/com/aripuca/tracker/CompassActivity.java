@@ -1,7 +1,6 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.compatibility.ApiLevelFactory;
 
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.util.Utils;
@@ -102,7 +101,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 			float roll, pitch;
 			//
-			int rotation = ApiLevelFactory.getApiLevel().getDeviceRotation(CompassActivity.this);
+			int rotation = Utils.getDeviceRotation(CompassActivity.this);
 			if (rotation == 90) {
 				roll = bundle.getFloat("pitch");
 				pitch = -bundle.getFloat("roll");
@@ -337,7 +336,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 		// magnetic north to true north, compensate for device's physical
 		// rotation
-		rotation = getAzimuth(azimuth + declination + ApiLevelFactory.getApiLevel().getDeviceRotation(this));
+		rotation = getAzimuth(azimuth + declination + Utils.getDeviceRotation(this));
 
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0) + Utils.DEGREE_CHAR + " "

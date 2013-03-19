@@ -30,7 +30,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.compatibility.ApiLevelFactory;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.map.WaypointsMapActivity;
@@ -209,7 +208,7 @@ public class WaypointsListActivity extends ListActivity {
 					// newAzimuth = newBearing - getAzimuth() -
 					// orientationAdjustment;
 					newAzimuth = newBearing - getAzimuth()
-							- ApiLevelFactory.getApiLevel().getDeviceRotation(WaypointsListActivity.this);
+							- Utils.getDeviceRotation(WaypointsListActivity.this);
 					if ((int) newAzimuth < 0) {
 						newAzimuth = 360 - Math.abs((int) newAzimuth);
 					}
