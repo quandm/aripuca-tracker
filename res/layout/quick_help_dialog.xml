@@ -34,19 +34,19 @@
             android:gravity="right"
             android:orientation="horizontal"
             android:padding="5dp" >
-
-            <Button
+            <Button
                 android:id="@+id/closeButton"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/close" />
-
+
             <Button
                 android:id="@+id/nextButton"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/next" />
-
         </LinearLayout>
     </LinearLayout>
 
