@@ -10,8 +10,8 @@
     <string name="scheduled_track_recording_in_progress">Идет запись трека по расписанию</string>
     <string name="show_track">Показать трек</string>
     <string name="segments">Сегменты</string>
-    <string name="prev_segment">Предыдущий сегмент</string>
-    <string name="next_segment">Следующий сегмент</string>
+    <string name="prev_segment">Пред. сегмент</string>
+    <string name="next_segment">След. сегмент</string>
     <string name="do_you_know">Знаете ли вы?</string>
     <string name="show_on_startup">Показывать при запуске</string>
     <string name="m">м</string>
