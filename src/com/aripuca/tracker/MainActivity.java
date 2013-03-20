@@ -420,19 +420,6 @@ public class MainActivity extends Activity {
 
 		this.setControlButtonListeners();
 
-		// touch on small compass will open compass activity 
-		CompassImage compassImageView = (CompassImage) findViewById(R.id.compassImage);
-		if (compassImageView != null) {
-			compassImageView.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					startActivity(new Intent(MainActivity.this, CompassActivity.class));
-					return true;
-				}
-			});
-			
-		}
-
 	}
 
 	private Runnable appServiceConnectionCallback = new Runnable() {
@@ -462,6 +449,8 @@ public class MainActivity extends Activity {
 			} else {
 
 				replaceDynamicView(R.layout.main_idle);
+
+				setMainIdleLayoutListeners();
 
 				// start location updates after service bound if not recording
 				// track
@@ -665,6 +654,24 @@ public class MainActivity extends Activity {
 	}
 
 	/**
+	 * main_idle layout click listeners
+	 */
+	private void setMainIdleLayoutListeners() {
+
+		// touch on small compass will open compass activity
+		LinearLayout compassLayout = (LinearLayout) findViewById(R.id.compassLayout);
+		if (compassLayout != null) {
+			compassLayout.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(MainActivity.this, CompassActivity.class));
+				}
+			});
+		}
+
+	}
+
+	/**
 	 * preventing phone from sleeping
 	 */
 	private void keepScreenOn() {
@@ -681,11 +688,11 @@ public class MainActivity extends Activity {
 	private void setContainer(ContainerCarousel carousel) {
 
 		final ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
-		
+
 		// assigning click event listener to container
 		if (containerView != null) {
 
-//			ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
+			// ViewGroup containerView = (ViewGroup) findViewById(carousel.getResourceId());
 
 			final int resourceId = carousel.getResourceId();
 			final ContainerCarousel car = carousel;
@@ -802,6 +809,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void clearNotification() {
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1691,7 +1701,7 @@ public class MainActivity extends Activity {
 		}
 
 		// show "select a file" dialog
-		File importFolder = new File(app.getAppDir() + "/backup/");
+		File importFolder = new File(app.getAppDir() + "/" + Constants.PATH_BACKUP + "/");
 		final String importFiles[] = importFolder.list();
 
 		if (importFiles == null || importFiles.length == 0) {

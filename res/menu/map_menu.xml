@@ -9,6 +9,10 @@
 			android:title="@string/show_track"
 			android:icon="@android:drawable/ic_menu_share" />
 
+	<item android:id="@+id/showInfo" 
+			android:title="@string/show_info"
+			android:icon="@android:drawable/ic_menu_share" />
+		
 	<item android:id="@+id/mapMode" 
 			android:title="@string/satellite"
 			android:icon="@android:drawable/ic_menu_mapmode" />

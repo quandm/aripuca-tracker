@@ -69,6 +69,7 @@
     <string name="file">File</string>
     <string name="filename">File name</string>
     <string name="show_on_map">Show on map</string>
+    <string name="show_info">Show info</string>
     <string name="elevation">Elevation</string>
     <string name="gain">Gain</string>
     <string name="loss">Loss</string>

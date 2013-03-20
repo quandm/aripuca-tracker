@@ -11,16 +11,20 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.TrackDetailsActivity;
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
@@ -63,6 +67,14 @@ public class MyMapActivity extends MapActivity {
 	 * id of the track being shown
 	 */
 	private long trackId;
+
+	private SeekBar seekBar;
+
+	private int currentPointIndex;
+
+	private String speedUnit;
+	private String distanceUnit;
+	private String elevationUnit;
 
 	/**
 	 * Track span values
@@ -120,7 +132,9 @@ public class MyMapActivity extends MapActivity {
 		 */
 		private void drawSegments(Projection projection, Canvas canvas) {
 
-			if (points.size() <= 1) { return; }
+			if (points.size() <= 1) {
+				return;
+			}
 
 			Paint paint = new Paint();
 			paint.setStrokeWidth(3);
@@ -165,13 +179,10 @@ public class MyMapActivity extends MapActivity {
 				if (!pathStarted) {
 
 					/*
-					 * if (i > 0) { // starting new segment at last segment's
-					 * end point projection.toPixels(points.get(i -
-					 * 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x,
-					 * screenPts.y);
-					 * projection.toPixels(points.get(i).getGeoPoint(),
-					 * screenPts); path.lineTo(screenPts.x, screenPts.y); } else
-					 * { // for the very first segment just move path pointer
+					 * if (i > 0) { // starting new segment at last segment's end point projection.toPixels(points.get(i
+					 * - 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x, screenPts.y);
+					 * projection.toPixels(points.get(i).getGeoPoint(), screenPts); path.lineTo(screenPts.x,
+					 * screenPts.y); } else { // for the very first segment just move path pointer
 					 * path.moveTo(screenPts.x, screenPts.y); }
 					 */
 
@@ -203,11 +214,15 @@ public class MyMapActivity extends MapActivity {
 
 			}
 
+			this.showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint());
+
+			//Log.v(Constants.TAG, "currentSegmentIndex: " + currentPointIndex);
+
 			// drawing start and end map pins
-			this.showMapPin(projection, canvas, points.get(0).getGeoPoint());
-			if (points.size() > 1) {
-				this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint());
-			}
+			// this.showMapPin(projection, canvas, points.get(0).getGeoPoint());
+			// if (points.size() > 1) {
+			// this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint());
+			// }
 
 		}
 
@@ -252,7 +267,12 @@ public class MyMapActivity extends MapActivity {
 		mapView.setStreetView(true);
 		mapView.setSatellite(false);
 
-		mapView.setBuiltInZoomControls(true);
+		mapView.setBuiltInZoomControls(false);
+
+		// measure units
+		speedUnit = app.getPreferences().getString("speed_units", "kph");
+		distanceUnit = app.getPreferences().getString("distance_units", "km");
+		elevationUnit = app.getPreferences().getString("elevation_units", "m");
 
 		// getting extra data passed to the activity
 		Bundle b = getIntent().getExtras();
@@ -282,7 +302,9 @@ public class MyMapActivity extends MapActivity {
 
 			this.trackId = b.getLong("track_id");
 
-			this.createPath(this.trackId);
+			this.loadTrackPoints(this.trackId);
+
+			this.currentPointIndex = 0;
 
 			// zoom to track points span
 			mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
@@ -297,16 +319,58 @@ public class MyMapActivity extends MapActivity {
 			Cursor cursor = app.getDatabase().rawQuery(sql, null);
 			cursor.moveToFirst();
 
-			String distanceUnit = app.getPreferences().getString("distance_units", "km");
 			float distance = cursor.getInt(cursor.getColumnIndex("distance"));
 
-			// track distance
+			// show track distance in track info area
 			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit)
 					+ Utils.getLocalizedDistanceUnit(this, distance, distanceUnit));
 
 			cursor.close();
 
 		}
+
+		// --------------------------------------------------------------------
+		// --------------------------------------------------------------------
+		// --------------------------------------------------------------------
+		seekBar = (SeekBar) findViewById(R.id.seekBar);
+		seekBar.setMax(points.size() - 1);
+
+		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+				currentPointIndex = progress;
+
+				TrackPoint tp = points.get(progress);
+
+				((TextView) findViewById(R.id.info)).setText(
+
+						Utils.formatSpeed(tp.getSpeed(), speedUnit) + " " +
+								Utils.getLocalizedSpeedUnit(MyMapActivity.this, speedUnit) + " " +
+								Utils.formatDistance(tp.getDistance(), distanceUnit) + " " +
+								Utils.getLocalizedDistanceUnit(MyMapActivity.this, tp.getDistance(), distanceUnit) + " " +
+								Utils.formatElevation(tp.getElevation(), elevationUnit) + " " +
+								Utils.getLocalizedElevationUnit(MyMapActivity.this, elevationUnit)
+						);
+
+				mapView.invalidate();
+
+			}
+
+		});
 
 		// ---Add a location marker---
 		MapOverlay mapOverlay = new MapOverlay();
@@ -324,7 +388,7 @@ public class MyMapActivity extends MapActivity {
 	 * 
 	 * @param trackId
 	 */
-	private void createPath(long trackId) {
+	private void loadTrackPoints(long trackId) {
 
 		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 		Cursor tpCursor = app.getDatabase().rawQuery(sql, null);
@@ -341,7 +405,11 @@ public class MyMapActivity extends MapActivity {
 
 			segmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
 
+			// track point object
 			TrackPoint gp = new TrackPoint(new GeoPoint(latE6, lngE6), segmentIndex);
+			gp.setSpeed(tpCursor.getFloat(tpCursor.getColumnIndex("speed")));
+			gp.setDistance(tpCursor.getFloat(tpCursor.getColumnIndex("distance")));
+			gp.setElevation(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")));
 
 			calculateTrackSpan(latE6, lngE6);
 
@@ -411,6 +479,7 @@ public class MyMapActivity extends MapActivity {
 
 		if (mode == Constants.SHOW_WAYPOINT) {
 			(menu.findItem(R.id.showTrack)).setVisible(false);
+			(menu.findItem(R.id.showInfo)).setVisible(false);
 		} else {
 			(menu.findItem(R.id.showWaypoint)).setVisible(false);
 		}
@@ -434,40 +503,52 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.showWaypoint:
+		case R.id.showWaypoint:
 
-				mapView.getController().setZoom(16);
-				mapView.getController().animateTo(waypoint);
+			mapView.getController().setZoom(16);
+			mapView.getController().animateTo(waypoint);
 
-				return true;
+			return true;
 
-			case R.id.showTrack:
+		case R.id.showTrack:
 
-				// zoom to track points span
-				mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
+			// zoom to track points span
+			mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
 
-				// pan to the center of track occupied area
-				mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
+			// pan to the center of track occupied area
+			mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
 
-				return true;
+			return true;
 
-			case R.id.mapMode:
+		case R.id.showInfo:
 
-				if (mapMode == Constants.MAP_STREET) {
-					mapView.setStreetView(false);
-					mapView.setSatellite(true);
-					mapMode = Constants.MAP_SATELLITE;
-				} else {
-					mapView.setSatellite(false);
-					mapView.setStreetView(true);
-					mapMode = Constants.MAP_STREET;
-				}
+			LinearLayout infoPanel = (LinearLayout) findViewById(R.id.infoPanel);
+			
+			if (infoPanel.getVisibility()==View.VISIBLE) {
+				infoPanel.setVisibility(View.GONE);
+			} else {
+				infoPanel.setVisibility(View.VISIBLE);
+			}
+			
+			return true;
+			
+		case R.id.mapMode:
 
-				return true;
+			if (mapMode == Constants.MAP_STREET) {
+				mapView.setStreetView(false);
+				mapView.setSatellite(true);
+				mapMode = Constants.MAP_SATELLITE;
+			} else {
+				mapView.setSatellite(false);
+				mapView.setStreetView(true);
+				mapMode = Constants.MAP_STREET;
+			}
 
-			default:
+			return true;
 
-				return super.onOptionsItemSelected(item);
+		default:
+
+			return super.onOptionsItemSelected(item);
 
 		}
 
