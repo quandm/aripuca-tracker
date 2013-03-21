@@ -109,7 +109,7 @@ public class MyMapActivity extends MapActivity {
 			// display waypoint
 			if (mode == Constants.SHOW_WAYPOINT) {
 
-				this.showMapPin(projection, canvas, waypoint);
+				this.showMapPin(projection, canvas, waypoint, R.drawable.map_pin);
 
 			}
 
@@ -179,10 +179,13 @@ public class MyMapActivity extends MapActivity {
 				if (!pathStarted) {
 
 					/*
-					 * if (i > 0) { // starting new segment at last segment's end point projection.toPixels(points.get(i
-					 * - 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x, screenPts.y);
-					 * projection.toPixels(points.get(i).getGeoPoint(), screenPts); path.lineTo(screenPts.x,
-					 * screenPts.y); } else { // for the very first segment just move path pointer
+					 * if (i > 0) { // starting new segment at last segment's
+					 * end point projection.toPixels(points.get(i -
+					 * 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x,
+					 * screenPts.y);
+					 * projection.toPixels(points.get(i).getGeoPoint(),
+					 * screenPts); path.lineTo(screenPts.x, screenPts.y); } else
+					 * { // for the very first segment just move path pointer
 					 * path.moveTo(screenPts.x, screenPts.y); }
 					 */
 
@@ -214,15 +217,16 @@ public class MyMapActivity extends MapActivity {
 
 			}
 
-			this.showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint());
+			this.showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint(), R.drawable.marker_flag_blue);
 
 			//Log.v(Constants.TAG, "currentSegmentIndex: " + currentPointIndex);
 
 			// drawing start and end map pins
-			// this.showMapPin(projection, canvas, points.get(0).getGeoPoint());
-			// if (points.size() > 1) {
-			// this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint());
-			// }
+			this.showMapPin(projection, canvas, points.get(0).getGeoPoint(), R.drawable.marker_flag_green);
+			if (points.size() > 1) {
+				this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint(),
+						R.drawable.marker_flag_pink);
+			}
 
 		}
 
@@ -233,19 +237,18 @@ public class MyMapActivity extends MapActivity {
 		 * @param canvas
 		 * @param point
 		 */
-		private void showMapPin(Projection projection, Canvas canvas, GeoPoint point) {
+		private void showMapPin(Projection projection, Canvas canvas, GeoPoint point, int resourceId) {
 
 			// translate the GeoPoint to screen pixels
 			Point screenPts = new Point();
 			projection.toPixels(point, screenPts);
 
 			// add the marker
-			Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.map_pin);
+			Bitmap bmp = BitmapFactory.decodeResource(getResources(), resourceId);
 
 			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
 
 		}
-
 	}
 
 	/**
@@ -322,16 +325,28 @@ public class MyMapActivity extends MapActivity {
 			float distance = cursor.getInt(cursor.getColumnIndex("distance"));
 
 			// show track distance in track info area
-			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit)
-					+ Utils.getLocalizedDistanceUnit(this, distance, distanceUnit));
+			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(distance, distanceUnit) + " " +
+					Utils.getLocalizedDistanceUnit(this, distance, distanceUnit));
 
 			cursor.close();
 
+			setupSeekBar();
+
 		}
 
-		// --------------------------------------------------------------------
-		// --------------------------------------------------------------------
-		// --------------------------------------------------------------------
+		// ---Add a location marker---
+		MapOverlay mapOverlay = new MapOverlay();
+
+		List<Overlay> listOfOverlays = mapView.getOverlays();
+		listOfOverlays.clear();
+		listOfOverlays.add(mapOverlay);
+
+		mapView.invalidate();
+
+	}
+
+	private void setupSeekBar() {
+
 		seekBar = (SeekBar) findViewById(R.id.seekBar);
 		seekBar.setMax(points.size() - 1);
 
@@ -361,7 +376,8 @@ public class MyMapActivity extends MapActivity {
 						Utils.formatSpeed(tp.getSpeed(), speedUnit) + " " +
 								Utils.getLocalizedSpeedUnit(MyMapActivity.this, speedUnit) + " " +
 								Utils.formatDistance(tp.getDistance(), distanceUnit) + " " +
-								Utils.getLocalizedDistanceUnit(MyMapActivity.this, tp.getDistance(), distanceUnit) + " " +
+								Utils.getLocalizedDistanceUnit(MyMapActivity.this, tp.getDistance(), distanceUnit)
+								+ " " +
 								Utils.formatElevation(tp.getElevation(), elevationUnit) + " " +
 								Utils.getLocalizedElevationUnit(MyMapActivity.this, elevationUnit)
 						);
@@ -371,15 +387,6 @@ public class MyMapActivity extends MapActivity {
 			}
 
 		});
-
-		// ---Add a location marker---
-		MapOverlay mapOverlay = new MapOverlay();
-
-		List<Overlay> listOfOverlays = mapView.getOverlays();
-		listOfOverlays.clear();
-		listOfOverlays.add(mapOverlay);
-
-		mapView.invalidate();
 
 	}
 
@@ -503,52 +510,52 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.showWaypoint:
+			case R.id.showWaypoint:
 
-			mapView.getController().setZoom(16);
-			mapView.getController().animateTo(waypoint);
+				mapView.getController().setZoom(16);
+				mapView.getController().animateTo(waypoint);
 
-			return true;
+				return true;
 
-		case R.id.showTrack:
+			case R.id.showTrack:
 
-			// zoom to track points span
-			mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
+				// zoom to track points span
+				mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
 
-			// pan to the center of track occupied area
-			mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
+				// pan to the center of track occupied area
+				mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
 
-			return true;
+				return true;
 
-		case R.id.showInfo:
+			case R.id.showInfo:
 
-			LinearLayout infoPanel = (LinearLayout) findViewById(R.id.infoPanel);
-			
-			if (infoPanel.getVisibility()==View.VISIBLE) {
-				infoPanel.setVisibility(View.GONE);
-			} else {
-				infoPanel.setVisibility(View.VISIBLE);
-			}
-			
-			return true;
-			
-		case R.id.mapMode:
+				LinearLayout infoPanel = (LinearLayout) findViewById(R.id.infoPanel);
 
-			if (mapMode == Constants.MAP_STREET) {
-				mapView.setStreetView(false);
-				mapView.setSatellite(true);
-				mapMode = Constants.MAP_SATELLITE;
-			} else {
-				mapView.setSatellite(false);
-				mapView.setStreetView(true);
-				mapMode = Constants.MAP_STREET;
-			}
+				if (infoPanel.getVisibility() == View.VISIBLE) {
+					infoPanel.setVisibility(View.GONE);
+				} else {
+					infoPanel.setVisibility(View.VISIBLE);
+				}
 
-			return true;
+				return true;
 
-		default:
+			case R.id.mapMode:
 
-			return super.onOptionsItemSelected(item);
+				if (mapMode == Constants.MAP_STREET) {
+					mapView.setStreetView(false);
+					mapView.setSatellite(true);
+					mapMode = Constants.MAP_SATELLITE;
+				} else {
+					mapView.setSatellite(false);
+					mapView.setStreetView(true);
+					mapMode = Constants.MAP_STREET;
+				}
+
+				return true;
+
+			default:
+
+				return super.onOptionsItemSelected(item);
 
 		}
 
