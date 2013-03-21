@@ -11,6 +11,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
@@ -100,7 +104,13 @@ public class WaypointsMapActivity extends MapActivity {
 		mapView.setStreetView(true);
 		mapView.setSatellite(false);
 
-		mapView.setBuiltInZoomControls(true);
+		// mapView.setBuiltInZoomControls(true);
+
+		// hide info panel
+		LinearLayout infoPanel = (LinearLayout) findViewById(R.id.infoPanel);
+		if (infoPanel != null) {
+			infoPanel.setVisibility(View.GONE);
+		}
 
 		// ---Add a location marker---
 		List<Overlay> mapOverlays = mapView.getOverlays();
@@ -134,9 +144,7 @@ public class WaypointsMapActivity extends MapActivity {
 							Integer.parseInt(app.getPreferences().getString("coord_units", "0")));
 
 			if (cursor.getString(cursor.getColumnIndex("descr")) != null) {
-
 				snippet = cursor.getString(cursor.getColumnIndex("descr")) + "\n" + snippet;
-
 			}
 
 			OverlayItem overlayitem = new OverlayItem(point, cursor.getString(cursor.getColumnIndex("title")), snippet);
