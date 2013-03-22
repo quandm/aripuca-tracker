@@ -19,6 +19,10 @@ public class TrackPoint extends Object {
 
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public GeoPoint getGeoPoint() {
 		return this.geoPoint;
 	}

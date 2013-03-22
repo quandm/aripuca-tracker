@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".map.WaypointsMapActivity" >
 
+    <!-- REPLACE WITH RELEASE KEY -->
+    <!-- Debug certificate MD5 fingerprint: 7D:67:DE:78:FE:6F:C5:15:E8:78:FE:DA:9F:21:90:CB -->
+    <!-- Debug Map API Key: 0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg -->
+    
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
@@ -10,47 +14,49 @@
         android:apiKey="0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg"
         android:clickable="true" />
 
+    <!-- top panel for displaying current point details -->
     <LinearLayout
         android:id="@+id/infoPanel"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="bottom" >
+        android:layout_height="wrap_content"
+        android:background="#AA000000"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:padding="5dp" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#CC000000"
-            android:padding="5dp"
-            android:orientation="vertical" >
+            android:textColor="#FFEEEEEE"
+            android:textSize="12sp" >
+        </TextView>
 
-            <TextView
-                android:id="@+id/distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#FFEEEEEE"
-                android:textSize="12sp" >
-            </TextView>
-
-            <TextView
-                android:id="@+id/info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#FFEEEEEE"
-                android:textSize="12sp" >
-            </TextView>
-
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFEEEEEE"
+            android:textSize="12sp" >
+        </TextView>
     </LinearLayout>
 
-    <!-- REPLACE WITH RELEASE KEY -->
-    <!-- Debug certificate MD5 fingerprint: 7D:67:DE:78:FE:6F:C5:15:E8:78:FE:DA:9F:21:90:CB -->
-    <!-- Debug Map API Key: 0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg -->
+    <!-- bottom seekbar panel -->
+    <LinearLayout
+        android:id="@+id/seekBarPanel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#44000000"
+        android:layout_gravity="bottom"
+        android:padding="5dp" >
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+        
+    </LinearLayout>
 
 </merge>

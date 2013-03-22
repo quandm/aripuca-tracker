@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-<!-- 
-	<item android:id="@+id/exportMenuItem" 
-			android:title="@string/export_all"
-			android:icon="@android:drawable/ic_menu_set_as" />
-
-	<item android:id="@+id/importMenuItem" 
-			android:title="@string/import_all"
-			android:icon="@android:drawable/ic_menu_add" />
-
-	<item android:id="@+id/syncAllMenuItem" 
-			android:title="@string/sync_all"
-			android:icon="@android:drawable/ic_menu_upload" />
-			
- -->
-			
 	<item android:id="@+id/deleteTracksMenuItem" 
 			android:title="@string/clear_all"
-			android:icon="@android:drawable/ic_menu_delete" />
+			android:icon="@drawable/ic_menu_delete" />
 
 </menu>
     
