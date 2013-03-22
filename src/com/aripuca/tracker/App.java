@@ -4,8 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.aripuca.tracker.db.Segments;
+import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Tracks;
+import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.AppLog;
+import com.aripuca.tracker.util.Utils;
 
 import android.app.Application;
 import android.content.ContentValues;
@@ -93,7 +98,8 @@ public class App extends Application {
 	}
 
 	/**
-	 * @param currentLocation the currentLocation to set
+	 * @param currentLocation
+	 *            the currentLocation to set
 	 */
 	public void setCurrentLocation(Location currentLocation) {
 		this.currentLocation = currentLocation;
@@ -109,93 +115,10 @@ public class App extends Application {
 		 */
 		private static final String DATABASE_NAME = Constants.APP_NAME + ".db";
 
+		/**
+		 * Database version for
+		 */
 		private static final int DATABASE_VERSION = 1;
-
-		// private static final String NOTES_TABLE_NAME = "notes";
-
-		/**
-		 * tracks table
-		 */
-		private static final String TRACKS_TABLE = "tracks";
-
-		/**
-		 * tracks table create sql
-		 */
-		private static final String TRACKS_TABLE_CREATE =
-				"CREATE TABLE " + TRACKS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"title TEXT NOT NULL," +
-						"descr TEXT," +
-						"activity INTEGER," +
-						"distance REAL," +
-						"total_time INTEGER," +
-						"moving_time INTEGER," +
-						"max_speed REAL," +
-						"max_elevation REAL," +
-						"min_elevation REAL," +
-						"elevation_gain REAL," +
-						"elevation_loss REAL," +
-						"recording INTEGER NOT NULL," +
-						"start_time INTEGER NOT NULL," +
-						"finish_time INTEGER)";
-
-		private static final String SEGMENTS_TABLE = "segments";
-
-		private static final String SEGMENTS_TABLE_CREATE =
-				"CREATE TABLE " + SEGMENTS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"track_id INTEGER NOT NULL," +
-						"segment_index INTEGER," +
-						"distance REAL," +
-						"total_time INTEGER," +
-						"moving_time INTEGER," +
-						"max_speed REAL," +
-						"max_elevation REAL," +
-						"min_elevation REAL," +
-						"elevation_gain REAL," +
-						"elevation_loss REAL," +
-						"start_time INTEGER NOT NULL," +
-						"finish_time INTEGER)";
-
-		/**
-		 * track points table
-		 */
-		private static final String TRACKPOINTS_TABLE = "track_points";
-		/**
-		 * track points table create sql
-		 */
-		private static final String TRACKPOINTS_TABLE_CREATE =
-				"CREATE TABLE " + TRACKPOINTS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"track_id INTEGER NOT NULL," +
-						"segment_index INTEGER," +
-						"distance REAL," +
-						"lat INTEGER NOT NULL," +
-						"lng INTEGER NOT NULL," +
-						"accuracy REAL," +
-						"elevation REAL," +
-						"speed REAL," +
-						"time INTEGER NOT NULL)";
-
-		/**
-		 * waypoints sql table
-		 */
-		private static final String WAYPOINTS_TABLE = "waypoints";
-
-		/**
-		 * waypointss table create sql
-		 */
-		private static final String WAYPOINTS_TABLE_CREATE =
-				"CREATE TABLE " + WAYPOINTS_TABLE +
-						" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-						"track_id INTEGER," +
-						"title TEXT NOT NULL, " +
-						"descr TEXT, " +
-						"lat INTEGER NOT NULL, " +
-						"lng INTEGER NOT NULL, " +
-						"accuracy REAL," +
-						"elevation REAL," +
-						"time INTEGER NOT NULL)";
 
 		/**
 		 * OpenHelper constructor
@@ -209,10 +132,13 @@ public class App extends Application {
 		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			db.execSQL(WAYPOINTS_TABLE_CREATE);
-			db.execSQL(TRACKS_TABLE_CREATE);
-			db.execSQL(TRACKPOINTS_TABLE_CREATE);
-			db.execSQL(SEGMENTS_TABLE_CREATE);
+
+			db.execSQL(Waypoints.TABLE_CREATE);
+
+			db.execSQL(Tracks.TABLE_CREATE);
+
+			db.execSQL(TrackPoints.TABLE_CREATE);
+			db.execSQL(Segments.TABLE_CREATE);
 		}
 
 		/**
@@ -220,11 +146,14 @@ public class App extends Application {
 		 */
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
 			// recreate database if version changes (DATABASE_VERSION)
-			db.execSQL("DROP TABLE IF EXISTS " + WAYPOINTS_TABLE);
-			db.execSQL("DROP TABLE IF EXISTS " + TRACKS_TABLE);
-			db.execSQL("DROP TABLE IF EXISTS " + TRACKPOINTS_TABLE);
-			db.execSQL("DROP TABLE IF EXISTS " + SEGMENTS_TABLE);
+			db.execSQL("DROP TABLE IF EXISTS " + Waypoints.TABLE_NAME);
+
+			db.execSQL("DROP TABLE IF EXISTS " + Tracks.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + TrackPoints.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + Segments.TABLE_NAME);
+
 			onCreate(db);
 		}
 
@@ -260,8 +189,19 @@ public class App extends Application {
 		// display density
 		// density = getContext().getResources().getDisplayMetrics().density;
 
-		// adding famous waypoints to db if not added yet
-		insertFamousWaypoints();
+		// adding famous waypointsto db if not added yet
+		
+		// adding famous waypoints only once
+		if (!getPreferences().contains("famous_waypoints")) {
+			
+			Waypoints.insertFamousWaypoints(db);
+			
+			// switch flag of famous locations added to true
+			SharedPreferences.Editor editor = getPreferences().edit();
+			editor.putInt("famous_waypoints", 1);
+			editor.commit();
+			
+		}
 
 		this.logd("=================== app: onCreate ===================");
 
@@ -344,74 +284,12 @@ public class App extends Application {
 	 * Create application folders
 	 */
 	private void createFolderStructure() {
-		createFolder(getAppDir());
-		createFolder(getAppDir() + "/" + Constants.PATH_TRACKS);
-		createFolder(getAppDir() + "/" + Constants.PATH_WAYPOINTS);
-		createFolder(getAppDir() + "/" + Constants.PATH_BACKUP);
-		createFolder(getAppDir() + "/" + Constants.PATH_DEBUG);
-		createFolder(getAppDir() + "/" + Constants.PATH_LOGS);
-	}
-
-	/**
-	 * Create folder if not exists
-	 * 
-	 * @param folderName
-	 */
-	private void createFolder(String folderName) {
-
-		File folder = new File(folderName);
-
-		// create output folder
-		if (!folder.exists()) {
-			folder.mkdir();
-		}
-
-	}
-
-	/**
-	 * Create a list of famous waypoints and insert to db when application first
-	 * installed
-	 */
-	private void insertFamousWaypoints() {
-
-		// adding famous waypoints only once
-		if (getPreferences().contains("famous_waypoints")) {
-			return;
-		}
-
-		// create array of waypoints
-		ArrayList<Waypoint> famousWaypoints = new ArrayList<Waypoint>();
-		famousWaypoints.add(new Waypoint("Aripuca", 50.12457, 8.6555));
-		famousWaypoints.add(new Waypoint("Eiffel Tower", 48.8583, 2.2945));
-		famousWaypoints.add(new Waypoint("Niagara Falls", 43.08, -79.071));
-		famousWaypoints.add(new Waypoint("Golden Gate Bridge", 37.819722, -122.478611));
-		famousWaypoints.add(new Waypoint("Stonehenge", 51.178844, -1.826189));
-		famousWaypoints.add(new Waypoint("Mount Everest", 27.988056, 86.925278));
-		famousWaypoints.add(new Waypoint("Colosseum", 41.890169, 12.492269));
-		famousWaypoints.add(new Waypoint("Red Square", 55.754167, 37.62));
-		famousWaypoints.add(new Waypoint("Charles Bridge", 50.086447, 14.411856));
-
-		// insert waypoints to db
-		Iterator<Waypoint> itr = famousWaypoints.iterator();
-		while (itr.hasNext()) {
-
-			Waypoint wp = itr.next();
-
-			ContentValues values = new ContentValues();
-			values.put("title", wp.getTitle());
-			values.put("lat", (int) (wp.getLatitude() * 1E6));
-			values.put("lng", (int) (wp.getLongitude() * 1E6));
-			values.put("time", wp.getTime());
-
-			getDatabase().insert("waypoints", null, values);
-
-		}
-
-		// switch flag of famous locations added to true
-		SharedPreferences.Editor editor = getPreferences().edit();
-		editor.putInt("famous_waypoints", 1);
-		editor.commit();
-
+		Utils.createFolder(getAppDir());
+		Utils.createFolder(getAppDir() + "/" + Constants.PATH_TRACKS);
+		Utils.createFolder(getAppDir() + "/" + Constants.PATH_WAYPOINTS);
+		Utils.createFolder(getAppDir() + "/" + Constants.PATH_BACKUP);
+		Utils.createFolder(getAppDir() + "/" + Constants.PATH_DEBUG);
+		Utils.createFolder(getAppDir() + "/" + Constants.PATH_LOGS);
 	}
 
 }

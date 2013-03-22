@@ -360,7 +360,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		// (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.track));
-		// menu.add(Menu.NONE, 1, 1, R.string.view);
+		menu.add(Menu.NONE, 1, 1, R.string.view);
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 

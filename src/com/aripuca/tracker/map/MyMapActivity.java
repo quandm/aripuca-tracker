@@ -3,6 +3,8 @@ package com.aripuca.tracker.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -28,12 +31,14 @@ import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.TrackDetailsActivity;
+import com.aripuca.tracker.map.WaypointsMapActivity.MyItemizedOverlay;
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
 /**
@@ -98,9 +103,9 @@ public class MyMapActivity extends MapActivity {
 	private int mapMode;
 
 	/**
-	 * Map overlay class
+	 * Map overlay for displaying track path
 	 */
-	class MapOverlay extends com.google.android.maps.Overlay {
+	class TrackOverlay extends com.google.android.maps.Overlay {
 
 		/**
 		 * Overridden draw method
@@ -110,21 +115,7 @@ public class MyMapActivity extends MapActivity {
 
 			super.draw(canvas, mapView, shadow);
 
-			final Projection projection = mapView.getProjection();
-
-			// display waypoint
-			if (mode == Constants.SHOW_WAYPOINT) {
-
-				this.showMapPin(projection, canvas, waypoint, R.drawable.map_pin);
-
-			}
-
-			// drawing the track on the map
-			if (mode == Constants.SHOW_TRACK || mode == Constants.SHOW_SCHEDULED_TRACK) {
-
-				this.drawSegments(projection, canvas);
-
-			}
+			this.drawSegments(mapView, canvas);
 
 			return true;
 
@@ -136,7 +127,9 @@ public class MyMapActivity extends MapActivity {
 		 * @param projection
 		 * @param canvas
 		 */
-		private void drawSegments(Projection projection, Canvas canvas) {
+		private void drawSegments(MapView mapView, Canvas canvas) {
+
+			final Projection projection = mapView.getProjection();
 
 			if (points.size() <= 1) {
 				return;
@@ -154,8 +147,11 @@ public class MyMapActivity extends MapActivity {
 			int currentSegmentIndex = -1;
 
 			Path path = null;
+
+			// array of path segments
 			ArrayList<Path> segmentPath = new ArrayList<Path>();
 
+			// create Path objects for each segment
 			for (int i = 0; i < points.size(); i++) {
 
 				// start new segment
@@ -184,19 +180,22 @@ public class MyMapActivity extends MapActivity {
 				// populating path object
 				if (!pathStarted) {
 
-					/*
-					 * if (i > 0) { // starting new segment at last segment's
-					 * end point projection.toPixels(points.get(i -
-					 * 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x,
-					 * screenPts.y);
-					 * projection.toPixels(points.get(i).getGeoPoint(),
-					 * screenPts); path.lineTo(screenPts.x, screenPts.y); } else
-					 * { // for the very first segment just move path pointer
-					 * path.moveTo(screenPts.x, screenPts.y); }
-					 */
+					if (i > 0) {
+
+						// starting new segment at last segment's end point
+						projection.toPixels(points.get(i - 1).getGeoPoint(), screenPts);
+						path.moveTo(screenPts.x, screenPts.y);
+
+						projection.toPixels(points.get(i).getGeoPoint(), screenPts);
+						path.lineTo(screenPts.x, screenPts.y);
+
+					} else { // for the very first segment just move path pointer
+						path.moveTo(screenPts.x, screenPts.y);
+					}
 
 					// starting new segment
-					path.moveTo(screenPts.x, screenPts.y);
+					// path.moveTo(screenPts.x, screenPts.y);
+
 					pathStarted = true;
 
 				} else {
@@ -220,41 +219,109 @@ public class MyMapActivity extends MapActivity {
 				}
 
 				canvas.drawPath(segmentPath.get(i), paint);
-
 			}
 
 			// drawing start and end map pins
-			this.showMapPin(projection, canvas, points.get(0).getGeoPoint(), R.drawable.marker_flag_green);
+			showMapPin(projection, canvas, points.get(0).getGeoPoint(), R.drawable.marker_flag_green);
 			if (points.size() > 1) {
-				this.showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint(),
+				showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint(),
 						R.drawable.marker_flag_pink);
 			}
 
 			// current position marker on top of start/stop ones
-			this.showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint(),
+			showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint(),
 					R.drawable.marker_flag_blue);
 
 		}
+		
+	}
+
+	/**
+	 * 
+	 */
+	class WaypointOverlay extends com.google.android.maps.Overlay {
 
 		/**
-		 * Shows standard map pin on the map
-		 * 
-		 * @param projection
-		 * @param canvas
-		 * @param point
+		 * Overridden draw method
 		 */
-		private void showMapPin(Projection projection, Canvas canvas, GeoPoint point, int resourceId) {
+		@Override
+		public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
 
-			// translate the GeoPoint to screen pixels
-			Point screenPts = new Point();
-			projection.toPixels(point, screenPts);
+			super.draw(canvas, mapView, shadow);
 
-			// add the marker
-			Bitmap bmp = BitmapFactory.decodeResource(getResources(), resourceId);
+			final Projection projection = mapView.getProjection();
 
-			canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
+			showMapPin(projection, canvas, waypoint, R.drawable.map_pin);
+
+			return true;
 
 		}
+
+	}
+
+	/**
+	 * Itemized overlay for displaying waypoints with popup dialog
+	 */
+	class MyItemizedOverlay extends com.google.android.maps.ItemizedOverlay<OverlayItem> {
+
+		private ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
+
+		private Context mContext;
+
+		public MyItemizedOverlay(Drawable defaultMarker, Context context) {
+			super(boundCenterBottom(defaultMarker));
+			mContext = context;
+		}
+
+		public MyItemizedOverlay(Drawable defaultMarker) {
+			super(boundCenterBottom(defaultMarker));
+		}
+
+		public void addOverlay(OverlayItem overlay) {
+			overlayItems.add(overlay);
+			populate();
+		}
+
+		@Override
+		protected OverlayItem createItem(int i) {
+			return overlayItems.get(i);
+		}
+
+		@Override
+		public int size() {
+			return overlayItems.size();
+		}
+
+		@Override
+		protected boolean onTap(int index) {
+			OverlayItem item = overlayItems.get(index);
+			AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+			dialog.setTitle(item.getTitle());
+			dialog.setMessage(item.getSnippet());
+			dialog.show();
+			return true;
+		}
+
+	}
+
+	/**
+	 * Shows standard map pin on the map
+	 * 
+	 * @param projection
+	 * @param canvas
+	 * @param point
+	 */
+	private void showMapPin(Projection projection, Canvas canvas, GeoPoint point, int resourceId) {
+
+		// translate the GeoPoint to screen pixels
+		Point screenPts = new Point();
+		projection.toPixels(point, screenPts);
+
+		// add the marker
+		Bitmap bmp = BitmapFactory.decodeResource(getResources(), resourceId);
+
+		canvas.drawBitmap(bmp, screenPts.x - bmp.getWidth() / 2, screenPts.y - bmp.getHeight(), null);
+
 	}
 
 	/**
@@ -266,39 +333,78 @@ public class MyMapActivity extends MapActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.map_view);
-		
+
 		app = ((App) getApplicationContext());
 
 		// measure units
 		speedUnit = app.getPreferences().getString("speed_units", "kph");
 		distanceUnit = app.getPreferences().getString("distance_units", "km");
 		elevationUnit = app.getPreferences().getString("elevation_units", "m");
-		
+
 		this.setupMapView();
 
 		// getting extra data passed to the activity
 		Bundle b = getIntent().getExtras();
 		this.mode = b.getInt("mode");
 
-		// ---------------------------------------------------------------------------
-		// show waypoint
-		if (this.mode == Constants.SHOW_WAYPOINT) {
-			this.hideInfoPanels();
-			this.showWaypoint(b);
-		}
-
-		// ---------------------------------------------------------------------------
-		// show track
-		if (this.mode == Constants.SHOW_TRACK || this.mode == Constants.SHOW_SCHEDULED_TRACK) {
-			this.showInfoPanels();
-			this.showTrack(b);
-		}
-
-		// add overlays to the map
-		MapOverlay mapOverlay = new MapOverlay();
+		// getting all map overlays
 		List<Overlay> listOfOverlays = mapView.getOverlays();
-		listOfOverlays.clear();
-		listOfOverlays.add(mapOverlay);
+
+		switch (this.mode) {
+
+		// show waypoint
+		case Constants.SHOW_WAYPOINT:
+
+			this.hideInfoPanels();
+
+			this.setupWaypoint(b);
+
+			// add overlays to the map
+			WaypointOverlay waypointOverlay = new WaypointOverlay();
+
+			listOfOverlays.clear();
+			listOfOverlays.add(waypointOverlay);
+
+			break;
+
+		case Constants.SHOW_ALL_WAYPOINTS:
+
+			this.hideInfoPanels();
+
+			Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
+			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
+			MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
+
+			this.loadWaypoints(itemizedOverlay);
+
+			listOfOverlays.clear();
+			listOfOverlays.add(itemizedOverlay);
+
+			break;
+
+		// show track
+		case Constants.SHOW_TRACK:
+		case Constants.SHOW_SCHEDULED_TRACK:
+
+			this.trackId = b.getLong("track_id");
+
+			this.showInfoPanels();
+
+			this.setupTrack();
+
+			this.setupSeekBar();
+
+			// add overlays to the map
+			TrackOverlay trackOverlay = new TrackOverlay();
+
+			listOfOverlays.clear();
+			listOfOverlays.add(trackOverlay);
+
+			break;
+
+		}
+
 		mapView.invalidate();
 
 	}
@@ -310,9 +416,7 @@ public class MyMapActivity extends MapActivity {
 		mapView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (mode == Constants.SHOW_TRACK || mode == Constants.SHOW_SCHEDULED_TRACK) {
-					showInfoPanels();
-				}
+				showInfoPanels();
 				return false;
 			}
 		});
@@ -326,7 +430,7 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
-	private void showWaypoint(Bundle b) {
+	private void setupWaypoint(Bundle b) {
 
 		waypoint = new GeoPoint(b.getInt("latE6"), b.getInt("lngE6"));
 
@@ -335,9 +439,10 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
-	private void showTrack(Bundle b) {
-
-		this.trackId = b.getLong("track_id");
+	/**
+	 * 
+	 */
+	private void setupTrack() {
 
 		this.loadTrackPoints(this.trackId);
 
@@ -347,36 +452,36 @@ public class MyMapActivity extends MapActivity {
 
 		this.zoomToTrackSpanAndCenter();
 
-		// update total distance in info panel
-		float distance = this.getTrackDistance(this.trackId);
-
-		// show track distance in track info area
-		((TextView) findViewById(R.id.distance)).setText(getString(R.string.total_distance) + ": "
-				+ Utils.formatDistance(distance, distanceUnit) + " " +
-				Utils.getLocalizedDistanceUnit(this, distance, distanceUnit));
-
-		setupSeekBar();
+		this.updateTrackDistance();
 
 	}
 
+	/**
+	 * Show entire track on the map with maximum zoom level
+	 */
 	private void zoomToTrackSpanAndCenter() {
 
 		// zoom to track points span
 		mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
-
-		// mapView.getController().zoomToSpan(maxLat - minLat + Math.round((maxLat - minLat) / 10),
-		// maxLng - minLng + Math.round((maxLng - minLng) / 10));
 
 		// pan to the center of track occupied area
 		mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
 
 	}
 
+	/**
+	 * Returns total distance of the track from "tracks" table
+	 * 
+	 * @param trackId
+	 * @return float
+	 */
 	private float getTrackDistance(long trackId) {
 
-		// get track data
-		String sql = "SELECT tracks.*, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
-				+ trackId + " AND tracks._id = track_points.track_id";
+		// String sql =
+		// "SELECT tracks.distance, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
+		// + trackId + " AND tracks._id = track_points.track_id";
+
+		String sql = "SELECT tracks.distance FROM tracks, track_points WHERE tracks._id=" + trackId;
 
 		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -427,6 +532,10 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
+	/**
+	 * 
+	 * @param progress
+	 */
 	private void updateInfoPanel(int progress) {
 
 		currentPointIndex = progress;
@@ -447,6 +556,21 @@ public class MyMapActivity extends MapActivity {
 				);
 
 		mapView.invalidate();
+
+	}
+
+	/**
+	 * 
+	 */
+	private void updateTrackDistance() {
+
+		// update total distance in info panel
+		float distance = this.getTrackDistance(this.trackId);
+
+		// show track distance in track info area
+		((TextView) findViewById(R.id.distance)).setText(getString(R.string.total_distance) + ": "
+				+ Utils.formatDistance(distance, distanceUnit) + " " +
+				Utils.getLocalizedDistanceUnit(this, distance, distanceUnit));
 
 	}
 
@@ -490,6 +614,42 @@ public class MyMapActivity extends MapActivity {
 		}
 
 		tpCursor.close();
+	}
+
+	/**
+	 * Loads waypoints to itemizedOverlay object
+	 * 
+	 * @param itemizedOverlay
+	 */
+	protected void loadWaypoints(MyItemizedOverlay itemizedOverlay) {
+
+		Cursor cursor = app.getDatabase().rawQuery("SELECT * FROM waypoints", null);
+		cursor.moveToFirst();
+
+		while (cursor.isAfterLast() == false) {
+
+			GeoPoint point = new GeoPoint(cursor.getInt(cursor.getColumnIndex("lat")), cursor.getInt(cursor
+					.getColumnIndex("lng")));
+
+			String snippet = Utils.formatLat(cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
+					Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
+					+ "\n"
+					+ Utils.formatLng(cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6,
+							Integer.parseInt(app.getPreferences().getString("coord_units", "0")));
+
+			if (cursor.getString(cursor.getColumnIndex("descr")) != null) {
+				snippet = cursor.getString(cursor.getColumnIndex("descr")) + "\n" + snippet;
+			}
+
+			OverlayItem overlayitem = new OverlayItem(point, cursor.getString(cursor.getColumnIndex("title")), snippet);
+
+			itemizedOverlay.addOverlay(overlayitem);
+
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+
 	}
 
 	/**
@@ -569,53 +729,66 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.showWaypoint:
+		case R.id.showWaypoint:
 
-				mapView.getController().setZoom(16);
-				mapView.getController().animateTo(waypoint);
+			mapView.getController().setZoom(16);
+			mapView.getController().animateTo(waypoint);
 
-				return true;
+			return true;
 
-			case R.id.showTrack:
+		case R.id.showTrack:
 
-				this.zoomToTrackSpanAndCenter();
+			this.zoomToTrackSpanAndCenter();
 
-				return true;
+			return true;
 
-			case R.id.mapMode:
+		case R.id.mapMode:
 
-				if (mapMode == Constants.MAP_STREET) {
-					mapView.setStreetView(false);
-					mapView.setSatellite(true);
-					mapMode = Constants.MAP_SATELLITE;
-				} else {
-					mapView.setSatellite(false);
-					mapView.setStreetView(true);
-					mapMode = Constants.MAP_STREET;
-				}
+			if (mapMode == Constants.MAP_STREET) {
+				mapView.setStreetView(false);
+				mapView.setSatellite(true);
+				mapMode = Constants.MAP_SATELLITE;
+			} else {
+				mapView.setSatellite(false);
+				mapView.setStreetView(true);
+				mapMode = Constants.MAP_STREET;
+			}
 
-				return true;
+			return true;
 
-			default:
+		default:
 
-				return super.onOptionsItemSelected(item);
+			return super.onOptionsItemSelected(item);
 
 		}
 
 	}
 
+	/**
+	 * Show info panels for track modes only
+	 */
 	private void showInfoPanels() {
-		((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
-		((LinearLayout) findViewById(R.id.seekBarPanel)).setVisibility(View.VISIBLE);
-		// let's schedule hiding controls
-		restartDelayedHidingControls();
+
+		if (mode == Constants.SHOW_TRACK || mode == Constants.SHOW_SCHEDULED_TRACK) {
+			((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
+			((LinearLayout) findViewById(R.id.seekBarPanel)).setVisibility(View.VISIBLE);
+			// let's schedule hiding controls
+			restartDelayedHidingControls();
+		}
+
 	}
 
+	/**
+	 * 
+	 */
 	private void hideInfoPanels() {
 		((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.INVISIBLE);
 		((LinearLayout) findViewById(R.id.seekBarPanel)).setVisibility(View.INVISIBLE);
 	}
-	
+
+	/**
+	 * 
+	 */
 	private Handler delayedHidingControlsHandler = new Handler();
 	private Runnable delayedHidingControlsTask = new Runnable() {
 		public void run() {

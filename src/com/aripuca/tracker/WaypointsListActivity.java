@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.map.WaypointsMapActivity;
@@ -117,6 +118,7 @@ public class WaypointsListActivity extends ListActivity {
 			// waypointsArrayAdapter.notifyDataSetChanged();
 		}
 	};
+	
 	/**
 	 * Compass updates broadcast receiver
 	 */
@@ -130,6 +132,9 @@ public class WaypointsListActivity extends ListActivity {
 		}
 	};
 
+	/**
+	 * 
+	 */
 	protected class WaypointsArrayAdapter extends ArrayAdapter<Waypoint> {
 
 		private final Comparator<Waypoint> distanceComparator = new Comparator<Waypoint>() {
@@ -428,11 +433,10 @@ public class WaypointsListActivity extends ListActivity {
 						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 
-								// delete all waypoints
-								String sql = "DELETE FROM waypoints";
-								app.getDatabase().execSQL(sql);
-
+								Waypoints.deleteAll(app.getDatabase());
+								
 								updateWaypointsArray();// cursor.requery();
+								
 								waypointsArrayAdapter.setItems(waypoints);
 								waypointsArrayAdapter.notifyDataSetChanged();
 
@@ -440,6 +444,7 @@ public class WaypointsListActivity extends ListActivity {
 										Toast.LENGTH_SHORT).show();
 
 							}
+							
 						}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
@@ -468,7 +473,16 @@ public class WaypointsListActivity extends ListActivity {
 
 			case R.id.showMapMenuItem:
 
-				startActivity(new Intent(this, WaypointsMapActivity.class));
+//				startActivity(new Intent(this, WaypointsMapActivity.class));
+				
+				Intent i = new Intent(this, MyMapActivity.class);
+
+				// using Bundle to pass track id into new activity
+				Bundle b = new Bundle();
+				b.putInt("mode", Constants.SHOW_ALL_WAYPOINTS);
+
+				i.putExtras(b);
+				startActivity(i);
 
 				return true;
 
@@ -523,32 +537,8 @@ public class WaypointsListActivity extends ListActivity {
 
 			case 1:
 
-				// delete one waypoint with confirmation dialog
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Are you sure?").setCancelable(true)
-						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								// delete waypoint from db
-								String sql = "DELETE FROM waypoints WHERE _id=" + waypointId + ";";
-								app.getDatabase().execSQL(sql);
-
-								// cursor.requery();
-								updateWaypointsArray();
-								waypointsArrayAdapter.setItems(waypoints);
-								waypointsArrayAdapter.notifyDataSetChanged();
-
-								Toast.makeText(WaypointsListActivity.this, R.string.waypoint_deleted,
-										Toast.LENGTH_SHORT).show();
-							}
-						}).setNegativeButton("No", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-
-				AlertDialog alert = builder.create();
-				alert.show();
-
+				deleteWaypoint(waypointId);
+				
 				return true;
 
 			case 2:
@@ -598,8 +588,7 @@ public class WaypointsListActivity extends ListActivity {
 
 			case 3:
 
-				// showing waypoint on the google map
-				showOnMap(waypointId);
+				this.showOnMap(waypointId);
 
 				return true;
 
@@ -750,6 +739,7 @@ public class WaypointsListActivity extends ListActivity {
 
 				try {
 					app.getDatabase().update("waypoints", values, "_id=" + wpId, null);
+					
 					Toast.makeText(WaypointsListActivity.this, R.string.waypoint_updated, Toast.LENGTH_SHORT).show();
 
 					// cursor.requery();
@@ -807,6 +797,45 @@ public class WaypointsListActivity extends ListActivity {
 
 	}
 
+	/**
+	 * Delete waypoint by id with confirmation dialog
+	 * 
+	 * @param wpid
+	 */
+	private void deleteWaypoint(long wpid) {
+		
+		final long waypointId = wpid;
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure?").setCancelable(true)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						
+						// delete waypoint from db
+						
+						Waypoints.delete(app.getDatabase(), waypointId);
+						
+						// cursor.requery();
+						updateWaypointsArray();
+						
+						waypointsArrayAdapter.setItems(waypoints);
+						waypointsArrayAdapter.notifyDataSetChanged();
+
+						Toast.makeText(WaypointsListActivity.this, R.string.waypoint_deleted,
+								Toast.LENGTH_SHORT).show();
+					}
+				}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+		
+	}
+	
 	/**
 	 * Imports waypoints from gpx file
 	 */
@@ -946,18 +975,18 @@ public class WaypointsListActivity extends ListActivity {
 	protected void showOnMap(long waypointId) {
 
 		String sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-		Cursor tmpCursor = app.getDatabase().rawQuery(sql, null);
-		tmpCursor.moveToFirst();
+		Cursor cursor = app.getDatabase().rawQuery(sql, null);
+		cursor.moveToFirst();
 
 		Intent i = new Intent(this, MyMapActivity.class);
 
 		// using Bundle to pass track id into new activity
 		Bundle b = new Bundle();
 		b.putInt("mode", Constants.SHOW_WAYPOINT);
-		b.putInt("latE6", tmpCursor.getInt(tmpCursor.getColumnIndex("lat")));
-		b.putInt("lngE6", tmpCursor.getInt(tmpCursor.getColumnIndex("lng")));
+		b.putInt("latE6", cursor.getInt(cursor.getColumnIndex("lat")));
+		b.putInt("lngE6", cursor.getInt(cursor.getColumnIndex("lng")));
 
-		tmpCursor.close();
+		cursor.close();
 
 		i.putExtras(b);
 		startActivity(i);
