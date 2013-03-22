@@ -105,13 +105,10 @@ public class WaypointsMapActivity extends MapActivity {
 		mapView.setSatellite(false);
 
 		// mapView.setBuiltInZoomControls(true);
-
-		// hide info panel
-		LinearLayout infoPanel = (LinearLayout) findViewById(R.id.infoPanel);
-		if (infoPanel != null) {
-			infoPanel.setVisibility(View.GONE);
-		}
-
+		
+		this.hideInfoPanel();
+		this.hideSeekBarPanel();
+		
 		// ---Add a location marker---
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
@@ -127,6 +124,26 @@ public class WaypointsMapActivity extends MapActivity {
 
 	}
 
+	private void hideInfoPanel() {
+		
+		// hide info panel
+		LinearLayout panel = (LinearLayout) findViewById(R.id.infoPanel);
+		if (panel != null) {
+			panel.setVisibility(View.GONE);
+		}
+		
+	}
+
+	private void hideSeekBarPanel() {
+		
+		// hide info panel
+		LinearLayout panel = (LinearLayout) findViewById(R.id.seekBarPanel);
+		if (panel != null) {
+			panel.setVisibility(View.GONE);
+		}
+		
+	}
+	
 	protected void loadWaypoints(MyItemizedOverlay itemizedOverlay) {
 
 		Cursor cursor = app.getDatabase().rawQuery("SELECT * FROM waypoints", null);

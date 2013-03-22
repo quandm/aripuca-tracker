@@ -41,7 +41,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 //TODO: compare 2 tracks on the map, select track to compare
-//TODO: show main parameters of the track and segments on the map 
 
 /**
  * Tracks list activity
@@ -63,8 +62,6 @@ public class AbstractTracksListActivity extends ListActivity {
 	 */
 	protected String sqlSelectAllTracks;
 
-	protected Boolean infoDisplayed = true;
-
 	/**
 	 * Workaround Issue 7139: MenuItem.getMenuInfo() returns null for sub-menu
 	 * items
@@ -77,6 +74,8 @@ public class AbstractTracksListActivity extends ListActivity {
 	 * 
 	 */
 	protected ProgressDialog progressDialog;
+	
+	protected int mapMode;
 
 	/**
 	 * Overridden in child classes
@@ -725,9 +724,8 @@ public class AbstractTracksListActivity extends ListActivity {
 
 		// using Bundle to pass track id into new activity
 		Bundle b = new Bundle();
-		b.putInt("mode", Constants.SHOW_TRACK);
+		b.putInt("mode", this.mapMode);
 		b.putLong("track_id", trackId);
-		b.putBoolean("display_info", this.infoDisplayed);
 
 		i.putExtras(b);
 		startActivity(i);

@@ -10,9 +10,8 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 
 	// instance initialization block
 	{
-		listItemResourceId = R.layout.scheduled_track_list_item;
-
-		infoDisplayed = false;
+		this.listItemResourceId = R.layout.scheduled_track_list_item;
+		this.mapMode = Constants.SHOW_SCHEDULED_TRACK;
 	}
 
 	@Override

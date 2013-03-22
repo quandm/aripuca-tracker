@@ -55,6 +55,7 @@
     <string name="current">Current</string>
     <string name="azimuth">Azimuth</string>
     <string name="distance">Distance</string>
+    <string name="total_distance">Total distance</string>
     <string name="coordinates">Coordinates</string>
     <string name="lat">Latitude</string>
     <string name="lng">Longitude</string>

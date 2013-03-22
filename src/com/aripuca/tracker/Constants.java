@@ -21,6 +21,7 @@ public abstract class Constants {
 	 */
 	public static final int SHOW_WAYPOINT = 0;
 	public static final int SHOW_TRACK = 1;
+	public static final int SHOW_SCHEDULED_TRACK = 2;
 
 	/**
 	 * map view modes

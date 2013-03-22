@@ -3,7 +3,7 @@
 
 	<item android:id="@+id/showOnMap" 
 			android:title="@string/show_on_map"
-			android:icon="@android:drawable/ic_menu_mapmode" />
+			android:icon="@drawable/ic_menu_mapmode" />
 
 	<item android:id="@+id/showTrackChart" 
 			android:title="@string/track_chart"
