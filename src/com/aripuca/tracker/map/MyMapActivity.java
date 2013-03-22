@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -184,10 +185,13 @@ public class MyMapActivity extends MapActivity {
 				if (!pathStarted) {
 
 					/*
-					 * if (i > 0) { // starting new segment at last segment's end point projection.toPixels(points.get(i
-					 * - 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x, screenPts.y);
-					 * projection.toPixels(points.get(i).getGeoPoint(), screenPts); path.lineTo(screenPts.x,
-					 * screenPts.y); } else { // for the very first segment just move path pointer
+					 * if (i > 0) { // starting new segment at last segment's
+					 * end point projection.toPixels(points.get(i -
+					 * 1).getGeoPoint(), screenPts); path.moveTo(screenPts.x,
+					 * screenPts.y);
+					 * projection.toPixels(points.get(i).getGeoPoint(),
+					 * screenPts); path.lineTo(screenPts.x, screenPts.y); } else
+					 * { // for the very first segment just move path pointer
 					 * path.moveTo(screenPts.x, screenPts.y); }
 					 */
 
@@ -261,11 +265,57 @@ public class MyMapActivity extends MapActivity {
 
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.map_view);
+		
 		app = ((App) getApplicationContext());
 
-		setContentView(R.layout.map_view);
+		// measure units
+		speedUnit = app.getPreferences().getString("speed_units", "kph");
+		distanceUnit = app.getPreferences().getString("distance_units", "km");
+		elevationUnit = app.getPreferences().getString("elevation_units", "m");
+		
+		this.setupMapView();
+
+		// getting extra data passed to the activity
+		Bundle b = getIntent().getExtras();
+		this.mode = b.getInt("mode");
+
+		// ---------------------------------------------------------------------------
+		// show waypoint
+		if (this.mode == Constants.SHOW_WAYPOINT) {
+			this.hideInfoPanels();
+			this.showWaypoint(b);
+		}
+
+		// ---------------------------------------------------------------------------
+		// show track
+		if (this.mode == Constants.SHOW_TRACK || this.mode == Constants.SHOW_SCHEDULED_TRACK) {
+			this.showInfoPanels();
+			this.showTrack(b);
+		}
+
+		// add overlays to the map
+		MapOverlay mapOverlay = new MapOverlay();
+		List<Overlay> listOfOverlays = mapView.getOverlays();
+		listOfOverlays.clear();
+		listOfOverlays.add(mapOverlay);
+		mapView.invalidate();
+
+	}
+
+	private void setupMapView() {
 
 		mapView = (MapView) findViewById(R.id.mapview);
+
+		mapView.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (mode == Constants.SHOW_TRACK || mode == Constants.SHOW_SCHEDULED_TRACK) {
+					showInfoPanels();
+				}
+				return false;
+			}
+		});
 
 		// initial map mode is street view
 		mapMode = Constants.MAP_STREET;
@@ -273,37 +323,6 @@ public class MyMapActivity extends MapActivity {
 		mapView.setSatellite(false);
 
 		mapView.setBuiltInZoomControls(false);
-
-		// measure units
-		speedUnit = app.getPreferences().getString("speed_units", "kph");
-		distanceUnit = app.getPreferences().getString("distance_units", "km");
-		elevationUnit = app.getPreferences().getString("elevation_units", "m");
-
-		// getting extra data passed to the activity
-		Bundle b = getIntent().getExtras();
-
-		this.mode = b.getInt("mode");
-
-		// ---------------------------------------------------------------------------
-		// show waypoint
-		if (this.mode == Constants.SHOW_WAYPOINT) {
-			this.showWaypoint(b);
-		}
-
-		// ---------------------------------------------------------------------------
-		// show track
-		if (this.mode == Constants.SHOW_TRACK || this.mode == Constants.SHOW_SCHEDULED_TRACK) {
-			this.showTrack(b);
-		}
-
-		// ---Add a location marker---
-		MapOverlay mapOverlay = new MapOverlay();
-
-		List<Overlay> listOfOverlays = mapView.getOverlays();
-		listOfOverlays.clear();
-		listOfOverlays.add(mapOverlay);
-
-		mapView.invalidate();
 
 	}
 
@@ -313,9 +332,6 @@ public class MyMapActivity extends MapActivity {
 
 		mapView.getController().setZoom(17);
 		mapView.getController().animateTo(waypoint);
-
-		((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.INVISIBLE);
-		((LinearLayout) findViewById(R.id.seekBarPanel)).setVisibility(View.INVISIBLE);
 
 	}
 
@@ -382,6 +398,7 @@ public class MyMapActivity extends MapActivity {
 		((LinearLayout) findViewById(R.id.seekBarPanel)).setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				Log.v(Constants.TAG, "seek bar touch");
 				return true;
 			}
 		});
@@ -403,6 +420,7 @@ public class MyMapActivity extends MapActivity {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				updateInfoPanel(progress);
+				showInfoPanels();
 			}
 
 		});
@@ -551,39 +569,70 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.showWaypoint:
+			case R.id.showWaypoint:
 
-			mapView.getController().setZoom(16);
-			mapView.getController().animateTo(waypoint);
+				mapView.getController().setZoom(16);
+				mapView.getController().animateTo(waypoint);
 
-			return true;
+				return true;
 
-		case R.id.showTrack:
+			case R.id.showTrack:
 
-			this.zoomToTrackSpanAndCenter();
+				this.zoomToTrackSpanAndCenter();
 
-			return true;
+				return true;
 
-		case R.id.mapMode:
+			case R.id.mapMode:
 
-			if (mapMode == Constants.MAP_STREET) {
-				mapView.setStreetView(false);
-				mapView.setSatellite(true);
-				mapMode = Constants.MAP_SATELLITE;
-			} else {
-				mapView.setSatellite(false);
-				mapView.setStreetView(true);
-				mapMode = Constants.MAP_STREET;
-			}
+				if (mapMode == Constants.MAP_STREET) {
+					mapView.setStreetView(false);
+					mapView.setSatellite(true);
+					mapMode = Constants.MAP_SATELLITE;
+				} else {
+					mapView.setSatellite(false);
+					mapView.setStreetView(true);
+					mapMode = Constants.MAP_STREET;
+				}
 
-			return true;
+				return true;
 
-		default:
+			default:
 
-			return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(item);
 
 		}
 
+	}
+
+	private void showInfoPanels() {
+		((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.VISIBLE);
+		((LinearLayout) findViewById(R.id.seekBarPanel)).setVisibility(View.VISIBLE);
+		// let's schedule hiding controls
+		restartDelayedHidingControls();
+	}
+
+	private void hideInfoPanels() {
+		((LinearLayout) findViewById(R.id.infoPanel)).setVisibility(View.INVISIBLE);
+		((LinearLayout) findViewById(R.id.seekBarPanel)).setVisibility(View.INVISIBLE);
+	}
+	
+	private Handler delayedHidingControlsHandler = new Handler();
+	private Runnable delayedHidingControlsTask = new Runnable() {
+		public void run() {
+			hideInfoPanels();
+		}
+	};
+
+	/**
+	 * 
+	 */
+	private void restartDelayedHidingControls() {
+
+		delayedHidingControlsHandler.removeCallbacks(delayedHidingControlsTask);
+
+		if (this.mode == Constants.SHOW_TRACK || this.mode == Constants.SHOW_SCHEDULED_TRACK) {
+			delayedHidingControlsHandler.postDelayed(delayedHidingControlsTask, 3000);
+		}
 	}
 
 }
