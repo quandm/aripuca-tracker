@@ -870,13 +870,12 @@ public class MainActivity extends Activity {
 
 		// disabling pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setEnabled(false);
-		((Button) findViewById(R.id.pauseResumeTrackButton)).setText(getString(R.string.pause));
 
 		// hide pause/resume button
 		((Button) findViewById(R.id.pauseResumeTrackButton)).setVisibility(View.GONE);
 
 		// change button label from Stop to Record
-		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record));
+		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record_track));
 
 		appService.getTrackRecorder().stop();
 

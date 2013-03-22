@@ -1,5 +1,6 @@
 package com.aripuca.tracker.util;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -587,5 +588,23 @@ public class Utils {
 		}
 
 	}
+	
+	/**
+	 * Create folder if not exists
+	 * 
+	 * @param folderName
+	 */
+	public static void createFolder(String folderName) {
+
+		File folder = new File(folderName);
+
+		// create output folder
+		if (!folder.exists()) {
+			folder.mkdir();
+		}
+
+	}
+
+	
 
 }
