@@ -33,10 +33,9 @@ import com.aripuca.tracker.R;
 import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.io.WaypointGpxExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.map.WaypointsMapActivity;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.track.Waypoint;
+import com.aripuca.tracker.db.Waypoint;
 
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -279,11 +278,6 @@ public class WaypointsListActivity extends ListActivity {
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Select all waypoints sql query
-	 */
-	private final String sqlSelectAllWaypoints = "SELECT * FROM waypoints";
 
 	private WaypointGpxExportTask waypointToGpx;
 
@@ -598,19 +592,9 @@ public class WaypointsListActivity extends ListActivity {
 
 				// sync one waypoint data with remote server
 
-				sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-				tmpCursor = app.getDatabase().rawQuery(sql, null);
-				tmpCursor.moveToFirst();
-
 				// create temp waypoint from current record
-				Waypoint wp = new Waypoint(tmpCursor.getString(tmpCursor.getColumnIndex("title")),
-						tmpCursor.getLong(tmpCursor.getColumnIndex("time")), tmpCursor.getDouble(tmpCursor
-								.getColumnIndex("lat")), tmpCursor.getDouble(tmpCursor.getColumnIndex("lng")),
-						tmpCursor.getDouble(tmpCursor.getColumnIndex("elevation")), tmpCursor.getFloat(tmpCursor
-								.getColumnIndex("accuracy")));
-
-				tmpCursor.close();
-
+				Waypoint wp = Waypoints.get(app.getDatabase(), waypointId); 
+				
 				try {
 
 					// preparing query string for calling web service
@@ -776,24 +760,7 @@ public class WaypointsListActivity extends ListActivity {
 			waypoints = new ArrayList<Waypoint>();
 		}
 
-		Cursor cursor = app.getDatabase().rawQuery(this.sqlSelectAllWaypoints, null);
-		cursor.moveToFirst();
-
-		while (cursor.isAfterLast() == false) {
-
-			Waypoint wp = new Waypoint(cursor.getString(cursor.getColumnIndex("title")), cursor.getLong(cursor
-					.getColumnIndex("time")), cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
-					cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6, cursor.getDouble(cursor
-							.getColumnIndex("elevation")), cursor.getFloat(cursor.getColumnIndex("accuracy")));
-
-			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
-
-			waypoints.add(wp);
-
-			cursor.moveToNext();
-		}
-
-		cursor.close();
+		Waypoints.getAll(app.getDatabase(), waypoints);
 
 	}
 
@@ -973,20 +940,17 @@ public class WaypointsListActivity extends ListActivity {
 	 * @param waypointId Id of the requested waypoint
 	 */
 	protected void showOnMap(long waypointId) {
-
-		String sql = "SELECT * FROM waypoints WHERE _id=" + waypointId + ";";
-		Cursor cursor = app.getDatabase().rawQuery(sql, null);
-		cursor.moveToFirst();
+		
+		com.aripuca.tracker.db.Waypoint wp = com.aripuca.tracker.db.Waypoints.get(app.getDatabase(), waypointId);
 
 		Intent i = new Intent(this, MyMapActivity.class);
 
 		// using Bundle to pass track id into new activity
 		Bundle b = new Bundle();
-		b.putInt("mode", Constants.SHOW_WAYPOINT);
-		b.putInt("latE6", cursor.getInt(cursor.getColumnIndex("lat")));
-		b.putInt("lngE6", cursor.getInt(cursor.getColumnIndex("lng")));
 
-		cursor.close();
+		b.putInt("mode", Constants.SHOW_WAYPOINT);
+		b.putInt("latE6", wp.getLat1E6());
+		b.putInt("lngE6", wp.getLng1E6());
 
 		i.putExtras(b);
 		startActivity(i);

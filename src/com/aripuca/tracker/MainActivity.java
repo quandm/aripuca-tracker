@@ -1,5 +1,7 @@
 package com.aripuca.tracker;
 
+import com.aripuca.tracker.db.Waypoint;
+import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
@@ -34,7 +36,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,10 +58,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 
@@ -932,8 +931,8 @@ public class MainActivity extends Activity {
 	};
 
 	/**
-	 * Geocoder handler class. Receives a message from geocoder thread and displays "Add Waypoint" dialog even if
-	 * geocoding request failed
+	 * Geocoder handler class. Receives a message from geocoder thread and
+	 * displays "Add Waypoint" dialog even if geocoding request failed
 	 */
 	private class GeocoderHandler extends Handler {
 
@@ -945,12 +944,12 @@ public class MainActivity extends Activity {
 
 			String addressStr;
 			switch (message.what) {
-			case 1:
-				Bundle bundle = message.getData();
-				addressStr = bundle.getString("address");
+				case 1:
+					Bundle bundle = message.getData();
+					addressStr = bundle.getString("address");
 				break;
-			default:
-				addressStr = null;
+				default:
+					addressStr = null;
 			}
 
 			showAddWaypointDialog(addressStr);
@@ -959,8 +958,8 @@ public class MainActivity extends Activity {
 	};
 
 	/**
-	 * Running geocoder request as a separate thread. The thread will send a message to provided Handler object in order
-	 * to update UI
+	 * Running geocoder request as a separate thread. The thread will send a
+	 * message to provided Handler object in order to update UI
 	 * 
 	 * @param location
 	 * @param context
@@ -1030,8 +1029,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Add Waypoint dialog
 	 * 
-	 * @param address
-	 *            Address string returned from geocoder thread
+	 * @param address Address string returned from geocoder thread
 	 */
 	private void showAddWaypointDialog(String address) {
 
@@ -1057,12 +1055,9 @@ public class MainActivity extends Activity {
 		}
 
 		final EditText wpLat = (EditText) layout.findViewById(R.id.waypointLatInputText);
-		// wpLat.setText(Location.convert(location.getLatitude(),
-		// 0));
 		wpLat.setText(Utils.formatCoord(currentLocation.getLatitude()));
 
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
-		// wpLng.setText(Location.convert(location.getLongitude(), 0));
 		wpLng.setText(Utils.formatCoord(currentLocation.getLongitude()));
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -1072,33 +1067,30 @@ public class MainActivity extends Activity {
 
 				// waypoint title from input dialog
 				String titleStr = wpTitle.getText().toString().trim();
-				String descrStr = wpDescr.getText().toString().trim();
 
 				if (titleStr.equals("")) {
 					Toast.makeText(MainActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT).show();
 					dialog.dismiss();
 				}
 
-				int lat = (int) (Double.parseDouble(wpLat.getText().toString()) * 1E6);
-				int lng = (int) (Double.parseDouble(wpLng.getText().toString()) * 1E6);
-
-				ContentValues values = new ContentValues();
-				values.put("title", titleStr);
-				values.put("descr", descrStr);
-				values.put("lat", lat);
-				values.put("lng", lng);
-				values.put("accuracy", currentLocation.getAccuracy());
-				values.put("elevation", Utils.formatNumber(currentLocation.getAltitude(), 1));
-				values.put("time", currentLocation.getTime());
+				Waypoint wp = new Waypoint();
+				wp.setTitle(titleStr);
+				wp.setDescr(wpDescr.getText().toString().trim());
+				wp.setLat(Double.parseDouble(wpLat.getText().toString()));
+				wp.setLng(Double.parseDouble(wpLng.getText().toString()));
+				wp.setAccuracy(currentLocation.getAccuracy());
+				wp.setElevation(currentLocation.getAltitude());
+				wp.setTime(currentLocation.getTime());
 
 				AppService appService = serviceConnection.getService();
 				// if track recording started assign track_id
 				if (appService != null && appService.getTrackRecorder().isRecording()) {
-					values.put("track_id", appService.getTrackRecorder().getTrack().getTrackId());
+					wp.setTrack_id(appService.getTrackRecorder().getTrack().getTrackId());
 				}
 
 				try {
-					app.getDatabase().insertOrThrow("waypoints", null, values);
+					// insert new waypoint to database
+					long newWaypointId = Waypoints.insert(app.getDatabase(), wp);
 				} catch (SQLiteException e) {
 					Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 					Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
@@ -1141,14 +1133,14 @@ public class MainActivity extends Activity {
 
 		switch (id) {
 
-		case Constants.QUICK_HELP_DIALOG_ID:
+			case Constants.QUICK_HELP_DIALOG_ID:
 
-			dialog = new QuickHelpDialog(mContext);
+				dialog = new QuickHelpDialog(mContext);
 
 			break;
 
-		default:
-			dialog = null;
+			default:
+				dialog = null;
 		}
 
 		return dialog;
@@ -1210,60 +1202,60 @@ public class MainActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.compassMenuItem:
+			case R.id.compassMenuItem:
 
-			startActivity(new Intent(this, CompassActivity.class));
+				startActivity(new Intent(this, CompassActivity.class));
 
-			return true;
+				return true;
 
-		case R.id.waypointsMenuItem:
+			case R.id.waypointsMenuItem:
 
-			startActivity(new Intent(this, WaypointsListActivity.class));
+				startActivity(new Intent(this, WaypointsListActivity.class));
 
-			return true;
+				return true;
 
-		case R.id.tracksMenuItem:
+			case R.id.tracksMenuItem:
 
-			startActivity(new Intent(this, TracksTabActivity.class));
+				startActivity(new Intent(this, TracksTabActivity.class));
 
-			return true;
+				return true;
 
-		case R.id.aboutMenuItem:
+			case R.id.aboutMenuItem:
 
-			this.showAboutDialog();
+				this.showAboutDialog();
 
-			return true;
+				return true;
 
-		case R.id.settingsMenuItem:
+			case R.id.settingsMenuItem:
 
-			startActivity(new Intent(this, SettingsActivity.class));
+				startActivity(new Intent(this, SettingsActivity.class));
 
-			return true;
+				return true;
 
-		case R.id.quickHelp:
+			case R.id.quickHelp:
 
-			showQuickHelp();
+				showQuickHelp();
 
-			return true;
+				return true;
 
-		case R.id.backupMenuItem:
+			case R.id.backupMenuItem:
 
-			backupDatabase();
-			return true;
+				backupDatabase();
+				return true;
 
-		case R.id.restoreMenuItem:
+			case R.id.restoreMenuItem:
 
-			restoreDatabase();
-			return true;
+				restoreDatabase();
+				return true;
 
-		case R.id.scheduledRecordingMenuItem:
+			case R.id.scheduledRecordingMenuItem:
 
-			this.startStopScheduledTrackRecording();
-			return true;
+				this.startStopScheduledTrackRecording();
+				return true;
 
-		default:
+			default:
 
-			return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(item);
 
 		}
 
@@ -1509,7 +1501,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Update sunrise/sunset times We update this only after GpsService bound or track recording stopped
+	 * Update sunrise/sunset times We update this only after GpsService bound or
+	 * track recording stopped
 	 */
 	private void updateSunriseSunset() {
 
@@ -1605,7 +1598,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Intercepting Back button click to prevent accidental exit in track recording mode
+	 * Intercepting Back button click to prevent accidental exit in track
+	 * recording mode
 	 */
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -1729,7 +1723,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Runnable performing restoration of the application database from external source
+	 * Runnable performing restoration of the application database from external
+	 * source
 	 */
 	private Runnable restoreDatabaseRunnable = new Runnable() {
 		@Override
