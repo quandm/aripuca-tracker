@@ -6,9 +6,14 @@ import java.util.Iterator;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.WaypointsListActivity;
 import com.aripuca.tracker.db.Waypoint;
 
 public class Waypoints {
@@ -82,6 +87,20 @@ public class Waypoints {
 
 	}
 
+	public static void update(SQLiteDatabase db, Waypoint wp) {
+		
+		ContentValues values = new ContentValues();
+
+		values.put("title", wp.getTitle());
+		values.put("descr", wp.getDescr());
+		values.put("lat", wp.getLat1E6());
+		values.put("lng", wp.getLng1E6());
+
+		db.update("waypoints", values, "_id=" + wp.getId(), null);
+		
+	}
+	
+	
 	/**
 	 * Delete all waypoints
 	 * 

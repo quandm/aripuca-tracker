@@ -18,13 +18,14 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 
 	@Override
 	public void deleteAllTracks() {
-		Tracks.deleteAll(app.getDatabase(), 1);
+		Tracks.deleteAll(app.getDatabase(), Constants.ACTIVITY_SCHEDULED_TRACK);
 	}
 
 	/**
 	 * Start the track details activity
 	 * 
-	 * @param id Track id
+	 * @param id
+	 *            Track id
 	 */
 	@Override
 	protected void viewTrackDetails(long id) {
@@ -50,9 +51,10 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 		// "WHERE recording=0 AND activity=1";
 
 		if (app.getPreferences().getBoolean("debug_on", false)) {
-			sqlSelectAllTracks = "SELECT * FROM tracks WHERE activity=1";
+			sqlSelectAllTracks = "SELECT * FROM tracks WHERE activity=" + Constants.ACTIVITY_SCHEDULED_TRACK;
 		} else {
-			sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND activity=1";
+			sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND activity="
+					+ Constants.ACTIVITY_SCHEDULED_TRACK;
 		}
 
 	}
