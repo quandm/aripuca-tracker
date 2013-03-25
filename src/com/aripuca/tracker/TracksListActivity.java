@@ -15,16 +15,18 @@ public class TracksListActivity extends AbstractTracksListActivity {
 
 	@Override
 	public void deleteAllTracks() {
-		Tracks.deleteAll(app.getDatabase(), 0);
+		Tracks.deleteAll(app.getDatabase(), Constants.ACTIVITY_TRACK);
 	}
 
 	@Override
 	protected void setQuery() {
 
 		if (app.getPreferences().getBoolean("debug_on", false)) {
-			sqlSelectAllTracks = "SELECT * FROM tracks WHERE (activity=0 OR activity IS NULL)";
+			sqlSelectAllTracks = "SELECT * FROM tracks WHERE (activity=" + Constants.ACTIVITY_TRACK
+					+ " OR activity IS NULL)";
 		} else {
-			sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND (activity=0 OR activity IS NULL)";
+			sqlSelectAllTracks = "SELECT * FROM tracks WHERE recording=0 AND (activity=" + Constants.ACTIVITY_TRACK
+					+ " OR activity IS NULL)";
 		}
 
 	}

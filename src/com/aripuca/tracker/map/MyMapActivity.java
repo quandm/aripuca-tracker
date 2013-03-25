@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,12 +28,16 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.WaypointsListActivity;
+import com.aripuca.tracker.service.AppService;
+import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.util.TrackPoint;
 import com.aripuca.tracker.util.Utils;
 import com.google.android.maps.GeoPoint;
@@ -79,7 +87,7 @@ public class MyMapActivity extends MapActivity {
 	private SeekBar seekBar;
 
 	private int currentPointIndex;
-	
+
 	private float trackTotalDistance;
 
 	/**
@@ -103,6 +111,13 @@ public class MyMapActivity extends MapActivity {
 	private int mode;
 
 	private int mapMode;
+
+	private Location currentLocation;
+
+	/**
+	 * Service connection object
+	 */
+	private AppServiceConnection serviceConnection;
 
 	/**
 	 * Map overlay for displaying track path
@@ -234,6 +249,13 @@ public class MyMapActivity extends MapActivity {
 			showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint(),
 					R.drawable.marker_flag_blue);
 
+			// show current location marker
+			if (currentLocation != null) {
+				GeoPoint gp = new GeoPoint((int) (currentLocation.getLatitude() * 1E6),
+						(int) (currentLocation.getLongitude() * 1E6));
+				showMapPin(projection, canvas, gp, R.drawable.map_pin);
+			}
+
 		}
 
 	}
@@ -327,6 +349,28 @@ public class MyMapActivity extends MapActivity {
 	}
 
 	/**
+	 * Location updates broadcast receiver
+	 */
+	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Bundle bundle = intent.getExtras();
+			currentLocation = (Location) bundle.getParcelable("location");
+		}
+	};
+	
+	/**
+	 * Compass updates broadcast receiver
+	 */
+	protected BroadcastReceiver compassBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// Bundle bundle = intent.getExtras();
+			// setAzimuth(bundle.getFloat("azimuth"));
+		}
+	};
+
+	/**
 	 * Called when the activity is first created
 	 */
 	@Override
@@ -337,6 +381,8 @@ public class MyMapActivity extends MapActivity {
 		setContentView(R.layout.map_view);
 
 		app = ((App) getApplicationContext());
+
+		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
 		// measure units
 		speedUnit = app.getPreferences().getString("speed_units", "kph");
@@ -355,53 +401,53 @@ public class MyMapActivity extends MapActivity {
 		switch (this.mode) {
 
 		// show waypoint
-			case Constants.SHOW_WAYPOINT:
+		case Constants.SHOW_WAYPOINT:
 
-				this.hideInfoPanels();
+			this.hideInfoPanels();
 
-				this.setupWaypoint(b);
+			this.setupWaypoint(b);
 
-				// add overlays to the map
-				WaypointOverlay waypointOverlay = new WaypointOverlay();
+			// add overlays to the map
+			WaypointOverlay waypointOverlay = new WaypointOverlay();
 
-				listOfOverlays.clear();
-				listOfOverlays.add(waypointOverlay);
-
-			break;
-
-			case Constants.SHOW_ALL_WAYPOINTS:
-
-				this.hideInfoPanels();
-
-				Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
-				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-
-				MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
-
-				this.loadWaypoints(itemizedOverlay);
-
-				listOfOverlays.clear();
-				listOfOverlays.add(itemizedOverlay);
+			listOfOverlays.clear();
+			listOfOverlays.add(waypointOverlay);
 
 			break;
 
-			// show track
-			case Constants.SHOW_TRACK:
-			case Constants.SHOW_SCHEDULED_TRACK:
+		case Constants.SHOW_ALL_WAYPOINTS:
 
-				this.trackId = b.getLong("track_id");
+			this.hideInfoPanels();
 
-				this.showInfoPanels();
+			Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
+			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
-				this.setupTrack();
+			MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
 
-				this.setupSeekBar();
+			this.loadWaypoints(itemizedOverlay);
 
-				// add overlays to the map
-				TrackOverlay trackOverlay = new TrackOverlay();
+			listOfOverlays.clear();
+			listOfOverlays.add(itemizedOverlay);
 
-				listOfOverlays.clear();
-				listOfOverlays.add(trackOverlay);
+			break;
+
+		// show track
+		case Constants.SHOW_TRACK:
+		case Constants.SHOW_SCHEDULED_TRACK:
+
+			this.trackId = b.getLong("track_id");
+
+			this.showInfoPanels();
+
+			this.setupTrack();
+
+			this.setupSeekBar();
+
+			// add overlays to the map
+			TrackOverlay trackOverlay = new TrackOverlay();
+
+			listOfOverlays.clear();
+			listOfOverlays.add(trackOverlay);
 
 			break;
 
@@ -410,6 +456,103 @@ public class MyMapActivity extends MapActivity {
 		mapView.invalidate();
 
 	}
+
+	/**
+	 * onResume event handler
+	 */
+	@Override
+	protected void onResume() {
+
+		// registering receiver for compass updates
+		registerReceiver(compassBroadcastReceiver, new IntentFilter(Constants.ACTION_COMPASS_UPDATES));
+
+		// registering receiver for location updates
+		registerReceiver(locationBroadcastReceiver, new IntentFilter(Constants.ACTION_LOCATION_UPDATES));
+
+		// bind to GPS service
+		// once bound appServiceConnectionCallback will be called
+		serviceConnection.bindAppService();
+
+		super.onResume();
+	}
+
+	@Override
+	public void onPause() {
+
+		unregisterReceiver(compassBroadcastReceiver);
+		unregisterReceiver(locationBroadcastReceiver);
+
+		AppService appService = serviceConnection.getService();
+
+		if (appService != null) {
+
+			// stop location updates when not recording track
+			if (!appService.getTrackRecorder().isRecording()) {
+				appService.stopLocationUpdates();
+			}
+
+			// stop compass updates in any case
+			appService.stopSensorUpdates();
+		}
+
+		serviceConnection.unbindAppService();
+
+		super.onPause();
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	protected void onDestroy() {
+
+		serviceConnection = null;
+
+		app = null;
+
+		super.onDestroy();
+
+	}
+
+	/**
+	 * 
+	 */
+	private Runnable appServiceConnectionCallback = new Runnable() {
+
+		@Override
+		public void run() {
+
+			AppService appService = serviceConnection.getService();
+
+			if (appService == null) {
+				Toast.makeText(MyMapActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+
+			if (!appService.isListening()) {
+
+				// location updates stopped at this time, so let's start them
+				appService.startLocationUpdates();
+
+			} else {
+
+				// gpsInUse = false means we are in process of stopping
+				// listening
+				if (!appService.isGpsInUse()) {
+					appService.setGpsInUse(true);
+				}
+
+				// if both isListening and isGpsInUse are true - do nothing
+				// most likely we are in the process of recording track
+
+			}
+
+			// this activity requires compass data
+			appService.startSensorUpdates();
+
+		}
+	};
 
 	private void setupMapView() {
 
@@ -556,7 +699,7 @@ public class MyMapActivity extends MapActivity {
 						Utils.formatElevation(tp.getElevation(), elevationUnit) + " " +
 						Utils.getLocalizedElevationUnit(MyMapActivity.this, elevationUnit)
 				);
-		
+
 		// show track distance in track info area
 		((TextView) findViewById(R.id.distance)).setText(getString(R.string.total_distance) + ": "
 				+ Utils.formatDistance(this.trackTotalDistance, distanceUnit) + " " +
@@ -738,36 +881,36 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.showWaypoint:
+		case R.id.showWaypoint:
 
-				mapView.getController().setZoom(16);
-				mapView.getController().animateTo(waypoint);
+			mapView.getController().setZoom(16);
+			mapView.getController().animateTo(waypoint);
 
-				return true;
+			return true;
 
-			case R.id.showTrack:
+		case R.id.showTrack:
 
-				this.zoomToTrackSpanAndCenter();
+			this.zoomToTrackSpanAndCenter();
 
-				return true;
+			return true;
 
-			case R.id.mapMode:
+		case R.id.mapMode:
 
-				if (mapMode == Constants.MAP_STREET) {
-					mapView.setStreetView(false);
-					mapView.setSatellite(true);
-					mapMode = Constants.MAP_SATELLITE;
-				} else {
-					mapView.setSatellite(false);
-					mapView.setStreetView(true);
-					mapMode = Constants.MAP_STREET;
-				}
+			if (mapMode == Constants.MAP_STREET) {
+				mapView.setStreetView(false);
+				mapView.setSatellite(true);
+				mapMode = Constants.MAP_SATELLITE;
+			} else {
+				mapView.setSatellite(false);
+				mapView.setStreetView(true);
+				mapMode = Constants.MAP_STREET;
+			}
 
-				return true;
+			return true;
 
-			default:
+		default:
 
-				return super.onOptionsItemSelected(item);
+			return super.onOptionsItemSelected(item);
 
 		}
 

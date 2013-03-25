@@ -1,6 +1,8 @@
 package com.aripuca.tracker;
 
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
@@ -360,7 +362,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		// (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.track));
-		menu.add(Menu.NONE, 1, 1, R.string.view);
+		menu.add(Menu.NONE, 1, 1, R.string.show_track_details);
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
@@ -579,18 +581,8 @@ public class AbstractTracksListActivity extends ListActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						// delete all track points first
-						String sql = "DELETE FROM track_points WHERE track_id=" + trackId + ";";
-						app.getDatabase().execSQL(sql);
-
-						// delete track segments
-						sql = "DELETE FROM segments WHERE track_id=" + trackId + ";";
-						app.getDatabase().execSQL(sql);
-
-						// delete track
-						sql = "DELETE FROM tracks WHERE _id=" + trackId + ";";
-						app.getDatabase().execSQL(sql);
-
+						Tracks.delete(app.getDatabase(), trackId);
+						
 						cursor.requery();
 
 						Toast.makeText(AbstractTracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT)
@@ -632,19 +624,6 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	}
 
-	private int getTotalTrackPoints(long trackId) {
-
-		// getting total number of points for progress bar
-		String sql = "SELECT COUNT(*) AS total FROM track_points WHERE track_id=" + trackId + ";";
-		Cursor tmpCursor = app.getDatabase().rawQuery(sql, null);
-		tmpCursor.moveToFirst();
-
-		int totalPoints = tmpCursor.getInt(tmpCursor.getColumnIndex("total"));
-		tmpCursor.close();
-
-		return totalPoints;
-	}
-
 	private ProgressDialog createProgressDialog(int totalPoints, String message) {
 
 		// setting up progress dialog
@@ -677,7 +656,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		// lock orientation of the screen during progress
 		this.lockOrientationChange();
 
-		int totalPoints = getTotalTrackPoints(trackId);
+		int totalPoints = TrackPoints.getCount(app.getDatabase(), trackId);
 
 		progressDialog = createProgressDialog(totalPoints, getString(R.string.creating_gpx));
 		progressDialog.show();
@@ -700,7 +679,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		// lock orientation of the screen during progress
 		this.lockOrientationChange();
 
-		int totalPoints = getTotalTrackPoints(trackId);
+		int totalPoints = TrackPoints.getCount(app.getDatabase(), trackId);
 
 		progressDialog = createProgressDialog(totalPoints, getString(R.string.creating_gpx));
 		progressDialog.show();

@@ -116,8 +116,9 @@
     <string name="track_points">Track points</string>
     <string name="scheduled_track_points">Scheduled track points</string>
     <string name="tracks">Tracks</string>
-    <string name="scheduled_tracks">Scheduled Tracks</string>
+    <string name="scheduled_tracks">Scheduled tracks</string>
     <string name="track_details_activity_title">Track details</string>
+    <string name="show_track_details">Show details</string>
     <string name="show_track">Show track</string>
     <string name="track_chart">Track chart</string>
     <string name="record_track">Record track</string>
@@ -168,7 +169,7 @@
     <string name="true_north_summary">Compass points to True North instead of Magnetic North</string>
     <string name="show_magnetic">Show Magnetic North</string>
     <string name="show_magnetic_summary">Shows transparent Magnetic North compass underneath the True North one</string>
-    <string name="compass_vibration">Vibrating Dial</string>
+    <string name="compass_vibration">Vibrating dial</string>
     <string name="compass_vibration_summary">Vibrate when dial is rotated</string>
     <!-- Waypoints -->
     <string name="waypoint">Waypoint</string>
