@@ -6,6 +6,8 @@ public class Table {
 
 	public static String TABLE_NAME;
 	
+	public static String TABLE_CREATE;
+	
 	/**
 	 * Delete all waypoints
 	 * 
@@ -17,6 +19,8 @@ public class Table {
 		db.execSQL(sql);
 
 	}
+	
+	
 	
 	
 }

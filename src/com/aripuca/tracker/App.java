@@ -1,19 +1,13 @@
 package com.aripuca.tracker;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.db.Waypoints;
-import com.aripuca.tracker.track.Waypoint;
 import com.aripuca.tracker.util.AppLog;
 import com.aripuca.tracker.util.Utils;
 
 import android.app.Application;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;

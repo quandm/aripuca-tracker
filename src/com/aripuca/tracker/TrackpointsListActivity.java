@@ -6,7 +6,8 @@ import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.track.Waypoint;
+import com.aripuca.tracker.db.Waypoint;
+import com.aripuca.tracker.db.Waypoints;
 
 import com.aripuca.tracker.util.Utils;
 import com.aripuca.tracker.view.CompassImage;
@@ -29,6 +30,7 @@ import android.location.Location;
 import android.os.Bundle;
 
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,6 +65,8 @@ public class TrackpointsListActivity extends ListActivity {
 
 	private int sortMethod;
 
+	private long trackId;
+	
 	/**
 	 * Service connection object
 	 */
@@ -202,10 +206,10 @@ public class TrackpointsListActivity extends ListActivity {
 
 				// setting track point coordinates
 				if (coordinatesTextView != null) {
-					coordinatesTextView.setText(Utils.formatLat(wp.getLatitude(),
+					coordinatesTextView.setText(Utils.formatLat(wp.getLat(),
 							Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 							+ " "
-							+ Utils.formatLng(wp.getLongitude(),
+							+ Utils.formatLng(wp.getLng(),
 									Integer.parseInt(app.getPreferences().getString("coord_units", "0"))));
 
 				}
@@ -234,11 +238,6 @@ public class TrackpointsListActivity extends ListActivity {
 	}
 
 	/**
-	 * Select all waypoints sql query
-	 */
-	private String sqlSelectAllWaypoints;;
-
-	/**
 	 * Called when the activity is first created
 	 */
 	@Override
@@ -247,9 +246,7 @@ public class TrackpointsListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		Bundle bundle = getIntent().getExtras();
-		final long trackId = bundle.getLong("track_id", 0);
-
-		sqlSelectAllWaypoints = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
+		this.trackId = bundle.getLong("track_id", 0);
 
 		app = ((App) getApplicationContext());
 
@@ -447,28 +444,8 @@ public class TrackpointsListActivity extends ListActivity {
 			waypoints = new ArrayList<Waypoint>();
 		}
 
-		Cursor cursor = app.getDatabase().rawQuery(this.sqlSelectAllWaypoints, null);
-		cursor.moveToFirst();
-
-		int i = 1;
-		while (cursor.isAfterLast() == false) {
-
-			Waypoint wp = new Waypoint(Integer.toString(i), cursor.getLong(cursor.getColumnIndex("time")),
-					cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
-					cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6, cursor.getDouble(cursor
-							.getColumnIndex("elevation")), cursor.getFloat(cursor.getColumnIndex("accuracy")));
-
-			wp.setId(cursor.getLong(cursor.getColumnIndex("_id")));
-
-			waypoints.add(wp);
-
-			cursor.moveToNext();
-
-			i++;
-		}
-
-		cursor.close();
-
+		Waypoints.getAllTrackPoints(app.getDatabase(), waypoints, this.trackId);
+		
 	}
 
 	public WaypointsArrayAdapter getArrayAdapter() {
