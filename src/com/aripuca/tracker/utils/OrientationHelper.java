@@ -1,4 +1,4 @@
-package com.aripuca.tracker.util;
+package com.aripuca.tracker.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;

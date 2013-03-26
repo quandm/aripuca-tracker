@@ -7,9 +7,10 @@ import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.track.Track;
 
-import com.aripuca.tracker.util.ContainerCarousel;
-import com.aripuca.tracker.util.SunriseSunset;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.ContainerCarousel;
+import com.aripuca.tracker.utils.MapUtils;
+import com.aripuca.tracker.utils.SunriseSunset;
+import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
 
@@ -1542,7 +1543,7 @@ public class MainActivity extends Activity {
 			// let's request declination every 15 minutes, not every compass
 			// update
 			if (now - declinationLastUpdate > 15 * 60 * 1000) {
-				declination = Utils.getDeclination(currentLocation, now);
+				declination = MapUtils.getDeclination(currentLocation, now);
 				declinationLastUpdate = now;
 			}
 		}

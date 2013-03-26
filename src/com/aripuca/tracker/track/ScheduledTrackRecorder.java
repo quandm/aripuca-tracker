@@ -6,7 +6,7 @@ import java.util.Date;
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;

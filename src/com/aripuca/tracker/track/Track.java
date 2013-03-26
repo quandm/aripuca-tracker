@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 import android.content.ContentValues;
 import android.content.Context;

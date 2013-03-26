@@ -1,4 +1,4 @@
-package com.aripuca.tracker.util;
+package com.aripuca.tracker.utils;
 
 import java.io.File;
 import java.security.MessageDigest;
@@ -414,21 +414,6 @@ public class Utils {
 	}
 
 	/**
-	 * Get current magnetic declination
-	 * 
-	 * @param location
-	 * @param timestamp
-	 * @return
-	 */
-	public static float getDeclination(Location location, long timestamp) {
-
-		GeomagneticField field = new GeomagneticField((float) location.getLatitude(), (float) location.getLongitude(),
-				(float) location.getAltitude(), timestamp);
-
-		return field.getDeclination();
-	}
-
-	/**
 	 * Converts time (in milliseconds) to human-readable format "<w> days, <x> hours, <y> minutes and (z) seconds"
 	 */
 	public static String timeToHumanReadableString(long duration) {
@@ -605,6 +590,6 @@ public class Utils {
 
 	}
 
-	
+
 
 }

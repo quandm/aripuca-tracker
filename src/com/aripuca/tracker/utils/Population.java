@@ -1,4 +1,4 @@
-package com.aripuca.tracker.util;
+package com.aripuca.tracker.utils;
 
 public class Population {
 

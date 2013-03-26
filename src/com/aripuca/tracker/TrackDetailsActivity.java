@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;

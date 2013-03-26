@@ -1,4 +1,4 @@
-package com.aripuca.tracker.util;
+package com.aripuca.tracker.utils;
 
 /**
  * Orientation sensor values holder class
