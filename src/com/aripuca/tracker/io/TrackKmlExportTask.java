@@ -1,6 +1,6 @@
 package com.aripuca.tracker.io;
 
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 import android.content.Context;
 

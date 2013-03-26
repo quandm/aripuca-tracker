@@ -3,7 +3,8 @@ package com.aripuca.tracker;
 import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.MapUtils;
+import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.BubbleSurfaceView;
 import com.aripuca.tracker.view.CompassImage;
 
@@ -78,7 +79,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 			long now = System.currentTimeMillis();
 
-			declination = Utils.getDeclination(currentLocation, now);
+			declination = MapUtils.getDeclination(currentLocation, now);
 
 			// stop location updates when not recording track
 			if (serviceConnection.getService().getTrackRecorder().isRecording()) {

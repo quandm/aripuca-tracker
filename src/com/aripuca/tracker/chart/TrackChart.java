@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 import android.content.SharedPreferences;
 import android.graphics.Canvas;

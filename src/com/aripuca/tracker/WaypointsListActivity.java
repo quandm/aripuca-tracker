@@ -37,7 +37,7 @@ import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.db.Waypoint;
 
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
 import android.app.AlertDialog;

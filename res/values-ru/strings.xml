@@ -225,4 +225,5 @@
     <string name="segment_vibration_summary">Вибрировать после начала нового сегмента</string>
     <string name="track_chart">График трека</string>
     <string name="track_points">Точки трека</string>
+    <string name="current_location">Текущее положение</string>
 </resources>

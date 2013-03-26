@@ -259,4 +259,5 @@
     <string name="start_scheduler">Start Scheduler</string>
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
+    <string name="current_location">Current location</string>
 </resources>

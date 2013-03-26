@@ -4,8 +4,8 @@ import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.db.Waypoints;
-import com.aripuca.tracker.util.AppLog;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.Utils;
 
 import android.app.Application;
 import android.content.Context;

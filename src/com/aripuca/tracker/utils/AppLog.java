@@ -1,4 +1,4 @@
-package com.aripuca.tracker.util;
+package com.aripuca.tracker.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;

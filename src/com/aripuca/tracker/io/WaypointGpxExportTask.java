@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 import android.content.Context;
 

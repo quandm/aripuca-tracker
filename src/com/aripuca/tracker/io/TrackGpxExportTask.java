@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 public class TrackGpxExportTask extends TrackExportTask {
 

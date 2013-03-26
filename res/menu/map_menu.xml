@@ -3,14 +3,20 @@
 
 	<item android:id="@+id/showWaypoint" 
 			android:title="@string/show_waypoint"
+			android:visible="false"
 			android:icon="@drawable/ic_menu_myplaces" />
 
 	<item android:id="@+id/showTrack" 
 			android:title="@string/show_track"
+			android:visible="false"
 			android:icon="@drawable/ic_menu_track" />
 
 	<item android:id="@+id/mapMode" 
 			android:title="@string/satellite"
 			android:icon="@drawable/ic_menu_mapmode" />
 
+	<item android:id="@+id/gotoCurrentLocation" 
+			android:title="@string/current_location"
+			android:icon="@drawable/ic_menu_mylocation" />
+		
 </menu>

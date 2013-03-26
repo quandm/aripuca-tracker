@@ -9,7 +9,7 @@ import com.aripuca.tracker.R;
 
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
-import com.aripuca.tracker.util.Utils;
+import com.aripuca.tracker.utils.Utils;
 
 import android.app.AlarmManager;
 import android.app.Notification;
