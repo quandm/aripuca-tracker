@@ -306,8 +306,9 @@ public class MyMapActivity extends MapActivity {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas, com.google.android.maps.MapView,
-		 * boolean)
+		 * @see
+		 * com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas,
+		 * com.google.android.maps.MapView, boolean)
 		 */
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
@@ -444,53 +445,59 @@ public class MyMapActivity extends MapActivity {
 		switch (this.mode) {
 
 		// show waypoint
-		case Constants.SHOW_WAYPOINT:
+			case Constants.SHOW_WAYPOINT:
 
-			this.hideInfoPanels();
+				mapView.setBuiltInZoomControls(true);
+				
+				this.hideInfoPanels();
 
-			this.setupWaypoint(b);
+				this.setupWaypoint(b);
 
-			// add overlays to the map
-			WaypointOverlay waypointOverlay = new WaypointOverlay();
+				// add overlays to the map
+				WaypointOverlay waypointOverlay = new WaypointOverlay();
 
-			listOfOverlays.clear();
-			listOfOverlays.add(waypointOverlay);
-
-			break;
-
-		case Constants.SHOW_ALL_WAYPOINTS:
-
-			this.hideInfoPanels();
-
-			Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
-			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-
-			MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
-
-			this.loadWaypoints(itemizedOverlay);
-
-			listOfOverlays.clear();
-			listOfOverlays.add(itemizedOverlay);
+				listOfOverlays.clear();
+				listOfOverlays.add(waypointOverlay);
 
 			break;
 
-		// show track
-		case Constants.SHOW_TRACK:
-		case Constants.SHOW_SCHEDULED_TRACK:
+			case Constants.SHOW_ALL_WAYPOINTS:
 
-			this.trackId = b.getLong("track_id");
+				mapView.setBuiltInZoomControls(true);
+				
+				this.hideInfoPanels();
 
-			this.showInfoPanels();
+				Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
+				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
-			this.setupTrack();
+				MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
 
-			this.setupSeekBar();
+				this.loadWaypoints(itemizedOverlay);
 
-			// add overlays to the map
-			TrackOverlay trackOverlay = new TrackOverlay();
+				listOfOverlays.clear();
+				listOfOverlays.add(itemizedOverlay);
 
-			listOfOverlays.clear();
-			listOfOverlays.add(trackOverlay);
+			break;
+
+			// show track
+			case Constants.SHOW_TRACK:
+			case Constants.SHOW_SCHEDULED_TRACK:
+
+				mapView.setBuiltInZoomControls(false);
+				
+				this.trackId = b.getLong("track_id");
+
+				this.showInfoPanels();
+
+				this.setupTrack();
+
+				this.setupSeekBar();
+
+				// add overlays to the map
+				TrackOverlay trackOverlay = new TrackOverlay();
+
+				listOfOverlays.clear();
+				listOfOverlays.add(trackOverlay);
 
 			break;
 
@@ -611,10 +618,8 @@ public class MyMapActivity extends MapActivity {
 
 		// initial map mode is street view
 		mapMode = Constants.MAP_STREET;
-		mapView.setStreetView(true);
+//		mapView.setStreetView(true);
 		mapView.setSatellite(false);
-
-		mapView.setBuiltInZoomControls(false);
 
 	}
 
@@ -661,16 +666,17 @@ public class MyMapActivity extends MapActivity {
 	 * Show entire track and current location on the map with maximum zoom level
 	 */
 	private void gotoCurrentLocation() {
-		
+
 		if (currentLocation != null) {
-			
+
 			// include current location in track span
-			this.updateTrackSpan((int)(currentLocation.getLatitude()*1E6), (int)(currentLocation.getLongitude()*1E6));
-			
+			this.updateTrackSpan((int) (currentLocation.getLatitude() * 1E6),
+					(int) (currentLocation.getLongitude() * 1E6));
+
 			this.zoomToTrackSpanAndCenter();
-			
+
 			// mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));
-			
+
 		} else {
 			Toast.makeText(MyMapActivity.this, R.string.waiting_for_fix, Toast.LENGTH_SHORT).show();
 		}
@@ -750,24 +756,31 @@ public class MyMapActivity extends MapActivity {
 
 		TrackPoint tp = points.get(progress);
 
-		((TextView) findViewById(R.id.info)).setText(
+		float distanceToFinish = Math.abs(this.trackTotalDistance - tp.getDistance());
+
+		// show track distance in track info area
+		((TextView) findViewById(R.id.distance)).setText(
 				getString(R.string.distance) + ": " +
-						Utils.formatDistance(tp.getDistance(), distanceUnit) + " " +
-						Utils.getLocalizedDistanceUnit(MyMapActivity.this, tp.getDistance(), distanceUnit)
+						Utils.formatDistance(this.trackTotalDistance, distanceUnit) +
+						Utils.getLocalizedDistanceUnit(MyMapActivity.this, this.trackTotalDistance, distanceUnit)
 						+ " | " +
-						getString(R.string.speed) + ": " +
+						getString(R.string.distance_from_start) + ": " +
+						Utils.formatDistance(tp.getDistance(), distanceUnit) +
+						Utils.getLocalizedDistanceUnit(MyMapActivity.this, tp.getDistance(), distanceUnit) + " | " +
+						getString(R.string.distance_to_end) + ": " +
+						Utils.formatDistance(distanceToFinish, distanceUnit) +
+						Utils.getLocalizedDistanceUnit(MyMapActivity.this, distanceToFinish,
+								distanceUnit));
+
+		((TextView) findViewById(R.id.info)).setText(
+				getString(R.string.speed) + ": " +
 						Utils.formatSpeed(tp.getSpeed(), speedUnit) + " " +
 						Utils.getLocalizedSpeedUnit(MyMapActivity.this, speedUnit) + " | " +
 						getString(R.string.elevation) + ": " +
 						Utils.formatElevation(tp.getElevation(), elevationUnit) + " " +
-						Utils.getLocalizedElevationUnit(MyMapActivity.this, elevationUnit)
-				);
-
-		// show track distance in track info area
-		((TextView) findViewById(R.id.distance)).setText(getString(R.string.total_distance) + ": "
-				+ Utils.formatDistance(this.trackTotalDistance, distanceUnit) + " " +
-				Utils.getLocalizedDistanceUnit(this, this.trackTotalDistance, distanceUnit) + " | Point: "
-				+ Integer.toString(currentPointIndex + 1));
+						Utils.getLocalizedElevationUnit(MyMapActivity.this, elevationUnit) + " | " +
+						getString(R.string.point) + ": " +
+						Integer.toString(currentPointIndex + 1));
 
 		mapView.invalidate();
 
@@ -930,42 +943,42 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.showWaypoint:
+			case R.id.showWaypoint:
 
-			mapView.getController().setZoom(16);
-			mapView.getController().animateTo(geopoint);
+				mapView.getController().setZoom(16);
+				mapView.getController().animateTo(geopoint);
 
-			return true;
+				return true;
 
-		case R.id.showTrack:
+			case R.id.showTrack:
 
-			this.zoomToTrackSpanAndCenter();
+				this.zoomToTrackSpanAndCenter();
 
-			return true;
+				return true;
 
-		case R.id.mapMode:
+			case R.id.mapMode:
 
-			if (mapMode == Constants.MAP_STREET) {
-				mapView.setStreetView(false);
-				mapView.setSatellite(true);
-				mapMode = Constants.MAP_SATELLITE;
-			} else {
-				mapView.setSatellite(false);
-				mapView.setStreetView(true);
-				mapMode = Constants.MAP_STREET;
-			}
+				if (mapMode == Constants.MAP_STREET) {
+					//mapView.setStreetView(false);
+					mapMode = Constants.MAP_SATELLITE;
+					mapView.setSatellite(true);
+				} else {
+					//mapView.setStreetView(true);
+					mapMode = Constants.MAP_STREET;
+					mapView.setSatellite(false);
+				}
 
-			return true;
+				return true;
 
-		case R.id.gotoCurrentLocation:
+			case R.id.gotoCurrentLocation:
 
-			this.gotoCurrentLocation();
+				this.gotoCurrentLocation();
 
-			return true;
+				return true;
 
-		default:
+			default:
 
-			return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(item);
 
 		}
 

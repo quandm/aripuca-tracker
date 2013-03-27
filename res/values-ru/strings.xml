@@ -226,4 +226,7 @@
     <string name="track_chart">График трека</string>
     <string name="track_points">Точки трека</string>
     <string name="my_location">Мое положение</string>
+    <string name="distance_from_start">От начала</string>
+    <string name="point">Точка</string>
+    <string name="distance_to_end">До конца</string>
 </resources>
