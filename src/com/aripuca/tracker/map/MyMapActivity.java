@@ -306,9 +306,8 @@ public class MyMapActivity extends MapActivity {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas,
-		 * com.google.android.maps.MapView, boolean)
+		 * @see com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas, com.google.android.maps.MapView,
+		 * boolean)
 		 */
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
@@ -445,53 +444,53 @@ public class MyMapActivity extends MapActivity {
 		switch (this.mode) {
 
 		// show waypoint
-			case Constants.SHOW_WAYPOINT:
+		case Constants.SHOW_WAYPOINT:
 
-				this.hideInfoPanels();
+			this.hideInfoPanels();
 
-				this.setupWaypoint(b);
+			this.setupWaypoint(b);
 
-				// add overlays to the map
-				WaypointOverlay waypointOverlay = new WaypointOverlay();
+			// add overlays to the map
+			WaypointOverlay waypointOverlay = new WaypointOverlay();
 
-				listOfOverlays.clear();
-				listOfOverlays.add(waypointOverlay);
-
-			break;
-
-			case Constants.SHOW_ALL_WAYPOINTS:
-
-				this.hideInfoPanels();
-
-				Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
-				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-
-				MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
-
-				this.loadWaypoints(itemizedOverlay);
-
-				listOfOverlays.clear();
-				listOfOverlays.add(itemizedOverlay);
+			listOfOverlays.clear();
+			listOfOverlays.add(waypointOverlay);
 
 			break;
 
-			// show track
-			case Constants.SHOW_TRACK:
-			case Constants.SHOW_SCHEDULED_TRACK:
+		case Constants.SHOW_ALL_WAYPOINTS:
 
-				this.trackId = b.getLong("track_id");
+			this.hideInfoPanels();
 
-				this.showInfoPanels();
+			Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
+			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
-				this.setupTrack();
+			MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
 
-				this.setupSeekBar();
+			this.loadWaypoints(itemizedOverlay);
 
-				// add overlays to the map
-				TrackOverlay trackOverlay = new TrackOverlay();
+			listOfOverlays.clear();
+			listOfOverlays.add(itemizedOverlay);
 
-				listOfOverlays.clear();
-				listOfOverlays.add(trackOverlay);
+			break;
+
+		// show track
+		case Constants.SHOW_TRACK:
+		case Constants.SHOW_SCHEDULED_TRACK:
+
+			this.trackId = b.getLong("track_id");
+
+			this.showInfoPanels();
+
+			this.setupTrack();
+
+			this.setupSeekBar();
+
+			// add overlays to the map
+			TrackOverlay trackOverlay = new TrackOverlay();
+
+			listOfOverlays.clear();
+			listOfOverlays.add(trackOverlay);
 
 			break;
 
@@ -659,14 +658,19 @@ public class MyMapActivity extends MapActivity {
 	}
 
 	/**
-	 * Show entire track on the map with maximum zoom level
+	 * Show entire track and current location on the map with maximum zoom level
 	 */
 	private void gotoCurrentLocation() {
-
-		// pan to the center of track occupied area
-
+		
 		if (currentLocation != null) {
-			mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));
+			
+			// include current location in track span
+			this.updateTrackSpan((int)(currentLocation.getLatitude()*1E6), (int)(currentLocation.getLongitude()*1E6));
+			
+			this.zoomToTrackSpanAndCenter();
+			
+			// mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));
+			
 		} else {
 			Toast.makeText(MyMapActivity.this, R.string.waiting_for_fix, Toast.LENGTH_SHORT).show();
 		}
@@ -763,25 +767,9 @@ public class MyMapActivity extends MapActivity {
 		((TextView) findViewById(R.id.distance)).setText(getString(R.string.total_distance) + ": "
 				+ Utils.formatDistance(this.trackTotalDistance, distanceUnit) + " " +
 				Utils.getLocalizedDistanceUnit(this, this.trackTotalDistance, distanceUnit) + " | Point: "
-				+ Integer.toString(currentPointIndex));
+				+ Integer.toString(currentPointIndex + 1));
 
 		mapView.invalidate();
-
-	}
-
-	/**
-	 * 
-	 */
-	private void updateTrackDistance() {
-
-		// update total distance in info panel
-		float distance = this.getTrackDistance(this.trackId);
-
-		// show track distance in track info area
-		((TextView) findViewById(R.id.distance)).setText(getString(R.string.total_distance) + ": "
-				+ Utils.formatDistance(distance, distanceUnit) + " " +
-				Utils.getLocalizedDistanceUnit(this, distance, distanceUnit) + " | Point: "
-				+ Integer.toString(currentPointIndex));
 
 	}
 
@@ -813,7 +801,7 @@ public class MyMapActivity extends MapActivity {
 			gp.setDistance(tpCursor.getFloat(tpCursor.getColumnIndex("distance")));
 			gp.setElevation(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")));
 
-			calculateTrackSpan(latE6, lngE6);
+			this.updateTrackSpan(latE6, lngE6);
 
 			if (startPoint == null) {
 				startPoint = gp;
@@ -869,7 +857,7 @@ public class MyMapActivity extends MapActivity {
 	 * @param lat
 	 * @param lng
 	 */
-	private void calculateTrackSpan(int lat, int lng) {
+	private void updateTrackSpan(int lat, int lng) {
 
 		if (lat < minLat) {
 			minLat = lat;
@@ -917,11 +905,11 @@ public class MyMapActivity extends MapActivity {
 
 		if (mode == Constants.SHOW_WAYPOINT) {
 			(menu.findItem(R.id.showWaypoint)).setVisible(true);
-		} 
+		}
 
 		if (mode == Constants.SHOW_TRACK || mode == Constants.SHOW_SCHEDULED_TRACK) {
 			(menu.findItem(R.id.showTrack)).setVisible(true);
-		} 
+		}
 
 		MenuItem mapMenuItem = menu.findItem(R.id.mapMode);
 		if (mapMode == Constants.MAP_STREET) {
@@ -942,42 +930,42 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.showWaypoint:
+		case R.id.showWaypoint:
 
-				mapView.getController().setZoom(16);
-				mapView.getController().animateTo(geopoint);
+			mapView.getController().setZoom(16);
+			mapView.getController().animateTo(geopoint);
 
-				return true;
+			return true;
 
-			case R.id.showTrack:
+		case R.id.showTrack:
 
-				this.zoomToTrackSpanAndCenter();
+			this.zoomToTrackSpanAndCenter();
 
-				return true;
+			return true;
 
-			case R.id.mapMode:
+		case R.id.mapMode:
 
-				if (mapMode == Constants.MAP_STREET) {
-					mapView.setStreetView(false);
-					mapView.setSatellite(true);
-					mapMode = Constants.MAP_SATELLITE;
-				} else {
-					mapView.setSatellite(false);
-					mapView.setStreetView(true);
-					mapMode = Constants.MAP_STREET;
-				}
+			if (mapMode == Constants.MAP_STREET) {
+				mapView.setStreetView(false);
+				mapView.setSatellite(true);
+				mapMode = Constants.MAP_SATELLITE;
+			} else {
+				mapView.setSatellite(false);
+				mapView.setStreetView(true);
+				mapMode = Constants.MAP_STREET;
+			}
 
-				return true;
+			return true;
 
-			case R.id.gotoCurrentLocation:
+		case R.id.gotoCurrentLocation:
 
-				this.gotoCurrentLocation();
+			this.gotoCurrentLocation();
 
-				return true;
+			return true;
 
-			default:
+		default:
 
-				return super.onOptionsItemSelected(item);
+			return super.onOptionsItemSelected(item);
 
 		}
 
