@@ -55,6 +55,7 @@
     <string name="current">Current</string>
     <string name="azimuth">Azimuth</string>
     <string name="distance">Distance</string>
+    <string name="distance_from_start">From start</string>
     <string name="total_distance">Total distance</string>
     <string name="coordinates">Coordinates</string>
     <string name="lat">Latitude</string>
@@ -64,6 +65,7 @@
     <string name="about">About</string>
     <string name="settings">Settings</string>
     <string name="title">Title</string>
+    <string name="point">Point</string>
     <string name="points">Points</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
@@ -260,4 +262,5 @@
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
     <string name="my_location">My location</string>
+    <string name="distance_to_end">To end</string>
 </resources>

@@ -243,4 +243,5 @@ Está seguro?</string>
     <string name="start_scheduler">Iniciar Planificador</string>
     <string name="logging_level">Nivel de registro</string>
     <string name="logging_level_summary">Registrar errores, advertencias, información y mensajes de depuración</string>
+    <string name="point">Punto</string>
 </resources>
