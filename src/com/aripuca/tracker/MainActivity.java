@@ -9,10 +9,10 @@ import com.aripuca.tracker.track.Track;
 
 import com.aripuca.tracker.utils.ContainerCarousel;
 import com.aripuca.tracker.utils.MapUtils;
-import com.aripuca.tracker.utils.SunriseSunset;
 import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.CompassImage;
 import com.aripuca.tracker.R;
+import com.thirdparty.SunriseSunset;
 
 import java.io.File;
 import java.io.IOException;

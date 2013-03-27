@@ -34,8 +34,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 /**
- * this service handles real time and scheduled track recording as well as
- * compass updates
+ * this service handles real time and scheduled track recording as well as compass updates
  */
 public class AppService extends Service {
 
@@ -124,9 +123,8 @@ public class AppService extends Service {
 		}
 
 		/**
-		 * Called when the provider status changes. This method is called when a
-		 * provider is unable to fetch a location or if the provider has
-		 * recently become available after a period of unavailability.
+		 * Called when the provider status changes. This method is called when a provider is unable to fetch a location
+		 * or if the provider has recently become available after a period of unavailability.
 		 */
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -136,10 +134,12 @@ public class AppService extends Service {
 		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -229,13 +229,16 @@ public class AppService extends Service {
 		}
 
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
 
 		@Override
-		public void onProviderEnabled(String provider) {}
+		public void onProviderEnabled(String provider) {
+		}
 
 		@Override
-		public void onProviderDisabled(String provider) {}
+		public void onProviderDisabled(String provider) {
+		}
 
 	};
 
@@ -435,8 +438,7 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * Stopping location updates with delay, leaving a chance for new activity
-	 * not to restart location listener
+	 * Stopping location updates with delay, leaving a chance for new activity not to restart location listener
 	 */
 	public void stopLocationUpdates() {
 
@@ -507,7 +509,8 @@ public class AppService extends Service {
 	/**
 	 * Schedules next request for GPS location
 	 * 
-	 * @param interval Interval between 2 consecutive requests (in seconds)
+	 * @param interval
+	 *            Interval between 2 consecutive requests (in seconds)
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
@@ -583,8 +586,7 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * Receives broadcast event every 5 seconds in order to control presence of
-	 * GPS signal
+	 * Receives broadcast event every 5 seconds in order to control presence of GPS signal
 	 */
 	private BroadcastReceiver nextTimeLimitCheckReceiver = new BroadcastReceiver() {
 		@Override
@@ -712,9 +714,8 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * stopping location updates with small delay giving us a chance not to
-	 * restart listener if other activity requires GPS sensor too. new activity
-	 * has to bind to AppService and set gpsInUse to true
+	 * stopping location updates with small delay giving us a chance not to restart listener if other activity requires
+	 * GPS sensor too. new activity has to bind to AppService and set gpsInUse to true
 	 */
 	private class stopLocationUpdatesThread extends Thread {
 
@@ -723,11 +724,11 @@ public class AppService extends Service {
 
 			try {
 				// wait for other activities to grab location updates
-				sleep(2500);
-			} catch (Exception e) {}
+				sleep(5000);
+			} catch (Exception e) {
+			}
 
-			// if no activities require location updates - stop them and save
-			// battery
+			// if no activities require location updates - stop them and save battery
 			if (gpsInUse == false) {
 				locationManager.removeUpdates(locationListener);
 				listening = false;

@@ -1,4 +1,4 @@
-package com.aripuca.tracker.utils;
+package com.thirdparty;
 
 /******************************************************************************
  *

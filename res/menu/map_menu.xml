@@ -16,7 +16,7 @@
 			android:icon="@drawable/ic_menu_mapmode" />
 
 	<item android:id="@+id/gotoCurrentLocation" 
-			android:title="@string/current_location"
+			android:title="@string/my_location"
 			android:icon="@drawable/ic_menu_mylocation" />
 		
 </menu>

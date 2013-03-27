@@ -30,7 +30,9 @@ public class AppLog {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		int currentLoggingLevel = Integer.parseInt(preferences.getString("logging_level", "0"));
 
-		if (loggingLevel > currentLoggingLevel) { return; }
+		if (loggingLevel > currentLoggingLevel) {
+			return;
+		}
 
 		String fileName = loggingLevels[loggingLevel] + "_" + DateFormat.format("yyyy-MM-dd", new Date()) + ".log";
 
@@ -39,7 +41,7 @@ public class AppLog {
 		sb.append(" | ");
 		sb.append(message);
 
-		File logFile = new File(appDir + "/logs/" + fileName);
+		File logFile = new File(appDir + "/" + Constants.PATH_LOGS + "/" + fileName);
 
 		if (!logFile.exists()) {
 			try {

@@ -3,6 +3,8 @@ package com.aripuca.tracker;
 import java.util.ArrayList;
 
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.db.Segment;
+import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.utils.Utils;
 
@@ -40,8 +42,10 @@ public class TrackDetailsActivity extends Activity {
 	/**
 	 * Array of segment table unique ids (_id field)
 	 */
-	private ArrayList<Integer> segmentIds;
+//	private ArrayList<Integer> segmentIds;
 
+	private ArrayList<Segment> segments;
+	
 	private OnClickListener prevSegmentButtonClick = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -126,9 +130,15 @@ public class TrackDetailsActivity extends Activity {
 	 * 
 	 */
 	private void getSegments() {
+		
+//		this.segments = new ArrayList<Segment>();		
+		
+		this.segments = Segments.getAll(app.getDatabase(), this.trackId);
 
+		this.numberOfSegments = this.segments.size();
+		
 		// get track data
-		String sql = "SELECT _id FROM segments WHERE track_id=" + this.trackId;
+/*		String sql = "SELECT _id FROM segments WHERE track_id=" + this.trackId;
 
 		Cursor cursor = app.getDatabase().rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -147,6 +157,7 @@ public class TrackDetailsActivity extends Activity {
 		}
 
 		cursor.close();
+		*/
 
 	}
 
@@ -189,24 +200,126 @@ public class TrackDetailsActivity extends Activity {
 	 */
 	protected void updateSegment(int segmentIndex) {
 
-		int segmentId = segmentIds.get(segmentIndex - 1);
+//		int segmentId = segmentIds.get(segmentIndex - 1);
+		
+		long segmentId = segments.get(segmentIndex-1).getId();
 
-		// get track data
-		String sql = "SELECT segments.*, COUNT(track_points._id) AS count FROM segments, track_points WHERE"
-				+ " segments._id=" + segmentId + " AND segments.track_id=" + this.trackId
-				+ " AND track_points.segment_index=" + (segmentIndex - 1)
-				+ " AND segments.track_id = track_points.track_id";
-
-		Cursor cursor = app.getDatabase().rawQuery(sql, null);
-		cursor.moveToFirst();
-
+		Segment segment = Segments.get(app.getDatabase(), trackId, segmentId, segmentIndex);
+		
+		// update description text view
 		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
 
-		this.updateActivity(cursor);
+		this.updateSegmentDetails(segment);
+		
+	}
+	
+	private void updateSegmentDetails(Segment segment) {
 
-		cursor.close();
+		// measuring units
+		String speedUnit = app.getPreferences().getString("speed_units", "kph");
+		String speedUnitLocalized = Utils.getLocalizedSpeedUnit(TrackDetailsActivity.this, speedUnit);
+
+		String distanceUnit = app.getPreferences().getString("distance_units", "km");
+
+		String elevationUnit = app.getPreferences().getString("elevation_units", "m");
+		String elevationUnitLocalized = Utils.getLocalizedElevationUnit(TrackDetailsActivity.this, elevationUnit);
+
+		// localized distance unit depends on distance value
+		String distanceUnitLocalized = Utils
+				.getLocalizedDistanceUnit(TrackDetailsActivity.this, segment.getDistance(), distanceUnit);
+
+		// average speed
+		float averageSpeed = 0;
+		
+		long totalTime = segment.getTotalTime();
+		if (totalTime != 0) {
+			averageSpeed = segment.getDistance() / (totalTime / 1000f);
+		}
+
+		// moving average speed
+		long movingTime = segment.getMovingTime();
+		float averageMovingSpeed = 0;
+		if (movingTime > 0 && segment.getDistance() > 0) {
+			averageMovingSpeed = segment.getDistance() / (movingTime / 1000f);
+		}
+
+		float maxSpeed = segment.getMaxSpeed();
+
+		// --------------------------------------------------------
+		// distance
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(segment.getDistance(), distanceUnit) + " "
+				+ distanceUnitLocalized);
+
+		((TextView) findViewById(R.id.pointsCount)).setText(Integer.toString(segment.getPointsCount()));
+
+		// --------------------------------------------------------
+		// times
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(
+				segment.getTotalTime(), true));
+
+		((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(
+				segment.getMovingTime(), true));
+
+		((TextView) findViewById(R.id.idleTime)).setText(Utils.formatInterval(
+				segment.getTotalTime()
+						- segment.getMovingTime(), true));
+
+		((TextView) findViewById(R.id.startTime)).setText(DateFormat.format("yyyy-MM-dd k:mm",
+				segment.getStartTime()));
+
+		((TextView) findViewById(R.id.finishTime)).setText(DateFormat.format("yyyy-MM-dd k:mm",
+				segment.getFinishTime()));
+
+		// --------------------------------------------------------
+		// speed
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(averageSpeed, speedUnit) + " "
+				+ speedUnitLocalized);
+
+		((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(averageMovingSpeed, speedUnit)
+				+ " " + speedUnitLocalized);
+
+		((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(maxSpeed, speedUnit) + " "
+				+ speedUnitLocalized);
+
+		// --------------------------------------------------------
+		// pace
+		// --------------------------------------------------------
+		if (averageSpeed != 0) {
+			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(averageSpeed, speedUnit));
+		}
+
+		if (averageMovingSpeed != 0) {
+			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(averageMovingSpeed, speedUnit));
+		}
+
+		if (maxSpeed != 0) {
+			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(maxSpeed, speedUnit));
+		}
+
+		// --------------------------------------------------------
+		// elevation
+		// --------------------------------------------------------
+		((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(
+				segment.getMaxElevation(), elevationUnit)
+				+ " " + elevationUnitLocalized);
+
+		((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(
+				segment.getMinElevation(), elevationUnit)
+				+ " " + elevationUnitLocalized);
+
+		((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(
+				segment.getElevationGain(), elevationUnit)
+				+ " " + elevationUnitLocalized);
+
+		((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(
+				segment.getElevationLoss(), elevationUnit)
+				+ " " + elevationUnitLocalized);
 
 	}
+	
 
 	private void updateActivity(Cursor cursor) {
 

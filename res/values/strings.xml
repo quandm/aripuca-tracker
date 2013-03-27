@@ -233,8 +233,8 @@
     <string name="memory_card_not_available">Memory card not available</string>
     <string name="memory_card_not_writable">No write access to memory card</string>
     <string name="restart_required">Application restart required for the changes to take effect</string>
-    <string name="waiting_for_fix">Waiting for a better fix...</string>
-    <string name="waiting_new_fix">Waiting for new fix...</string>
+    <string name="waiting_for_fix">Waiting for GPS fix...</string>
+    <string name="waiting_new_fix">Waiting for new GPS fix...</string>
     <string name="fix_age">Last fix was received %s ago</string>
     <string name="show_on_startup">Show on startup</string>
     <!-- EMAIL -->
@@ -259,5 +259,5 @@
     <string name="start_scheduler">Start Scheduler</string>
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
-    <string name="current_location">Current location</string>
+    <string name="my_location">My location</string>
 </resources>
