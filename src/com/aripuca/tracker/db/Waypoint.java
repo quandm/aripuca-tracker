@@ -148,8 +148,8 @@ public class Waypoint {
 	/**
 	 * @return the lat in 1E6 format
 	 */
-	public int getLat1E6() {
-		return (int) (this.getLat() * 1E6);
+	public int getLatE6() {
+		return (int) (this.lat * 1E6);
 	}
 
 	/**
@@ -169,8 +169,8 @@ public class Waypoint {
 	/**
 	 * @return the lng in 1E6 format
 	 */
-	public int getLng1E6() {
-		return (int) (this.getLng() * 1E6);
+	public int getLngE6() {
+		return (int) (this.lng * 1E6);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
 import android.content.ContentValues;
@@ -55,7 +56,7 @@ public class Track extends AbstractTrack {
 			this.setTrackId(newTrackId);
 		} catch (SQLiteException e) {
 			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-			app.loge("Track.insertNewTrack:  SQLiteException: " + e.getMessage());
+			AppLog.e(app.getApplicationContext(), "Track.insertNewTrack:  SQLiteException: " + e.getMessage());
 		}
 
 	}

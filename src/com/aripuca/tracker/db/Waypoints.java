@@ -69,9 +69,9 @@ public class Waypoints {
 
 		values.put("descr", wp.getDescr());
 
-		values.put("lat", wp.getLat1E6());
+		values.put("lat", wp.getLatE6());
 
-		values.put("lng", wp.getLng1E6());
+		values.put("lng", wp.getLngE6());
 
 		if (!Float.isNaN(wp.getAccuracy())) {
 			values.put("accuracy", wp.getAccuracy());
@@ -93,8 +93,8 @@ public class Waypoints {
 
 		values.put("title", wp.getTitle());
 		values.put("descr", wp.getDescr());
-		values.put("lat", wp.getLat1E6());
-		values.put("lng", wp.getLng1E6());
+		values.put("lat", wp.getLatE6());
+		values.put("lng", wp.getLngE6());
 
 		db.update("waypoints", values, "_id=" + wp.getId(), null);
 		

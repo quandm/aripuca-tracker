@@ -36,10 +36,14 @@ import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.WaypointsListActivity;
+import com.aripuca.tracker.db.TrackPoint;
+import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Waypoint;
+import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
+import com.aripuca.tracker.utils.MapSpan;
 import com.aripuca.tracker.utils.MapUtils;
-import com.aripuca.tracker.utils.TrackPoint;
 import com.aripuca.tracker.utils.Utils;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -71,11 +75,6 @@ public class MyMapActivity extends MapActivity {
 	private GeoPoint geopoint;
 
 	/**
-	 * 
-	 */
-	private TrackPoint startPoint;
-
-	/**
 	 * track points array
 	 */
 	private ArrayList<TrackPoint> points;
@@ -99,12 +98,9 @@ public class MyMapActivity extends MapActivity {
 	private String elevationUnit;
 
 	/**
-	 * Track span values
+	 * Map span object
 	 */
-	private int minLat = (int) (180 * 1E6);
-	private int maxLat = (int) (-180 * 1E6);
-	private int minLng = (int) (180 * 1E6);
-	private int maxLng = (int) (-180 * 1E6);
+	private MapSpan mapSpan;
 
 	/**
 	 * map display mode: SHOW_WAYPOINT or SHOW_TRACK
@@ -125,49 +121,59 @@ public class MyMapActivity extends MapActivity {
 	 */
 	class TrackOverlay extends com.google.android.maps.Overlay {
 
-		/**
-		 * Overridden draw method
-		 */
 		@Override
 		public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
 
 			super.draw(canvas, mapView, shadow);
 
-			this.drawSegments(mapView, canvas);
+			final Projection projection = mapView.getProjection();
+
+			// draw path only if at least 3 points exist
+			if (points.size() > 2) {
+
+				ArrayList<Path> segmentPath = new ArrayList<Path>();
+
+				createSegmentPathArray(projection, segmentPath);
+
+				drawSegments(canvas, segmentPath);
+
+				// drawing start and end map pins
+				showMapPin(projection, canvas, points.get(0).getGeoPoint(), R.drawable.marker_flag_green);
+				if (points.size() > 1) {
+					showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint(),
+							R.drawable.marker_flag_pink);
+				}
+
+				// current position marker on top of start/stop ones
+				showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint(),
+						R.drawable.marker_flag_blue);
+
+			}
+
+			// show current location marker
+			if (currentLocation != null) {
+				GeoPoint gp = MapUtils.locationToGeoPoint(currentLocation);
+				showMapPinCentered(projection, canvas, gp, R.drawable.ic_maps_indicator_current_position);
+			}
 
 			return true;
 
 		}
 
 		/**
-		 * Drawing segments in different colors
+		 * Create an array of path segments for drawing in alternate colors
 		 * 
 		 * @param projection
-		 * @param canvas
+		 * @return
 		 */
-		private void drawSegments(MapView mapView, Canvas canvas) {
-
-			final Projection projection = mapView.getProjection();
-
-			if (points.size() <= 1) {
-				return;
-			}
-
-			Paint paint = new Paint();
-			paint.setStrokeWidth(3);
-			paint.setStyle(Paint.Style.STROKE);
-			paint.setAntiAlias(true);
+		private void createSegmentPathArray(Projection projection, ArrayList<Path> segmentPaths) {
 
 			boolean pathStarted = false;
 			Point screenPts = new Point();
 
-			//
 			int currentSegmentIndex = -1;
 
 			Path path = null;
-
-			// array of path segments
-			ArrayList<Path> segmentPath = new ArrayList<Path>();
 
 			// create Path objects for each segment
 			for (int i = 0; i < points.size(); i++) {
@@ -180,7 +186,7 @@ public class MyMapActivity extends MapActivity {
 						path = new Path();
 					} else {
 						// saving previous segment
-						segmentPath.add(path);
+						segmentPaths.add(path);
 						// create new segment
 						path = new Path();
 					}
@@ -222,12 +228,27 @@ public class MyMapActivity extends MapActivity {
 
 				// adding last segment if not empty
 				if (i == points.size() - 1 && pathStarted) {
-					segmentPath.add(path);
+					segmentPaths.add(path);
 				}
 
 			}
 
-			// drawing segments in different colors
+		}
+
+		/**
+		 * Drawing segments in different colors
+		 * 
+		 * @param projection
+		 * @param canvas
+		 */
+		private void drawSegments(Canvas canvas, ArrayList<Path> segmentPath) {
+
+			Paint paint = new Paint();
+			paint.setStrokeWidth(3);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setAntiAlias(true);
+
+			// drawing segments in alternate colors
 			for (int i = 0; i < segmentPath.size(); i++) {
 
 				if (i % 2 == 0) {
@@ -237,23 +258,6 @@ public class MyMapActivity extends MapActivity {
 				}
 
 				canvas.drawPath(segmentPath.get(i), paint);
-			}
-
-			// drawing start and end map pins
-			showMapPin(projection, canvas, points.get(0).getGeoPoint(), R.drawable.marker_flag_green);
-			if (points.size() > 1) {
-				showMapPin(projection, canvas, points.get(points.size() - 1).getGeoPoint(),
-						R.drawable.marker_flag_pink);
-			}
-
-			// current position marker on top of start/stop ones
-			showMapPin(projection, canvas, points.get(currentPointIndex).getGeoPoint(),
-					R.drawable.marker_flag_blue);
-
-			// show current location marker
-			if (currentLocation != null) {
-				GeoPoint gp = MapUtils.locationToGeoPoint(currentLocation);
-				showMapPinCentered(projection, canvas, gp, R.drawable.ic_maps_indicator_current_position);
 			}
 
 		}
@@ -306,13 +310,12 @@ public class MyMapActivity extends MapActivity {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas,
-		 * com.google.android.maps.MapView, boolean)
+		 * @see com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas, com.google.android.maps.MapView,
+		 * boolean)
 		 */
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-			// TODO Auto-generated method stub
+
 			super.draw(canvas, mapView, shadow);
 
 			final Projection projection = mapView.getProjection();
@@ -441,64 +444,70 @@ public class MyMapActivity extends MapActivity {
 
 		// getting all map overlays
 		List<Overlay> listOfOverlays = mapView.getOverlays();
+		
+		this.mapSpan = new MapSpan();
 
 		switch (this.mode) {
 
 		// show waypoint
-			case Constants.SHOW_WAYPOINT:
+		case Constants.SHOW_WAYPOINT:
 
-				mapView.setBuiltInZoomControls(true);
-				
-				this.hideInfoPanels();
+			mapView.setBuiltInZoomControls(true);
 
-				this.setupWaypoint(b);
+			this.hideInfoPanels();
 
-				// add overlays to the map
-				WaypointOverlay waypointOverlay = new WaypointOverlay();
+			this.setupWaypoint(b);
 
-				listOfOverlays.clear();
-				listOfOverlays.add(waypointOverlay);
+			// add overlays to the map
+			WaypointOverlay waypointOverlay = new WaypointOverlay();
+
+			listOfOverlays.clear();
+			listOfOverlays.add(waypointOverlay);
+			
+			break;
+
+		case Constants.SHOW_ALL_WAYPOINTS:
+
+			mapView.setBuiltInZoomControls(true);
+
+			this.hideInfoPanels();
+
+			Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
+			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
+			// put all waypoints into itemized overlay
+			MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
+			this.populateItemizedOverlay(itemizedOverlay);
+
+			listOfOverlays.clear();
+			listOfOverlays.add(itemizedOverlay);
+
+			this.zoomToSpanAndCenter();
 
 			break;
 
-			case Constants.SHOW_ALL_WAYPOINTS:
+		// show track
+		case Constants.SHOW_TRACK:
+		case Constants.SHOW_SCHEDULED_TRACK:
 
-				mapView.setBuiltInZoomControls(true);
-				
-				this.hideInfoPanels();
+			mapView.setBuiltInZoomControls(false);
 
-				Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
-				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+			this.trackId = b.getLong("track_id");
 
-				MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
+			this.showInfoPanels();
 
-				this.loadWaypoints(itemizedOverlay);
+			this.setupTrack();
 
-				listOfOverlays.clear();
-				listOfOverlays.add(itemizedOverlay);
+			this.setupSeekBar();
 
-			break;
+			// add overlays to the map
+			TrackOverlay trackOverlay = new TrackOverlay();
 
-			// show track
-			case Constants.SHOW_TRACK:
-			case Constants.SHOW_SCHEDULED_TRACK:
+			listOfOverlays.clear();
+			listOfOverlays.add(trackOverlay);
 
-				mapView.setBuiltInZoomControls(false);
-				
-				this.trackId = b.getLong("track_id");
-
-				this.showInfoPanels();
-
-				this.setupTrack();
-
-				this.setupSeekBar();
-
-				// add overlays to the map
-				TrackOverlay trackOverlay = new TrackOverlay();
-
-				listOfOverlays.clear();
-				listOfOverlays.add(trackOverlay);
-
+			this.zoomToSpanAndCenter();
+			
 			break;
 
 		}
@@ -618,7 +627,7 @@ public class MyMapActivity extends MapActivity {
 
 		// initial map mode is street view
 		mapMode = Constants.MAP_STREET;
-//		mapView.setStreetView(true);
+		// mapView.setStreetView(true);
 		mapView.setSatellite(false);
 
 	}
@@ -645,20 +654,18 @@ public class MyMapActivity extends MapActivity {
 
 		this.updateInfoPanel(this.currentPointIndex);
 
-		this.zoomToTrackSpanAndCenter();
-
 	}
 
 	/**
 	 * Show entire track on the map with maximum zoom level
 	 */
-	private void zoomToTrackSpanAndCenter() {
+	private void zoomToSpanAndCenter() {
 
 		// zoom to track points span
-		mapView.getController().zoomToSpan(maxLat - minLat, maxLng - minLng);
+		mapView.getController().zoomToSpan(mapSpan.getLatRange(), mapSpan.getLngRange());
 
 		// pan to the center of track occupied area
-		mapView.getController().animateTo(new GeoPoint((maxLat + minLat) / 2, (maxLng + minLng) / 2));
+		mapView.getController().animateTo(mapSpan.getCenter());
 
 	}
 
@@ -670,10 +677,10 @@ public class MyMapActivity extends MapActivity {
 		if (currentLocation != null) {
 
 			// include current location in track span
-			this.updateTrackSpan((int) (currentLocation.getLatitude() * 1E6),
+			mapSpan.updateMapSpan((int) (currentLocation.getLatitude() * 1E6),
 					(int) (currentLocation.getLongitude() * 1E6));
 
-			this.zoomToTrackSpanAndCenter();
+			this.zoomToSpanAndCenter();
 
 			// mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));
 
@@ -793,39 +800,10 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private void loadTrackPoints(long trackId) {
 
-		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
-		Cursor tpCursor = app.getDatabase().rawQuery(sql, null);
-		tpCursor.moveToFirst();
-
 		points = new ArrayList<TrackPoint>();
-
-		int latE6, lngE6, segmentIndex;
-
-		while (tpCursor.isAfterLast() == false) {
-
-			latE6 = tpCursor.getInt(tpCursor.getColumnIndex("lat"));
-			lngE6 = tpCursor.getInt(tpCursor.getColumnIndex("lng"));
-
-			segmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
-
-			// track point object
-			TrackPoint gp = new TrackPoint(new GeoPoint(latE6, lngE6), segmentIndex);
-			gp.setSpeed(tpCursor.getFloat(tpCursor.getColumnIndex("speed")));
-			gp.setDistance(tpCursor.getFloat(tpCursor.getColumnIndex("distance")));
-			gp.setElevation(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")));
-
-			this.updateTrackSpan(latE6, lngE6);
-
-			if (startPoint == null) {
-				startPoint = gp;
-			}
-
-			points.add(gp);
-
-			tpCursor.moveToNext();
-		}
-
-		tpCursor.close();
+		
+		TrackPoints.getAll(app.getDatabase(), trackId, points, mapSpan);
+		
 	}
 
 	/**
@@ -833,60 +811,38 @@ public class MyMapActivity extends MapActivity {
 	 * 
 	 * @param itemizedOverlay
 	 */
-	protected void loadWaypoints(MyItemizedOverlay itemizedOverlay) {
+	protected void populateItemizedOverlay(MyItemizedOverlay itemizedOverlay) {
 
-		Cursor cursor = app.getDatabase().rawQuery("SELECT * FROM waypoints", null);
-		cursor.moveToFirst();
+		ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
+		
+		// load all waypoints
+		Waypoints.getAll(app.getDatabase(), waypoints);
+		
+		// populate itemized overlay
+		for(Waypoint waypoint : waypoints) {
+			
+			GeoPoint point = new GeoPoint(waypoint.getLatE6(), waypoint.getLngE6());
 
-		while (cursor.isAfterLast() == false) {
-
-			GeoPoint point = new GeoPoint(cursor.getInt(cursor.getColumnIndex("lat")), cursor.getInt(cursor
-					.getColumnIndex("lng")));
-
-			String snippet = Utils.formatLat(cursor.getDouble(cursor.getColumnIndex("lat")) / 1E6,
+			String snippet = Utils.formatLat(waypoint.getLat(),
 					Integer.parseInt(app.getPreferences().getString("coord_units", "0")))
 					+ "\n"
-					+ Utils.formatLng(cursor.getDouble(cursor.getColumnIndex("lng")) / 1E6,
+					+ Utils.formatLng(waypoint.getLng(),
 							Integer.parseInt(app.getPreferences().getString("coord_units", "0")));
 
-			if (cursor.getString(cursor.getColumnIndex("descr")) != null) {
-				snippet = cursor.getString(cursor.getColumnIndex("descr")) + "\n" + snippet;
+			if (waypoint.getDescr() != null) {
+				snippet = waypoint.getDescr() + "\n" + snippet;
 			}
 
-			OverlayItem overlayitem = new OverlayItem(point, cursor.getString(cursor.getColumnIndex("title")), snippet);
+			OverlayItem overlayitem = new OverlayItem(point, waypoint.getTitle(), snippet);
 
 			itemizedOverlay.addOverlay(overlayitem);
-
-			cursor.moveToNext();
+			
+			mapSpan.updateMapSpan(waypoint.getLatE6(), waypoint.getLngE6());
+			
 		}
-
-		cursor.close();
-
+		
 	}
-
-	/**
-	 * Calculates min and max coordinates range
-	 * 
-	 * @param lat
-	 * @param lng
-	 */
-	private void updateTrackSpan(int lat, int lng) {
-
-		if (lat < minLat) {
-			minLat = lat;
-		}
-		if (lat > maxLat) {
-			maxLat = lat;
-		}
-		if (lng < minLng) {
-			minLng = lng;
-		}
-		if (lng > maxLng) {
-			maxLng = lng;
-		}
-
-	}
-
+	
 	/**
 	 * 
 	 */
@@ -943,42 +899,43 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-			case R.id.showWaypoint:
+		case R.id.showWaypoint:
 
-				mapView.getController().setZoom(16);
-				mapView.getController().animateTo(geopoint);
+			mapView.getController().setZoom(16);
+			mapView.getController().animateTo(geopoint);
 
-				return true;
+			return true;
 
-			case R.id.showTrack:
+		case R.id.showTrack:
 
-				this.zoomToTrackSpanAndCenter();
+			this.zoomToSpanAndCenter();
 
-				return true;
+			return true;
 
-			case R.id.mapMode:
+		case R.id.mapMode:
 
-				if (mapMode == Constants.MAP_STREET) {
-					//mapView.setStreetView(false);
-					mapMode = Constants.MAP_SATELLITE;
-					mapView.setSatellite(true);
-				} else {
-					//mapView.setStreetView(true);
-					mapMode = Constants.MAP_STREET;
-					mapView.setSatellite(false);
-				}
+			// mapView.setStreetView(true|false) should not be called in order to prevent displaying map tiles with
+			// crosses (API8)
 
-				return true;
+			if (mapMode == Constants.MAP_STREET) {
+				mapMode = Constants.MAP_SATELLITE;
+				mapView.setSatellite(true);
+			} else {
+				mapMode = Constants.MAP_STREET;
+				mapView.setSatellite(false);
+			}
 
-			case R.id.gotoCurrentLocation:
+			return true;
 
-				this.gotoCurrentLocation();
+		case R.id.gotoCurrentLocation:
 
-				return true;
+			this.gotoCurrentLocation();
 
-			default:
+			return true;
 
-				return super.onOptionsItemSelected(item);
+		default:
+
+			return super.onOptionsItemSelected(item);
 
 		}
 

@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * 
@@ -176,28 +177,26 @@ public class App extends Application {
 		if (getExternalStorageAvailable() && getExternalStorageWriteable()) {
 			createFolderStructure();
 		} else {
-			// Toast.makeText(this, R.string.memory_card_not_available,
-			// Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, R.string.memory_card_not_available,
+					Toast.LENGTH_SHORT).show();
 		}
 
 		// display density
 		// density = getContext().getResources().getDisplayMetrics().density;
 
-		// adding famous waypointsto db if not added yet
-		
 		// adding famous waypoints only once
 		if (!getPreferences().contains("famous_waypoints")) {
-			
+
 			Waypoints.insertFamousWaypoints(db);
-			
+
 			// switch flag of famous locations added to true
 			SharedPreferences.Editor editor = getPreferences().edit();
 			editor.putInt("famous_waypoints", 1);
 			editor.commit();
-			
+
 		}
 
-		this.logd("=================== app: onCreate ===================");
+//		AppLog.d(this, "=================== app: onCreate ===================");
 
 	}
 
@@ -256,22 +255,6 @@ public class App extends Application {
 			return false;
 		}
 
-	}
-
-	public void loge(String message) {
-		AppLog.e(this, message);
-	}
-
-	public void logw(String message) {
-		AppLog.w(this, message);
-	}
-
-	public void logi(String message) {
-		AppLog.i(this, message);
-	}
-
-	public void logd(String message) {
-		AppLog.d(this, message);
 	}
 
 	/**

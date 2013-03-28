@@ -6,7 +6,7 @@
     <!-- REPLACE WITH RELEASE KEY -->
     <!-- Debug certificate MD5 fingerprint: 7D:67:DE:78:FE:6F:C5:15:E8:78:FE:DA:9F:21:90:CB -->
     <!-- Debug Map API Key: 0XQ_7l3D8Jr4OFdwdhDL8JkiiaGhVxyoa7jyaOg -->
-    
+
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
@@ -15,6 +15,7 @@
         android:clickable="true" />
 
     <!-- top panel for displaying current point details -->
+
     <LinearLayout
         android:id="@+id/infoPanel"
         android:layout_width="fill_parent"
@@ -22,7 +23,7 @@
         android:background="#AA000000"
         android:gravity="top"
         android:orientation="vertical"
-        android:padding="5dp" >
+        android:padding="2dp" >
 
         <TextView
             android:id="@+id/distance"
@@ -50,16 +51,15 @@
         android:layout_gravity="bottom"
         android:background="#AA000000"
         android:orientation="horizontal"
-        android:padding="5dp" >
+        android:paddingBottom="5dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp" >
 
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-             />
-        
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </merge>

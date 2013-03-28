@@ -56,6 +56,7 @@
     <string name="azimuth">Azimuth</string>
     <string name="distance">Distance</string>
     <string name="distance_from_start">From start</string>
+    <string name="distance_to_end">To end</string>
     <string name="total_distance">Total distance</string>
     <string name="coordinates">Coordinates</string>
     <string name="lat">Latitude</string>
@@ -262,5 +263,4 @@
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
     <string name="my_location">My location</string>
-    <string name="distance_to_end">To end</string>
 </resources>
