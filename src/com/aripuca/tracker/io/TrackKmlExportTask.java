@@ -15,6 +15,7 @@ public class TrackKmlExportTask extends TrackExportTask {
 		extension = "kml";
 	}
 
+	@Override
 	protected void writeHeader() {
 
 		pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -34,6 +35,7 @@ public class TrackKmlExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeTrackPoint() {
 
 		if (!segmentOpen) {
@@ -55,6 +57,7 @@ public class TrackKmlExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeFooter() {
 
 		// end track

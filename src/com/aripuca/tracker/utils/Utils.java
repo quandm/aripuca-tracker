@@ -12,10 +12,7 @@ import com.aripuca.tracker.R;
 
 import android.app.Activity;
 import android.content.Context;
-import android.hardware.GeomagneticField;
 import android.location.Location;
-import android.view.Display;
-import android.view.Surface;
 
 public class Utils {
 
@@ -89,13 +86,14 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
-			if (value > 100000) {
-				return Utils.formatNumber(value / 1000, 1);
+			// 22343.2m formats as 10.2km
+			if (value > 10000) {
+				return Utils.formatNumber(value / 1000, 1, 1);
 			}
 
-			// convert to km
+			// 2343.2m formats as 2.58km
 			if (value > 1000) {
-				return Utils.formatNumber(value / 1000, 2, 1);
+				return Utils.formatNumber(value / 1000, 2, 2);
 			}
 
 			// leave value in meters
@@ -105,13 +103,13 @@ public class Utils {
 
 		if (unit.equals("mi")) {
 
-			if (value > 100 * MI_TO_M) {
-				return Utils.formatNumber(value / 1000, 1);
+			if (value > 10 * MI_TO_M) {
+				return Utils.formatNumber(value / 1000, 1, 1);
 			}
 
 			// convert to miles
 			if (value > MI_TO_M) {
-				return Utils.formatNumber(value / MI_TO_M, 2, 1);
+				return Utils.formatNumber(value / MI_TO_M, 2, 2);
 			}
 
 			// value is in feet
@@ -383,12 +381,12 @@ public class Utils {
 
 		int seconds = Math.round(milliseconds / 1000.0f);
 
-		int hours = (int) (seconds / 3600);
-		int minutes = (int) (seconds / 60);
+		int hours = (seconds / 3600);
+		int minutes = (seconds / 60);
 		if (minutes >= 60) {
-			minutes = (int) (minutes % 60);
+			minutes = (minutes % 60);
 		}
-		seconds = (int) (seconds % 60);
+		seconds = (seconds % 60);
 
 		StringBuilder builder = new StringBuilder();
 

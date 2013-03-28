@@ -4,7 +4,7 @@ import com.aripuca.tracker.Constants;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class Tracks extends Table {
+public class Tracks {
 
 	public static final String TABLE_NAME = "tracks";
 

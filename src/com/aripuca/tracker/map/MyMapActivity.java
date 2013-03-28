@@ -35,7 +35,6 @@ import android.widget.TextView;
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.WaypointsListActivity;
 import com.aripuca.tracker.db.TrackPoint;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Waypoint;
@@ -310,8 +309,9 @@ public class MyMapActivity extends MapActivity {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas, com.google.android.maps.MapView,
-		 * boolean)
+		 * @see
+		 * com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas,
+		 * com.google.android.maps.MapView, boolean)
 		 */
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
@@ -444,70 +444,70 @@ public class MyMapActivity extends MapActivity {
 
 		// getting all map overlays
 		List<Overlay> listOfOverlays = mapView.getOverlays();
-		
+
 		this.mapSpan = new MapSpan();
 
 		switch (this.mode) {
 
 		// show waypoint
-		case Constants.SHOW_WAYPOINT:
+			case Constants.SHOW_WAYPOINT:
 
-			mapView.setBuiltInZoomControls(true);
+				mapView.setBuiltInZoomControls(true);
 
-			this.hideInfoPanels();
+				this.hideInfoPanels();
 
-			this.setupWaypoint(b);
+				this.setupWaypoint(b);
 
-			// add overlays to the map
-			WaypointOverlay waypointOverlay = new WaypointOverlay();
+				// add overlays to the map
+				WaypointOverlay waypointOverlay = new WaypointOverlay();
 
-			listOfOverlays.clear();
-			listOfOverlays.add(waypointOverlay);
-			
-			break;
-
-		case Constants.SHOW_ALL_WAYPOINTS:
-
-			mapView.setBuiltInZoomControls(true);
-
-			this.hideInfoPanels();
-
-			Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
-			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-
-			// put all waypoints into itemized overlay
-			MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
-			this.populateItemizedOverlay(itemizedOverlay);
-
-			listOfOverlays.clear();
-			listOfOverlays.add(itemizedOverlay);
-
-			this.zoomToSpanAndCenter();
+				listOfOverlays.clear();
+				listOfOverlays.add(waypointOverlay);
 
 			break;
 
-		// show track
-		case Constants.SHOW_TRACK:
-		case Constants.SHOW_SCHEDULED_TRACK:
+			case Constants.SHOW_ALL_WAYPOINTS:
 
-			mapView.setBuiltInZoomControls(false);
+				mapView.setBuiltInZoomControls(true);
 
-			this.trackId = b.getLong("track_id");
+				this.hideInfoPanels();
 
-			this.showInfoPanels();
+				Drawable drawable = this.getResources().getDrawable(R.drawable.marker_flag_pink);
+				drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
-			this.setupTrack();
+				// put all waypoints into itemized overlay
+				MyItemizedOverlay itemizedOverlay = new MyItemizedOverlay(drawable, this);
+				this.populateItemizedOverlay(itemizedOverlay);
 
-			this.setupSeekBar();
+				listOfOverlays.clear();
+				listOfOverlays.add(itemizedOverlay);
 
-			// add overlays to the map
-			TrackOverlay trackOverlay = new TrackOverlay();
+				this.zoomToSpanAndCenter();
 
-			listOfOverlays.clear();
-			listOfOverlays.add(trackOverlay);
+			break;
 
-			this.zoomToSpanAndCenter();
-			
+			// show track
+			case Constants.SHOW_TRACK:
+			case Constants.SHOW_SCHEDULED_TRACK:
+
+				mapView.setBuiltInZoomControls(false);
+
+				this.trackId = b.getLong("track_id");
+
+				this.showInfoPanels();
+
+				this.setupTrack();
+
+				this.setupSeekBar();
+
+				// add overlays to the map
+				TrackOverlay trackOverlay = new TrackOverlay();
+
+				listOfOverlays.clear();
+				listOfOverlays.add(trackOverlay);
+
+				this.zoomToSpanAndCenter();
+
 			break;
 
 		}
@@ -768,14 +768,14 @@ public class MyMapActivity extends MapActivity {
 		// show track distance in track info area
 		((TextView) findViewById(R.id.distance)).setText(
 				getString(R.string.distance) + ": " +
-						Utils.formatDistance(this.trackTotalDistance, distanceUnit) +
+						Utils.formatDistance(this.trackTotalDistance, distanceUnit) + " " +
 						Utils.getLocalizedDistanceUnit(MyMapActivity.this, this.trackTotalDistance, distanceUnit)
 						+ " | " +
 						getString(R.string.distance_from_start) + ": " +
-						Utils.formatDistance(tp.getDistance(), distanceUnit) +
+						Utils.formatDistance(tp.getDistance(), distanceUnit) + " " +
 						Utils.getLocalizedDistanceUnit(MyMapActivity.this, tp.getDistance(), distanceUnit) + " | " +
 						getString(R.string.distance_to_end) + ": " +
-						Utils.formatDistance(distanceToFinish, distanceUnit) +
+						Utils.formatDistance(distanceToFinish, distanceUnit) + " " +
 						Utils.getLocalizedDistanceUnit(MyMapActivity.this, distanceToFinish,
 								distanceUnit));
 
@@ -801,9 +801,9 @@ public class MyMapActivity extends MapActivity {
 	private void loadTrackPoints(long trackId) {
 
 		points = new ArrayList<TrackPoint>();
-		
+
 		TrackPoints.getAll(app.getDatabase(), trackId, points, mapSpan);
-		
+
 	}
 
 	/**
@@ -814,13 +814,13 @@ public class MyMapActivity extends MapActivity {
 	protected void populateItemizedOverlay(MyItemizedOverlay itemizedOverlay) {
 
 		ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
-		
+
 		// load all waypoints
 		Waypoints.getAll(app.getDatabase(), waypoints);
-		
+
 		// populate itemized overlay
-		for(Waypoint waypoint : waypoints) {
-			
+		for (Waypoint waypoint : waypoints) {
+
 			GeoPoint point = new GeoPoint(waypoint.getLatE6(), waypoint.getLngE6());
 
 			String snippet = Utils.formatLat(waypoint.getLat(),
@@ -836,13 +836,13 @@ public class MyMapActivity extends MapActivity {
 			OverlayItem overlayitem = new OverlayItem(point, waypoint.getTitle(), snippet);
 
 			itemizedOverlay.addOverlay(overlayitem);
-			
+
 			mapSpan.updateMapSpan(waypoint.getLatE6(), waypoint.getLngE6());
-			
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -899,43 +899,43 @@ public class MyMapActivity extends MapActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.showWaypoint:
+			case R.id.showWaypoint:
 
-			mapView.getController().setZoom(16);
-			mapView.getController().animateTo(geopoint);
+				mapView.getController().setZoom(16);
+				mapView.getController().animateTo(geopoint);
 
-			return true;
+				return true;
 
-		case R.id.showTrack:
+			case R.id.showTrack:
 
-			this.zoomToSpanAndCenter();
+				this.zoomToSpanAndCenter();
 
-			return true;
+				return true;
 
-		case R.id.mapMode:
+			case R.id.mapMode:
 
-			// mapView.setStreetView(true|false) should not be called in order to prevent displaying map tiles with
-			// crosses (API8)
+				// mapView.setStreetView(true|false) should not be called in order to prevent displaying map tiles with
+				// crosses (API8)
 
-			if (mapMode == Constants.MAP_STREET) {
-				mapMode = Constants.MAP_SATELLITE;
-				mapView.setSatellite(true);
-			} else {
-				mapMode = Constants.MAP_STREET;
-				mapView.setSatellite(false);
-			}
+				if (mapMode == Constants.MAP_STREET) {
+					mapMode = Constants.MAP_SATELLITE;
+					mapView.setSatellite(true);
+				} else {
+					mapMode = Constants.MAP_STREET;
+					mapView.setSatellite(false);
+				}
 
-			return true;
+				return true;
 
-		case R.id.gotoCurrentLocation:
+			case R.id.gotoCurrentLocation:
 
-			this.gotoCurrentLocation();
+				this.gotoCurrentLocation();
 
-			return true;
+				return true;
 
-		default:
+			default:
 
-			return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(item);
 
 		}
 
@@ -968,6 +968,7 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private Handler delayedHidingControlsHandler = new Handler();
 	private Runnable delayedHidingControlsTask = new Runnable() {
+		@Override
 		public void run() {
 			hideInfoPanels();
 		}

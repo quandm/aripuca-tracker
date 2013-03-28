@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 public class AppLog {
 
@@ -64,18 +65,22 @@ public class AppLog {
 
 	public static void e(Context context, String message) {
 		AppLog.log(context, ERROR, message);
+		Log.e(Constants.TAG, message);
 	}
 
 	public static void w(Context context, String message) {
 		AppLog.log(context, WARNING, message);
+		Log.w(Constants.TAG, message);
 	}
 
 	public static void i(Context context, String message) {
 		AppLog.log(context, INFO, message);
+		Log.i(Constants.TAG, message);
 	}
 
 	public static void d(Context context, String message) {
 		AppLog.log(context, DEBUG, message);
+		Log.d(Constants.TAG, message);
 	}
 
 }

@@ -26,6 +26,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 	/**
 	 * Creates database cursors
 	 */
+	@Override
 	protected void prepareCursors() {
 
 		super.prepareCursors();
@@ -40,6 +41,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 	/**
 	 * Writes header of gpx file
 	 */
+	@Override
 	protected void writeHeader() {
 
 		String startTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tCursor.getLong(tCursor
@@ -141,6 +143,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeTrackPoint() {
 
 		if (!segmentOpen) {
@@ -178,6 +181,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeFooter() {
 
 		pw.println("</trkseg>");
@@ -193,6 +197,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 	/**
 	 * Closes writer and cursors
 	 */
+	@Override
 	protected void closeWriter() {
 
 		super.closeWriter();

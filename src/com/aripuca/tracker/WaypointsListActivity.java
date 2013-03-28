@@ -37,6 +37,7 @@ import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.db.Waypoint;
 
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.CompassImage;
 
@@ -44,7 +45,6 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -269,7 +269,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		for (Iterator<Waypoint> it = waypoints.iterator(); it.hasNext();) {
 
-			Waypoint curWp = (Waypoint) it.next();
+			Waypoint curWp = it.next();
 
 			if (curWp.getTitle().equals(title)) {
 				return true;
@@ -427,6 +427,7 @@ public class WaypointsListActivity extends ListActivity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(R.string.are_you_sure).setCancelable(true)
 					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int id) {
 
 							Waypoints.deleteAll(app.getDatabase());
@@ -442,6 +443,7 @@ public class WaypointsListActivity extends ListActivity {
 						}
 
 					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.cancel();
 						}
@@ -693,6 +695,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
+			@Override
 			public void onClick(DialogInterface dialog, int id) {
 
 				// waypoint title from input dialog
@@ -721,13 +724,14 @@ public class WaypointsListActivity extends ListActivity {
 					waypointsArrayAdapter.notifyDataSetChanged();
 
 				} catch (SQLiteException e) {
-					Log.w(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+					AppLog.e(WaypointsListActivity.this, "SQLiteException: " + e.getMessage());
 				}
 
 			}
 		});
 
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 			}
@@ -768,6 +772,7 @@ public class WaypointsListActivity extends ListActivity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure?").setCancelable(true)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
 						// delete waypoint from db
@@ -784,6 +789,7 @@ public class WaypointsListActivity extends ListActivity {
 								Toast.LENGTH_SHORT).show();
 					}
 				}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 					}
@@ -815,12 +821,14 @@ public class WaypointsListActivity extends ListActivity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 		builder.setSingleChoiceItems(importFiles, 0, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				importWaypointsFileName = importFiles[whichButton];
 			}
 		})
 
 				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
 						try {
@@ -844,15 +852,6 @@ public class WaypointsListActivity extends ListActivity {
 								wp.setLat(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lat")));
 								wp.setLng(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lon")));
 
-								int latE6 = (int) (Double.parseDouble(((Element) waypointsList.item(i))
-										.getAttribute("lat")) * 1E6);
-								int lngE6 = (int) (Double.parseDouble(((Element) waypointsList.item(i))
-										.getAttribute("lon")) * 1E6);
-								String title = "";
-								String desc = "";
-								double ele = 0;
-								long time = 0;
-
 								Node item = waypointsList.item(i);
 
 								NodeList properties = item.getChildNodes();
@@ -865,7 +864,7 @@ public class WaypointsListActivity extends ListActivity {
 										wp.setElevation(Double.parseDouble(property.getFirstChild().getNodeValue()));
 									}
 									if (name.equalsIgnoreCase("TIME") && property.getFirstChild() != null) {
-										wp.setTime((new SimpleDateFormat("yyyy-MM-dd H:mm:ss")).parse(
+										wp.setTime((new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).parse(
 												property.getFirstChild().getNodeValue()).getTime());
 									}
 									if (name.equalsIgnoreCase("NAME") && property.getFirstChild() != null) {
@@ -906,13 +905,13 @@ public class WaypointsListActivity extends ListActivity {
 									.show();
 
 						} catch (IOException e) {
-							Log.v(Constants.TAG, e.getMessage());
+							AppLog.e(WaypointsListActivity.this, e.getMessage());
 						} catch (ParserConfigurationException e) {
-							Log.v(Constants.TAG, e.getMessage());
+							AppLog.e(WaypointsListActivity.this, e.getMessage());
 						} catch (ParseException e) {
-							Log.v(Constants.TAG, e.getMessage());
+							AppLog.e(WaypointsListActivity.this, e.getMessage());
 						} catch (SAXException e) {
-							Log.v(Constants.TAG, e.getMessage());
+							AppLog.e(WaypointsListActivity.this, e.getMessage());
 						}
 
 						dialog.dismiss();

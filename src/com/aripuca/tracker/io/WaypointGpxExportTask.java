@@ -25,6 +25,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
@@ -41,6 +42,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void prepareCursors() {
 
 		// track cursor
@@ -50,6 +52,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeHeader() {
 
 		String todayDate = (new SimpleDateFormat("yyyy-MM-dd")).format((new Date()).getTime());
@@ -71,6 +74,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeTrackPoint() {
 
 		String wpTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tpCursor.getLong(tpCursor
@@ -90,6 +94,7 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	@Override
 	protected void writeFooter() {
 
 		// footer
