@@ -27,6 +27,7 @@ public class AppServiceConnection {
 	 */
 	private final ServiceConnection serviceConnection = new ServiceConnection() {
 
+		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
 
 			Log.d(Constants.TAG, "ServiceConnection: onServiceConnected " + this.toString());
@@ -37,6 +38,7 @@ public class AppServiceConnection {
 			new Handler().post(runnable);
 		}
 
+		@Override
 		public void onServiceDisconnected(ComponentName className) {
 			Log.d(Constants.TAG, "ServiceConnection: onServiceDisconnected");
 		}

@@ -1,8 +1,6 @@
 package com.aripuca.tracker.io;
 
 import com.aripuca.tracker.R;
-import com.aripuca.tracker.R.string;
-
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
 

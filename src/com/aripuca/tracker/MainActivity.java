@@ -1174,11 +1174,11 @@ public class MainActivity extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
 		// hide test lab menu
-		MenuItem testLabMenuItem = (MenuItem) menu.findItem(R.id.testLabMenuItem);
+		MenuItem testLabMenuItem = menu.findItem(R.id.testLabMenuItem);
 		testLabMenuItem.setVisible(false);
 
 		// setting icon and title for scheduled track recording menu
-		MenuItem scheduledRecordingMenuItem = (MenuItem) menu.findItem(R.id.scheduledRecordingMenuItem);
+		MenuItem scheduledRecordingMenuItem = menu.findItem(R.id.scheduledRecordingMenuItem);
 
 		AppService appService = serviceConnection.getService();
 
@@ -1716,6 +1716,7 @@ public class MainActivity extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.select_file);
 		builder.setSingleChoiceItems(importFiles, 0, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 
 				importDatabaseFileName = importFiles[whichButton];

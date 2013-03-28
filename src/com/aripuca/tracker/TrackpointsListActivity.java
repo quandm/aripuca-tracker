@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import android.graphics.drawable.BitmapDrawable;
@@ -30,7 +29,6 @@ import android.location.Location;
 import android.os.Bundle;
 
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -413,6 +411,7 @@ public class TrackpointsListActivity extends ListActivity {
 		builder.setTitle(R.string.sort_by);
 
 		builder.setSingleChoiceItems(sortMethods, sortMethod, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 
 				sortMethod = whichButton;

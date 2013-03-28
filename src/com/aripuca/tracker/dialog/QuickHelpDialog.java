@@ -47,9 +47,9 @@ public class QuickHelpDialog extends Dialog {
 		LayoutParams params = getWindow().getAttributes();
 
 		// params.height = LayoutParams.FILL_PARENT;
-		params.width = LayoutParams.FILL_PARENT;
+		params.width = android.view.ViewGroup.LayoutParams.FILL_PARENT;
 
-		getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+		getWindow().setAttributes(params);
 
 		// setting "showNextTime" initial value
 		CheckBox checkBox = (CheckBox) findViewById(R.id.showNextTime);
@@ -62,6 +62,7 @@ public class QuickHelpDialog extends Dialog {
 		Button closeButton = (Button) findViewById(R.id.closeButton);
 		closeButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 
 				// check dontShowNextTime checkbox
@@ -92,6 +93,7 @@ public class QuickHelpDialog extends Dialog {
 		Button nextButton = (Button) findViewById(R.id.nextButton);
 		nextButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 
 				// show next help advice

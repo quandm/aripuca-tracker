@@ -329,7 +329,7 @@ public class SunriseSunset {
 				dfA = Math.abs(iMonth - 9.0);
 				// SUNUP.BAS 1240 and 1250
 				dfJ3 = -Math
-						.floor((Math.floor(Math.floor(iYear + (double) iSign * Math.floor(dfA / 7.0)) / 100.0) + 1.0) * 0.75);
+						.floor((Math.floor(Math.floor(iYear + iSign * Math.floor(dfA / 7.0)) / 100.0) + 1.0) * 0.75);
 				// correct dfJ as in SUNUP.BAS 1240 and 1250 for G = 1
 				dfJ = dfJ + dfJ3 + 2.0;
 			}
@@ -337,7 +337,7 @@ public class SunriseSunset {
 			iJulian = (int) dfJ - 1;
 
 			// SUNUP.BAS 60 and 70 (see also line 1290)
-			dfT = (double) iJulian - 2451545.0 + 0.5;
+			dfT = iJulian - 2451545.0 + 0.5;
 			dfTT = dfT / 36525.0 + 1.0; // centuries since 1900
 
 			// Calculate local sidereal time at 0h in zone time
@@ -434,7 +434,7 @@ public class SunriseSunset {
 				double tempD; // SUNUP.BAS D
 				double tempE; // SUNUP.BAS E
 
-				dfC0 = (double) iCount;
+				dfC0 = iCount;
 				dfP = (dfC0 + 1.0) / 24.0; // SUNUP.BAS 220
 				dfA2 = dfAA1 + dfP * dfDA; // SUNUP.BAS 230
 				dfD2 = dfDD1 + dfP * dfDD; // SUNUP.BAS 230

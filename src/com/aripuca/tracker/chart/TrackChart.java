@@ -142,9 +142,9 @@ public class TrackChart {
 
 			paint.setColor(0xffcccccc);
 
-			float scaleX = (float) (sizeX / series.get(0).getMaxX());
+			float scaleX = (sizeX / series.get(0).getMaxX());
 
-			float step = (float) (Utils.roundToNearestFloor((int) series.get(0).getMaxX() / 5));
+			float step = (Utils.roundToNearestFloor((int) series.get(0).getMaxX() / 5));
 
 			String label = Utils.formatDistance(i * step, distanceUnit);
 
