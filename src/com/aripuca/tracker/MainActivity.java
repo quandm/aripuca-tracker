@@ -7,6 +7,7 @@ import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.track.Track;
 
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.ContainerCarousel;
 import com.aripuca.tracker.utils.MapUtils;
 import com.aripuca.tracker.utils.Utils;
@@ -129,7 +130,7 @@ public class MainActivity extends Activity {
 			if (fixAge < 0) {
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
 				Log.d(Constants.TAG, "MainActivity: location time is one day ahead");
-				app.logd("MainActivity: location time is one day ahead");
+				AppLog.d(this, "MainActivity: location time is one day ahead");
 			}
 
 			String t = Utils.timeToHumanReadableString(MainActivity.this, fixAge);
@@ -389,7 +390,7 @@ public class MainActivity extends Activity {
 		Log.i(Constants.TAG, "MainActivity: onCreate");
 
 		// reference to application object
-		app = ((App) getApplication());// Context());
+		app = ((App) getApplication());
 
 		initializeHiddenPreferences();
 
@@ -540,12 +541,12 @@ public class MainActivity extends Activity {
 
 				// stop tracking if active
 				if (appService.getTrackRecorder().isRecording()) {
-					app.logd("MainActivity.onPause: Recording stopped by the system");
+					AppLog.d(this, "MainActivity.onPause: Recording stopped by the system");
 					stopTracking();
 				}
 
 				if (appService.getScheduledTrackRecorder().isRecording()) {
-					app.logd("MainActivity.onPause: Scheduled recording stopped by the system");
+					AppLog.d(this, "MainActivity.onPause: Scheduled recording stopped by the system");
 					appService.stopScheduler();
 				}
 
@@ -1091,7 +1092,7 @@ public class MainActivity extends Activity {
 
 				try {
 					// insert new waypoint to database
-					long newWaypointId = Waypoints.insert(app.getDatabase(), wp);
+					Waypoints.insert(app.getDatabase(), wp);
 				} catch (SQLiteException e) {
 					Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 					Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
@@ -1654,11 +1655,18 @@ public class MainActivity extends Activity {
 				File backupDB = new File(app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + dateStr + ".db");
 
 				if (currentDB.exists()) {
-					FileChannel src = new FileInputStream(currentDB).getChannel();
-					FileChannel dst = new FileOutputStream(backupDB).getChannel();
+					
+					FileInputStream fis = new FileInputStream(currentDB);
+					FileOutputStream fos = new FileOutputStream(backupDB);
+					
+					FileChannel src = fis.getChannel();
+					FileChannel dst = fos.getChannel();
 					dst.transferFrom(src, 0, src.size());
+
 					src.close();
 					dst.close();
+					fis.close();
+					fos.close();
 
 					Toast.makeText(MainActivity.this, getString(R.string.backup_completed) + " " + backupDB.getPath(),
 							Toast.LENGTH_LONG).show();
@@ -1770,12 +1778,18 @@ public class MainActivity extends Activity {
 					File restoreDB = new File(restoreDBPath);
 					File currentDB = new File(data, Constants.PATH_DB + Constants.APP_NAME + ".db");
 
-					FileChannel src = new FileInputStream(restoreDB).getChannel();
-					FileChannel dst = new FileOutputStream(currentDB).getChannel();
+					FileInputStream fis = new FileInputStream(restoreDB);
+					FileOutputStream fos = new FileOutputStream(currentDB);
+					
+					FileChannel src = fis.getChannel();
+					FileChannel dst = fos.getChannel();
 
 					dst.transferFrom(src, 0, src.size());
+					
 					src.close();
 					dst.close();
+					fis.close();
+					fos.close();
 
 					app.setDatabase();
 

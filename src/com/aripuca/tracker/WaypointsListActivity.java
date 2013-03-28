@@ -943,8 +943,8 @@ public class WaypointsListActivity extends ListActivity {
 		Bundle b = new Bundle();
 
 		b.putInt("mode", Constants.SHOW_WAYPOINT);
-		b.putInt("latE6", wp.getLat1E6());
-		b.putInt("lngE6", wp.getLng1E6());
+		b.putInt("latE6", wp.getLatE6());
+		b.putInt("lngE6", wp.getLngE6());
 
 		i.putExtras(b);
 		startActivity(i);

@@ -6,6 +6,7 @@ import java.util.Date;
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
 import android.content.ContentValues;
@@ -24,6 +25,8 @@ public class ScheduledTrackRecorder {
 	protected App app;
 
 	private boolean recording = false;
+	
+	private float totalDistance = 0;
 
 	protected long trackTimeStart;
 
@@ -164,8 +167,7 @@ public class ScheduledTrackRecorder {
 		ContentValues values = new ContentValues();
 		values.put("title", trackTitle);
 		values.put("finish_time", finishTime);
-		// for scheduled tracks distance is always 0
-		values.put("distance", 0);
+		values.put("distance", Utils.formatNumber(this.totalDistance, 2));
 		values.put("recording", 0);
 
 		try {
@@ -183,6 +185,8 @@ public class ScheduledTrackRecorder {
 	 * records one track point on schedule
 	 */
 	public void recordTrackPoint(Location location, float distance) {
+		
+		totalDistance += distance;
 
 		ContentValues values = new ContentValues();
 		values.put("track_id", this.getTrackId());
@@ -270,7 +274,7 @@ public class ScheduledTrackRecorder {
 	 */
 	public boolean gpsFixWaitTimeLimitReached() {
 
-		app.logd("requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
+		AppLog.d(app.getApplicationContext(), "requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
 				+ Utils.formatInterval(SystemClock.elapsedRealtime(), true) + " Wait: "
 				+ Utils.formatInterval(this.gpsFixWaitTime, true));
 
