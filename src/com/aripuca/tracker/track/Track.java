@@ -14,8 +14,11 @@ import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
 
+//TODO: refactoring required
+
 /**
  * Track statistics class
+ * 
  */
 public class Track extends AbstractTrack {
 

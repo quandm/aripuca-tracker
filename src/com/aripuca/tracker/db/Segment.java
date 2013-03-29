@@ -6,7 +6,7 @@ public class Segment extends AbstractTrack {
 	
 	private long trackId;
 
-	private int segmentIndex;
+	private int segmentIndex = 0;
 	
 	public Segment(Cursor cursor) {
 		

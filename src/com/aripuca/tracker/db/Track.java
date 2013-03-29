@@ -24,6 +24,10 @@ public class Track extends AbstractTrack {
 		this.recording = cursor.getInt(cursor.getColumnIndex("recording"));
 		
 	}
+	
+	public Track() {
+		super();
+	}
 
 	public String getDescr() {
 		return descr;

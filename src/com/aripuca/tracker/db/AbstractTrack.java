@@ -8,9 +8,9 @@ public class AbstractTrack {
 
 	private float distance;
 
-	private int totalTime;
+	private long totalTime;
 
-	private int movingTime;
+	private long movingTime;
 	
 	private float maxSpeed;
 	
@@ -22,9 +22,9 @@ public class AbstractTrack {
 
 	private float elevationLoss;
 	
-	private int startTime;
+	private long startTime;
 
-	private int finishTime;	
+	private long finishTime;	
 
 	private int pointsCount;
 	
@@ -34,9 +34,9 @@ public class AbstractTrack {
 
 		this.distance = cursor.getFloat(cursor.getColumnIndex("distance"));
 
-		this.totalTime = cursor.getInt(cursor.getColumnIndex("total_time"));
+		this.totalTime = cursor.getLong(cursor.getColumnIndex("total_time"));
 
-		this.movingTime = cursor.getInt(cursor.getColumnIndex("moving_time"));
+		this.movingTime = cursor.getLong(cursor.getColumnIndex("moving_time"));
 
 		this.maxSpeed = cursor.getFloat(cursor.getColumnIndex("max_speed"));
 		
@@ -48,11 +48,18 @@ public class AbstractTrack {
 		
 		this.elevationLoss = cursor.getFloat(cursor.getColumnIndex("elevation_loss"));
 		
-		this.startTime = cursor.getInt(cursor.getColumnIndex("start_time"));
+		this.startTime = cursor.getLong(cursor.getColumnIndex("start_time"));
 		
-		this.finishTime = cursor.getInt(cursor.getColumnIndex("finish_time"));
+		this.finishTime = cursor.getLong(cursor.getColumnIndex("finish_time"));
 		
 		this.pointsCount = cursor.getCount();
+	}
+	
+	/**
+	 * Create empty track
+	 */
+	public AbstractTrack() {
+		
 	}
 	
 	public long getId() {
@@ -74,22 +81,22 @@ public class AbstractTrack {
 	}
 
 
-	public int getTotalTime() {
+	public long getTotalTime() {
 		return totalTime;
 	}
 
 
-	public void setTotalTime(int totalTime) {
+	public void setTotalTime(long totalTime) {
 		this.totalTime = totalTime;
 	}
 
 
-	public int getMovingTime() {
+	public long getMovingTime() {
 		return movingTime;
 	}
 
 
-	public void setMovingTime(int movingTime) {
+	public void setMovingTime(long movingTime) {
 		this.movingTime = movingTime;
 	}
 
@@ -144,22 +151,22 @@ public class AbstractTrack {
 	}
 
 
-	public int getStartTime() {
+	public long getStartTime() {
 		return startTime;
 	}
 
 
-	public void setStartTime(int startTime) {
+	public void setStartTime(long startTime) {
 		this.startTime = startTime;
 	}
 
 
-	public int getFinishTime() {
+	public long getFinishTime() {
 		return finishTime;
 	}
 
 
-	public void setFinishTime(int finishTime) {
+	public void setFinishTime(long finishTime) {
 		this.finishTime = finishTime;
 	}
 
