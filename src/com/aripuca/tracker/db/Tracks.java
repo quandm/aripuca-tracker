@@ -1,8 +1,12 @@
 package com.aripuca.tracker.db;
 
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.utils.Utils;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 public class Tracks {
 
@@ -94,5 +98,51 @@ public class Tracks {
 		db.execSQL(sql);
 
 	}
+	
+	/**
+	 * Insert new track record
+	 * 
+	 * @param db
+	 * @param track
+	 * @return
+	 */
+	public static long insert(SQLiteDatabase db, Track track) {
+		
+		ContentValues values = new ContentValues();
+		
+		values.put("title", track.getTitle());
+		values.put("activity", track.getActivity());
+		values.put("recording", track.getRecording());
+		values.put("start_time", track.getStartTime());
+		values.put("finish_time", track.getFinishTime());
 
+		// setting track id
+		long trackId = db.insertOrThrow("tracks", null, values);
+		
+		return trackId;
+		
+	}
+
+	/**
+	 * 
+	 * @param db
+	 * @param track
+	 */
+	public static void update(SQLiteDatabase db, Track track) {
+
+		ContentValues values = new ContentValues();
+
+		values.put("title", track.getTitle());
+		
+		values.put("activity", track.getActivity());
+		
+		values.put("recording", track.getRecording());
+		values.put("start_time", track.getStartTime());
+		values.put("finish_time", track.getFinishTime());
+		
+		values.put("distance", Utils.formatNumber(track.getDistance(), 2));
+
+		db.update("tracks", values, "_id=?", new String[] { String.valueOf(track.getId()) });
+		
+	}
 }

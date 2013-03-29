@@ -473,7 +473,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		if (TrackRecorder.getInstance(app).isRecording() && TrackRecorder.getInstance(app).getTrackId() == trackId) { return true; }
 
 		if (ScheduledTrackRecorder.getInstance(app).isRecording()
-				&& ScheduledTrackRecorder.getInstance(app).getTrackId() == trackId) { return true; }
+				&& ScheduledTrackRecorder.getInstance(app).getTrack().getId() == trackId) { return true; }
 
 		return false;
 

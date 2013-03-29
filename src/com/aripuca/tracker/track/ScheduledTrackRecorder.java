@@ -9,11 +9,16 @@ import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
-import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
+
 import android.location.Location;
 import android.os.SystemClock;
 import android.util.Log;
+
+import com.aripuca.tracker.db.Track;
+import com.aripuca.tracker.db.TrackPoint;
+import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Tracks;
 
 /**
  * Scheduled track recording class
@@ -25,7 +30,7 @@ public class ScheduledTrackRecorder {
 	protected App app;
 
 	private boolean recording = false;
-	
+
 	private float totalDistance = 0;
 
 	protected long trackTimeStart;
@@ -74,6 +79,12 @@ public class ScheduledTrackRecorder {
 	 */
 	private long requestInterval;
 
+	private Track track;
+
+	public Track getTrack() {
+		return this.track;
+	}
+
 	/**
 	 * returns requestInterval
 	 */
@@ -85,15 +96,6 @@ public class ScheduledTrackRecorder {
 	 * recording time limit in milliseconds
 	 */
 	private long stopRecordingAfter;
-
-	/**
-	 * Id of the track being recorded
-	 */
-	private long trackId = 0;
-
-	public long getTrackId() {
-		return this.trackId;
-	}
 
 	/**
 	 * Singleton pattern
@@ -138,18 +140,24 @@ public class ScheduledTrackRecorder {
 	 */
 	private void insertNewTrack() {
 
-		ContentValues values = new ContentValues();
-		values.put("title", "New scheduled track");
-		values.put("activity", 1);
-		values.put("recording", 1);
-		values.put("start_time", this.trackTimeStart);
-		values.put("finish_time", this.trackTimeStart);
+		this.track = new Track();
+
+		this.track.setTitle("New scheduled track");
+		this.track.setActivity(Constants.ACTIVITY_SCHEDULED_TRACK);
+		this.track.setRecording(1);
+		this.track.setStartTime(this.trackTimeStart);
+		this.track.setFinishTime(this.trackTimeStart);
 
 		try {
-			// setting track id
-			trackId = app.getDatabase().insertOrThrow("tracks", null, values);
+
+			// insert new track record
+			long trackId = Tracks.insert(app.getDatabase(), track);
+
+			// set track id
+			this.track.setId(trackId);
+
 		} catch (SQLiteException e) {
-			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+			AppLog.e(app.getApplicationContext(), "SQLiteException: " + e.getMessage());
 		}
 
 	}
@@ -159,24 +167,19 @@ public class ScheduledTrackRecorder {
 	 */
 	private void updateNewTrack() {
 
-		long finishTime = (new Date()).getTime();
+		this.track.setFinishTime((new Date()).getTime());
+		this.track.setDistance(this.totalDistance);
+		this.track.setRecording(0);
 
-		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.trackTimeStart) + "-"
-				+ (new SimpleDateFormat("H:mm")).format(finishTime);
+		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.track.getStartTime()) + "-"
+				+ (new SimpleDateFormat("H:mm")).format(this.track.getFinishTime());
 
-		ContentValues values = new ContentValues();
-		values.put("title", trackTitle);
-		values.put("finish_time", finishTime);
-		values.put("distance", Utils.formatNumber(this.totalDistance, 2));
-		values.put("recording", 0);
+		track.setTitle(trackTitle);
 
 		try {
-
-			app.getDatabase().update("tracks", values, "_id=?", new String[] { String.valueOf(this.getTrackId()) });
-
+			Tracks.update(app.getDatabase(), this.track);
 		} catch (SQLiteException e) {
-
-			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+			AppLog.e(app.getApplicationContext(), "SQLiteException: " + e.getMessage());
 		}
 
 	}
@@ -185,23 +188,14 @@ public class ScheduledTrackRecorder {
 	 * records one track point on schedule
 	 */
 	public void recordTrackPoint(Location location, float distance) {
-		
-		totalDistance += distance;
 
-		ContentValues values = new ContentValues();
-		values.put("track_id", this.getTrackId());
-		values.put("lat", (int) (location.getLatitude() * 1E6));
-		values.put("lng", (int) (location.getLongitude() * 1E6));
-		values.put("elevation", Utils.formatNumber(location.getAltitude(), 1));
-		values.put("speed", Utils.formatNumber(location.getSpeed(), 2));
-		values.put("time", (new Date()).getTime());
-		values.put("distance", Utils.formatNumber(distance, 1));
-		values.put("accuracy", location.getAccuracy());
+		// accumulate total track distance
+		this.track.setDistance(this.track.getDistance() + distance);
+
+		TrackPoint trackPoint = new TrackPoint(this.track.getId(), location, distance);
 
 		try {
-
-			app.getDatabase().insertOrThrow("track_points", null, values);
-
+			TrackPoints.insert(app.getDatabase(), trackPoint);
 		} catch (SQLiteException e) {
 			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
 		}
@@ -235,8 +229,7 @@ public class ScheduledTrackRecorder {
 	}
 
 	/**
-	 * sets new location request start time that's how wait time for each
-	 * location request is measured
+	 * sets new location request start time that's how wait time for each location request is measured
 	 */
 	public void setRequestStartTime() {
 		requestStartTime = SystemClock.elapsedRealtime();
@@ -274,9 +267,10 @@ public class ScheduledTrackRecorder {
 	 */
 	public boolean gpsFixWaitTimeLimitReached() {
 
-		AppLog.d(app.getApplicationContext(), "requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
-				+ Utils.formatInterval(SystemClock.elapsedRealtime(), true) + " Wait: "
-				+ Utils.formatInterval(this.gpsFixWaitTime, true));
+		AppLog.d(app.getApplicationContext(),
+				"requestTimeLimitReached: Start: " + Utils.formatInterval(requestStartTime, true) + " Elapsed: "
+						+ Utils.formatInterval(SystemClock.elapsedRealtime(), true) + " Wait: "
+						+ Utils.formatInterval(this.gpsFixWaitTime, true));
 
 		if (this.requestStartTime + this.gpsFixWaitTime < SystemClock.elapsedRealtime()) {
 			return true;

@@ -10,6 +10,8 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+//TODO : refactoring required
+
 public abstract class AbstractTrack {
 
 	/**

@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.widget.Toast;
 
+//TODO: refactoring required
+
 public class Segment extends AbstractTrack {
 
 	public Segment(Context context) {
