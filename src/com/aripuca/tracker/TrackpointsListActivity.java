@@ -2,32 +2,19 @@ package com.aripuca.tracker;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import com.aripuca.tracker.R;
-
-import com.aripuca.tracker.service.AppService;
-import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.db.Waypoint;
-import com.aripuca.tracker.db.Waypoints;
-
-import com.aripuca.tracker.utils.Utils;
-import com.aripuca.tracker.view.CompassImage;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
-
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,9 +23,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.aripuca.tracker.db.Waypoint;
+import com.aripuca.tracker.db.Waypoints;
+import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.service.AppService;
+import com.aripuca.tracker.service.AppServiceConnection;
+import com.aripuca.tracker.utils.Utils;
+import com.aripuca.tracker.view.CompassImage;
+
+//TODO: create abstract activity for track points and waypoints lists
 
 /**
  * Track points list activity. Displays list of track points related to one
@@ -393,6 +389,12 @@ public class TrackpointsListActivity extends ListActivity {
 				selectSortMethod();
 
 				return true;
+				
+			case R.id.showOnMap:
+				
+				this.showTrackOnMap(this.trackId);
+				
+				return true;
 
 			default:
 
@@ -466,4 +468,21 @@ public class TrackpointsListActivity extends ListActivity {
 		return azimuth;
 	}
 
+	/**
+	 * 
+	 */
+	private void showTrackOnMap(long trackId) {
+
+		Intent i = new Intent(this, MyMapActivity.class);
+
+		// using Bundle to pass track id into new activity
+		Bundle b = new Bundle();
+		b.putInt("mode", Constants.SHOW_SCHEDULED_TRACK);
+		b.putLong("track_id", trackId);
+
+		i.putExtras(b);
+		startActivity(i);
+
+	}
+	
 }

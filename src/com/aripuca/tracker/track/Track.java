@@ -3,16 +3,16 @@ package com.aripuca.tracker.track;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.utils.AppLog;
-import com.aripuca.tracker.utils.Utils;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.Utils;
 
 //TODO: refactoring required
 

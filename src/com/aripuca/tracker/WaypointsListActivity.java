@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,52 +30,47 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.aripuca.tracker.R;
-import com.aripuca.tracker.db.Waypoints;
-import com.aripuca.tracker.io.WaypointGpxExportTask;
-import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.service.AppService;
-import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.db.Waypoint;
-
-import com.aripuca.tracker.utils.AppLog;
-import com.aripuca.tracker.utils.Utils;
-import com.aripuca.tracker.view.CompassImage;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
-
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
-
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import com.aripuca.tracker.db.Waypoint;
+import com.aripuca.tracker.db.Waypoints;
+import com.aripuca.tracker.io.WaypointGpxExportTask;
+import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.service.AppService;
+import com.aripuca.tracker.service.AppServiceConnection;
+import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.Utils;
+import com.aripuca.tracker.view.CompassImage;
+
+//TODO: create abstract activity for track points and waypoints lists
 
 /**
  * Waypoints list activity
@@ -934,7 +930,7 @@ public class WaypointsListActivity extends ListActivity {
 	 */
 	protected void showOnMap(long waypointId) {
 
-		com.aripuca.tracker.db.Waypoint wp = com.aripuca.tracker.db.Waypoints.get(app.getDatabase(), waypointId);
+		com.aripuca.tracker.db.Waypoint wp = Waypoints.get(app.getDatabase(), waypointId);
 
 		Intent i = new Intent(this, MyMapActivity.class);
 
@@ -985,7 +981,8 @@ public class WaypointsListActivity extends ListActivity {
 		builder.setTitle(R.string.export_waypoints);
 		builder.setView(layout);
 
-		final String defaultFilename = "wp_" + (new SimpleDateFormat("yyyy-MM-dd")).format((new Date()).getTime());
+//		final String defaultFilename = "wp_" + (new SimpleDateFormat("yyyy-MM-dd", Locale.US)).format((new Date()).getTime());
+		final String defaultFilename = "wp_" + (DateFormat.format("yyyy-MM-dd", (new Date()).getTime()));
 
 		// creating references to input fields in order to use them in
 		// onClick handler

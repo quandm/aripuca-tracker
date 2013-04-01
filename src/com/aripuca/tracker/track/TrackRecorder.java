@@ -1,10 +1,10 @@
 package com.aripuca.tracker.track;
 
-import com.aripuca.tracker.App;
-import com.aripuca.tracker.Constants;
-
 import android.location.Location;
 import android.os.SystemClock;
+
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 
 /**
  * TrackRecorder class. Handles tracks and segments statistics

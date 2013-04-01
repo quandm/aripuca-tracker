@@ -2,13 +2,13 @@ package com.aripuca.tracker.track;
 
 import java.util.Date;
 
-import com.aripuca.tracker.App;
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.utils.Population;
-
 import android.content.Context;
 import android.location.Location;
 import android.util.Log;
+
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.utils.Population;
 
 //TODO : refactoring required
 

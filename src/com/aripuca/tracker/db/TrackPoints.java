@@ -1,19 +1,13 @@
 package com.aripuca.tracker.db;
 
 import java.util.ArrayList;
-import java.util.Date;
-
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.utils.MapSpan;
-import com.aripuca.tracker.utils.Utils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.location.Location;
-import android.util.Log;
-import android.widget.Toast;
+
+import com.aripuca.tracker.utils.MapSpan;
+import com.aripuca.tracker.utils.Utils;
 
 public class TrackPoints {
 
@@ -82,9 +76,8 @@ public class TrackPoints {
 
 	}
 
-	
 	public static long insert(SQLiteDatabase db, TrackPoint trackPoint) {
-		
+
 		ContentValues values = new ContentValues();
 		values.put("track_id", trackPoint.getTrackId());
 		values.put("lat", trackPoint.getLatE6());
@@ -93,14 +86,14 @@ public class TrackPoints {
 		values.put("speed", Utils.formatNumber(trackPoint.getSpeed(), 2));
 
 		values.put("time", trackPoint.getTime());
-		
+
 		values.put("distance", Utils.formatNumber(trackPoint.getDistance(), 1));
 		values.put("accuracy", trackPoint.getAccuracy());
 
 		long trackPointId = db.insertOrThrow("track_points", null, values);
-		
+
 		return trackPointId;
-		
+
 	}
 
 }

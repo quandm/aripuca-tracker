@@ -2,16 +2,6 @@ package com.aripuca.tracker.service;
 
 import java.util.Calendar;
 
-import com.aripuca.tracker.App;
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.NotificationActivity;
-import com.aripuca.tracker.R;
-
-import com.aripuca.tracker.track.ScheduledTrackRecorder;
-import com.aripuca.tracker.track.TrackRecorder;
-import com.aripuca.tracker.utils.AppLog;
-import com.aripuca.tracker.utils.Utils;
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,6 +23,15 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.NotificationActivity;
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.track.ScheduledTrackRecorder;
+import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.Utils;
 
 /**
  * this service handles real time and scheduled track recording as well as compass updates

@@ -2,19 +2,17 @@ package com.aripuca.tracker.chart;
 
 import java.util.ArrayList;
 
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.R;
-import com.aripuca.tracker.utils.Utils;
-
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-
 import android.graphics.Paint;
-
 import android.graphics.Paint.Align;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+
+import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.utils.Utils;
 
 public class TrackChart {
 

@@ -1,9 +1,9 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.db.Tracks;
-
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.aripuca.tracker.db.Tracks;
 
 /**
  * Scheduled tracks list activity

@@ -2,12 +2,6 @@ package com.aripuca.tracker;
 
 import java.util.ArrayList;
 
-import com.aripuca.tracker.R;
-import com.aripuca.tracker.db.Segment;
-import com.aripuca.tracker.db.Segments;
-import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.utils.Utils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +15,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.aripuca.tracker.db.Segment;
+import com.aripuca.tracker.db.Segments;
+import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.utils.Utils;
 
 /**
  * main application activity

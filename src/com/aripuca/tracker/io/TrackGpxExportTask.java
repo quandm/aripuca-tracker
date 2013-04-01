@@ -2,6 +2,7 @@ package com.aripuca.tracker.io;
 
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -106,10 +107,10 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		while (segCursor.isAfterLast() == false) {
 
-			String startTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(segCursor.getLong(segCursor
+			String startTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)).format(segCursor.getLong(segCursor
 					.getColumnIndex("start_time")));
 
-			String finishTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(segCursor.getLong(segCursor
+			String finishTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)).format(segCursor.getLong(segCursor
 					.getColumnIndex("finish_time")));
 
 			String totalTime = Utils.formatInterval(segCursor.getLong(segCursor.getColumnIndex("total_time")), true);

@@ -1,19 +1,16 @@
 package com.aripuca.tracker;
 
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-
 import android.app.backup.BackupManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-
+import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import com.aripuca.tracker.R;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 
 import com.aripuca.tracker.utils.ArrayUtils;
 

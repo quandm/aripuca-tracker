@@ -6,14 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import com.aripuca.tracker.Constants;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.Log;
+
+import com.aripuca.tracker.Constants;
 
 public class AppLog {
 

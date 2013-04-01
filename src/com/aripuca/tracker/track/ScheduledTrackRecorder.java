@@ -3,22 +3,18 @@ package com.aripuca.tracker.track;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.aripuca.tracker.App;
-import com.aripuca.tracker.Constants;
-
-import com.aripuca.tracker.utils.AppLog;
-import com.aripuca.tracker.utils.Utils;
-
 import android.database.sqlite.SQLiteException;
-
 import android.location.Location;
 import android.os.SystemClock;
-import android.util.Log;
 
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoint;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
+import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.Utils;
 
 /**
  * Scheduled track recording class
@@ -30,8 +26,6 @@ public class ScheduledTrackRecorder {
 	protected App app;
 
 	private boolean recording = false;
-
-	private float totalDistance = 0;
 
 	protected long trackTimeStart;
 
@@ -168,7 +162,7 @@ public class ScheduledTrackRecorder {
 	private void updateNewTrack() {
 
 		this.track.setFinishTime((new Date()).getTime());
-		this.track.setDistance(this.totalDistance);
+		this.track.setDistance(track.getDistance());
 		this.track.setRecording(0);
 
 		String trackTitle = (new SimpleDateFormat("yyyy-MM-dd H:mm")).format(this.track.getStartTime()) + "-"
@@ -197,7 +191,7 @@ public class ScheduledTrackRecorder {
 		try {
 			TrackPoints.insert(app.getDatabase(), trackPoint);
 		} catch (SQLiteException e) {
-			Log.e(Constants.TAG, "SQLiteException: " + e.getMessage(), e);
+			AppLog.e(app.getApplicationContext(), "SQLiteException: " + e.getMessage());
 		}
 
 	}

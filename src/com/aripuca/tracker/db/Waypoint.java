@@ -59,7 +59,7 @@ public class Waypoint {
 
 		this.lng = cursor.getInt(cursor.getColumnIndex("lng")) / 1E6;
 
-		this.time = (new Date()).getTime();
+		this.time = cursor.getLong(cursor.getColumnIndex("time"));
 
 	}
 

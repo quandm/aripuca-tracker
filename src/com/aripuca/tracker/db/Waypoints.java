@@ -6,7 +6,6 @@ import java.util.Iterator;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.aripuca.tracker.db.Waypoint;
 
 public class Waypoints {
 
