@@ -1,14 +1,14 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.chart.ChartPoint;
-import com.aripuca.tracker.chart.Series;
-import com.aripuca.tracker.view.TrackChartView;
-
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+
+import com.aripuca.tracker.chart.ChartPoint;
+import com.aripuca.tracker.chart.Series;
+import com.aripuca.tracker.view.TrackChartView;
 
 public class TrackChartActivity extends Activity {
 

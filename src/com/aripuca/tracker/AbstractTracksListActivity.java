@@ -1,16 +1,5 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.R;
-import com.aripuca.tracker.db.TrackPoints;
-import com.aripuca.tracker.db.Tracks;
-import com.aripuca.tracker.io.TrackExportTask;
-import com.aripuca.tracker.io.TrackGpxExportTask;
-import com.aripuca.tracker.io.TrackKmlExportTask;
-import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.track.ScheduledTrackRecorder;
-import com.aripuca.tracker.track.TrackRecorder;
-import com.aripuca.tracker.utils.Utils;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -27,6 +16,7 @@ import android.os.Message;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,13 +24,22 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+
+import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Tracks;
+import com.aripuca.tracker.io.TrackExportTask;
+import com.aripuca.tracker.io.TrackGpxExportTask;
+import com.aripuca.tracker.io.TrackKmlExportTask;
+import com.aripuca.tracker.map.MyMapActivity;
+import com.aripuca.tracker.track.ScheduledTrackRecorder;
+import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.utils.Utils;
 
 //TODO: compare 2 tracks on the map, select track to compare
 

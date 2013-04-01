@@ -5,4 +5,8 @@
 			android:title="@string/sort"
 			android:icon="@drawable/ic_menu_sort_by_size" />
 
+	<item android:id="@+id/showOnMap" 
+			android:title="@string/show_on_map"
+			android:icon="@drawable/ic_menu_mapmode" />
+		
 </menu>

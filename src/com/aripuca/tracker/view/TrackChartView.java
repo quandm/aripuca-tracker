@@ -1,12 +1,12 @@
 package com.aripuca.tracker.view;
 
-import com.aripuca.tracker.chart.Series;
-import com.aripuca.tracker.chart.TrackChart;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.aripuca.tracker.chart.Series;
+import com.aripuca.tracker.chart.TrackChart;
 
 public class TrackChartView extends View {
 

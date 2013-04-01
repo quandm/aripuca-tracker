@@ -1,7 +1,5 @@
 package com.aripuca.tracker.view;
 
-import com.aripuca.tracker.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +9,8 @@ import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.aripuca.tracker.R;
 
 public class BubbleSurfaceView extends SurfaceView implements Runnable {
 

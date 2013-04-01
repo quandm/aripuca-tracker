@@ -1,30 +1,15 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.db.Waypoint;
-import com.aripuca.tracker.db.Waypoints;
-import com.aripuca.tracker.dialog.QuickHelpDialog;
-import com.aripuca.tracker.service.AppService;
-import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.track.Track;
-
-import com.aripuca.tracker.utils.AppLog;
-import com.aripuca.tracker.utils.ContainerCarousel;
-import com.aripuca.tracker.utils.MapUtils;
-import com.aripuca.tracker.utils.Utils;
-import com.aripuca.tracker.view.CompassImage;
-import com.aripuca.tracker.R;
-import com.thirdparty.SunriseSunset;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.nio.channels.FileChannel;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.io.*;
-import java.nio.channels.FileChannel;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,24 +17,21 @@ import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.location.*;
-
-import android.widget.*;
-
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.SpannableString;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
@@ -61,9 +43,27 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.aripuca.tracker.db.Waypoint;
+import com.aripuca.tracker.db.Waypoints;
+import com.aripuca.tracker.dialog.QuickHelpDialog;
+import com.aripuca.tracker.service.AppService;
+import com.aripuca.tracker.service.AppServiceConnection;
+import com.aripuca.tracker.track.Track;
+import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.ContainerCarousel;
+import com.aripuca.tracker.utils.MapUtils;
+import com.aripuca.tracker.utils.Utils;
+import com.aripuca.tracker.view.CompassImage;
+import com.thirdparty.SunriseSunset;
 
 /**
  * main application activity

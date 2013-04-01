@@ -2,15 +2,10 @@ package com.aripuca.tracker.db;
 
 import java.util.Date;
 
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.utils.Utils;
-import com.google.android.maps.GeoPoint;
-
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.location.Location;
-import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
 
 /**
  * 
@@ -58,7 +53,7 @@ public class TrackPoint {
 
 		this.speed = cursor.getFloat(cursor.getColumnIndex("speed"));
 		
-		this.time = (new Date()).getTime();
+		this.time = cursor.getLong(cursor.getColumnIndex("time"));
 
 	}	
 	
@@ -72,7 +67,7 @@ public class TrackPoint {
 
 	public TrackPoint(long trackId, Location location, float distance) {
 
-		this.id = trackId;
+		this.trackId = trackId;
 		
 		this.lat = location.getLatitude();
 		

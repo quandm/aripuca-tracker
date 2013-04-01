@@ -1,11 +1,5 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.db.Segments;
-import com.aripuca.tracker.db.TrackPoints;
-import com.aripuca.tracker.db.Tracks;
-import com.aripuca.tracker.db.Waypoints;
-import com.aripuca.tracker.utils.Utils;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,12 +9,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.net.ConnectivityManager;
-
 import android.os.Environment;
 import android.preference.PreferenceManager;
-
 import android.util.Log;
 import android.widget.Toast;
+
+import com.aripuca.tracker.db.Segments;
+import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Tracks;
+import com.aripuca.tracker.db.Waypoints;
+import com.aripuca.tracker.utils.Utils;
 
 /**
  * 

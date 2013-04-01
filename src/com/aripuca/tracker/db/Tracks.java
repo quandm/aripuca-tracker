@@ -1,12 +1,10 @@
 package com.aripuca.tracker.db;
 
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.utils.Utils;
-
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.util.Log;
+
+import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.utils.Utils;
 
 public class Tracks {
 

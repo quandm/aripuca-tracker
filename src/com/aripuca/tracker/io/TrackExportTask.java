@@ -12,11 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.aripuca.tracker.App;
-import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.R;
-import com.aripuca.tracker.TracksListActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +20,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.R;
+import com.aripuca.tracker.TracksListActivity;
 
 abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 

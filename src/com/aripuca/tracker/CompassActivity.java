@@ -1,31 +1,25 @@
 package com.aripuca.tracker;
 
-import com.aripuca.tracker.R;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Vibrator;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.TextView;
 
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.utils.MapUtils;
 import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.BubbleSurfaceView;
 import com.aripuca.tracker.view.CompassImage;
-
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-
-import android.location.Location;
-import android.os.Bundle;
-
-import android.os.Vibrator;
-import android.util.Log;
-
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
-import android.widget.TextView;
 
 public class CompassActivity extends Activity implements OnTouchListener {
 

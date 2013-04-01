@@ -1,9 +1,9 @@
 package com.aripuca.tracker.utils;
 
-import com.google.android.maps.GeoPoint;
-
 import android.hardware.GeomagneticField;
 import android.location.Location;
+
+import com.google.android.maps.GeoPoint;
 
 public class MapUtils {
 

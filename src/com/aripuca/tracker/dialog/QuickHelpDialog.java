@@ -1,19 +1,17 @@
 package com.aripuca.tracker.dialog;
 
-import com.aripuca.tracker.App;
-import com.aripuca.tracker.R;
-
 import android.app.Dialog;
 import android.content.Context;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import com.aripuca.tracker.App;
+import com.aripuca.tracker.R;
 
 /**
  * Quick help custom dialog Shows random help advice every time it's shown

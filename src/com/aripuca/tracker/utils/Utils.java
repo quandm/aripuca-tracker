@@ -8,11 +8,11 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import com.aripuca.tracker.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+
+import com.aripuca.tracker.R;
 
 public class Utils {
 
