@@ -15,6 +15,7 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
+import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.utils.MapUtils;
 import com.aripuca.tracker.utils.Utils;
@@ -76,10 +77,10 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			declination = MapUtils.getDeclination(currentLocation, now);
 
 			// stop location updates when not recording track
-			if (serviceConnection.getService().getTrackRecorder().isRecording()) {
+			if (!serviceConnection.getService().getTrackRecorder().isRecording()) {
 				serviceConnection.getService().stopLocationUpdates();
 			}
-
+			
 		}
 	};
 
@@ -143,8 +144,6 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
-		currentLocation = app.getCurrentLocation();
-
 		// magnetic north compass
 		if (findViewById(R.id.compass) != null) {
 
@@ -166,33 +165,31 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		public void run() {
 
 			Log.d(Constants.TAG, "AppServiceConnection");
+			
+			AppService appService = serviceConnection.getService();
 
-			if (serviceConnection.getService() == null) {
+			if (appService == null) {
 				Log.e(Constants.TAG, "AppService not available");
 				return;
 			}
 
-			if (!serviceConnection.getService().isListening()) {
+			if (!appService.isListening()) {
 
 				// location updates stopped at this time, so let's start them
-				serviceConnection.getService().startLocationUpdates();
+				appService.startLocationUpdates();
 
 			} else {
 
-				// gpsInUse = false means we are in process of stopping
-				// listening
-				if (!serviceConnection.getService().isGpsInUse()) {
-					serviceConnection.getService().setGpsInUse(true);
-				}
-
-				// if both isListening and isGpsInUse are true - do nothing
-				// most likely we are in the process of recording track
-
+				// keep listening for location updates
+				appService.setGpsInUse(true);
 			}
 
 			// this activity requires compass data
-			serviceConnection.getService().startSensorUpdates();
+			appService.startSensorUpdates();
 
+			// let's not wait for LocationListener to receive updates and get last known location 
+			currentLocation = appService.getCurrentLocation();
+			
 		}
 	};
 

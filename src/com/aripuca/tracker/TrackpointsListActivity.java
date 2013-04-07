@@ -246,7 +246,7 @@ public class TrackpointsListActivity extends ListActivity {
 
 		// initializing with last known location, so we can calculate distance
 		// to track points
-		currentLocation = app.getCurrentLocation();
+//		currentLocation = app.getCurrentLocation();
 
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
@@ -288,9 +288,7 @@ public class TrackpointsListActivity extends ListActivity {
 
 				// gpsInUse = false means we are in process of stopping
 				// listening
-				if (!appService.isGpsInUse()) {
-					appService.setGpsInUse(true);
-				}
+				appService.setGpsInUse(true);
 
 				// if both isListening and isGpsInUse are true - do nothing
 				// most likely we are in the process of recording track
@@ -300,6 +298,11 @@ public class TrackpointsListActivity extends ListActivity {
 			// this activity requires compass data
 			appService.startSensorUpdates();
 
+			// let's not wait for LocationListener to receive updates and get last known location 
+			currentLocation = appService.getCurrentLocation();
+			
+			waypointsArrayAdapter.notifyDataSetChanged();			
+			
 		}
 	};
 

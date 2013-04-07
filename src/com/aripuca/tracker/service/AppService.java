@@ -34,7 +34,8 @@ import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
 /**
- * this service handles real time and scheduled track recording as well as compass updates
+ * this service handles real time and scheduled track recording as well as
+ * compass updates
  */
 public class AppService extends Service {
 
@@ -82,8 +83,14 @@ public class AppService extends Service {
 		return listening;
 	}
 
+	/**
+	 * 
+	 */
 	private TrackRecorder trackRecorder;
 
+	/**
+	 * 
+	 */
 	private ScheduledTrackRecorder scheduledTrackRecorder;
 
 	/**
@@ -93,6 +100,10 @@ public class AppService extends Service {
 		this.gpsInUse = gpsInUse;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isGpsInUse() {
 		return this.gpsInUse;
 	}
@@ -111,7 +122,8 @@ public class AppService extends Service {
 			listening = true;
 
 			currentLocation = location;
-			app.setCurrentLocation(location);
+
+			//			app.setCurrentLocation(location);
 
 			// update track statistics
 			if (trackRecorder.isRecording()) {
@@ -123,8 +135,9 @@ public class AppService extends Service {
 		}
 
 		/**
-		 * Called when the provider status changes. This method is called when a provider is unable to fetch a location
-		 * or if the provider has recently become available after a period of unavailability.
+		 * Called when the provider status changes. This method is called when a
+		 * provider is unable to fetch a location or if the provider has
+		 * recently become available after a period of unavailability.
 		 */
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -158,7 +171,7 @@ public class AppService extends Service {
 			schedulerListening = true;
 
 			currentLocation = location;
-			app.setCurrentLocation(location);
+			//			app.setCurrentLocation(location);
 
 			// check minimum accuracy required for recording
 			if (location.hasAccuracy() && location.getAccuracy() <= scheduledTrackRecorder.getMinAccuracy()) {
@@ -300,7 +313,7 @@ public class AppService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 
-		Log.d(Constants.TAG, "AppService: BOUND " + this.toString());
+		AppLog.d(this.getApplicationContext(), "AppService: BOUND " + this.toString());
 
 		return mBinder;
 	}
@@ -364,7 +377,7 @@ public class AppService extends Service {
 	@Override
 	public void onDestroy() {
 
-		Log.i(Constants.TAG, "AppService: onDestroy");
+		AppLog.d(this.getApplicationContext(), "AppService: onDestroy");
 
 		AppService.running = false;
 
@@ -388,6 +401,17 @@ public class AppService extends Service {
 	}
 
 	/**
+	 * 
+	 */
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+
+		//TODO: test !!!
+		Log.i(Constants.TAG, "Received start id " + startId + ": " + intent);
+		return START_STICKY;
+	}
+
+	/**
 	 * is service running?
 	 */
 	public static boolean isRunning() {
@@ -401,6 +425,10 @@ public class AppService extends Service {
 
 		Location location;
 		int locationProvider;
+
+		if (currentLocation != null) {
+			return;
+		}
 
 		// get last known location from gps provider
 		location = this.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -418,7 +446,7 @@ public class AppService extends Service {
 		}
 
 		currentLocation = location;
-		this.app.setCurrentLocation(location);
+		//		this.app.setCurrentLocation(location);
 
 	}
 
@@ -438,7 +466,8 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * Stopping location updates with delay, leaving a chance for new activity not to restart location listener
+	 * Stopping location updates with delay, leaving a chance for new activity
+	 * not to restart location listener
 	 */
 	public void stopLocationUpdates() {
 
@@ -449,16 +478,13 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * 
+	 * stop location updates without giving a chance for other activities to
+	 * grab GPS sensor
 	 */
 	public void stopLocationUpdatesNow() {
-
 		locationManager.removeUpdates(locationListener);
-
 		listening = false;
-
 		gpsInUse = false;
-
 	}
 
 	/**
@@ -509,8 +535,7 @@ public class AppService extends Service {
 	/**
 	 * Schedules next request for GPS location
 	 * 
-	 * @param interval
-	 *            Interval between 2 consecutive requests (in seconds)
+	 * @param interval Interval between 2 consecutive requests (in seconds)
 	 */
 	private void scheduleNextLocationRequest(int interval) {
 
@@ -587,7 +612,8 @@ public class AppService extends Service {
 	}
 
 	/**
-	 * Receives broadcast event every 5 seconds in order to control presence of GPS signal
+	 * Receives broadcast event every 5 seconds in order to control presence of
+	 * GPS signal
 	 */
 	private BroadcastReceiver nextTimeLimitCheckReceiver = new BroadcastReceiver() {
 		@Override
@@ -640,8 +666,30 @@ public class AppService extends Service {
 		// first request is scheduled in 5 seconds from now
 		this.scheduleNextLocationRequest(5);
 
-		this.showOngoingNotification();
+		this.showNotification(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING,
+				R.string.scheduled_track_recording_in_progress);
 
+	}
+
+	/**
+	 * 
+	 */
+	public void startTrackRecording() {
+
+		this.trackRecorder.start();
+
+		// add notification icon in track recording mode
+		this.showNotification(Constants.NOTIFICATION_TRACK_RECORDING, R.string.recording_track);
+	}
+
+	/**
+	 * 
+	 */
+	public void stopTrackRecording() {
+
+		this.trackRecorder.stop();
+
+		this.clearNotification(Constants.NOTIFICATION_TRACK_RECORDING);
 	}
 
 	/**
@@ -660,13 +708,13 @@ public class AppService extends Service {
 
 		this.locationManager.removeUpdates(scheduledLocationListener);
 
-		this.clearNotification();
+		this.clearNotification(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING);
 	}
 
 	/**
 	 * Show ongoing notification
 	 */
-	private void showOngoingNotification() {
+	public void showNotification(int notificationId, int contentTextResourceId) {
 
 		int icon = R.drawable.ic_stat_notify_aripuca;
 
@@ -680,7 +728,7 @@ public class AppService extends Service {
 		notification.flags += Notification.FLAG_ONGOING_EVENT;
 
 		CharSequence contentTitle = getString(R.string.main_app_title);
-		CharSequence contentText = getString(R.string.scheduled_track_recording_in_progress);
+		CharSequence contentText = getString(contentTextResourceId);
 
 		Intent notificationIntent = new Intent(this, NotificationActivity.class);
 
@@ -688,35 +736,49 @@ public class AppService extends Service {
 
 		notification.setLatestEventInfo(app, contentTitle, contentText, contentIntent);
 
-		mNotificationManager.notify(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING, notification);
+		mNotificationManager.notify(notificationId, notification);
 
 	}
 
-	private void clearNotification() {
+	/**
+	 * 
+	 */
+	public void clearNotification(int notificationId) {
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		// remove all notifications
 		// mNotificationManager.cancelAll();
-		mNotificationManager.cancel(Constants.NOTIFICATION_SCHEDULED_TRACK_RECORDING);
+		mNotificationManager.cancel(notificationId);
 
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Location getCurrentLocation() {
 		return this.currentLocation;
 	}
 
+	/**
+	 * @return scheduledTrackRecorder object
+	 */
 	public ScheduledTrackRecorder getScheduledTrackRecorder() {
 		return scheduledTrackRecorder;
 	}
 
+	/**
+	 * @return
+	 */
 	public TrackRecorder getTrackRecorder() {
 		return trackRecorder;
 	}
 
 	/**
-	 * stopping location updates with small delay giving us a chance not to restart listener if other activity requires
-	 * GPS sensor too. new activity has to bind to AppService and set gpsInUse to true
+	 * stopping location updates with small delay giving us a chance not to
+	 * restart listener if other activity requires GPS sensor too. new activity
+	 * has to bind to AppService and set gpsInUse to true
 	 */
 	private class stopLocationUpdatesThread extends Thread {
 

@@ -288,11 +288,7 @@ public class WaypointsListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		app = (App) getApplication();
-
-		// initializing with last known location, so we can calculate distance
-		// to waypoints
-		currentLocation = app.getCurrentLocation();
-
+		
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
 		registerForContextMenu(this.getListView());
@@ -329,6 +325,11 @@ public class WaypointsListActivity extends ListActivity {
 
 			// this activity requires compass data
 			appService.startSensorUpdates();
+
+			// let's not wait for LocationListener to receive updates and get last known location 
+			currentLocation = appService.getCurrentLocation();
+			
+			waypointsArrayAdapter.notifyDataSetChanged();			
 
 		}
 	};

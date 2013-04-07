@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -49,7 +48,7 @@ public class App extends Application {
 	 */
 	private SQLiteDatabase db;
 
-	private Location currentLocation;
+//	private Location currentLocation;
 
 	public SQLiteDatabase getDatabase() {
 		return db;
@@ -85,17 +84,17 @@ public class App extends Application {
 	/**
 	 * @return the currentLocation
 	 */
-	public Location getCurrentLocation() {
-		return currentLocation;
-	}
+//	public Location getCurrentLocation() {
+//		return currentLocation;
+//	}
 
 	/**
 	 * @param currentLocation
 	 *            the currentLocation to set
 	 */
-	public void setCurrentLocation(Location currentLocation) {
-		this.currentLocation = currentLocation;
-	}
+//	public void setCurrentLocation(Location currentLocation) {
+//		this.currentLocation = currentLocation;
+//	}
 
 	/**
 	 * application database create/open helper class
