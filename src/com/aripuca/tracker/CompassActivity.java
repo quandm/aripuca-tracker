@@ -332,7 +332,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(rotation, 0) + Utils.DEGREE_CHAR + " "
-					+ Utils.getDirectionCode(rotation));
+					+ getString(Utils.getCardinalPoint(rotation)));
 		}
 
 		// true north compass

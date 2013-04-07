@@ -211,10 +211,8 @@ public class Utils {
 	}
 
 	/**
-	 * @param value
-	 *            Speed value is in meters per second
-	 * @param unit
-	 *            kph or mph
+	 * @param value Speed value is in meters per second
+	 * @param unit kph or mph
 	 * @return
 	 */
 	public static String formatPace(float value, String unit) {
@@ -276,7 +274,8 @@ public class Utils {
 	}
 
 	/**
-	 * Formats coordinate value to string based on output type (modified version from Android API)
+	 * Formats coordinate value to string based on output type (modified version
+	 * from Android API)
 	 */
 	public static String formatCoord(double coordinate, int outputType) {
 
@@ -339,16 +338,34 @@ public class Utils {
 		return s;
 	}
 
-	public static String getDirectionCode(float azimuth) {
-		String directionCodes[] = { "N", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
-		return directionCodes[Math.round(azimuth / 45)];
+	/**
+	 * 
+	 * @param azimuth
+	 * @return
+	 */
+	public static int getCardinalPoint(float azimuth) {
+		int cardinalPoints[] = {
+				R.string.cardinal_point_north,
+				R.string.cardinal_point_north_east,
+				R.string.cardinal_point_north_east,
+				R.string.cardinal_point_south_east,
+				R.string.cardinal_point_south,
+				R.string.cardinal_point_south_west,
+				R.string.cardinal_point_south_west,
+				R.string.cardinal_point_north_west,
+				R.string.cardinal_point_north };
+
+		int index = Math.round(azimuth / 45);
+		if (index > cardinalPoints.length - 1) {
+			index = 0;
+		}
+		return cardinalPoints[index];
 	}
 
 	/**
 	 * Get md5 hash
 	 * 
-	 * @param s
-	 *            String to be md5-ed
+	 * @param s String to be md5-ed
 	 * @return md5 hash
 	 */
 	public static String md5(String s) {
@@ -412,7 +429,8 @@ public class Utils {
 	}
 
 	/**
-	 * Converts time (in milliseconds) to human-readable format "<w> days, <x> hours, <y> minutes and (z) seconds"
+	 * Converts time (in milliseconds) to human-readable format
+	 * "<w> days, <x> hours, <y> minutes and (z) seconds"
 	 */
 	public static String timeToHumanReadableString(long duration) {
 
@@ -559,19 +577,19 @@ public class Utils {
 	 * @return
 	 */
 	public static int getDeviceRotation(Activity activity) {
-		
-		int[] rotations = {0,90,180,270}; 
+
+		int[] rotations = { 0, 90, 180, 270 };
 
 		final int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
 
-		if (rotation>0 && rotation<=3) {
+		if (rotation > 0 && rotation <= 3) {
 			return rotations[rotation];
 		} else {
 			return 0;
 		}
 
 	}
-	
+
 	/**
 	 * Create folder if not exists
 	 * 
@@ -587,7 +605,5 @@ public class Utils {
 		}
 
 	}
-
-
 
 }

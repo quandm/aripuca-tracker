@@ -230,4 +230,12 @@
     <string name="point">Точка</string>
     <string name="distance_to_end">До конца</string>
     <string name="no_points_recorded">Для этого трека нет записанных точек</string>
+    <string name="cardinal_point_west">З</string>
+    <string name="cardinal_point_south_west">ЮЗ</string>
+    <string name="cardinal_point_north">С</string>
+    <string name="cardinal_point_south">Ю</string>
+    <string name="cardinal_point_east">В</string>
+    <string name="cardinal_point_north_east">СВ</string>
+    <string name="cardinal_point_south_east">ЮВ</string>
+    <string name="cardinal_point_north_west">СЗ</string>
 </resources>
