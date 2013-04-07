@@ -78,6 +78,8 @@ public class MainActivity extends Activity {
 
 	private long declinationLastUpdate = 0;
 
+	private long compassLastUpdate = 0;
+	
 	/**
 	 * location received from AppService
 	 */
@@ -172,7 +174,12 @@ public class MainActivity extends Activity {
 
 			Bundle bundle = intent.getExtras();
 
-			updateCompass(bundle.getFloat("azimuth"));
+			// update compass every second
+			long now = System.currentTimeMillis();
+			if (now - compassLastUpdate > 500) {
+				updateCompass(bundle.getFloat("azimuth"));
+				compassLastUpdate = now;
+			}
 
 		}
 	};
@@ -379,6 +386,10 @@ public class MainActivity extends Activity {
 		@Override
 		public void run() {
 
+			if (serviceConnection == null) {
+				return;
+			}
+
 			AppService appService = serviceConnection.getService();
 
 			if (appService == null) {
@@ -487,7 +498,7 @@ public class MainActivity extends Activity {
 		AppService appService = serviceConnection.getService();
 
 		if (appService != null) {
-			
+
 			if (!this.isFinishing()) {
 
 				// activity will be recreated
@@ -1513,13 +1524,16 @@ public class MainActivity extends Activity {
 
 		if (findViewById(R.id.azimuth) != null) {
 			((TextView) findViewById(R.id.azimuth)).setText(Utils.formatNumber(trueAzimuth, 0) + Utils.DEGREE_CHAR
-					+ " " + Utils.getDirectionCode(trueAzimuth));
+					+ " " + getString(Utils.getCardinalPoint(trueAzimuth)));
 		}
 
 		// update compass image
 		if (findViewById(R.id.compassImage) != null) {
 
 			CompassImage compassImage = (CompassImage) findViewById(R.id.compassImage);
+
+			AppLog.d(MainActivity.this, "Device rotation: " + Utils.getDeviceRotation(this));
+			AppLog.d(MainActivity.this, "TruAzimuth: " + trueAzimuth);
 
 			compassImage.setAngle(360 - trueAzimuth - Utils.getDeviceRotation(this));
 

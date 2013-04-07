@@ -278,7 +278,7 @@ public class MyMapActivity extends MapActivity {
 
 			final Projection projection = mapView.getProjection();
 
-			showMapPin(projection, canvas, geopoint, R.drawable.map_pin);
+			showMapPin(projection, canvas, geopoint, R.drawable.marker_flag_pink);
 
 			// show current location marker
 			if (currentLocation != null) {
