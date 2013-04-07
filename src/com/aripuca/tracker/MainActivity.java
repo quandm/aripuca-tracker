@@ -14,9 +14,6 @@ import java.util.TimeZone;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -129,7 +126,6 @@ public class MainActivity extends Activity {
 			// fixed in ICS 4.0.4
 			if (fixAge < 0) {
 				fixAge = Utils.ONE_DAY - Math.abs(fixAge);
-				Log.d(Constants.TAG, "MainActivity: location time is one day ahead");
 				AppLog.d(this, "MainActivity: location time is one day ahead");
 			}
 
@@ -379,50 +375,6 @@ public class MainActivity extends Activity {
 
 	}
 
-	/**
-	 * Initialize the activity
-	 */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-
-		super.onCreate(savedInstanceState);
-
-		Log.i(Constants.TAG, "MainActivity: onCreate");
-
-		// reference to application object
-		app = ((App) getApplication());
-
-		initializeHiddenPreferences();
-
-		// ----------------------------------------------------------------------
-		// preparing UI
-		// setting layout for main activity
-		setContentView(R.layout.main);
-
-		// restoring previous application state
-		// it should be done between setContentView & replaceDynamicView calls
-		if (savedInstanceState != null) {
-			restoreInstanceState(savedInstanceState);
-		}
-
-		this.disableControlButtons();
-
-		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
-
-		// start GPS service only if not started
-		startAppService();
-
-		// show quick help only when activity first started
-		if (savedInstanceState == null) {
-			if (app.getPreferences().getBoolean("quick_help", true)) {
-				showQuickHelp();
-			}
-		}
-
-		this.setControlButtonListeners();
-
-	}
-
 	private Runnable appServiceConnectionCallback = new Runnable() {
 		@Override
 		public void run() {
@@ -477,6 +429,115 @@ public class MainActivity extends Activity {
 	};
 
 	/**
+	 * Initialize the activity
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+
+		Log.i(Constants.TAG, "MainActivity: onCreate");
+
+		// reference to application object
+		app = ((App) getApplication());
+
+		initializeHiddenPreferences();
+
+		// ----------------------------------------------------------------------
+		// preparing UI
+		// setting layout for main activity
+		setContentView(R.layout.main);
+
+		// restoring previous application state
+		// it should be done between setContentView & replaceDynamicView calls
+		if (savedInstanceState != null) {
+			restoreInstanceState(savedInstanceState);
+		}
+
+		this.disableControlButtons();
+
+		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
+
+		// start GPS service only if not started
+		startAppService();
+
+		// show quick help only when activity first started
+		if (savedInstanceState == null) {
+			if (app.getPreferences().getBoolean("quick_help", true)) {
+				showQuickHelp();
+			}
+		}
+
+		this.setControlButtonListeners();
+
+	}
+
+	/**
+	 * onPause event handler
+	 */
+	@Override
+	protected void onPause() {
+
+		Log.i(Constants.TAG, "MainActivity: onPause");
+
+		unregisterReceiver(compassBroadcastReceiver);
+		unregisterReceiver(locationBroadcastReceiver);
+		unregisterReceiver(scheduledLocationBroadcastReceiver);
+
+		AppService appService = serviceConnection.getService();
+
+		if (appService != null) {
+			
+			if (!this.isFinishing()) {
+
+				// activity will be recreated
+
+				// stop location updates when not recording track
+				if (!appService.getTrackRecorder().isRecording()) {
+
+					// stop location updates with delay so next activity will have time to grab GPS sensor
+					appService.stopLocationUpdates();
+				}
+
+				appService.stopSensorUpdates();
+
+			} else {
+
+				// activity will be destroyed and not recreated
+
+				// stop tracking if active
+				if (appService.getTrackRecorder().isRecording()) {
+					AppLog.d(this, "MainActivity.onPause: Recording stopped by the system");
+					stopTracking();
+				}
+
+				if (appService.getScheduledTrackRecorder().isRecording()) {
+					AppLog.d(this, "MainActivity.onPause: Scheduled recording stopped by the system");
+					appService.stopScheduler();
+				}
+
+			}
+		}
+
+		// unbind AppService
+		serviceConnection.unbindAppService();
+
+		if (this.isFinishing()) {
+
+			// if activity is not going to be recreated - stop application service
+			stopAppService();
+
+			// save layout for next session
+			this.saveHiddenPreferences();
+
+		}
+
+		this.updateTimeHandler.removeCallbacks(updateTimeTask);
+
+		super.onPause();
+	}
+
+	/**
 	 * onResume event handler
 	 */
 	@Override
@@ -510,74 +571,12 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * onPause event handler
-	 */
-	@Override
-	protected void onPause() {
-
-		Log.i(Constants.TAG, "MainActivity: onPause");
-
-		unregisterReceiver(compassBroadcastReceiver);
-		unregisterReceiver(locationBroadcastReceiver);
-		unregisterReceiver(scheduledLocationBroadcastReceiver);
-
-		AppService appService = serviceConnection.getService();
-
-		if (appService != null) {
-			if (!this.isFinishing()) {
-
-				// activity will be recreated
-
-				// stop location updates when not recording track
-				if (!appService.getTrackRecorder().isRecording()) {
-					appService.stopLocationUpdates();
-				}
-
-				appService.stopSensorUpdates();
-
-			} else {
-
-				// activity will be destroyed and not recreated
-
-				// stop tracking if active
-				if (appService.getTrackRecorder().isRecording()) {
-					AppLog.d(this, "MainActivity.onPause: Recording stopped by the system");
-					stopTracking();
-				}
-
-				if (appService.getScheduledTrackRecorder().isRecording()) {
-					AppLog.d(this, "MainActivity.onPause: Scheduled recording stopped by the system");
-					appService.stopScheduler();
-				}
-
-			}
-		}
-
-		// unbind AppService
-		serviceConnection.unbindAppService();
-
-		if (this.isFinishing()) {
-
-			// if activity is not going to be recreated - stop service
-			stopAppService();
-
-			// save layout for next session
-			this.saveHiddenPreferences();
-
-		}
-
-		this.updateTimeHandler.removeCallbacks(updateTimeTask);
-
-		super.onPause();
-	}
-
-	/**
 	 * onDestroy event handler
 	 */
 	@Override
 	protected void onDestroy() {
 
-		Log.i(Constants.TAG, "MainActivity: onDestroy");
+		AppLog.d(this, "MainActivity.onDestroy");
 
 		serviceConnection = null;
 
@@ -783,47 +782,6 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Show ongoing notification
-	 */
-	private void showNotification() {
-
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-		long when = System.currentTimeMillis();
-
-		Notification notification = new Notification(R.drawable.ic_stat_notify_aripuca,
-				getString(R.string.recording_started), when);
-
-		// show notification under ongoing title
-		notification.flags += Notification.FLAG_ONGOING_EVENT;
-
-		CharSequence contentTitle = getString(R.string.main_app_title);
-		CharSequence contentText = getString(R.string.recording_track);
-
-		Intent notificationIntent = new Intent(this, NotificationActivity.class);
-
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-		notification.setLatestEventInfo(app, contentTitle, contentText, contentIntent);
-
-		mNotificationManager.notify(Constants.NOTIFICATION_TRACK_RECORDING, notification);
-
-	}
-
-	/**
-	 * 
-	 */
-	private void clearNotification() {
-
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-		// remove all notifications
-		// mNotificationManager.cancelAll();
-		mNotificationManager.cancel(Constants.NOTIFICATION_TRACK_RECORDING);
-
-	}
-
-	/**
 	 * start real time track recording
 	 */
 	private void startTracking() {
@@ -848,10 +806,7 @@ public class MainActivity extends Activity {
 
 		this.replaceDynamicView(R.layout.main_tracking);
 
-		appService.getTrackRecorder().start();
-
-		// add notification icon in track recording mode
-		this.showNotification();
+		appService.startTrackRecording();
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 
@@ -878,12 +833,10 @@ public class MainActivity extends Activity {
 		// change button label from Stop to Record
 		((Button) findViewById(R.id.trackRecordingButton)).setText(getString(R.string.record_track));
 
-		appService.getTrackRecorder().stop();
+		appService.stopTrackRecording();
 
 		// switching to initial layout
 		this.replaceDynamicView(R.layout.main_idle);
-
-		this.clearNotification();
 
 		Toast.makeText(this, R.string.recording_finished, Toast.LENGTH_SHORT).show();
 
@@ -1201,6 +1154,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
+		Intent intent;
 		// Handle item selection
 		switch (item.getItemId()) {
 
@@ -1212,13 +1166,15 @@ public class MainActivity extends Activity {
 
 			case R.id.waypointsMenuItem:
 
-				startActivity(new Intent(this, WaypointsListActivity.class));
+				intent = new Intent(this, WaypointsListActivity.class);
+				startActivity(intent);
 
 				return true;
 
 			case R.id.tracksMenuItem:
 
-				startActivity(new Intent(this, TracksTabActivity.class));
+				intent = new Intent(this, TracksTabActivity.class);
+				startActivity(intent);
 
 				return true;
 
@@ -1655,10 +1611,10 @@ public class MainActivity extends Activity {
 				File backupDB = new File(app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + dateStr + ".db");
 
 				if (currentDB.exists()) {
-					
+
 					FileInputStream fis = new FileInputStream(currentDB);
 					FileOutputStream fos = new FileOutputStream(backupDB);
-					
+
 					FileChannel src = fis.getChannel();
 					FileChannel dst = fos.getChannel();
 					dst.transferFrom(src, 0, src.size());
@@ -1781,12 +1737,12 @@ public class MainActivity extends Activity {
 
 					FileInputStream fis = new FileInputStream(restoreDB);
 					FileOutputStream fos = new FileOutputStream(currentDB);
-					
+
 					FileChannel src = fis.getChannel();
 					FileChannel dst = fos.getChannel();
 
 					dst.transferFrom(src, 0, src.size());
-					
+
 					src.close();
 					dst.close();
 					fis.close();

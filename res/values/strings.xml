@@ -4,7 +4,7 @@
     <string name="main_app_title">Aripuca GPS Tracker</string>
     <string name="developer">VitalNik</string>
     <string name="company">Aripuca Apps</string>
-    <string name="app_build_date">2013-04-03</string>
+    <string name="app_build_date">2013-04-07</string>
     <string name="app_url">http://tracker.aripuca.com</string>
     <string name="blog_url">http://tracker.aripuca.com/blog</string>
     <string name="market_url">https://play.google.com/store/apps/details?id=com.aripuca.tracker</string>
@@ -203,6 +203,7 @@
     <string name="location_received_on_schedule">New location received on schedule</string>
     <string name="scheduled_recording_started">Scheduled recording started</string>
     <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
+    <string name="no_points_recorded">No points were recorded for this track</string>
     <!-- BACKUP & RESTORE -->
     <string name="backup">Backup</string>
     <string name="backup_db">Backup DB</string>

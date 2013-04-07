@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.utils.AppLog;
 
 public class AppServiceConnection {
 
@@ -41,6 +42,7 @@ public class AppServiceConnection {
 		@Override
 		public void onServiceDisconnected(ComponentName className) {
 			Log.d(Constants.TAG, "ServiceConnection: onServiceDisconnected");
+			AppLog.d(context, "ServiceConnection: onServiceDisconnected");
 		}
 
 	};
@@ -64,6 +66,7 @@ public class AppServiceConnection {
 		Intent i = new Intent(context, AppService.class);
 		if (!context.bindService(i, serviceConnection, 0)) {
 			Toast.makeText(context, "Can't connect to GPS service", Toast.LENGTH_SHORT).show();
+			AppLog.d(context, "bindAppService: Can't connect to GPS service");
 		}
 
 	}

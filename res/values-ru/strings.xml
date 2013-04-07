@@ -229,4 +229,5 @@
     <string name="distance_from_start">От начала</string>
     <string name="point">Точка</string>
     <string name="distance_to_end">До конца</string>
+    <string name="no_points_recorded">Для этого трека нет записанных точек</string>
 </resources>

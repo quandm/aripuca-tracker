@@ -590,27 +590,19 @@ public class MyMapActivity extends MapActivity {
 			}
 
 			if (!appService.isListening()) {
-
 				// location updates stopped at this time, so let's start them
 				appService.startLocationUpdates();
-
 			} else {
-
-				// gpsInUse = false means we are in process of stopping
-				// listening
-				if (!appService.isGpsInUse()) {
-					appService.setGpsInUse(true);
-				}
-
-				// if both isListening and isGpsInUse are true - do nothing
-				// most likely we are in the process of recording track
-
+				// keep listening for location
+				appService.setGpsInUse(true);
 			}
 
 			// this activity requires compass data
 			appService.startSensorUpdates();
 
+			currentLocation = appService.getCurrentLocation();
 		}
+
 	};
 
 	private void setupMapView() {
@@ -677,12 +669,12 @@ public class MyMapActivity extends MapActivity {
 		if (currentLocation != null) {
 
 			// include current location in track span
-			mapSpan.updateMapSpan((int) (currentLocation.getLatitude() * 1E6),
-					(int) (currentLocation.getLongitude() * 1E6));
+			//			mapSpan.updateMapSpan((int) (currentLocation.getLatitude() * 1E6),
+			//					(int) (currentLocation.getLongitude() * 1E6));
+			//			this.zoomToSpanAndCenter();
 
-			this.zoomToSpanAndCenter();
-
-			// mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));
+			mapView.getController().setZoom(16); // 1..21
+			mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));
 
 		} else {
 			Toast.makeText(MyMapActivity.this, R.string.waiting_for_fix, Toast.LENGTH_SHORT).show();
@@ -758,6 +750,14 @@ public class MyMapActivity extends MapActivity {
 	 * @param progress
 	 */
 	private void updateInfoPanel(int progress) {
+		
+		if (points.size()==0) {
+			// no points recorded
+			Toast.makeText(MyMapActivity.this, R.string.no_points_recorded, Toast.LENGTH_SHORT)
+			.show();
+
+			return;
+		}
 
 		currentPointIndex = progress;
 
