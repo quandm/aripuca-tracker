@@ -58,7 +58,6 @@
     <string name="moving">В движении</string>
     <string name="total">Всего</string>
     <string name="idle">Простой</string>
-    <string name="current">Текущий</string>
     <string name="azimuth">Азимут</string>
     <string name="distance">Расстояние</string>
     <string name="coordinates">Координаты</string>
@@ -72,7 +71,6 @@
     <string name="points">Точки</string>
     <string name="sunrise">Рассвет</string>
     <string name="sunset">Закат</string>
-    <string name="backup">Backup</string>
     <string name="backup_db">Сохранить БД</string>
     <string name="restore_db">Восстановить БД</string>
     <string name="file">Файл</string>
@@ -107,7 +105,6 @@
     <string name="satellite">Спутник</string>
     <string name="next">Следующий</string>
     <string name="app_settings_title">Настройки приложения</string>
-    <string name="app_language">Язык приложения</string>
     <string name="wake_lock_title">Не гасить экран</string>
     <string name="wake_lock_summary">Предотвратить засыпание устройства</string>
     <string name="quick_help_title">Быстрая справка</string>
@@ -238,4 +235,7 @@
     <string name="cardinal_point_north_east">СВ</string>
     <string name="cardinal_point_south_east">ЮВ</string>
     <string name="cardinal_point_north_west">СЗ</string>
+    <string name="show_track_details">Статистика</string>
+    <string name="total_distance">Дистанция</string>
+    <string name="current">Текущий</string>
 </resources>

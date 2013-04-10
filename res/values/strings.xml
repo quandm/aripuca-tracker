@@ -52,7 +52,6 @@
     <string name="moving">Moving</string>
     <string name="total">Total</string>
     <string name="idle">Idle</string>
-    <string name="current">Current</string>
     <string name="azimuth">Azimuth</string>
     <string name="distance">Distance</string>
     <string name="distance_from_start">From start</string>
@@ -106,7 +105,6 @@
     <string name="app_settings_title">Application settings</string>
     <string name="user_interface">User interface</string>
     <string name="user_interface_summary">Screen mode and other settings</string>
-    <string name="app_language">Application language</string>
     <string name="wake_lock_title">Stay awake</string>
     <string name="wake_lock_summary">Prevents phone from sleeping</string>
     <string name="quick_help_title">Quick help</string>
@@ -121,7 +119,7 @@
     <string name="tracks">Tracks</string>
     <string name="scheduled_tracks">Scheduled tracks</string>
     <string name="track_details_activity_title">Track details</string>
-    <string name="show_track_details">Show details</string>
+    <string name="show_track_details">Show stat</string>
     <string name="show_track">Show track</string>
     <string name="track_chart">Track chart</string>
     <string name="record_track">Record track</string>
@@ -213,7 +211,6 @@
     <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
     <string name="no_points_recorded">No points were recorded for this track</string>
     <!-- BACKUP & RESTORE -->
-    <string name="backup">Backup</string>
     <string name="backup_db">Backup DB</string>
     <string name="restore_db">Restore DB</string>
     <string name="backup_completed">Application database copied to:</string>
@@ -272,4 +269,5 @@
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
     <string name="my_location">My location</string>
+    <string name="current">Current</string>
 </resources>

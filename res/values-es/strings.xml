@@ -38,7 +38,6 @@
     <string name="moving">Moviendo</string>
     <string name="total">Total</string>
     <string name="idle">Inactivo</string>
-    <string name="current">Actual</string>
     <string name="azimuth">Acimut</string>
     <string name="distance">Distáncia</string>
     <string name="coordinates">Coordenadas</string>
@@ -87,7 +86,6 @@
     <string name="app_settings_title">Configuración de aplicación</string>
     <string name="user_interface">Interface de usuario</string>
     <string name="user_interface_summary">Modo de pantalla, idioma, etc</string>
-    <string name="app_language">Idioma</string>
     <string name="wake_lock_title">Mantener activo</string>
     <string name="wake_lock_summary">Evitar pasar a inactividad del teléfono</string>
     <string name="quick_help_title">Ayuda rápida</string>
@@ -184,7 +182,6 @@
     <string name="scheduled_recording_started">Grabación planificada iniciada</string>
     <string name="scheduled_recording_stopped">Grabación planificada parada</string>
     <!-- BACKUP & RESTORE -->
-    <string name="backup">Copia de seguridad</string>
     <string name="backup_db">Copia de seguridad de BBDD</string>
     <string name="restore_db">Restaurar BBDD</string>
     <string name="backup_completed">Base de datos copiada a:</string>
@@ -244,4 +241,5 @@ Está seguro?</string>
     <string name="logging_level">Nivel de registro</string>
     <string name="logging_level_summary">Registrar errores, advertencias, información y mensajes de depuración</string>
     <string name="point">Punto</string>
+    <string name="current">Actual</string>
 </resources>
