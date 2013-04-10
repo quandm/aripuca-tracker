@@ -31,7 +31,7 @@ public class AppServiceConnection {
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
 
-			Log.d(Constants.TAG, "ServiceConnection: onServiceConnected " + this.toString());
+			AppLog.d(context, "ServiceConnection: onServiceConnected " + this.toString());
 
 			appService = ((AppService.LocalBinder) service).getService();
 
@@ -41,7 +41,6 @@ public class AppServiceConnection {
 
 		@Override
 		public void onServiceDisconnected(ComponentName className) {
-			Log.d(Constants.TAG, "ServiceConnection: onServiceDisconnected");
 			AppLog.d(context, "ServiceConnection: onServiceDisconnected");
 		}
 
@@ -73,7 +72,7 @@ public class AppServiceConnection {
 
 	public void unbindAppService() {
 
-		Log.v(Constants.TAG, "AppServiceConnection: unbindAppService");
+		AppLog.d(context, "AppServiceConnection: unbindAppService");
 
 		// detach our existing connection
 		context.unbindService(serviceConnection);

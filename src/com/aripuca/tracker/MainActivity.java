@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 	private long declinationLastUpdate = 0;
 
 	private long compassLastUpdate = 0;
-	
+
 	/**
 	 * location received from AppService
 	 */
@@ -382,6 +382,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * 
+	 */
 	private Runnable appServiceConnectionCallback = new Runnable() {
 		@Override
 		public void run() {
@@ -399,6 +402,7 @@ public class MainActivity extends Activity {
 
 			if (appService.getTrackRecorder().isRecording()) {
 
+				// 
 				replaceDynamicView(R.layout.main_tracking);
 
 				// change "Record" button text with "Stop"
@@ -416,26 +420,17 @@ public class MainActivity extends Activity {
 
 				setMainIdleLayoutListeners();
 
-				// start location updates after service bound if not recording
-				// track
+				// start location updates after service bound if not recording track
 				appService.startLocationUpdates();
 
 			}
 
 			appService.startSensorUpdates();
 
-			Location location = appService.getCurrentLocation();
+			currentLocation = appService.getCurrentLocation();
 
-			// new location was received by the service when activity was paused
-			if (location != null) {
-
-				currentLocation = location;
-
-				updateActivity();
-
-				updateSunriseSunset();
-			}
-
+			updateActivity();
+			updateSunriseSunset();
 		}
 	};
 
@@ -461,13 +456,11 @@ public class MainActivity extends Activity {
 
 		// restoring previous application state
 		// it should be done between setContentView & replaceDynamicView calls
-		if (savedInstanceState != null) {
-			restoreInstanceState(savedInstanceState);
-		}
-
-		this.disableControlButtons();
+		restoreInstanceState(savedInstanceState);
 
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
+
+		this.disableControlButtons();
 
 		// start GPS service only if not started
 		startAppService();
@@ -601,6 +594,9 @@ public class MainActivity extends Activity {
 	 */
 	private void restoreInstanceState(Bundle savedInstanceState) {
 
+		if (savedInstanceState == null) {
+			return;
+		}
 		// Log.i(Constants.TAG, "MainActivity: restoreInstanceState");
 
 		// initializing carousel objects
@@ -1475,6 +1471,10 @@ public class MainActivity extends Activity {
 	 */
 	private void updateSunriseSunset() {
 
+		if (currentLocation == null) {
+			return;
+		}
+
 		Calendar calendar = Calendar.getInstance();
 		TimeZone timeZone = TimeZone.getTimeZone(calendar.getTimeZone().getID());
 
@@ -1617,7 +1617,7 @@ public class MainActivity extends Activity {
 
 			if (app.getExternalStorageWriteable()) {
 
-				String currentDBPath = Constants.PATH_DB + Constants.APP_NAME + ".db";
+				String currentDBPath = app.getDataDir() + "/" + Constants.APP_NAME + ".db";
 
 				String dateStr = (String) DateFormat.format("yyyyMMdd_kkmmss", new Date());
 
@@ -1747,7 +1747,7 @@ public class MainActivity extends Activity {
 					String restoreDBPath = app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
-					File currentDB = new File(data, Constants.PATH_DB + Constants.APP_NAME + ".db");
+					File currentDB = new File(data, app.getDataDir() + "/" + Constants.APP_NAME + ".db");
 
 					FileInputStream fis = new FileInputStream(restoreDB);
 					FileOutputStream fos = new FileOutputStream(currentDB);

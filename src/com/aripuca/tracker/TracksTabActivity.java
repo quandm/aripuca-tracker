@@ -3,7 +3,6 @@ package com.aripuca.tracker;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.TabHost;
 

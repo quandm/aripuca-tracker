@@ -8,15 +8,16 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.MapUtils;
 import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.BubbleSurfaceView;
@@ -80,7 +81,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 			if (!serviceConnection.getService().getTrackRecorder().isRecording()) {
 				serviceConnection.getService().stopLocationUpdates();
 			}
-			
+
 		}
 	};
 
@@ -164,12 +165,15 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		@Override
 		public void run() {
 
-			Log.d(Constants.TAG, "AppServiceConnection");
-			
+			if (serviceConnection == null) {
+				return;
+			}
+
 			AppService appService = serviceConnection.getService();
 
 			if (appService == null) {
-				Log.e(Constants.TAG, "AppService not available");
+				Toast.makeText(CompassActivity.this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
+				AppLog.e(CompassActivity.this, "appServiceConnectionCallback: AppService not available");
 				return;
 			}
 
@@ -189,7 +193,6 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 			// let's not wait for LocationListener to receive updates and get last known location 
 			currentLocation = appService.getCurrentLocation();
-			
 		}
 	};
 
@@ -371,7 +374,9 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	protected float getAzimuth(float az) {
 
-		if (az > 360) { return az - 360; }
+		if (az > 360) {
+			return az - 360;
+		}
 
 		return az;
 
