@@ -32,6 +32,8 @@ public class App extends Application {
 	 * application directory
 	 */
 	private String appDir;
+	
+	private String dataDir;
 
 	/**
 	 * is external storage writable
@@ -47,8 +49,6 @@ public class App extends Application {
 	 * database object
 	 */
 	private SQLiteDatabase db;
-
-//	private Location currentLocation;
 
 	public SQLiteDatabase getDatabase() {
 		return db;
@@ -81,21 +81,10 @@ public class App extends Application {
 		return appDir;
 	}
 
-	/**
-	 * @return the currentLocation
-	 */
-//	public Location getCurrentLocation() {
-//		return currentLocation;
-//	}
-
-	/**
-	 * @param currentLocation
-	 *            the currentLocation to set
-	 */
-//	public void setCurrentLocation(Location currentLocation) {
-//		this.currentLocation = currentLocation;
-//	}
-
+	public String getDataDir() {
+		return dataDir;
+	}
+	
 	/**
 	 * application database create/open helper class
 	 */
@@ -169,6 +158,8 @@ public class App extends Application {
 		// set application external storage folder
 		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
 
+		dataDir = Environment.getDataDirectory().getAbsolutePath() + "/com.aripuca.tracker/databases";
+		
 		// create all folders required by the application on external storage
 		if (getExternalStorageAvailable() && getExternalStorageWriteable()) {
 			createFolderStructure();

@@ -14,7 +14,6 @@
             style="@style/Cell.Label"
             android:text="@string/pace" >
         </TextView>
-        
     </LinearLayout>
 
     <LinearLayout style="@style/FillWidth.Hor" >
@@ -78,13 +77,13 @@
 
         <LinearLayout
             android:id="@+id/compassLayout"
-            android:baselineAligned="false"
             style="@style/Cell.Column"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent"
+            android:baselineAligned="false" >
 
             <LinearLayout
-				android:layout_height="fill_parent"
                 android:layout_width="0dp"
+                android:layout_height="fill_parent"
                 android:layout_weight="2"
                 android:gravity="center" >
 
@@ -97,8 +96,8 @@
             </LinearLayout>
 
             <LinearLayout
-				android:layout_height="fill_parent"
                 android:layout_width="0dp"
+                android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:gravity="center" >
 
@@ -234,8 +233,7 @@
         <TextView
             android:id="@+id/fixAge"
             style="@style/WrapContent.Text.Text13"
-            android:text="@string/default_text"
-             >
+            android:text="@string/default_text" >
         </TextView>
     </LinearLayout>
 

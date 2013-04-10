@@ -1,17 +1,18 @@
 package com.aripuca.tracker;
 
 public abstract class Constants {
-
+	
 	public static final String TAG = "AripucaTracker";
 
 	public static final String APP_NAME = "AripucaTracker";
-	public static final String PATH_DB = "/data/com.aripuca.tracker/databases/";
 
 	public static final String PATH_WAYPOINTS = "waypoints";
 	public static final String PATH_BACKUP = "backup";
 	public static final String PATH_TRACKS = "tracks";
 	public static final String PATH_LOGS = "logs";
 	public static final String PATH_DEBUG = "debug";
+	
+	
 
 	public static final int NOTIFICATION_TRACK_RECORDING = 1;
 	public static final int NOTIFICATION_SCHEDULED_TRACK_RECORDING = 2;

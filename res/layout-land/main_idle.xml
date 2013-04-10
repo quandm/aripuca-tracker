@@ -79,6 +79,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/compassLayout"
             style="@style/Cell.Column"
             android:layout_height="fill_parent"
             android:baselineAligned="false" >

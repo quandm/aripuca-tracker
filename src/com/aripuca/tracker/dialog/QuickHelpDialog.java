@@ -45,7 +45,7 @@ public class QuickHelpDialog extends Dialog {
 		LayoutParams params = getWindow().getAttributes();
 
 		// params.height = LayoutParams.FILL_PARENT;
-		params.width = android.view.ViewGroup.LayoutParams.FILL_PARENT;
+//		params.width = android.view.ViewGroup.LayoutParams.FILL_PARENT;
 
 		getWindow().setAttributes(params);
 

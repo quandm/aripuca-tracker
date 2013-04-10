@@ -581,6 +581,10 @@ public class MyMapActivity extends MapActivity {
 		@Override
 		public void run() {
 
+			if (serviceConnection == null) {
+				return;
+			}
+			
 			AppService appService = serviceConnection.getService();
 
 			if (appService == null) {
