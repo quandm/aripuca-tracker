@@ -55,6 +55,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -698,36 +699,7 @@ public class WaypointsListActivity extends ListActivity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
-
-				// waypoint title from input dialog
-
-				if (wpTitle.getText().toString().trim().equals("")) {
-					Toast.makeText(WaypointsListActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT)
-							.show();
-					return;
-				}
-
-				wp.setTitle(wpTitle.getText().toString().trim());
-				wp.setDescr(wpDescr.getText().toString().trim());
-				wp.setLat(Double.parseDouble(wpLat.getText().toString()));
-				wp.setLng(Double.parseDouble(wpLng.getText().toString()));
-
-				try {
-
-					// update waypoint data in db
-					Waypoints.update(app.getDatabase(), wp);
-
-					Toast.makeText(WaypointsListActivity.this, R.string.waypoint_updated, Toast.LENGTH_SHORT).show();
-
-					// cursor.requery();
-					updateWaypointsArray();
-					waypointsArrayAdapter.setItems(waypoints);
-					waypointsArrayAdapter.notifyDataSetChanged();
-
-				} catch (SQLiteException e) {
-					AppLog.e(WaypointsListActivity.this, "SQLiteException: " + e.getMessage());
-				}
-
+				// processing is done in DialogInterface.OnShowListener
 			}
 		});
 
@@ -738,8 +710,56 @@ public class WaypointsListActivity extends ListActivity {
 			}
 		});
 
-		AlertDialog dialog = builder.create();
+		final AlertDialog dialog = builder.create();
 
+		// override setOnShowListener in order to validate dialog without closing it
+		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+		    @Override
+		    public void onShow(DialogInterface dialogInterface) {
+
+		        Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+		        b.setOnClickListener(new View.OnClickListener() {
+
+		            @Override
+		            public void onClick(View view) {
+
+		            	// waypoint title from input dialog
+
+						if (wpTitle.getText().toString().trim().equals("")) {
+							Toast.makeText(WaypointsListActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT)
+									.show();
+							return;
+						}
+
+						wp.setTitle(wpTitle.getText().toString().trim());
+						wp.setDescr(wpDescr.getText().toString().trim());
+						wp.setLat(Double.parseDouble(wpLat.getText().toString()));
+						wp.setLng(Double.parseDouble(wpLng.getText().toString()));
+
+						try {
+
+							// update waypoint data in db
+							Waypoints.update(app.getDatabase(), wp);
+
+							Toast.makeText(WaypointsListActivity.this, R.string.waypoint_updated, Toast.LENGTH_SHORT).show();
+
+							// cursor.requery();
+							updateWaypointsArray();
+							waypointsArrayAdapter.setItems(waypoints);
+							waypointsArrayAdapter.notifyDataSetChanged();
+
+						} catch (SQLiteException e) {
+							AppLog.e(WaypointsListActivity.this, "SQLiteException: " + e.getMessage());
+						}
+
+						dialog.dismiss();
+
+		            }
+		        });
+		    }
+		});		
+		
 		dialog.show();
 
 	}

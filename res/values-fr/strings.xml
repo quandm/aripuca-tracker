@@ -12,7 +12,6 @@
     <string name="default_pace">00:00</string>
     <string name="default_azimuth">0°N</string>
     <string name="default_text">xxx</string>
-    <string name="zero">0</string>
     <!-- NOT TRANSLATABLE END -->
     <string name="build_date">Build date</string>
     <string name="about_dialog_message">Open source GPS tracking app for Android.\n\nOfficial blog:\nhttp://tracker.aripuca.com/blog\n\nSource code:\nhttp://code.google.com/p/aripuca-tracker</string>
@@ -52,7 +51,6 @@
     <string name="moving">Moving</string>
     <string name="total">Total</string>
     <string name="idle">Idle</string>
-    <string name="current">Current</string>
     <string name="azimuth">Azimuth</string>
     <string name="distance">Distance</string>
     <string name="coordinates">Coordinates</string>
@@ -101,7 +99,6 @@
     <string name="app_settings_title">Application settings</string>
     <string name="user_interface">User interface</string>
     <string name="user_interface_summary">Screen mode and other settings</string>
-    <string name="app_language">Application language</string>
     <string name="wake_lock_title">Stay awake</string>
     <string name="wake_lock_summary">Prevents phone from sleeping</string>
     <string name="quick_help_title">Quick help</string>
@@ -198,7 +195,6 @@
     <string name="scheduled_recording_started">Scheduled recording started</string>
     <string name="scheduled_recording_stopped">Scheduled recording stopped</string>
     <!-- BACKUP & RESTORE -->
-    <string name="backup">Backup</string>
     <string name="backup_db">Backup DB</string>
     <string name="restore_db">Restore DB</string>
     <string name="backup_completed">Application database copied to:</string>
@@ -256,4 +252,5 @@
     <string name="start_scheduler">Start Scheduler</string>
     <string name="logging_level">Logging level</string>
     <string name="logging_level_summary">Log errors, warnings, info and debug messages</string>
+    <string name="current">Current</string>
 </resources>
