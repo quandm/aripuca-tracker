@@ -2,6 +2,7 @@ package com.aripuca.tracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 
 import com.aripuca.tracker.db.Tracks;
 
@@ -59,4 +60,10 @@ public class ScheduledTracksListActivity extends AbstractTracksListActivity {
 
 	}
 
+	protected void addTrackDetailsMenu(Menu menu) {
+		
+		menu.add(Menu.NONE, 1, 1, R.string.show_track_points);
+		
+	}
+	
 }

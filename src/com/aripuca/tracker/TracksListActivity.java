@@ -1,5 +1,7 @@
 package com.aripuca.tracker;
 
+import android.view.Menu;
+
 import com.aripuca.tracker.db.Tracks;
 
 /**
@@ -10,7 +12,7 @@ public class TracksListActivity extends AbstractTracksListActivity {
 	// instance initialization block
 	{
 		this.listItemResourceId = R.layout.track_list_item;
-		this.mapMode = Constants.SHOW_SCHEDULED_TRACK;
+		this.mapMode = Constants.SHOW_TRACK;
 	}
 
 	@Override
@@ -30,5 +32,12 @@ public class TracksListActivity extends AbstractTracksListActivity {
 		}
 
 	}
+	
+	protected void addTrackDetailsMenu(Menu menu) {
+		
+		menu.add(Menu.NONE, 1, 1, R.string.show_track_details);
+		
+	}
+	
 
 }
