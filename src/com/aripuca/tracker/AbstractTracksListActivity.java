@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +26,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -33,12 +35,14 @@ import android.widget.Toast;
 
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
+import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
 //TODO: compare 2 tracks on the map, select track to compare
@@ -46,7 +50,7 @@ import com.aripuca.tracker.utils.Utils;
 /**
  * Tracks list activity
  */
-public class AbstractTracksListActivity extends ListActivity {
+public abstract class AbstractTracksListActivity extends ListActivity {
 
 	/**
 	 * Reference to app object
@@ -75,13 +79,20 @@ public class AbstractTracksListActivity extends ListActivity {
 	 * 
 	 */
 	protected ProgressDialog progressDialog;
-	
+
 	protected int mapMode;
 
 	/**
-	 * Overridden in child classes
+	 * Delete all tracks from database
 	 */
-	protected void deleteAllTracks() {}
+	protected abstract void deleteAllTracks();
+	
+	/**
+	 * Add track details menu based on track type
+	 *  
+	 * @param menu
+	 */
+	protected abstract void addTrackDetailsMenu(Menu menu);
 
 	/**
 	 * View track details
@@ -144,7 +155,9 @@ public class AbstractTracksListActivity extends ListActivity {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 
-			if (cursor.getCount() == 0) { return; }
+			if (cursor.getCount() == 0) {
+				return;
+			}
 
 			String distanceUnit = app.getPreferences().getString("distance_units", "km");
 
@@ -198,7 +211,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		this.app = (App) this.getApplication();
-		
+
 		this.registerForContextMenu(this.getListView());
 
 		this.setQuery();
@@ -272,7 +285,9 @@ public class AbstractTracksListActivity extends ListActivity {
 			case R.id.deleteTracksMenuItem:
 
 				// check if track recording is in progress
-				if (isRecordingTrack()) { return true; }
+				if (isRecordingTrack()) {
+					return true;
+				}
 
 				// delete all tracks with confirmation dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -361,7 +376,9 @@ public class AbstractTracksListActivity extends ListActivity {
 		// (AdapterView.AdapterContextMenuInfo) menuInfo;
 
 		menu.setHeaderTitle(getString(R.string.track));
-		menu.add(Menu.NONE, 1, 1, R.string.show_track_details);
+		
+		this.addTrackDetailsMenu(menu);
+		
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
@@ -400,7 +417,7 @@ public class AbstractTracksListActivity extends ListActivity {
 		// view track info
 			case 1:
 				this.viewTrackDetails(info.id);
-				break;
+			break;
 
 			// edit track info
 			case 2:
@@ -413,7 +430,7 @@ public class AbstractTracksListActivity extends ListActivity {
 
 				this.updateTrack(info.id);
 
-				break;
+			break;
 
 			// delete track
 			case 3:
@@ -426,38 +443,38 @@ public class AbstractTracksListActivity extends ListActivity {
 
 				this.deleteTrack(info.id);
 
-				break;
+			break;
 
 			// export to GPX
 			case 41:
 				this.exportTrackToGpx(info.id, false);
-				break;
+			break;
 
 			// export to KML
 			case 42:
 				this.exportTrackToKml(info.id, false);
-				break;
+			break;
 
 			// export to GPX and send as attachment
 			case 51:
 				this.exportTrackToGpx(info.id, true);
-				break;
+			break;
 
 			// export to KML and send as attachment
 			case 52:
 				this.exportTrackToKml(info.id, true);
-				break;
+			break;
 
 			// sync track online
 			case 5:
 
-				break;
+			break;
 
 			case 6:
 
 				this.showTrackOnMap(info.id);
 
-				break;
+			break;
 
 			default:
 				return super.onContextItemSelected(item);
@@ -469,10 +486,14 @@ public class AbstractTracksListActivity extends ListActivity {
 
 	protected boolean isRecordingTrack(long trackId) {
 
-		if (TrackRecorder.getInstance(app).isRecording() && TrackRecorder.getInstance(app).getTrackId() == trackId) { return true; }
+		if (TrackRecorder.getInstance(app).isRecording() && TrackRecorder.getInstance(app).getTrackId() == trackId) {
+			return true;
+		}
 
 		if (ScheduledTrackRecorder.getInstance(app).isRecording()
-				&& ScheduledTrackRecorder.getInstance(app).getTrack().getId() == trackId) { return true; }
+				&& ScheduledTrackRecorder.getInstance(app).getTrack().getId() == trackId) {
+			return true;
+		}
 
 		return false;
 
@@ -531,25 +552,6 @@ public class AbstractTracksListActivity extends ListActivity {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 
-				// track title from input dialog
-				String titleStr = trTitle.getText().toString().trim();
-				String descrStr = trDescr.getText().toString().trim();
-
-				if (titleStr.equals("")) {
-					Toast.makeText(AbstractTracksListActivity.this, R.string.track_title_required, Toast.LENGTH_SHORT)
-							.show();
-					return;
-				}
-
-				String sql = "UPDATE tracks SET " + "title = '" + titleStr + "', " + "descr = '" + descrStr + "' "
-						+ "WHERE _id='" + trackId + "';";
-
-				app.getDatabase().execSQL(sql);
-
-				cursor.requery();
-
-				Toast.makeText(AbstractTracksListActivity.this, R.string.track_updated, Toast.LENGTH_SHORT).show();
-
 			}
 		});
 
@@ -560,7 +562,48 @@ public class AbstractTracksListActivity extends ListActivity {
 			}
 		});
 
-		AlertDialog dialog = builder.create();
+		final AlertDialog dialog = builder.create();
+
+		// override setOnShowListener in order to validate dialog without closing it
+		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
+
+				Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				b.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View view) {
+
+						// track title from input dialog
+						String titleStr = trTitle.getText().toString().trim();
+						String descrStr = trDescr.getText().toString().trim();
+
+						if (titleStr.equals("")) {
+							Toast.makeText(AbstractTracksListActivity.this, R.string.track_title_required,
+									Toast.LENGTH_SHORT)
+									.show();
+							return;
+						}
+
+						String sql = "UPDATE tracks SET " + "title = '" + titleStr + "', " + "descr = '" + descrStr
+								+ "' "
+								+ "WHERE _id='" + trackId + "';";
+
+						app.getDatabase().execSQL(sql);
+
+						cursor.requery();
+
+						Toast.makeText(AbstractTracksListActivity.this, R.string.track_updated, Toast.LENGTH_SHORT)
+								.show();
+
+						dialog.dismiss();
+
+					}
+				});
+			}
+		});
 
 		dialog.show();
 
@@ -581,7 +624,7 @@ public class AbstractTracksListActivity extends ListActivity {
 					public void onClick(DialogInterface dialog, int which) {
 
 						Tracks.delete(app.getDatabase(), trackId);
-						
+
 						cursor.requery();
 
 						Toast.makeText(AbstractTracksListActivity.this, R.string.track_deleted, Toast.LENGTH_SHORT)
@@ -609,10 +652,10 @@ public class AbstractTracksListActivity extends ListActivity {
 		switch (this.getResources().getConfiguration().orientation) {
 			case Configuration.ORIENTATION_PORTRAIT:
 				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-				break;
+			break;
 			case Configuration.ORIENTATION_LANDSCAPE:
 				this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-				break;
+			break;
 		}
 
 	}

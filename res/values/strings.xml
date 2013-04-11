@@ -119,7 +119,8 @@
     <string name="tracks">Tracks</string>
     <string name="scheduled_tracks">Scheduled tracks</string>
     <string name="track_details_activity_title">Track details</string>
-    <string name="show_track_details">Show stat</string>
+    <string name="show_track_details">Show details</string>
+    <string name="show_track_points">Show points</string>
     <string name="show_track">Show track</string>
     <string name="track_chart">Track chart</string>
     <string name="record_track">Record track</string>
