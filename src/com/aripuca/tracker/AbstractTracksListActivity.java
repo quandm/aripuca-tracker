@@ -1,5 +1,7 @@
 package com.aripuca.tracker;
 
+import java.lang.ref.WeakReference;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -10,7 +12,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,16 +34,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
-import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
-import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
 //TODO: compare 2 tracks on the map, select track to compare
@@ -296,7 +296,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
 
-								deleteTracksInOtherThread(new UpdateAfterDeleteHandler());
+								deleteTracksInOtherThread(new UpdateAfterDeleteHandler(AbstractTracksListActivity.this));
 
 							}
 						}).setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -324,14 +324,26 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 	/**
 	 * Update UI after delete thread finished
 	 */
-	private class UpdateAfterDeleteHandler extends Handler {
+	private static class UpdateAfterDeleteHandler extends Handler {
 
+		
+		
+		private final WeakReference<AbstractTracksListActivity> weakReference;
+
+		UpdateAfterDeleteHandler(AbstractTracksListActivity ta) {
+			weakReference = new WeakReference<AbstractTracksListActivity>(ta);
+		}
+		
 		@Override
 		public void handleMessage(Message message) {
+		
+			// accessing outer class using WeakReference to avoid possible memory leaks
+			
+			AbstractTracksListActivity tracksListActivity = weakReference.get();			
+			
+			tracksListActivity.cursor.requery();
 
-			cursor.requery();
-
-			Toast.makeText(AbstractTracksListActivity.this, R.string.all_tracks_deleted, Toast.LENGTH_SHORT).show();
+			Toast.makeText(tracksListActivity, R.string.all_tracks_deleted, Toast.LENGTH_SHORT).show();
 		}
 	};
 
@@ -525,11 +537,8 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 		Context context = this;
 
 		final long trackId = id;
-
-		// update track in db
-		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
-		Cursor tmpCursor = app.getDatabase().rawQuery(sql, null);
-		tmpCursor.moveToFirst();
+		
+		final Track track = Tracks.get(app.getDatabase(), trackId);
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.edit_track_dialog,
@@ -543,10 +552,10 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 		// creating reference to input field in order to use it in onClick
 		// handler
 		final EditText trTitle = (EditText) layout.findViewById(R.id.titleInputText);
-		trTitle.setText(tmpCursor.getString(tmpCursor.getColumnIndex("title")));
+		trTitle.setText(track.getTitle());
 
 		final EditText trDescr = (EditText) layout.findViewById(R.id.descriptionInputText);
-		trDescr.setText(tmpCursor.getString(tmpCursor.getColumnIndex("descr")));
+		trDescr.setText(track.getDescr());
 
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
@@ -576,22 +585,19 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 					@Override
 					public void onClick(View view) {
 
-						// track title from input dialog
 						String titleStr = trTitle.getText().toString().trim();
 						String descrStr = trDescr.getText().toString().trim();
 
+						// validate title
 						if (titleStr.equals("")) {
 							Toast.makeText(AbstractTracksListActivity.this, R.string.track_title_required,
 									Toast.LENGTH_SHORT)
 									.show();
 							return;
 						}
-
-						String sql = "UPDATE tracks SET " + "title = '" + titleStr + "', " + "descr = '" + descrStr
-								+ "' "
-								+ "WHERE _id='" + trackId + "';";
-
-						app.getDatabase().execSQL(sql);
+						
+						// update track details in db
+						Tracks.update(app.getDatabase(), trackId, titleStr, descrStr);
 
 						cursor.requery();
 

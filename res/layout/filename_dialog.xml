@@ -1,14 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:padding="3dp"
-	android:id="@+id/filename_dialog_layout_root">
+    android:id="@+id/filename_dialog_layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="3dp" >
 
-	<TextView android:text="@string/file" android:layout_width="fill_parent"
-		android:layout_height="wrap_content"></TextView>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/file" >
+    </TextView>
 
-	<EditText android:id="@+id/filenameInputText"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:maxLines="1" android:maxLength="50" android:hint="enter file name" />
+    <EditText
+        android:id="@+id/filenameInputText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/filename"
+        android:maxLength="50"
+        android:maxLines="1" />
 
 </LinearLayout>
-

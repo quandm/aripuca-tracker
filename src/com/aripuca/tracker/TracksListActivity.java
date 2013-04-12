@@ -24,6 +24,7 @@ public class TracksListActivity extends AbstractTracksListActivity {
 	protected void setQuery() {
 
 		if (app.getPreferences().getBoolean("debug_on", false)) {
+			// in debug mode show all track including being recorded ones
 			sqlSelectAllTracks = "SELECT * FROM tracks WHERE (activity=" + Constants.ACTIVITY_TRACK
 					+ " OR activity IS NULL)";
 		} else {

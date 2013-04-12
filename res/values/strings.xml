@@ -196,6 +196,8 @@
     <string name="waypoint_deleted">Waypoint deleted</string>
     <string name="all_waypoints_deleted">All waypoints deleted</string>
     <string name="waypoint_description">Waypoint description</string>
+    <string name="waypoint_title">Waypoint title</string>
+    <string name="incorrect_coordinates">Incorrect coordinates</string>
     <!-- Scheduled track recording -->
     <string name="track_recording_in_progress">Track recording in progress</string>
     <string name="scheduled_track_recording_in_progress">Scheduled track recording in progress</string>

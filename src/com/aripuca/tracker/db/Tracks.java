@@ -1,6 +1,7 @@
 package com.aripuca.tracker.db;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.aripuca.tracker.Constants;
@@ -143,4 +144,38 @@ public class Tracks {
 		db.update("tracks", values, "_id=?", new String[] { String.valueOf(track.getId()) });
 		
 	}
+	
+	public static void update(SQLiteDatabase db, long trackId, String title, String descr) {
+
+		ContentValues values = new ContentValues();
+
+		values.put("title", title);
+		values.put("descr", descr);
+		
+		int affectedRows = db.update("tracks", values, "_id=?", new String[] { String.valueOf(trackId) });
+		
+	}
+	
+	/**
+	 * Get track by id
+	 * 
+	 * @param db
+	 * @param waypointId
+	 * @return
+	 */
+	public static Track get(SQLiteDatabase db, long trackId) {
+
+		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE _id=" + trackId + ";";
+		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+
+		Track track = new Track(cursor);
+
+		cursor.close();
+
+		return track;
+
+	}
+	
+	
 }
