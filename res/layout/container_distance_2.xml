@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Vert.Center" >
+
+    <TextView
+        style="@style/WrapContent.Text.SmallHeader"
+        android:text="@string/distance" >
+    </TextView>
+
+    <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+        <TextView
+            android:id="@+id/distance"
+            style="@style/WrapContent.Text.Text13"
+            android:gravity="right" 
+            android:text="@string/zero"
+            >
+        </TextView>
+
+        <TextView
+            android:id="@+id/distanceUnit"
+            style="@style/WrapContent.Text.Text13"
+            android:gravity="left"
+            android:text="@string/km"
+             >
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

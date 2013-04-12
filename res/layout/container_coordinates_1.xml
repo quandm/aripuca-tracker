@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<!-- COORDINATES -->
+
+	<LinearLayout style="@style/FillWidth.Hor.Center">
+
+		<LinearLayout style="@style/Cell">
+
+			<TextView android:text="@string/lat" style="@style/WrapContent.Text.SmallHeader"></TextView>
+
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/lat" style="@style/WrapContent.Text.Text13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout style="@style/Cell">
+
+			<TextView android:text="@string/lng" style="@style/WrapContent.Text.SmallHeader"></TextView>
+
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/lng" style="@style/WrapContent.Text.Text13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout style="@style/FillWidth.Hor.Center">
+
+		<LinearLayout style="@style/Cell">
+
+			<TextView android:text="@string/last_fix" style="@style/WrapContent.Text.SmallHeader"></TextView>
+
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/lastFix" style="@style/WrapContent.Text.Text13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+
+		<LinearLayout style="@style/Cell">
+
+			<TextView android:text="@string/accuracy" style="@style/WrapContent.Text.SmallHeader"></TextView>
+
+			<LinearLayout style="@style/FillWidth.Hor.Center">
+				<TextView android:id="@+id/accuracy" style="@style/WrapContent.Text.Text13">
+				</TextView>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+
+
+</LinearLayout>
+

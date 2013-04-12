@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item android:id="@+id/showOnMap" 
+			android:title="@string/show_on_map"
+			android:icon="@drawable/ic_menu_mapmode" />
+
+	<item android:id="@+id/showTrackChart" 
+			android:title="@string/track_chart"
+			android:icon="@drawable/ic_menu_trackchart" />
+		
+</menu>

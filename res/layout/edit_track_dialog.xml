@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_track_dialog_layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="3dp" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/titleInputText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/title"
+        android:maxLength="50"
+        android:maxLines="1" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/description" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/descriptionInputText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:hint="@string/track_description"
+        android:lines="3"
+        android:maxLength="100" />
+
+</LinearLayout>

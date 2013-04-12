@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="coord_units_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="segmenting_modes_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="min_accuracy_values">
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+        <item>1000</item>
+    </string-array>
+    <string-array name="min_distance_values">
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="speed_units_values">
+        <item>kph</item>
+        <item>mph</item>
+        <item>kn</item>
+    </string-array>
+    <string-array name="distance_units_values">
+        <item>km</item>
+        <item>mi</item>
+    </string-array>
+    <string-array name="elevation_units_values">
+        <item>m</item>
+        <item>ft</item>
+    </string-array>
+
+    <!-- request location interval in waypoints track mode -->
+    <string-array name="wpt_request_interval_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>120</item>
+    </string-array>
+
+    <!-- GPS fix waiting time in waypoints track mode -->
+    <string-array name="wpt_fix_wait_time_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <!-- Stop recording after N hours or run indefinitely -->
+    <string-array name="wpt_stop_recording_after_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="wpt_min_distance_values">
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>4000</item>
+        <item>5000</item>
+        <item>10000</item>
+    </string-array>
+    <string-array name="logging_level_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+</resources>
