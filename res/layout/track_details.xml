@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillParent"
     android:background="@drawable/bg1repeat" >
 
     <ScrollView
         style="@style/FillParent"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="43dp"
         android:paddingTop="2dp"
         android:scrollbars="none" >
 
@@ -360,4 +361,4 @@
         </Button>
     </LinearLayout>
 
-</merge>
+</FrameLayout>
