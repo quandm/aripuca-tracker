@@ -584,7 +584,7 @@ public class MyMapActivity extends MapActivity {
 			if (serviceConnection == null) {
 				return;
 			}
-			
+
 			AppService appService = serviceConnection.getService();
 
 			if (appService == null) {
@@ -698,9 +698,15 @@ public class MyMapActivity extends MapActivity {
 		// "SELECT tracks.distance, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
 		// + trackId + " AND tracks._id = track_points.track_id";
 
-		String sql = "SELECT tracks.distance FROM tracks, track_points WHERE tracks._id=" + trackId;
+		String sql = "SELECT tracks.distance FROM tracks WHERE _id=" + trackId;
 
 		Cursor cursor = app.getDatabase().rawQuery(sql, null);
+
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			return 0f;
+		}
+
 		cursor.moveToFirst();
 
 		float distance = cursor.getInt(cursor.getColumnIndex("distance"));
@@ -754,11 +760,11 @@ public class MyMapActivity extends MapActivity {
 	 * @param progress
 	 */
 	private void updateInfoPanel(int progress) {
-		
-		if (points.size()==0) {
+
+		if (points.size() == 0) {
 			// no points recorded
 			Toast.makeText(MyMapActivity.this, R.string.no_points_recorded, Toast.LENGTH_SHORT)
-			.show();
+					.show();
 
 			return;
 		}
