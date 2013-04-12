@@ -19,14 +19,14 @@
 		<TextView android:id="@+id/waypoint_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" 
-			android:textSize="18dp"
+			android:textSize="18sp"
 			android:layout_marginBottom = "3dp"
 		/>
 
 		<TextView android:id="@+id/waypoint_details"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:textSize="11dp" 
+			android:textSize="12sp" 
 		/>
 			
 	</LinearLayout>
@@ -51,7 +51,7 @@
 			android:paddingTop="3dp"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:textSize="12dp" 
+			android:textSize="12sp" 
 			android:textStyle="normal" />
 			
 	</LinearLayout>

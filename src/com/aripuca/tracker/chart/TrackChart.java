@@ -60,7 +60,7 @@ public class TrackChart {
 
 		this.series = new ArrayList<Series>();
 	}
-
+	
 	protected void drawChart(Canvas canvas) {
 
 		Paint paint = new Paint();

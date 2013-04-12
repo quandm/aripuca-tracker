@@ -118,7 +118,7 @@ public class Waypoints {
 	}
 
 	/**
-	 * Get waypoint from by id
+	 * Get waypoint by id
 	 * 
 	 * @param db
 	 * @param waypointId

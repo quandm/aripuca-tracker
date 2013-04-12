@@ -94,7 +94,7 @@
                     android:id="@+id/azimuth"
                     style="@style/WrapContent.Value"
                     android:text="@string/default_azimuth"
-                    android:textSize="20dp" >
+                    android:textSize="20sp" >
                 </TextView>
             </LinearLayout>
 

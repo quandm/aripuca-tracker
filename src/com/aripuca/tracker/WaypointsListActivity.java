@@ -289,7 +289,7 @@ public class WaypointsListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 
 		app = (App) getApplication();
-		
+
 		serviceConnection = new AppServiceConnection(this, appServiceConnectionCallback);
 
 		registerForContextMenu(this.getListView());
@@ -312,7 +312,7 @@ public class WaypointsListActivity extends ListActivity {
 			if (serviceConnection == null) {
 				return;
 			}
-			
+
 			AppService appService = serviceConnection.getService();
 
 			if (appService == null) {
@@ -331,10 +331,10 @@ public class WaypointsListActivity extends ListActivity {
 			// this activity requires compass data
 			appService.startSensorUpdates();
 
-			// let's not wait for LocationListener to receive updates and get last known location 
+			// let's not wait for LocationListener to receive updates and get last known location
 			currentLocation = appService.getCurrentLocation();
-			
-			waypointsArrayAdapter.notifyDataSetChanged();			
+
+			waypointsArrayAdapter.notifyDataSetChanged();
 
 		}
 	};
@@ -695,11 +695,10 @@ public class WaypointsListActivity extends ListActivity {
 		final EditText wpLng = (EditText) layout.findViewById(R.id.waypointLngInputText);
 		wpLng.setText(Double.toString(wp.getLng()));
 
+		// this event will be overridden in OnShowListener for validation
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
-				// processing is done in DialogInterface.OnShowListener
 			}
 		});
 
@@ -715,34 +714,43 @@ public class WaypointsListActivity extends ListActivity {
 		// override setOnShowListener in order to validate dialog without closing it
 		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
-		    @Override
-		    public void onShow(DialogInterface dialogInterface) {
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
 
-		        Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-		        b.setOnClickListener(new View.OnClickListener() {
+				Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				b.setOnClickListener(new View.OnClickListener() {
 
-		            @Override
-		            public void onClick(View view) {
+					@Override
+					public void onClick(View view) {
 
-		            	// waypoint title from input dialog
+						// waypoint title from input dialog
 
 						if (wpTitle.getText().toString().trim().equals("")) {
-							Toast.makeText(WaypointsListActivity.this, R.string.waypoint_title_required, Toast.LENGTH_SHORT)
-									.show();
+							Toast.makeText(WaypointsListActivity.this, R.string.waypoint_title_required,
+									Toast.LENGTH_SHORT).show();
 							return;
 						}
 
 						wp.setTitle(wpTitle.getText().toString().trim());
 						wp.setDescr(wpDescr.getText().toString().trim());
-						wp.setLat(Double.parseDouble(wpLat.getText().toString()));
-						wp.setLng(Double.parseDouble(wpLng.getText().toString()));
+
+						// validate coordinates
+						try {
+							wp.setLat(Double.parseDouble(wpLat.getText().toString()));
+							wp.setLng(Double.parseDouble(wpLng.getText().toString()));
+						} catch (NumberFormatException e) {
+							Toast.makeText(WaypointsListActivity.this, R.string.incorrect_coordinates,
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
 
 						try {
 
 							// update waypoint data in db
 							Waypoints.update(app.getDatabase(), wp);
 
-							Toast.makeText(WaypointsListActivity.this, R.string.waypoint_updated, Toast.LENGTH_SHORT).show();
+							Toast.makeText(WaypointsListActivity.this, R.string.waypoint_updated, Toast.LENGTH_SHORT)
+									.show();
 
 							// cursor.requery();
 							updateWaypointsArray();
@@ -751,15 +759,16 @@ public class WaypointsListActivity extends ListActivity {
 
 						} catch (SQLiteException e) {
 							AppLog.e(WaypointsListActivity.this, "SQLiteException: " + e.getMessage());
+							return;
 						}
 
 						dialog.dismiss();
 
-		            }
-		        });
-		    }
-		});		
-		
+					}
+				});
+			}
+		});
+
 		dialog.show();
 
 	}
@@ -869,7 +878,7 @@ public class WaypointsListActivity extends ListActivity {
 							for (int i = 0; i < waypointsList.getLength(); i++) {
 
 								Waypoint wp = new Waypoint();
-								
+
 								wp.setLat(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lat")));
 								wp.setLng(Double.parseDouble(((Element) waypointsList.item(i)).getAttribute("lon")));
 
@@ -1006,7 +1015,8 @@ public class WaypointsListActivity extends ListActivity {
 		builder.setTitle(R.string.export_waypoints);
 		builder.setView(layout);
 
-//		final String defaultFilename = "wp_" + (new SimpleDateFormat("yyyy-MM-dd", Locale.US)).format((new Date()).getTime());
+		// final String defaultFilename = "wp_" + (new SimpleDateFormat("yyyy-MM-dd", Locale.US)).format((new
+		// Date()).getTime());
 		final String defaultFilename = "wp_" + (DateFormat.format("yyyy-MM-dd", (new Date()).getTime()));
 
 		// creating references to input fields in order to use them in
