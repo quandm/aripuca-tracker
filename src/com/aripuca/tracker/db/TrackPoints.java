@@ -79,7 +79,10 @@ public class TrackPoints {
 	public static long insert(SQLiteDatabase db, TrackPoint trackPoint) {
 
 		ContentValues values = new ContentValues();
+		
 		values.put("track_id", trackPoint.getTrackId());
+		values.put("segment_index", trackPoint.getSegmentIndex());
+		
 		values.put("lat", trackPoint.getLatE6());
 		values.put("lng", trackPoint.getLngE6());
 		values.put("elevation", Utils.formatNumber(trackPoint.getElevation(), 1));

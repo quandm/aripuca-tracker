@@ -498,7 +498,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 
 	protected boolean isRecordingTrack(long trackId) {
 
-		if (TrackRecorder.getInstance(app).isRecording() && TrackRecorder.getInstance(app).getTrackId() == trackId) {
+		if (TrackRecorder.getInstance(app).isRecording() && TrackRecorder.getInstance(app).getTrackStats().getTrack().getId() == trackId) {
 			return true;
 		}
 

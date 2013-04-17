@@ -12,7 +12,7 @@ import com.aripuca.tracker.utils.Population;
 
 //TODO : refactoring required
 
-public abstract class AbstractTrack {
+public abstract class AbstractTrackStats {
 
 	/**
 	 * Reference to application object for accessing db etc.
@@ -36,9 +36,9 @@ public abstract class AbstractTrack {
 
 	protected double maxElevation = Double.NEGATIVE_INFINITY;
 
-	protected double elevationGain = 0;
+	protected float elevationGain = 0;
 
-	protected double elevationLoss = 0;
+	protected float elevationLoss = 0;
 
 	protected Population speedPopulation;
 
@@ -55,7 +55,7 @@ public abstract class AbstractTrack {
 
 	// --------------------------------------------------------------------------------------------------------
 
-	public AbstractTrack(Context context) {
+	public AbstractTrackStats(Context context) {
 
 		this.context = context;
 
@@ -106,14 +106,14 @@ public abstract class AbstractTrack {
 	/**
 	 * @return Elevation gain during track recording
 	 */
-	public double getElevationGain() {
+	public float getElevationGain() {
 		return this.elevationGain;
 	}
 
 	/**
 	 * @return Elevation loss during track recording
 	 */
-	public double getElevationLoss() {
+	public float getElevationLoss() {
 		return this.elevationLoss;
 	}
 

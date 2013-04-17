@@ -8,6 +8,10 @@ public class Segment extends AbstractTrack {
 
 	private int segmentIndex = 0;
 	
+	/**
+	 * Create track segment from database
+	 * @param cursor
+	 */
 	public Segment(Cursor cursor) {
 		
 		super(cursor);
@@ -18,6 +22,18 @@ public class Segment extends AbstractTrack {
 		
 	}
 
+	/**
+	 * Create empty track segment 
+	 */
+	public Segment(long trackId, int segmentIndex) {
+
+		super();
+
+		this.trackId = trackId;
+
+		this.segmentIndex = segmentIndex;
+		
+	}
 
 	public long getTrackId() {
 		return trackId;

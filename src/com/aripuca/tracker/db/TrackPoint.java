@@ -16,21 +16,21 @@ public class TrackPoint {
 	
 	private long trackId;
 	
-	private int segmentIndex;
+	private int segmentIndex = 0;
 	
-	private float distance;
+	private float distance = 0;
 	
-	private double lat;
+	private double lat = 0;
 	
-	private double lng;
+	private double lng = 0;
 	
-	private float accuracy;
+	private float accuracy = 0;
 
-	private double elevation;
+	private double elevation = 0;
 
-	private float speed;
+	private float speed = 0;
 	
-	private long time;
+	private long time = 0;
 	
 
 	public TrackPoint(Cursor cursor) {
@@ -65,7 +65,7 @@ public class TrackPoint {
 
 	}
 
-	public TrackPoint(long trackId, Location location, float distance) {
+	public TrackPoint(long trackId, Location location) {
 
 		this.trackId = trackId;
 		
@@ -78,8 +78,6 @@ public class TrackPoint {
 		this.speed = location.getSpeed();
 		
 		this.time = (new Date()).getTime();
-		
-		this.distance = distance;
 		
 		this.accuracy = location.getAccuracy();
 		
