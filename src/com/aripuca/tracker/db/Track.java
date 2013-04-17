@@ -13,6 +13,7 @@ public class Track extends AbstractTrack {
 	private int recording;
 	
 	public Track(Cursor cursor) {
+		
 		super(cursor);
 
 		this.title = cursor.getString(cursor.getColumnIndex("title"));

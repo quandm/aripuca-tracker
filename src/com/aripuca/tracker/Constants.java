@@ -78,6 +78,8 @@ public abstract class Constants {
 	public static final int ACTIVITY_TRACK = 0;
 	public static final int ACTIVITY_SCHEDULED_TRACK = 1;
 	
+	public static final int TRACK_RECORDING_STOPPED = 0;
+	public static final int TRACK_RECORDING_IN_PROGRESS = 1;
 	
 	
 

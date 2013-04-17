@@ -55,7 +55,7 @@ import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
 import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
-import com.aripuca.tracker.track.Track;
+import com.aripuca.tracker.track.TrackStats;
 import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.ContainerCarousel;
 import com.aripuca.tracker.utils.MapUtils;
@@ -1110,9 +1110,10 @@ public class MainActivity extends Activity {
 						wp.setTime(currentLocation.getTime());
 
 						AppService appService = serviceConnection.getService();
-						// if track recording started assign track_id
+
+						// if track recording started assign track_id to waypoint
 						if (appService != null && appService.getTrackRecorder().isRecording()) {
-							wp.setTrack_id(appService.getTrackRecorder().getTrack().getTrackId());
+							wp.setTrack_id(appService.getTrackRecorder().getTrackStats().getTrack().getId());
 						}
 
 						try {
@@ -1419,7 +1420,7 @@ public class MainActivity extends Activity {
 			return;
 		}
 
-		Track track = appService.getTrackRecorder().getTrack();
+		TrackStats track = appService.getTrackRecorder().getTrackStats();
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
@@ -1602,12 +1603,12 @@ public class MainActivity extends Activity {
 
 			if (findViewById(R.id.totalTime) != null) {
 				((TextView) findViewById(R.id.totalTime)).setText(Utils.formatInterval(appService.getTrackRecorder()
-						.getTrack().getTotalTime(), false));
+						.getTrackStats().getTotalTime(), false));
 			}
 
 			if (findViewById(R.id.movingTime) != null) {
 				((TextView) findViewById(R.id.movingTime)).setText(Utils.formatInterval(appService.getTrackRecorder()
-						.getTrack().getMovingTime(), false));
+						.getTrackStats().getMovingTime(), false));
 			}
 
 		}

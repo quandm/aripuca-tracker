@@ -186,7 +186,8 @@ public class ScheduledTrackRecorder {
 		// accumulate total track distance
 		this.track.setDistance(this.track.getDistance() + distance);
 
-		TrackPoint trackPoint = new TrackPoint(this.track.getId(), location, distance);
+		TrackPoint trackPoint = new TrackPoint(this.track.getId(), location);
+		trackPoint.setDistance(distance);
 
 		try {
 			TrackPoints.insert(app.getDatabase(), trackPoint);

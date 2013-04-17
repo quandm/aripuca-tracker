@@ -27,25 +27,18 @@ public class TrackRecorder {
 	protected Location lastRecordedLocation;
 
 	/**
-	 * track being recorded
+	 * track statistics object
 	 */
-	private Track track;
-
-	public Track getTrack() {
-		return track;
-	}
-
-	public long getTrackId() {
-
-		if (track != null) { return track.getTrackId(); }
-
-		return 0;
-	}
+	private TrackStats trackStats;
 
 	/**
 	 * Segment statistics object
 	 */
-	private Segment segment;
+	private SegmentStats segment;
+	
+	public TrackStats getTrackStats() {
+		return trackStats;
+	}
 
 	/**
 	 * recording paused flag
@@ -137,7 +130,7 @@ public class TrackRecorder {
 		minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
 
 		// create new track statistics object
-		this.track = new Track(app);
+		this.trackStats = new TrackStats(app);
 
 		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
 
@@ -146,7 +139,7 @@ public class TrackRecorder {
 		// we won't insert segment data to db
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
-			this.segment = new Segment(app);
+			this.segment = new SegmentStats(app);
 
 			switch (this.segmentingMode) {
 
@@ -183,14 +176,14 @@ public class TrackRecorder {
 			// insert segment in db only if there were more then one segments in
 			// this track
 			if (this.segmentIndex > 0) {
-				this.segment.insertSegment(this.getTrack().getTrackId(), this.segmentIndex);
+				this.segment.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 				this.segment = null;
 			}
 		}
 
 		// updating track statistics in db
-		this.track.finishNewTrack();
-		this.track = null;
+		this.trackStats.finishNewTrack();
+		this.trackStats = null;
 
 	}
 
@@ -222,13 +215,13 @@ public class TrackRecorder {
 	 */
 	private void addNewSegment() {
 
-		this.segment.insertSegment(this.getTrack().getTrackId(), this.segmentIndex);
+		this.segment.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 
 		this.segment = null;
 
 		this.segmentIndex++;
 
-		this.segment = new Segment(app);
+		this.segment = new SegmentStats(app);
 
 	}
 
@@ -236,7 +229,7 @@ public class TrackRecorder {
 	 * Track is being recorded if track statistics object exists
 	 */
 	public boolean isRecording() {
-		return this.track != null;
+		return this.trackStats != null;
 	}
 
 	public boolean isRecordingPaused() {
@@ -276,7 +269,7 @@ public class TrackRecorder {
 			}
 
 			// accumulate track distance
-			this.track.updateDistance(distanceIncrement);
+			this.trackStats.updateDistance(distanceIncrement);
 
 			// accumulate segment distance
 			if (this.segmentingMode != Constants.SEGMENT_NONE) {
@@ -290,13 +283,13 @@ public class TrackRecorder {
 		}
 
 		// calculate maxSpeed and acceleration
-		boolean speedValid = this.track.isSpeedValid(this.lastLocation, location);
+		boolean speedValid = this.trackStats.isSpeedValid(this.lastLocation, location);
 
 		if (speedValid) {
-			this.track.processSpeed(location.getSpeed());
+			this.trackStats.processSpeed(location.getSpeed());
 		}
 
-		this.track.processElevation(location);
+		this.trackStats.processElevation(location);
 
 		this.processSegments(location, speedValid);
 
@@ -307,7 +300,7 @@ public class TrackRecorder {
 		// update new track to avoid losing total statistics in case of
 		// application failure
 		if (this.pointsCount % 10 == 0) {
-			this.track.updateNewTrack();
+			this.trackStats.updateNewTrack();
 		}
 
 		// update new last location
@@ -360,7 +353,7 @@ public class TrackRecorder {
 		// all times measured got synchronized with currentSystemTime
 		this.currentSystemTime = SystemClock.uptimeMillis();
 
-		this.track.setCurrentSystemTime(this.currentSystemTime);
+		this.trackStats.setCurrentSystemTime(this.currentSystemTime);
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 			this.segment.setCurrentSystemTime(this.currentSystemTime);
@@ -368,7 +361,7 @@ public class TrackRecorder {
 
 		if (this.startTime == 0) {
 			this.startTime = this.currentSystemTime;
-			this.track.setStartTime(this.currentSystemTime);
+			this.trackStats.setStartTime(this.currentSystemTime);
 		}
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
@@ -406,7 +399,7 @@ public class TrackRecorder {
 			// if idle interval started increment total idle time
 			if (this.idleTimeStart != 0) {
 
-				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
 					this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
@@ -421,7 +414,7 @@ public class TrackRecorder {
 			// increment total idle time with already started interval
 			if (this.idleTimeStart != 0) {
 
-				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
 					this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
@@ -445,7 +438,7 @@ public class TrackRecorder {
 			// if idle interval started increment total idle time
 			if (this.idleTimeStart != 0) {
 
-				this.track.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
 					this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
@@ -456,7 +449,7 @@ public class TrackRecorder {
 
 			if (this.pauseTimeStart != 0) {
 
-				this.track.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
+				this.trackStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
 					this.segment.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
@@ -470,7 +463,7 @@ public class TrackRecorder {
 
 			if (this.pauseTimeStart != 0) {
 
-				this.track.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
+				this.trackStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
 					this.segment.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
@@ -495,7 +488,7 @@ public class TrackRecorder {
 		// if new segment just started we may not add new points for it
 		if (this.lastRecordedLocation == null) {
 
-			this.track.recordTrackPoint(location, this.segmentIndex);
+			this.trackStats.recordTrackPoint(location, this.segmentIndex);
 			this.lastRecordedLocation = location;
 
 			pointsCount++;
@@ -504,7 +497,7 @@ public class TrackRecorder {
 
 			if (this.lastRecordedLocation.distanceTo(location) >= minDistance) {
 
-				this.track.recordTrackPoint(location, this.segmentIndex);
+				this.trackStats.recordTrackPoint(location, this.segmentIndex);
 				this.lastRecordedLocation = location;
 
 				pointsCount++;
@@ -548,7 +541,7 @@ public class TrackRecorder {
 	 */
 	public void segmentTrack() {
 
-		if (this.track.getDistance() / this.getNextSegment() > 1) {
+		if (this.trackStats.getDistance() / this.getNextSegment() > 1) {
 
 			this.addNewSegment();
 
@@ -558,7 +551,7 @@ public class TrackRecorder {
 
 	public void segmentTrackByTime() {
 
-		if (this.track.getMovingTime() / this.getNextSegment() > 1) {
+		if (this.trackStats.getMovingTime() / this.getNextSegment() > 1) {
 
 			this.addNewSegment();
 

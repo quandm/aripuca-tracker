@@ -97,18 +97,18 @@ public class Tracks {
 		db.execSQL(sql);
 
 	}
-	
+
 	/**
 	 * Insert new track record
 	 * 
 	 * @param db
 	 * @param track
-	 * @return
+	 * @return new track id
 	 */
 	public static long insert(SQLiteDatabase db, Track track) {
-		
+
 		ContentValues values = new ContentValues();
-		
+
 		values.put("title", track.getTitle());
 		values.put("activity", track.getActivity());
 		values.put("recording", track.getRecording());
@@ -117,9 +117,9 @@ public class Tracks {
 
 		// setting track id
 		long trackId = db.insertOrThrow("tracks", null, values);
-		
+
 		return trackId;
-		
+
 	}
 
 	/**
@@ -127,35 +127,50 @@ public class Tracks {
 	 * @param db
 	 * @param track
 	 */
-	public static void update(SQLiteDatabase db, Track track) {
+	public static int update(SQLiteDatabase db, Track track) {
 
 		ContentValues values = new ContentValues();
 
 		values.put("title", track.getTitle());
-		
+
 		values.put("activity", track.getActivity());
-		
 		values.put("recording", track.getRecording());
+
 		values.put("start_time", track.getStartTime());
 		values.put("finish_time", track.getFinishTime());
-		
+
+		values.put("total_time", track.getTotalTime());
+		values.put("moving_time", track.getMovingTime());
+
+		values.put("max_speed", track.getMaxSpeed());
+
+		values.put("max_elevation", track.getMaxElevation());
+		values.put("min_elevation", track.getMinElevation());
+
+		values.put("elevation_gain", track.getElevationGain());
+		values.put("elevation_loss", track.getElevationLoss());
+
+		values.put("max_speed", track.getMaxSpeed());
+
 		values.put("distance", Utils.formatNumber(track.getDistance(), 2));
 
-		db.update("tracks", values, "_id=?", new String[] { String.valueOf(track.getId()) });
-		
+		// return number of affected rows
+		return db.update("tracks", values, "_id=?", new String[] { String.valueOf(track.getId()) });
+
 	}
-	
-	public static void update(SQLiteDatabase db, long trackId, String title, String descr) {
+
+	public static int update(SQLiteDatabase db, long trackId, String title, String descr) {
 
 		ContentValues values = new ContentValues();
 
 		values.put("title", title);
 		values.put("descr", descr);
-		
-		int affectedRows = db.update("tracks", values, "_id=?", new String[] { String.valueOf(trackId) });
-		
+
+		// return number of affected rows
+		return db.update("tracks", values, "_id=?", new String[] { String.valueOf(trackId) });
+
 	}
-	
+
 	/**
 	 * Get track by id
 	 * 
@@ -165,7 +180,13 @@ public class Tracks {
 	 */
 	public static Track get(SQLiteDatabase db, long trackId) {
 
-		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE _id=" + trackId + ";";
+		String sql = "SELECT tracks.*, COUNT(track_points._id) AS points_count " +
+				"FROM tracks " +
+				"LEFT JOIN track_points ON tracks._id = track_points.track_id " +
+				"WHERE tracks._id=" + trackId;
+
+		// String sql = "SELECT * FROM " + TABLE_NAME + " WHERE _id=" + trackId + ";";
+
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();
 
@@ -176,6 +197,5 @@ public class Tracks {
 		return track;
 
 	}
-	
-	
+
 }
