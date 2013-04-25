@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.os.Environment;
@@ -32,7 +33,7 @@ public class App extends Application {
 	 * application directory
 	 */
 	private String appDir;
-	
+
 	private String dataDir;
 
 	/**
@@ -84,27 +85,19 @@ public class App extends Application {
 	public String getDataDir() {
 		return dataDir;
 	}
-	
+
 	/**
 	 * application database create/open helper class
 	 */
 	public class OpenHelper extends SQLiteOpenHelper {
 
 		/**
-		 * 
-		 */
-		private static final String DATABASE_NAME = Constants.APP_NAME + ".db";
-
-		/**
 		 * Database version for
 		 */
 		private static final int DATABASE_VERSION = 1;
 
-		/**
-		 * OpenHelper constructor
-		 */
 		OpenHelper(Context context) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, Constants.DATABASE_FILE, null, DATABASE_VERSION);
 		}
 
 		/**
@@ -112,11 +105,8 @@ public class App extends Application {
 		 */
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-
 			db.execSQL(Waypoints.TABLE_CREATE);
-
 			db.execSQL(Tracks.TABLE_CREATE);
-
 			db.execSQL(TrackPoints.TABLE_CREATE);
 			db.execSQL(Segments.TABLE_CREATE);
 		}
@@ -147,19 +137,27 @@ public class App extends Application {
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+		// set application external storage folder
+		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
+
 		// database helper
 		OpenHelper openHelper = new OpenHelper(this);
 
 		// SQLiteDatabase
-		db = openHelper.getWritableDatabase();
+		try {
+			db = openHelper.getWritableDatabase();
+		} catch (SQLiteException e) {
+			Toast.makeText(this, R.string.memory_card_not_available,
+					Toast.LENGTH_SHORT).show();
+			android.os.Process.killProcess(android.os.Process.myPid());			
+		}
 
 		setExternalStorageState();
 
-		// set application external storage folder
-		appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.APP_NAME;
-
 		dataDir = Environment.getDataDirectory().getAbsolutePath() + "/com.aripuca.tracker/databases";
-		
+		//TODO: NEW FEATURE: app database file in external memory 
+		// dataDir = appDir + "/" + Constants.PATH_DATABASE;
+
 		// create all folders required by the application on external storage
 		if (getExternalStorageAvailable() && getExternalStorageWriteable()) {
 			createFolderStructure();
@@ -183,7 +181,7 @@ public class App extends Application {
 
 		}
 
-//		AppLog.d(this, "=================== app: onCreate ===================");
+		// AppLog.d(this, "=================== app: onCreate ===================");
 
 	}
 
@@ -249,6 +247,7 @@ public class App extends Application {
 	 */
 	private void createFolderStructure() {
 		Utils.createFolder(getAppDir());
+		Utils.createFolder(getAppDir() + "/" + Constants.PATH_DATABASE);
 		Utils.createFolder(getAppDir() + "/" + Constants.PATH_TRACKS);
 		Utils.createFolder(getAppDir() + "/" + Constants.PATH_WAYPOINTS);
 		Utils.createFolder(getAppDir() + "/" + Constants.PATH_BACKUP);

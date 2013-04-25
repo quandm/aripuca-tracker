@@ -53,8 +53,10 @@ public class TrackPoints {
 	 * @param trackId
 	 * @param points
 	 */
-	public static void getAll(SQLiteDatabase db, long trackId, ArrayList<TrackPoint> points, MapSpan mapSpan) {
+	public static ArrayList<TrackPoint> getAll(SQLiteDatabase db, long trackId, MapSpan mapSpan) {
 
+		ArrayList<TrackPoint> points = new ArrayList<TrackPoint>();
+		
 		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -73,6 +75,8 @@ public class TrackPoints {
 		}
 
 		cursor.close();
+		
+		return points;
 
 	}
 

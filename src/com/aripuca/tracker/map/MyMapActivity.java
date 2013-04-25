@@ -35,8 +35,10 @@ import android.widget.Toast;
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoint;
 import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.db.Waypoint;
 import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.service.AppService;
@@ -50,8 +52,6 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
-
-//TODO: show current location on the map
 
 /**
  * Map activity
@@ -642,9 +642,10 @@ public class MyMapActivity extends MapActivity {
 	 */
 	private void setupTrack() {
 
-		this.loadTrackPoints(this.trackId);
+		// load all track points to array list
+		this.points = TrackPoints.getAll(app.getDatabase(), this.trackId, mapSpan);
 
-		this.trackTotalDistance = this.getTrackDistance(this.trackId);
+		this.trackTotalDistance = Tracks.get(app.getDatabase(), this.trackId).getDistance();
 
 		this.currentPointIndex = Math.round(points.size() / 2);
 
@@ -683,37 +684,6 @@ public class MyMapActivity extends MapActivity {
 		} else {
 			Toast.makeText(MyMapActivity.this, R.string.waiting_for_fix, Toast.LENGTH_SHORT).show();
 		}
-
-	}
-
-	/**
-	 * Returns total distance of the track from "tracks" table
-	 * 
-	 * @param trackId
-	 * @return float
-	 */
-	private float getTrackDistance(long trackId) {
-
-		// String sql =
-		// "SELECT tracks.distance, COUNT(track_points.track_id) AS count FROM tracks, track_points WHERE tracks._id="
-		// + trackId + " AND tracks._id = track_points.track_id";
-
-		String sql = "SELECT tracks.distance FROM tracks WHERE _id=" + trackId;
-
-		Cursor cursor = app.getDatabase().rawQuery(sql, null);
-
-		if (cursor.getCount() == 0) {
-			cursor.close();
-			return 0f;
-		}
-
-		cursor.moveToFirst();
-
-		float distance = cursor.getInt(cursor.getColumnIndex("distance"));
-
-		cursor.close();
-
-		return distance;
 
 	}
 
@@ -800,19 +770,6 @@ public class MyMapActivity extends MapActivity {
 						Integer.toString(currentPointIndex + 1));
 
 		mapView.invalidate();
-
-	}
-
-	/**
-	 * Loads track points from DB and populates points array
-	 * 
-	 * @param trackId
-	 */
-	private void loadTrackPoints(long trackId) {
-
-		points = new ArrayList<TrackPoint>();
-
-		TrackPoints.getAll(app.getDatabase(), trackId, points, mapSpan);
 
 	}
 

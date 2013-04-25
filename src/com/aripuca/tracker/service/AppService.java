@@ -123,13 +123,12 @@ public class AppService extends Service {
 
 			currentLocation = location;
 
-			//			app.setCurrentLocation(location);
-
 			// update track statistics
 			if (trackRecorder.isRecording()) {
 				trackRecorder.updateStatistics(location);
 			}
 
+			// activities with registered receivers will get location updates
 			broadcastLocationUpdate(location, Constants.GPS_PROVIDER, Constants.ACTION_LOCATION_UPDATES);
 
 		}
@@ -348,7 +347,7 @@ public class AppService extends Service {
 		//
 		registerReceiver(nextLocationRequestReceiver, new IntentFilter(Constants.ACTION_NEXT_LOCATION_REQUEST));
 
-		Log.i(Constants.TAG, "AppService: onCreate");
+		AppLog.i(this, "AppService: onCreate");
 
 		this.app = (App) getApplication();
 

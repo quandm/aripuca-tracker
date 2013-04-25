@@ -1662,7 +1662,7 @@ public class MainActivity extends Activity {
 
 			if (app.getExternalStorageWriteable()) {
 
-				String currentDBPath = app.getDataDir() + "/" + Constants.APP_NAME + ".db";
+				String currentDBPath = app.getDataDir() + "/" + Constants.DATABASE_FILE;
 
 				String dateStr = (String) DateFormat.format("yyyyMMdd_kkmmss", new Date());
 
@@ -1791,7 +1791,8 @@ public class MainActivity extends Activity {
 					String restoreDBPath = app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
-					File currentDB = new File(data, app.getDataDir() + "/" + Constants.APP_NAME + ".db");
+//					File currentDB = new File(app.getDataDir(),  Constants.DATABASE_FILE);
+					File currentDB = new File(data, app.getDataDir() + "/" + Constants.DATABASE_FILE);
 
 					FileInputStream fis = new FileInputStream(restoreDB);
 					FileOutputStream fos = new FileOutputStream(currentDB);
