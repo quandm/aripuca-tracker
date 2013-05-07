@@ -238,4 +238,9 @@
     <string name="show_track_details">Статистика</string>
     <string name="total_distance">Дистанция</string>
     <string name="current">Текущий</string>
+    <string name="waypoint_title">Название точки</string>
+    <string name="cant_edit_track_being_recorded">Нельзя редактировать записываемый в данный момент трек </string>
+    <string name="cant_delete_track_being_recorded">Нельзя удалить трек записываемый 
+в данный момент
+</string>
 </resources>
