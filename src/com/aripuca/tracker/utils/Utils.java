@@ -355,7 +355,7 @@ public class Utils {
 				R.string.cardinal_point_north_west,
 				R.string.cardinal_point_north };
 
-		int index = Math.round(azimuth / 45);
+		int index = Math.abs(Math.round(azimuth / 45));
 		if (index > cardinalPoints.length - 1) {
 			index = 0;
 		}
