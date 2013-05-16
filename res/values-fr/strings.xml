@@ -157,7 +157,7 @@
     <string name="waypoints">Waypoints</string>
     <string name="add_waypoint">Add waypoint</string>
     <string name="show_waypoint">Show waypoint</string>
-    <string name="waypoints_summary">Default description, minimum accuracy, etc</string>
+    <string name="waypoints_summary">Default description, etc</string>
     <string name="waypoint_default_description">Default description</string>
     <string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as waypoint description</string>
     <string name="export_waypoints">Export waypoints</string>

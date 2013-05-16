@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="build_date">Erstellungsdatum</string>
     <string name="about_dialog_message">Open Source GPS Tracking Anwendung für Android.\n\nOffizieller Blog:\nhttp://tracker.aripuca.com/blog\n\nQuellcode:\nhttp://code.google.com/p/aripuca-tracker</string>
@@ -70,10 +70,10 @@
     <string name="average_moving_speed">Geschwindigkeit Bewegung</string>
     <string name="max_speed">Maximalgeschwindigkeit</string>
     <string name="acceleration">Beschleunigung</string>
-    <string name="pace">Geschwindigkeit</string>
-    <string name="average_pace">Durchschnittsgeschwindigkeit</string>
-    <string name="max_pace">Maximalgeschwindigkeit</string>
-    <string name="speed_and_pace">Geschwindigkeit</string>
+    <string name="pace">Pace</string>
+    <string name="average_pace">Durchschnitts-Pace</string>
+    <string name="max_pace">Maximal-Pace</string>
+    <string name="speed_and_pace">Pace</string>
     <string name="total_time">Gesamtzeit</string>
     <string name="moving_time">Zeit in Bewegung</string>
     <string name="idle_time">Zeit im Stillstand</string>
@@ -82,7 +82,7 @@
     <string name="sync_all">Synchronisieren</string>
     <string name="export_all">Exportieren</string>
     <string name="import_all">Importieren</string>
-    <string name="street">Straße</string>
+    <string name="street">Karte</string>
     <string name="satellite">Satellit</string>
     <string name="next">Nächste</string>
     <string name="clear_all">Alles löschen</string>
@@ -130,7 +130,7 @@
     <string name="track_description">Track-Beschreibung eingeben</string>
     <string name="min_distance_title">Minimum Entfernung</string>
     <string name="min_distance_summary">Minimum Entfernung zwischen zwei aufgezeichneten Trackpoints</string>
-    <string name="min_accuracy_title">Minimum Genauigkeit</string>
+    <string name="min_accuracy_title">Minimum GPS-Genauigkeit</string>
     <string name="min_accuracy_summary">Minimum Genauigkeit erforderlich für Track-Aufzeichnung</string>
     <string name="cant_delete_track_being_recorded">Der im Moment aufgezeichnete Track kann nicht gelöscht werden.</string>
     <string name="cant_edit_track_being_recorded">Der im Moment aufgezeichnete Track kann nicht bearbeitet werden.</string>
@@ -144,8 +144,8 @@
     <string name="segment_distance_summary">Track nach gleicher Entfernung segmentieren</string>
     <string name="segment_time">Nach Zeit</string>
     <string name="segment_time_summary">Track alle N Minuten segmentieren</string>
-    <string name="segment_custom_1">Anwenderspezifisches Intervall 1</string>
-    <string name="segment_custom_2">Anwenderspezifisches Intervall 2</string>
+    <string name="segment_custom_1">Anwender-Intervall 1</string>
+    <string name="segment_custom_2">Anwender-Intervall 2</string>
     <string name="segment_custom_summary">Segmentierung nach vorgegebenen Entfernungen</string>
     <string name="no_segments">Keine Segmente für diesen Track vorhanden</string>
     <string name="segment_vibration">Vibrieren für neues Segment</string>
@@ -172,9 +172,9 @@
     <string name="waypoints">Waypoints</string>
     <string name="add_waypoint">Waypoint erstellen</string>
     <string name="show_waypoint">Waypoint zeigen</string>
-    <string name="waypoints_summary">Standard-Beschreibung, Minimum Genauigkeit, usw.</string>
+    <string name="waypoints_summary">Standard-Beschreibung, usw.</string>
     <string name="waypoint_default_description">Standard-Beschreibung</string>
-    <string name="waypoint_default_description_summary">Adresse bei Google Geocoder anfragen und als Waypoint-Beschreibung verwenden</string>
+    <string name="waypoint_default_description_summary">Position bei Google Geocoder anfragen und als Waypoint-Beschreibung verwenden</string>
     <string name="export_waypoints">Waypoint exportieren</string>
     <string name="waypoint_title_required">Waypoint-Titel erforderlich</string>
     <string name="waypoint_saved">Waypoint gespeichert</string>
@@ -259,4 +259,5 @@
     <string name="logging_level_summary">Logge Fehler, Warnungen, Info- und Debug-Nachrichten</string>
     <string name="my_location">Meine Position</string>
     <string name="current">Aktuell</string>
+    <string name="edit_waypoint">Waypoint bearbeiten</string>
 </resources>

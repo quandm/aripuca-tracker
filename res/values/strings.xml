@@ -13,6 +13,7 @@
     <string name="default_azimuth">0°N</string>
     <string name="default_text">xxx</string>
     <string name="zero">0</string>
+    <string name="acknowledgements">\n\nAcknowledgements:\n\nMany thanks to our translators:\nMark (German),\nDavid &amp; Jordi (Spanish)</string>
     <!-- NOT TRANSLATABLE END -->
     <string name="build_date">Build date</string>
     <string name="about_dialog_message">Open source GPS tracking app for Android.\n\nOfficial blog:\nhttp://tracker.aripuca.com/blog\n\nSource code:\nhttp://code.google.com/p/aripuca-tracker</string>
@@ -141,6 +142,7 @@
     <string name="press_again_to_exit">Press again to stop track recording and exit</string>
     <string name="stop_track_recording">Please stop track recording before exit</string>
     <string name="stop_scheduled_track_recording">Scheduled track recording is still running. Please stop it before exit.</string>
+    <string name="stop_track_recording_and_try_again">Stop track recording and try again</string>
     <string name="track_description">Enter track description</string>
     <string name="min_distance_title">Minimum distance</string>
     <string name="min_distance_summary">Minimum distance between 2 recorded points</string>
@@ -185,8 +187,9 @@
     <string name="waypoint">Waypoint</string>
     <string name="waypoints">Waypoints</string>
     <string name="add_waypoint">Add waypoint</string>
+    <string name="edit_waypoint">Edit waypoint</string>
     <string name="show_waypoint">Show waypoint</string>
-    <string name="waypoints_summary">Default description, minimum accuracy, etc</string>
+    <string name="waypoints_summary">Default description, etc</string>
     <string name="waypoint_default_description">Default description</string>
     <string name="waypoint_default_description_summary">Request address from Google Geocoder and use it as waypoint description</string>
     <string name="export_waypoints">Export waypoints</string>

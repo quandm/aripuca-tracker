@@ -291,7 +291,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 
 				// delete all tracks with confirmation dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Are you sure?").setCancelable(true)
+				builder.setMessage(R.string.are_you_sure).setCancelable(true)
 						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {

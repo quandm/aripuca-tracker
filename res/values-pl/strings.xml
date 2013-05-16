@@ -149,7 +149,7 @@
     <string name="waypoints">Waypointy</string>
     <string name="add_waypoint">Dodaj punkt</string>
     <string name="show_waypoint">Show waypoint</string>
-    <string name="waypoints_summary">Domyślny opis, minimalna dokładność, etc</string>
+    <string name="waypoints_summary">Domyślny opis, etc</string>
     <string name="waypoint_default_description">Domyślny opis</string>
     <string name="waypoint_default_description_summary">Poproś o adres z Google Geocoder i używać go jako opis waypoint</string>
     <string name="export_waypoints">Export waypoints</string>

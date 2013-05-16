@@ -157,7 +157,7 @@
     <string name="waypoints">Waypoints</string>
     <string name="add_waypoint">Añadir waypoint</string>
     <string name="show_waypoint">Mostrar waypoint</string>
-    <string name="waypoints_summary">Descripción por defecto, precisión mínima, etc</string>
+    <string name="waypoints_summary">Descripción por defecto, etc</string>
     <string name="waypoint_default_description">Descripción por defecto</string>
     <string name="waypoint_default_description_summary">Requerir dirección de Google Geocoder y usarla como descripción del waypoint</string>
     <string name="export_waypoints">Exportar waypoints</string>

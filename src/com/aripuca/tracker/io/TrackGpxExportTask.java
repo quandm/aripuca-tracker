@@ -70,8 +70,8 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 		// track start
 		pw.println("<trk>");
-		pw.println("<name>" + tCursor.getString(tCursor.getColumnIndex("title")) + "</name>");
-		pw.println("<desc>" + tCursor.getString(tCursor.getColumnIndex("descr")) + "</desc>");
+		pw.println("<name><![CDATA[" + tCursor.getString(tCursor.getColumnIndex("title")) + "]]></name>");
+		pw.println("<desc><![CDATA[" + tCursor.getString(tCursor.getColumnIndex("descr")) + "]]></desc>");
 		pw.println("<number>" + tCursor.getString(tCursor.getColumnIndex("_id")) + "</number>");
 
 		// tracker specific info

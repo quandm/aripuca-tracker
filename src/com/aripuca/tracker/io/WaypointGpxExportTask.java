@@ -87,10 +87,11 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		pw.println("<ele>" + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")), 1)
 				+ "</ele>");
 		pw.println("<time>" + wpTime + "</time>");
-		pw.println("<name>" + tpCursor.getString(tpCursor.getColumnIndex("title")) + "</name>");
-		pw.println("<desc>" + tpCursor.getString(tpCursor.getColumnIndex("descr")) + "</desc>");
+		pw.println("<name><![CDATA[" + tpCursor.getString(tpCursor.getColumnIndex("title")) + "]]></name>");
+		pw.println("<desc><![CDATA[" + tpCursor.getString(tpCursor.getColumnIndex("descr")) + "]]></desc>");
 		// pw.println("<type>" + + "</type>");
 		pw.println("</wpt>");
+		
 
 	}
 
