@@ -135,6 +135,7 @@
         <item>Entwickler: die Anwendung unterstützt 4 Logging-Level: Fehler, Warnungen, Info und Debug-Nachrichten. Die Daten sind im \'logs\' Verzeichnis gespeichert.</item>
         <item>Tracks können gleichzeitig in Echtzeit und per Zeitplaner aufgezeichnet werden.</item>
         <item>Das Kompass-Rad kann auf die gewünschte Richtung ausgerichtet werden. Zurücksetzen des Kompass durch Lang-Klick auf den Azimut-Wert.</item>
+        <item>Pace ist die Zeit, die benötigt wird, um einen Kilometer oder eine Meile zurückzulegen.</item>
     </string-array>
     <string-array name="logging_level_labels">
         <item>Kein Logging</item>

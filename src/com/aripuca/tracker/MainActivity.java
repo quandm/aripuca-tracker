@@ -1297,11 +1297,8 @@ public class MainActivity extends Activity {
 		final SpannableString s = new SpannableString(aboutStr);
 		Linkify.addLinks(s, Linkify.ALL);
 
-		messageView.setText(s);
+		messageView.setText(s + getString(R.string.acknowledgements));
 
-		// textView.setText(getString(R.string.main_app_title) + " " +
-		// getString(R.string.ver)
-		// + app.getVersionName(this) + "\n\n" + s);
 		messageView.setMovementMethod(LinkMovementMethod.getInstance());
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1652,7 +1649,7 @@ public class MainActivity extends Activity {
 		AppService appService = serviceConnection.getService();
 
 		if (appService == null || appService.getTrackRecorder().isRecording()) {
-			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, R.string.stop_track_recording_and_try_again, Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -1713,7 +1710,7 @@ public class MainActivity extends Activity {
 		AppService appService = serviceConnection.getService();
 
 		if (appService == null || appService.getTrackRecorder().isRecording()) {
-			Toast.makeText(MainActivity.this, R.string.stop_track_recording, Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, R.string.stop_track_recording_and_try_again, Toast.LENGTH_SHORT).show();
 			return;
 		}
 

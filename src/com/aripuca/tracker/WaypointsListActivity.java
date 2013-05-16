@@ -678,7 +678,7 @@ public class WaypointsListActivity extends ListActivity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-		builder.setTitle("Edit waypoint");
+		builder.setTitle(R.string.edit);
 		builder.setView(layout);
 
 		// creating reference to input field in order to use it in onClick
@@ -800,7 +800,7 @@ public class WaypointsListActivity extends ListActivity {
 		final long waypointId = wpid;
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Are you sure?").setCancelable(true)
+		builder.setMessage(R.string.are_you_sure).setCancelable(true)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
