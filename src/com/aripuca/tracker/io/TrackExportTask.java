@@ -45,7 +45,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	 * track points or waypoints table cursor
 	 */
 	protected Cursor tpCursor = null;
-
+	
 	/**
 	 * destination file
 	 */
@@ -57,8 +57,6 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	protected PrintWriter pw;
 
 	abstract protected void writeHeader();
-
-	abstract protected void writeTrackPoint();
 
 	abstract protected void writeFooter();
 
@@ -102,7 +100,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
-		File outputFolder = new File(app.getAppDir() + "/tracks");
+		File outputFolder = new File(app.getAppDir() + "/"+Constants.PATH_TRACKS);
 
 		String fileName = (new SimpleDateFormat("yyyy-MM-dd_HH-mm")).format(tCursor.getLong(tCursor
 				.getColumnIndex("start_time")));
@@ -118,6 +116,7 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 	}
 
+	
 	/**
 	 * Creates database cursors
 	 */
@@ -127,11 +126,6 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
 		tCursor = app.getDatabase().rawQuery(sql, null);
 		tCursor.moveToFirst();
-
-		// track points table cursor
-		sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
-		tpCursor = app.getDatabase().rawQuery(sql, null);
-		tpCursor.moveToFirst();
 
 	}
 
@@ -143,14 +137,6 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		pw.flush();
 		pw.close();
 		pw = null;
-
-		if (tCursor != null) {
-			tCursor.close();
-		}
-
-		if (tpCursor != null) {
-			tpCursor.close();
-		}
 
 	}
 
@@ -168,31 +154,9 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 			// write format header
 			writeHeader();
 
-			// write track points
-			int i = 0;
-			while (tpCursor.isAfterLast() == false) {
-
-				writeTrackPoint();
-
-				tpCursor.moveToNext();
-
-				// safely stopping AsyncTask, removing file
-				if (this.isCancelled()) {
-
-					closeWriter();
-
-					if (file.exists()) {
-						file.delete();
-					}
-
-					return "Export cancelled";
-				}
-
-				if (i % 5 == 0) {
-					publishProgress(i);
-				}
-
-				i++;
+			boolean result = writePoints();
+			if (!result) {
+				return "Export cancelled";
 			}
 
 			writeFooter();
@@ -207,6 +171,51 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 		return "Export completed";
 	}
 
+	protected boolean writePoints() {
+
+		// write track points
+		int i = 0;
+		while (tpCursor.isAfterLast() == false) {
+
+			if (!segmentOpen) {
+				prevSegmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
+				segmentOpen = true;
+			}
+
+			if (prevSegmentIndex != tpCursor.getInt(tpCursor.getColumnIndex("segment_index"))) {
+				writeSegmentStart(pw);
+				segmentOpen = false;
+			}
+			
+			ExportHelper.writeGPXTrackPoint(pw, tpCursor);
+
+			tpCursor.moveToNext();
+
+			// safely stopping AsyncTask, removing file
+			if (this.isCancelled()) {
+
+				closeWriter();
+
+				if (file.exists()) {
+					file.delete();
+				}
+
+				return false;
+			}
+
+			if (i % 5 == 0) {
+				publishProgress(i);
+			}
+
+			i++;
+		}
+
+		return true;
+	}
+
+	protected void writeSegmentStart(PrintWriter pw) {
+	}
+	
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
@@ -333,4 +342,5 @@ abstract public class TrackExportTask extends AsyncTask<Long, Integer, String> {
 
 	}
 
+	
 }

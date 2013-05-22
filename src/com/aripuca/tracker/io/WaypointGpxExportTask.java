@@ -9,13 +9,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
+import android.database.Cursor;
 
+import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.utils.Utils;
 
 public class WaypointGpxExportTask extends TrackExportTask {
 
 	private String filename;
-
+	
+	protected Cursor wpCursor = null;
+	
 	public WaypointGpxExportTask(Context c, String fn) {
 		super(c);
 
@@ -24,12 +28,24 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		filename = fn;
 
 	}
+	
+	@Override
+	protected void prepareCursors() {
+
+		// only one cursor is required for waypoints export 
+		
+		// waypoints cursor
+		String sql = "SELECT * FROM waypoints;";
+		wpCursor = app.getDatabase().rawQuery(sql, null);
+		wpCursor.moveToFirst();
+
+	}
 
 	@Override
 	protected void prepareWriter() throws IOException {
 
 		// create file named as track title on sd card
-		File outputFolder = new File(app.getAppDir() + "/waypoints");
+		File outputFolder = new File(app.getAppDir() + "/" + Constants.PATH_WAYPOINTS);
 
 		file = new File(outputFolder, filename + "." + extension);
 
@@ -39,16 +55,6 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 		// overwrite existing file
 		pw = new PrintWriter(new FileWriter(file, false));
-
-	}
-
-	@Override
-	protected void prepareCursors() {
-
-		// track cursor
-		String sql = "SELECT * FROM waypoints;";
-		tpCursor = app.getDatabase().rawQuery(sql, null);
-		tpCursor.moveToFirst();
 
 	}
 
@@ -75,26 +81,38 @@ public class WaypointGpxExportTask extends TrackExportTask {
 	}
 
 	@Override
-	protected void writeTrackPoint() {
-
-		String wpTime = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(tpCursor.getLong(tpCursor
-				.getColumnIndex("time")));
-
-		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat")) / 1E6);
-		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng")) / 1E6);
-
-		pw.println("<wpt lat=\"" + lat + "\" lon=\"" + lng + "\">");
-		pw.println("<ele>" + Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")), 1)
-				+ "</ele>");
-		pw.println("<time>" + wpTime + "</time>");
-		pw.println("<name><![CDATA[" + tpCursor.getString(tpCursor.getColumnIndex("title")) + "]]></name>");
-		pw.println("<desc><![CDATA[" + tpCursor.getString(tpCursor.getColumnIndex("descr")) + "]]></desc>");
-		// pw.println("<type>" + + "</type>");
-		pw.println("</wpt>");
+	protected boolean writePoints() {
 		
+		// write track points
+		int i = 0;
+		while (wpCursor.isAfterLast() == false) {
 
+			ExportHelper.writeGPXWaypoint(pw, wpCursor);
+
+			wpCursor.moveToNext();
+
+			// safely stopping AsyncTask, removing file
+			if (this.isCancelled()) {
+
+				closeWriter();
+
+				if (file.exists()) {
+					file.delete();
+				}
+
+				return false;
+			}
+
+			if (i % 5 == 0) {
+				publishProgress(i);
+			}
+
+			i++;
+		}
+	
+		return true;
 	}
-
+	
 	@Override
 	protected void writeFooter() {
 
@@ -103,4 +121,13 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	protected void closeWriter() {
+
+		super.closeWriter();
+		
+		if (wpCursor != null) {
+			wpCursor.close();
+		}
+
+	}
 }
