@@ -3,11 +3,11 @@ package com.aripuca.tracker.io;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import android.content.Context;
 import android.database.Cursor;
 
+import com.aripuca.tracker.App;
 import com.aripuca.tracker.utils.Utils;
 
 public class TrackGpxExportTask extends TrackExportTask {
@@ -19,9 +19,9 @@ public class TrackGpxExportTask extends TrackExportTask {
 
 	protected Cursor wpCursor = null;
 
-	public TrackGpxExportTask(Context c) {
+	public TrackGpxExportTask(App app, long trackId) {
 
-		super(c);
+		super(app, trackId);
 
 		extension = "gpx";
 
@@ -33,10 +33,13 @@ public class TrackGpxExportTask extends TrackExportTask {
 	@Override
 	protected void prepareCursors() {
 
-		super.prepareCursors();
-
+		// tracks table cursor
+		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
+		tCursor = app.getDatabase().rawQuery(sql, null);
+		tCursor.moveToFirst();
+		
 		// track cursor
-		String sql = "SELECT * FROM segments WHERE track_id=" + trackId;
+		sql = "SELECT * FROM segments WHERE track_id=" + trackId;
 		segCursor = app.getDatabase().rawQuery(sql, null);
 		segCursor.moveToFirst();
 
@@ -123,7 +126,7 @@ public class TrackGpxExportTask extends TrackExportTask {
 		// progress is not updated until track points exporting starts
 		while (wpCursor.isAfterLast() == false) {
 			
-			ExportHelper.writeGPXWaypoint(pw, wpCursor);
+			writePoint(pw, wpCursor);
 			
 			wpCursor.moveToNext();
 			// safely stopping AsyncTask, removing file
@@ -137,10 +140,18 @@ public class TrackGpxExportTask extends TrackExportTask {
 		}
 		
 		// continue exporting track points
+
 		return super.writePoints();
 		
 	}
 
+	@Override
+	protected void writePoint(PrintWriter pw, Cursor cursor) {
+		
+		ExportHelper.writeGPXTrackPoint(pw, cursor);
+		
+	}
+	
 	/**
 	 * Exporting track segment details as an extension to GPX format
 	 */
@@ -201,6 +212,10 @@ public class TrackGpxExportTask extends TrackExportTask {
 			tpCursor.close();
 		}
 
+		if (wpCursor != null) {
+			wpCursor.close();
+		}
+		
 	}
 
 }

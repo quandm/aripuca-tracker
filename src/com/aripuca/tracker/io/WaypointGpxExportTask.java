@@ -1,8 +1,5 @@
 package com.aripuca.tracker.io;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -11,22 +8,23 @@ import java.util.Date;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
-import com.aripuca.tracker.utils.Utils;
 
-public class WaypointGpxExportTask extends TrackExportTask {
+public class WaypointGpxExportTask extends AbstractExportTask {
 
-	private String filename;
-	
 	protected Cursor wpCursor = null;
 	
-	public WaypointGpxExportTask(Context c, String fn) {
-		super(c);
+	public WaypointGpxExportTask(App app, String outputFile) {
+		
+		super(app);
 
-		extension = "gpx";
+		this.extension = "gpx";
 
-		filename = fn;
+		this.outputFile = outputFile;
 
+		this.outputFolder = Constants.PATH_WAYPOINTS;
+		
 	}
 	
 	@Override
@@ -38,23 +36,6 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		String sql = "SELECT * FROM waypoints;";
 		wpCursor = app.getDatabase().rawQuery(sql, null);
 		wpCursor.moveToFirst();
-
-	}
-
-	@Override
-	protected void prepareWriter() throws IOException {
-
-		// create file named as track title on sd card
-		File outputFolder = new File(app.getAppDir() + "/" + Constants.PATH_WAYPOINTS);
-
-		file = new File(outputFolder, filename + "." + extension);
-
-		if (!file.exists()) {
-			file.createNewFile();
-		}
-
-		// overwrite existing file
-		pw = new PrintWriter(new FileWriter(file, false));
 
 	}
 
@@ -80,6 +61,9 @@ public class WaypointGpxExportTask extends TrackExportTask {
 
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	protected boolean writePoints() {
 		
@@ -87,8 +71,8 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		int i = 0;
 		while (wpCursor.isAfterLast() == false) {
 
-			ExportHelper.writeGPXWaypoint(pw, wpCursor);
-
+			writePoint(pw, wpCursor);
+			
 			wpCursor.moveToNext();
 
 			// safely stopping AsyncTask, removing file
@@ -111,6 +95,13 @@ public class WaypointGpxExportTask extends TrackExportTask {
 		}
 	
 		return true;
+	}
+	
+	@Override
+	protected void writePoint(PrintWriter pw, Cursor cursor) {
+		
+		ExportHelper.writeGPXWaypoint(pw, cursor);
+		
 	}
 	
 	@Override

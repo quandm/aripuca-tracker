@@ -2,17 +2,20 @@ package com.aripuca.tracker.io;
 
 import java.io.PrintWriter;
 
-import android.content.Context;
+import com.aripuca.tracker.App;
 
-import com.aripuca.tracker.utils.Utils;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Export to KML AsyncTask class
  */
 public class TrackKmlExportTask extends TrackExportTask {
 
-	public TrackKmlExportTask(Context c) {
-		super(c);
+	public TrackKmlExportTask(App app, long trackId) {
+		
+		super(app, trackId);
 
 		extension = "kml";
 	}
@@ -23,10 +26,13 @@ public class TrackKmlExportTask extends TrackExportTask {
 	@Override
 	protected void prepareCursors() {
 
-		super.prepareCursors();
-
+		// tracks table cursor
+		String sql = "SELECT * FROM tracks WHERE _id=" + trackId + ";";
+		tCursor = app.getDatabase().rawQuery(sql, null);
+		tCursor.moveToFirst();
+		
 		// track points table cursor
-		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
+		sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 		tpCursor = app.getDatabase().rawQuery(sql, null);
 		tpCursor.moveToFirst();
 		
@@ -59,6 +65,13 @@ public class TrackKmlExportTask extends TrackExportTask {
 		
 	}
 	
+	protected void writePoint(PrintWriter pw, Cursor cursor) {
+		
+		ExportHelper.writeKMLTrackPoint(pw, cursor);
+		
+	}
+	
+
 	@Override
 	protected void writeFooter() {
 
@@ -72,4 +85,22 @@ public class TrackKmlExportTask extends TrackExportTask {
 
 	}
 
+	/**
+	 * Closes writer and cursors
+	 */
+	@Override
+	protected void closeWriter() {
+
+		super.closeWriter();
+
+		if (tCursor != null) {
+			tCursor.close();
+		}
+
+		if (tpCursor != null) {
+			tpCursor.close();
+		}
+
+	}
+	
 }
