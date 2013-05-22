@@ -1,5 +1,7 @@
 package com.aripuca.tracker.io;
 
+import java.io.PrintWriter;
+
 import android.content.Context;
 
 import com.aripuca.tracker.utils.Utils;
@@ -15,6 +17,21 @@ public class TrackKmlExportTask extends TrackExportTask {
 		extension = "kml";
 	}
 
+	/**
+	 * Creates database cursors
+	 */
+	@Override
+	protected void prepareCursors() {
+
+		super.prepareCursors();
+
+		// track points table cursor
+		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
+		tpCursor = app.getDatabase().rawQuery(sql, null);
+		tpCursor.moveToFirst();
+		
+	}
+	
 	@Override
 	protected void writeHeader() {
 
@@ -35,28 +52,13 @@ public class TrackKmlExportTask extends TrackExportTask {
 
 	}
 
-	@Override
-	protected void writeTrackPoint() {
-
-		if (!segmentOpen) {
-			prevSegmentIndex = tpCursor.getInt(tpCursor.getColumnIndex("segment_index"));
-			segmentOpen = true;
-		}
-
-		if (prevSegmentIndex != tpCursor.getInt(tpCursor.getColumnIndex("segment_index"))) {
-			pw.println("</coordinates></LineString>");
-			pw.println("<LineString><coordinates>");
-			segmentOpen = false;
-		}
-
-		String lat = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lat")) / 1E6);
-		String lng = Utils.formatCoord(tpCursor.getInt(tpCursor.getColumnIndex("lng")) / 1E6);
-
-		pw.println(lng + "," + lat + ","
-				+ Utils.formatNumberUS(tpCursor.getFloat(tpCursor.getColumnIndex("elevation")), 1) + " ");
-
+	protected void writeSegmentStart(PrintWriter pw) {
+		
+		pw.println("</coordinates></LineString>");
+		pw.println("<LineString><coordinates>");
+		
 	}
-
+	
 	@Override
 	protected void writeFooter() {
 
