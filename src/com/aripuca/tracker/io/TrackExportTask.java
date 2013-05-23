@@ -18,8 +18,6 @@ import com.aripuca.tracker.db.Tracks;
 
 abstract public class TrackExportTask extends AbstractExportTask {
 
-	protected ProgressDialog progressDialog;
-
 	protected long trackId;
 
 	/**
@@ -32,18 +30,6 @@ abstract public class TrackExportTask extends AbstractExportTask {
 	 */
 	protected Cursor tpCursor = null;
 
-	/**
-	 * destination file
-	 */
-	protected File file;
-
-	/**
-	 * print writer
-	 */
-	protected PrintWriter pw;
-
-	protected String extension;
-
 	protected boolean segmentOpen = false;
 	protected int prevSegmentIndex = 0;
 	protected int curSegmentIndex = 0;
@@ -55,9 +41,9 @@ abstract public class TrackExportTask extends AbstractExportTask {
 	 */
 	abstract protected void prepareCursors();
 
-	public TrackExportTask(App app, long trackId) {
+	public TrackExportTask(Context context, App app, long trackId) {
 
-		super(app);
+		super(context, app);
 
 		this.trackId = trackId;
 
@@ -128,13 +114,6 @@ abstract public class TrackExportTask extends AbstractExportTask {
 
 			// safely stopping AsyncTask, removing file
 			if (this.isCancelled()) {
-
-				closeWriter();
-
-				if (file.exists()) {
-					file.delete();
-				}
-
 				return false;
 			}
 

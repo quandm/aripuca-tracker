@@ -1036,7 +1036,7 @@ public class WaypointsListActivity extends ListActivity {
 					filenameStr = defaultFilename;
 				}
 
-				waypointToGpx = new WaypointGpxExportTask(app, filenameStr);
+				waypointToGpx = new WaypointGpxExportTask(WaypointsListActivity.this, app, filenameStr);
 				waypointToGpx.execute();
 
 				dialog.dismiss();

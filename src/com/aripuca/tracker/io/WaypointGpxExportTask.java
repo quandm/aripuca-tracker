@@ -13,11 +13,11 @@ import com.aripuca.tracker.Constants;
 
 public class WaypointGpxExportTask extends AbstractExportTask {
 
-	protected Cursor wpCursor = null;
+	protected Cursor wpCursor;
 	
-	public WaypointGpxExportTask(App app, String outputFile) {
+	public WaypointGpxExportTask(Context context, App app, String outputFile) {
 		
-		super(app);
+		super(context, app);
 
 		this.extension = "gpx";
 
@@ -77,13 +77,6 @@ public class WaypointGpxExportTask extends AbstractExportTask {
 
 			// safely stopping AsyncTask, removing file
 			if (this.isCancelled()) {
-
-				closeWriter();
-
-				if (file.exists()) {
-					file.delete();
-				}
-
 				return false;
 			}
 

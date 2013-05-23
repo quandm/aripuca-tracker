@@ -13,9 +13,9 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class TrackKmlExportTask extends TrackExportTask {
 
-	public TrackKmlExportTask(App app, long trackId) {
+	public TrackKmlExportTask(Context context, App app, long trackId) {
 		
-		super(app, trackId);
+		super(context, app, trackId);
 
 		extension = "kml";
 	}
