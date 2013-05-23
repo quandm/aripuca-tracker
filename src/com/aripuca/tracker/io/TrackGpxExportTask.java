@@ -15,13 +15,13 @@ public class TrackGpxExportTask extends TrackExportTask {
 	/**
 	 * Segments table cursor
 	 */
-	protected Cursor segCursor = null;
+	protected Cursor segCursor;
 
-	protected Cursor wpCursor = null;
+	protected Cursor wpCursor;
 
-	public TrackGpxExportTask(App app, long trackId) {
+	public TrackGpxExportTask(Context context, App app, long trackId) {
 
-		super(app, trackId);
+		super(context, app, trackId);
 
 		extension = "gpx";
 
@@ -129,14 +129,12 @@ public class TrackGpxExportTask extends TrackExportTask {
 			writePoint(pw, wpCursor);
 			
 			wpCursor.moveToNext();
+			
 			// safely stopping AsyncTask, removing file
 			if (this.isCancelled()) {
-				closeWriter();
-				if (file.exists()) {
-					file.delete();
-				}
 				return false;
 			}
+			
 		}
 		
 		// continue exporting track points

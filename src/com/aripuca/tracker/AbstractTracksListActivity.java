@@ -710,7 +710,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 		progressDialog.show();
 
 		// starting track exporting in separate thread
-		trackExportTask = new TrackGpxExportTask(app, trackId);
+		trackExportTask = new TrackGpxExportTask(AbstractTracksListActivity.this, app, trackId);
 		trackExportTask.setSendAttachment(sendAttachment);
 		trackExportTask.setProgressDialog(progressDialog);
 
@@ -732,7 +732,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 		progressDialog.show();
 
 		// starting track exporting in separate thread
-		trackExportTask = new TrackKmlExportTask(app, trackId);
+		trackExportTask = new TrackKmlExportTask(AbstractTracksListActivity.this, app, trackId);
 		trackExportTask.setSendAttachment(sendAttachment);
 		trackExportTask.setProgressDialog(progressDialog);
 
