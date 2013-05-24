@@ -1,5 +1,7 @@
 package com.aripuca.tracker;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +20,7 @@ import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.db.Waypoints;
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 
 /**
@@ -25,10 +28,27 @@ import com.aripuca.tracker.utils.Utils;
  */
 public class App extends Application {
 
+	// uncaught exception handler variable
+	private UncaughtExceptionHandler defaultUncaughtExceptionHandler;
+
+	// handler listener
+	private Thread.UncaughtExceptionHandler uncaughtExceptionHandler =
+			new Thread.UncaughtExceptionHandler() {
+				@Override
+				public void uncaughtException(Thread thread, Throwable ex) {
+
+					AppLog.e(getApplicationContext(), "uncought exception");
+
+					// re-throw critical exception further to the os (important)
+					defaultUncaughtExceptionHandler.uncaughtException(thread, ex);
+				}
+			};
+
 	/**
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;
+
 	/**
 	 * application directory
 	 */
@@ -134,6 +154,10 @@ public class App extends Application {
 
 		super.onCreate();
 
+		// setup handler for uncaught exception
+		this.defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
+
 		// accessing preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -149,13 +173,13 @@ public class App extends Application {
 		} catch (SQLiteException e) {
 			Toast.makeText(this, R.string.memory_card_not_available,
 					Toast.LENGTH_SHORT).show();
-			android.os.Process.killProcess(android.os.Process.myPid());			
+			android.os.Process.killProcess(android.os.Process.myPid());
 		}
 
 		setExternalStorageState();
 
 		dataDir = Environment.getDataDirectory().getAbsolutePath() + "/com.aripuca.tracker/databases";
-		//TODO: NEW FEATURE: app database file in external memory 
+		// TODO: NEW FEATURE: app database file in external memory
 		// dataDir = appDir + "/" + Constants.PATH_DATABASE;
 
 		// create all folders required by the application on external storage

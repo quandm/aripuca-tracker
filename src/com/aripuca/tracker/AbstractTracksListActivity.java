@@ -179,7 +179,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 			TextView scheduledTrackDetails = (TextView) view.findViewById(R.id.scheduled_track_details);
 
 			if (trackTitle != null) {
-				trackTitle.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 32));
+				trackTitle.setText(Utils.shortenStr(cursor.getString(cursor.getColumnIndex("title")), 25));
 			}
 
 			if (trackDetails != null) {
