@@ -1,5 +1,6 @@
 package com.aripuca.tracker.service;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Calendar;
 
 import android.app.AlarmManager;

@@ -263,6 +263,9 @@ public class MainActivity extends Activity {
 					stopTracking();
 					updateSunriseSunset();
 				} else {
+					
+					//TODO: check for already started but not finished track ask to continue recording
+
 					startTracking();
 				}
 			}
