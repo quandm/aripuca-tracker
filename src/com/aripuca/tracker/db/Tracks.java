@@ -34,8 +34,7 @@ public class Tracks {
 	 * 
 	 * @param db
 	 * @param track_id
-	 * @param activity
-	 *            normal (0) or scheduled (1) track recording
+	 * @param activity normal (0) or scheduled (1) track recording
 	 */
 	public static void deleteAll(SQLiteDatabase db, int activity) {
 
@@ -188,6 +187,34 @@ public class Tracks {
 		// String sql = "SELECT * FROM " + TABLE_NAME + " WHERE _id=" + trackId + ";";
 
 		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+
+		Track track = new Track(cursor);
+
+		cursor.close();
+
+		return track;
+
+	}
+
+	/**
+	 * Get track being recorded
+	 * 
+	 * @param db
+	 * @return
+	 */
+	public static Track getLastRecordingTrack(SQLiteDatabase db) {
+
+		String sql = "SELECT tracks.* " +
+				"FROM tracks " +
+				"WHERE recording=1 ORDER BY tracks._id DESC LIMIT 1";
+
+		Cursor cursor = db.rawQuery(sql, null);
+
+		if (cursor.getCount() != 1) {
+			return null;
+		}
+
 		cursor.moveToFirst();
 
 		Track track = new Track(cursor);

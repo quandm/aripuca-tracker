@@ -29,6 +29,8 @@ import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.NotificationActivity;
 import com.aripuca.tracker.R;
+import com.aripuca.tracker.db.Track;
+import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.utils.AppLog;
@@ -675,13 +677,26 @@ public class AppService extends Service {
 	 * 
 	 */
 	public void startTrackRecording() {
-
+		
 		this.trackRecorder.start();
 
 		// add notification icon in track recording mode
 		this.showNotification(Constants.NOTIFICATION_TRACK_RECORDING, R.string.recording_track);
 	}
 
+	/**
+	 * resume recording interrupted track
+	 * 
+	 * @param lastRecordingTrack
+	 */
+	public void resumeInterruptedTrack(Track lastRecordingTrack) {
+		
+		this.trackRecorder.resumeInterruptedTrack(lastRecordingTrack);
+
+		// add notification icon in track recording mode
+		this.showNotification(Constants.NOTIFICATION_TRACK_RECORDING, R.string.recording_track);
+	}
+	
 	/**
 	 * 
 	 */

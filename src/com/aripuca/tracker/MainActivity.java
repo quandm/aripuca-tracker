@@ -50,6 +50,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aripuca.tracker.db.Track;
+import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.db.Waypoint;
 import com.aripuca.tracker.db.Waypoints;
 import com.aripuca.tracker.dialog.QuickHelpDialog;
@@ -263,9 +265,8 @@ public class MainActivity extends Activity {
 					stopTracking();
 					updateSunriseSunset();
 				} else {
-					
-					//TODO: check for already started but not finished track ask to continue recording
 
+					//TODO: check for already started but not finished track ask to continue recording
 					startTracking();
 				}
 			}
@@ -842,9 +843,45 @@ public class MainActivity extends Activity {
 
 		this.replaceDynamicView(R.layout.main_tracking);
 
-		appService.startTrackRecording();
+		this.startOrResumeTracking(appService);
 
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
+
+	}
+
+	/**
+	 * 
+	 * @param as
+	 */
+	private void startOrResumeTracking(AppService as) {
+
+		final AppService appService = as;
+		final Track lastRecordingTrack = Tracks.getLastRecordingTrack(app.getDatabase());
+
+		if (lastRecordingTrack != null) {
+
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			dialog.setMessage(R.string.resume_interrupted_track);
+			dialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					appService.resumeInterruptedTrack(lastRecordingTrack);
+				}
+			});
+			dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+					//TODO: finish interrupted track
+
+					appService.startTrackRecording();
+				}
+			});
+			dialog.show();
+
+		} else {
+			appService.startTrackRecording();
+		}
 
 	}
 
@@ -918,8 +955,8 @@ public class MainActivity extends Activity {
 	};
 
 	/**
-	 * Geocoder handler class. Receives a message from geocoder thread and displays "Add Waypoint" dialog even if
-	 * geocoding request failed
+	 * Geocoder handler class. Receives a message from geocoder thread and
+	 * displays "Add Waypoint" dialog even if geocoding request failed
 	 */
 	private static class GeocoderHandler extends Handler {
 
@@ -937,23 +974,23 @@ public class MainActivity extends Activity {
 
 			String addressStr;
 			switch (message.what) {
-			case 1:
-				Bundle bundle = message.getData();
-				addressStr = bundle.getString("address");
+				case 1:
+					Bundle bundle = message.getData();
+					addressStr = bundle.getString("address");
 				break;
-			default:
-				addressStr = null;
+				default:
+					addressStr = null;
 			}
 
-			MainActivity mainActivity = weakReference.get();			
+			MainActivity mainActivity = weakReference.get();
 			mainActivity.showAddWaypointDialog(addressStr);
 
 		}
 	};
 
 	/**
-	 * Running geocoder request as a separate thread. The thread will send a message to provided Handler object in order
-	 * to update UI
+	 * Running geocoder request as a separate thread. The thread will send a
+	 * message to provided Handler object in order to update UI
 	 * 
 	 * @param location
 	 * @param context
@@ -1024,8 +1061,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Add Waypoint dialog
 	 * 
-	 * @param address
-	 *            Address string returned from geocoder thread
+	 * @param address Address string returned from geocoder thread
 	 */
 	private void showAddWaypointDialog(String address) {
 
@@ -1152,14 +1188,14 @@ public class MainActivity extends Activity {
 
 		switch (id) {
 
-		case Constants.QUICK_HELP_DIALOG_ID:
+			case Constants.QUICK_HELP_DIALOG_ID:
 
-			dialog = new QuickHelpDialog(mContext);
+				dialog = new QuickHelpDialog(mContext);
 
 			break;
 
-		default:
-			dialog = null;
+			default:
+				dialog = null;
 		}
 
 		return dialog;
@@ -1217,62 +1253,64 @@ public class MainActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.compassMenuItem:
+			case R.id.compassMenuItem:
 
-			startActivity(new Intent(this, CompassActivity.class));
+				startActivity(new Intent(this, CompassActivity.class));
 
-			return true;
+				return true;
 
-			/*
-			 * case R.id.waypointsMenuItem:
-			 * 
-			 * intent = new Intent(this, WaypointsListActivity.class); startActivity(intent);
-			 * 
-			 * return true;
-			 * 
-			 * case R.id.tracksMenuItem:
-			 * 
-			 * intent = new Intent(this, TracksTabActivity.class); startActivity(intent);
-			 * 
-			 * return true;
-			 */
+				/*
+				 * case R.id.waypointsMenuItem:
+				 * 
+				 * intent = new Intent(this, WaypointsListActivity.class);
+				 * startActivity(intent);
+				 * 
+				 * return true;
+				 * 
+				 * case R.id.tracksMenuItem:
+				 * 
+				 * intent = new Intent(this, TracksTabActivity.class);
+				 * startActivity(intent);
+				 * 
+				 * return true;
+				 */
 
-		case R.id.aboutMenuItem:
+			case R.id.aboutMenuItem:
 
-			this.showAboutDialog();
+				this.showAboutDialog();
 
-			return true;
+				return true;
 
-		case R.id.settingsMenuItem:
+			case R.id.settingsMenuItem:
 
-			startActivity(new Intent(this, SettingsActivity.class));
+				startActivity(new Intent(this, SettingsActivity.class));
 
-			return true;
+				return true;
 
-		case R.id.quickHelp:
+			case R.id.quickHelp:
 
-			showQuickHelp();
+				showQuickHelp();
 
-			return true;
+				return true;
 
-		case R.id.backupMenuItem:
+			case R.id.backupMenuItem:
 
-			backupDatabase();
-			return true;
+				backupDatabase();
+				return true;
 
-		case R.id.restoreMenuItem:
+			case R.id.restoreMenuItem:
 
-			restoreDatabase();
-			return true;
+				restoreDatabase();
+				return true;
 
-		case R.id.scheduledRecordingMenuItem:
+			case R.id.scheduledRecordingMenuItem:
 
-			this.startStopScheduledTrackRecording();
-			return true;
+				this.startStopScheduledTrackRecording();
+				return true;
 
-		default:
+			default:
 
-			return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(item);
 
 		}
 
@@ -1513,7 +1551,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Update sunrise/sunset times We update this only after GpsService bound or track recording stopped
+	 * Update sunrise/sunset times We update this only after GpsService bound or
+	 * track recording stopped
 	 */
 	private void updateSunriseSunset() {
 
@@ -1616,7 +1655,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Intercepting Back button click to prevent accidental exit in track recording mode
+	 * Intercepting Back button click to prevent accidental exit in track
+	 * recording mode
 	 */
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -1748,7 +1788,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Runnable performing restoration of the application database from external source
+	 * Runnable performing restoration of the application database from external
+	 * source
 	 */
 	private Runnable restoreDatabaseRunnable = new Runnable() {
 		@Override
@@ -1791,7 +1832,7 @@ public class MainActivity extends Activity {
 					String restoreDBPath = app.getAppDir() + "/" + Constants.PATH_BACKUP + "/" + importDatabaseFileName;
 
 					File restoreDB = new File(restoreDBPath);
-//					File currentDB = new File(app.getDataDir(),  Constants.DATABASE_FILE);
+					//					File currentDB = new File(app.getDataDir(),  Constants.DATABASE_FILE);
 					File currentDB = new File(data, app.getDataDir() + "/" + Constants.DATABASE_FILE);
 
 					FileInputStream fis = new FileInputStream(restoreDB);

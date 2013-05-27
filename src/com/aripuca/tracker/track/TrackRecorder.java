@@ -5,6 +5,7 @@ import android.os.SystemClock;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.db.Track;
 
 /**
  * TrackRecorder class. Handles tracks and segments statistics
@@ -167,6 +168,63 @@ public class TrackRecorder {
 
 	}
 
+	/**
+	 * Resume recording interrupted track
+	 */
+	public void resumeInterruptedTrack(Track lastRecordingTrack) {
+
+		this.lastLocation = null;
+
+		currentSystemTime = 0;
+		startTime = 0;
+		pauseTimeStart = 0;
+		idleTimeStart = 0;
+
+		pointsCount = 0;
+
+		segmentIndex = 0;
+
+		minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
+		minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
+
+		// create new track statistics object
+		this.trackStats = new TrackStats(app, lastRecordingTrack);
+
+		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
+
+		// creating default segment
+		// if no segments will be created during track recording
+		// we won't insert segment data to db
+		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+
+			this.segment = new SegmentStats(app);
+
+			switch (this.segmentingMode) {
+
+				case Constants.SEGMENT_DISTANCE:
+
+					// setting segment interval
+					segmentInterval = Float.parseFloat(app.getPreferences().getString("segment_distance", "5"));
+					break;
+
+				case Constants.SEGMENT_TIME:
+
+					// default time segmenting: 10 minutes
+					segmentTimeInterval = Float.parseFloat(app.getPreferences().getString("segment_time", "10"));
+					break;
+
+				case Constants.SEGMENT_CUSTOM_1:
+				case Constants.SEGMENT_CUSTOM_2:
+
+					this.setSegmentIntervals();
+					break;
+
+			}
+
+		}
+
+	}
+	
 	/**
 	 * Stop track recording
 	 */

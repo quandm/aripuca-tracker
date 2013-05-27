@@ -9,12 +9,14 @@ import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.widget.Toast;
 
+import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoint;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.utils.AppLog;
+import com.aripuca.tracker.utils.Population;
 
 /**
  * Track statistics class
@@ -33,6 +35,17 @@ public class TrackStats extends AbstractTrackStats {
 
 	}
 
+	public TrackStats(Context context, Track track) {
+
+		super(context);
+
+		this.track = track;
+		
+		this.trackId = this.track.getId();
+		this.trackTimeStart = this.track.getStartTime();
+
+	}
+	
 	/**
 	 * Id of the track being recorded
 	 */
