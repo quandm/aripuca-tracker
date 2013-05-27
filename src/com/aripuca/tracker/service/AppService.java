@@ -1,6 +1,5 @@
 package com.aripuca.tracker.service;
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Calendar;
 
 import android.app.AlarmManager;
@@ -30,7 +29,6 @@ import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.NotificationActivity;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.db.Track;
-import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.track.ScheduledTrackRecorder;
 import com.aripuca.tracker.track.TrackRecorder;
 import com.aripuca.tracker.utils.AppLog;

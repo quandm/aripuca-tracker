@@ -2,11 +2,10 @@ package com.aripuca.tracker.io;
 
 import java.io.PrintWriter;
 
-import com.aripuca.tracker.App;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+
+import com.aripuca.tracker.App;
 
 /**
  * Export to KML AsyncTask class

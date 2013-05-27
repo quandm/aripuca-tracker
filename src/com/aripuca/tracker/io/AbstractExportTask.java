@@ -24,7 +24,6 @@ import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.TracksListActivity;
-import com.aripuca.tracker.utils.AppLog;
 
 abstract public class AbstractExportTask extends AsyncTask<Long, Integer, String> {
 

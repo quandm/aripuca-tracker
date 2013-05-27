@@ -44,6 +44,20 @@ public abstract class AbstractTrackStats {
 
 	protected Population elevationPopulation;
 
+	/*
+	 * total idle time
+	 */
+	protected long totalIdleTime = 0;
+
+	/**
+	 * total time recording was paused
+	 */
+	protected long totalPauseTime = 0;
+
+	protected long currentSystemTime = 0;
+
+	protected long startTime = 0;
+
 	/**
 	 * real time of the track start
 	 */
@@ -74,7 +88,9 @@ public abstract class AbstractTrackStats {
 	 */
 	public float getAverageSpeed() {
 
-		if (this.getTotalTime() < 1000) { return 0; }
+		if (this.getTotalTime() < 1000) {
+			return 0;
+		}
 
 		return this.getDistance() / (this.getTotalTime() / 1000.0f);
 	}
@@ -84,7 +100,9 @@ public abstract class AbstractTrackStats {
 	 */
 	public float getAverageMovingSpeed() {
 
-		if (this.getMovingTime() < 1000) { return 0; }
+		if (this.getMovingTime() < 1000) {
+			return 0;
+		}
 
 		return this.getDistance() / (this.getMovingTime() / 1000.0f);
 	}
@@ -203,10 +221,14 @@ public abstract class AbstractTrackStats {
 
 		float currentSpeed = currentLocation.getSpeed();
 
-		if (currentSpeed == 0) { return false; }
+		if (currentSpeed == 0) {
+			return false;
+		}
 
 		// check from MyTracks
-		if (Math.abs(currentSpeed - 128) < 1) { return false; }
+		if (Math.abs(currentSpeed - 128) < 1) {
+			return false;
+		}
 
 		// calculate acceleration
 		this.acceleration = 0;
@@ -228,7 +250,9 @@ public abstract class AbstractTrackStats {
 
 			double averageSpeed = this.speedPopulation.getAverage();
 
-			if (currentSpeed > averageSpeed * 10) { return false; }
+			if (currentSpeed > averageSpeed * 10) {
+				return false;
+			}
 
 		} else {
 
@@ -255,11 +279,6 @@ public abstract class AbstractTrackStats {
 
 	}
 
-	/*
-	 * total idle time
-	 */
-	protected long totalIdleTime = 0;
-
 	public void updateTotalIdleTime(long t) {
 		this.totalIdleTime += t;
 	}
@@ -267,11 +286,6 @@ public abstract class AbstractTrackStats {
 	public long getTotalIdleTime() {
 		return this.totalIdleTime;
 	}
-
-	/**
-	 * total time recording was paused
-	 */
-	protected long totalPauseTime = 0;
 
 	public void updateTotalPauseTime(long t) {
 		this.totalPauseTime += t;
@@ -281,13 +295,9 @@ public abstract class AbstractTrackStats {
 		return this.totalPauseTime;
 	}
 
-	protected long currentSystemTime = 0;
-
 	public void setCurrentSystemTime(long cst) {
 		this.currentSystemTime = cst;
 	}
-
-	protected long startTime = 0;
 
 	public void setStartTime(long st) {
 		this.startTime = st;

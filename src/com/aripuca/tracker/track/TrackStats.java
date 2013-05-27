@@ -9,14 +9,12 @@ import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.widget.Toast;
 
-import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoint;
 import com.aripuca.tracker.db.TrackPoints;
 import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.utils.AppLog;
-import com.aripuca.tracker.utils.Population;
 
 /**
  * Track statistics class
@@ -25,6 +23,10 @@ public class TrackStats extends AbstractTrackStats {
 
 	private Track track;
 
+	/**
+	 * 
+	 * @param context
+	 */
 	public TrackStats(Context context) {
 
 		super(context);
@@ -35,6 +37,12 @@ public class TrackStats extends AbstractTrackStats {
 
 	}
 
+	/**
+	 * TrackStats for interrupted track
+	 * 
+	 * @param context
+	 * @param track
+	 */
 	public TrackStats(Context context, Track track) {
 
 		super(context);
@@ -42,7 +50,17 @@ public class TrackStats extends AbstractTrackStats {
 		this.track = track;
 		
 		this.trackId = this.track.getId();
+
+		// loading saved track statistics
+		this.distance = this.track.getDistance();
+		this.maxSpeed = this.track.getMaxSpeed();
+		this.minElevation = this.track.getMinElevation();
+		this.maxElevation = this.track.getMaxElevation();
+		this.elevationGain = this.track.getElevationGain();
+		this.elevationLoss = this.track.getElevationLoss();
+		
 		this.trackTimeStart = this.track.getStartTime();
+		this.totalIdleTime = this.track.getTotalTime() - this.track.getMovingTime();
 
 	}
 	
@@ -66,7 +84,7 @@ public class TrackStats extends AbstractTrackStats {
 
 		track.setTitle("New track");
 		track.setActivity(Constants.ACTIVITY_TRACK);
-		track.setRecording(1);
+		track.setRecording(Constants.TRACK_RECORDING_IN_PROGRESS);
 		track.setStartTime(this.trackTimeStart);
 		track.setFinishTime(this.trackTimeStart);
 
