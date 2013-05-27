@@ -132,6 +132,7 @@
     <string name="recording_paused">Track recording paused</string>
     <string name="recording_resumed">Track recording resumed</string>
     <string name="recording_finished">New track saved</string>
+    <string name="resume_interrupted_track">Resume interrupted track?</string>
     <string name="track_title_required">Track title required</string>
     <string name="edit_track">Edit track</string>
     <string name="track_updated">Track updated</string>
