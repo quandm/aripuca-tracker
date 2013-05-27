@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.db.Track;
+import com.aripuca.tracker.db.TrackPoints;
 
 /**
  * TrackRecorder class. Handles tracks and segments statistics
@@ -180,12 +181,12 @@ public class TrackRecorder {
 		pauseTimeStart = 0;
 		idleTimeStart = 0;
 
-		pointsCount = 0;
+		pointsCount = TrackPoints.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
 		segmentIndex = 0;
 
-		minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
-		minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
+		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
+		this.minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
 
 		// create new track statistics object
 		this.trackStats = new TrackStats(app, lastRecordingTrack);

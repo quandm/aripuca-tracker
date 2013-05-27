@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
