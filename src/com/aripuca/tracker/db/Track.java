@@ -62,7 +62,4 @@ public class Track extends AbstractTrack {
 		this.recording = recording;
 	}
 
-	
-	
-	
 }

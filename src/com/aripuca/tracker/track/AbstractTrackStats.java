@@ -56,10 +56,13 @@ public abstract class AbstractTrackStats {
 
 	protected long currentSystemTime = 0;
 
+	/**
+	 * track recording start time (time since boot)
+	 */
 	protected long startTime = 0;
 
 	/**
-	 * real time of the track start
+	 * time stamp of the track recording start
 	 */
 	protected long trackTimeStart;
 
