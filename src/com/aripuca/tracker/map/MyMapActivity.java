@@ -240,21 +240,24 @@ public class MyMapActivity extends MapActivity {
 		 */
 		private void drawSegments(Canvas canvas, ArrayList<Path> segmentPath) {
 
-			Paint paint = new Paint();
-			paint.setStrokeWidth(3);
-			paint.setStyle(Paint.Style.STROKE);
-			paint.setAntiAlias(true);
+//			int strokeWidth = (int) Math.ceil(mapView.getMaxZoomLevel() / 3);
+
+			Paint strokePaint = new Paint();
+			strokePaint.setStrokeWidth(3);
+			strokePaint.setStyle(Paint.Style.STROKE);
+			strokePaint.setAntiAlias(true);
+			strokePaint.setStrokeCap(Paint.Cap.ROUND);
 
 			// drawing segments in alternate colors
 			for (int i = 0; i < segmentPath.size(); i++) {
 
 				if (i % 2 == 0) {
-					paint.setColor(getResources().getColor(R.color.red));
+					strokePaint.setColor(getResources().getColor(R.color.red));
 				} else {
-					paint.setColor(getResources().getColor(R.color.blue));
+					strokePaint.setColor(getResources().getColor(R.color.blue));
 				}
 
-				canvas.drawPath(segmentPath.get(i), paint);
+				canvas.drawPath(segmentPath.get(i), strokePaint);
 			}
 
 		}
@@ -307,9 +310,8 @@ public class MyMapActivity extends MapActivity {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas,
-		 * com.google.android.maps.MapView, boolean)
+		 * @see com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas, com.google.android.maps.MapView,
+		 * boolean)
 		 */
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
@@ -672,9 +674,9 @@ public class MyMapActivity extends MapActivity {
 		if (currentLocation != null) {
 
 			// include current location in track span
-			//			mapSpan.updateMapSpan((int) (currentLocation.getLatitude() * 1E6),
-			//					(int) (currentLocation.getLongitude() * 1E6));
-			//			this.zoomToSpanAndCenter();
+			// mapSpan.updateMapSpan((int) (currentLocation.getLatitude() * 1E6),
+			// (int) (currentLocation.getLongitude() * 1E6));
+			// this.zoomToSpanAndCenter();
 
 			mapView.getController().setZoom(16); // 1..21
 			mapView.getController().animateTo(MapUtils.locationToGeoPoint(currentLocation));

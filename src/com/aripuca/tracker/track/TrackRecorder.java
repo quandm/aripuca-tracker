@@ -5,6 +5,7 @@ import android.os.SystemClock;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoints;
 
@@ -37,7 +38,7 @@ public class TrackRecorder {
 	 * Segment statistics object
 	 */
 	private SegmentStats segment;
-	
+
 	public TrackStats getTrackStats() {
 		return trackStats;
 	}
@@ -54,6 +55,9 @@ public class TrackRecorder {
 
 	protected long idleTimeStart = 0;
 
+	/**
+	 * value of SystemClock.uptimeMillis();
+	 */
 	private long currentSystemTime = 0;
 
 	private int pointsCount = 0;
@@ -63,9 +67,9 @@ public class TrackRecorder {
 	}
 
 	/**
-	 * recording start time
+	 * recording start time (milliseconds since boot)
 	 */
-	private long startTime = 0;
+//	private long startTime = 0;
 
 	/**
 	 * 
@@ -119,8 +123,7 @@ public class TrackRecorder {
 
 		this.lastLocation = null;
 
-		currentSystemTime = 0;
-		startTime = 0;
+//		currentSystemTime = 0;
 		pauseTimeStart = 0;
 		idleTimeStart = 0;
 
@@ -134,39 +137,8 @@ public class TrackRecorder {
 		// create new track statistics object
 		this.trackStats = new TrackStats(app);
 
-		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
-
-		// creating default segment
-		// if no segments will be created during track recording
-		// we won't insert segment data to db
-		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-
-			this.segment = new SegmentStats(app);
-
-			switch (this.segmentingMode) {
-
-				case Constants.SEGMENT_DISTANCE:
-
-					// setting segment interval
-					segmentInterval = Float.parseFloat(app.getPreferences().getString("segment_distance", "5"));
-					break;
-
-				case Constants.SEGMENT_TIME:
-
-					// default time segmenting: 10 minutes
-					segmentTimeInterval = Float.parseFloat(app.getPreferences().getString("segment_time", "10"));
-					break;
-
-				case Constants.SEGMENT_CUSTOM_1:
-				case Constants.SEGMENT_CUSTOM_2:
-
-					this.setSegmentIntervals();
-					break;
-
-			}
-
-		}
-
+		this.createSegmentStats();
+		
 	}
 
 	/**
@@ -174,23 +146,33 @@ public class TrackRecorder {
 	 */
 	public void resumeInterruptedTrack(Track lastRecordingTrack) {
 
-		this.lastLocation = null;
+		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
 
-		currentSystemTime = 0;
-		startTime = 0;
-		pauseTimeStart = 0;
-		idleTimeStart = 0;
+//		this.currentSystemTime = 0;
+		this.pauseTimeStart = 0;
+		this.idleTimeStart = 0;
 
-		pointsCount = TrackPoints.getCount(app.getDatabase(), lastRecordingTrack.getId());
+		this.pointsCount = TrackPoints.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
-		segmentIndex = 0;
+		// start new segment every time we resume interrupted track   
+		this.segmentIndex = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
 		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
 		this.minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
 
 		// create new track statistics object
 		this.trackStats = new TrackStats(app, lastRecordingTrack);
+		
+		// start time for interrupted tracks is in the past
+		// if phone was restarted before resuming recording - startTime may become negative
+		this.trackStats.setStartTime(SystemClock.uptimeMillis() - lastRecordingTrack.getTotalTime());
 
+		this.createSegmentStats();
+		
+	}
+	
+	protected void createSegmentStats() {
+		
 		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
 
 		// creating default segment
@@ -206,26 +188,26 @@ public class TrackRecorder {
 
 					// setting segment interval
 					segmentInterval = Float.parseFloat(app.getPreferences().getString("segment_distance", "5"));
-					break;
+				break;
 
 				case Constants.SEGMENT_TIME:
 
 					// default time segmenting: 10 minutes
 					segmentTimeInterval = Float.parseFloat(app.getPreferences().getString("segment_time", "10"));
-					break;
+				break;
 
 				case Constants.SEGMENT_CUSTOM_1:
 				case Constants.SEGMENT_CUSTOM_2:
 
 					this.setSegmentIntervals();
-					break;
+				break;
 
 			}
 
 		}
-
+		
 	}
-	
+
 	/**
 	 * Stop track recording
 	 */
@@ -304,10 +286,11 @@ public class TrackRecorder {
 	 */
 	public void updateStatistics(Location location) {
 
-		// set interval start time
 		// measure time intervals (idle, pause)
 		if (!this.measureTrackTimes(location)) {
 			// recording paused
+			// after resuming the recording we will start measuring distance from saved location
+			this.lastLocation = location;
 			return;
 		}
 
@@ -371,20 +354,16 @@ public class TrackRecorder {
 
 		// SEGMENTING
 		switch (this.segmentingMode) {
-
 		// segmenting track by distance
 			case Constants.SEGMENT_DISTANCE:
 			case Constants.SEGMENT_CUSTOM_1:
 			case Constants.SEGMENT_CUSTOM_2:
-
 				this.segmentTrack();
-				break;
-
+			break;
 			// segmenting track by time
 			case Constants.SEGMENT_TIME:
-
 				this.segmentTrackByTime();
-				break;
+			break;
 		}
 
 		// updating segment statistics
@@ -414,16 +393,17 @@ public class TrackRecorder {
 
 		this.trackStats.setCurrentSystemTime(this.currentSystemTime);
 
-		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			this.segment.setCurrentSystemTime(this.currentSystemTime);
-		}
+//		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+//			this.segment.setCurrentSystemTime(this.currentSystemTime);
+//		}
 
-		if (this.startTime == 0) {
-			this.startTime = this.currentSystemTime;
+		// first update sets startTime to time elapsed since boot
+		if (this.trackStats.getStartTime() == 0) {
 			this.trackStats.setStartTime(this.currentSystemTime);
 		}
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+			this.segment.setCurrentSystemTime(this.currentSystemTime);
 			if (this.segment.getStartTime() == 0) {
 				this.segment.setStartTime(this.currentSystemTime);
 			}
@@ -434,9 +414,6 @@ public class TrackRecorder {
 		this.processPauseTime();
 
 		if (this.recordingPaused) {
-			// after resuming the recording we will start measuring distance
-			// from saved location
-			this.lastLocation = location;
 			return false;
 		}
 
@@ -540,7 +517,9 @@ public class TrackRecorder {
 	private void recordTrackPoint(Location location) {
 
 		// let's not record this update if accuracy is not acceptable
-		if (location.hasAccuracy() && location.getAccuracy() > minAccuracy) { return; }
+		if (location.hasAccuracy() && location.getAccuracy() > minAccuracy) {
+			return;
+		}
 
 		// record points only if distance between 2 consecutive points is
 		// greater than min_distance

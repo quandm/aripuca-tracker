@@ -56,7 +56,7 @@ public class TrackPoints {
 	public static ArrayList<TrackPoint> getAll(SQLiteDatabase db, long trackId, MapSpan mapSpan) {
 
 		ArrayList<TrackPoint> points = new ArrayList<TrackPoint>();
-		
+
 		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + ";";
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -75,18 +75,45 @@ public class TrackPoints {
 		}
 
 		cursor.close();
-		
+
 		return points;
+
+	}
+
+	/**
+	 * Get all track points for required track
+	 * 
+	 * @param db
+	 * @param trackId
+	 * @param points
+	 */
+	public static TrackPoint getLast(SQLiteDatabase db, long trackId) {
+
+		String sql = "SELECT * FROM track_points WHERE track_id=" + trackId + " ORDER BY _id DESC LIMIT 1;";
+		Cursor cursor = db.rawQuery(sql, null);
+
+		if (cursor.getCount() != 1) {
+			return null;
+		}
+
+		cursor.moveToFirst();
+
+		// track point object
+		TrackPoint tp = new TrackPoint(cursor);
+
+		cursor.close();
+
+		return tp;
 
 	}
 
 	public static long insert(SQLiteDatabase db, TrackPoint trackPoint) {
 
 		ContentValues values = new ContentValues();
-		
+
 		values.put("track_id", trackPoint.getTrackId());
 		values.put("segment_index", trackPoint.getSegmentIndex());
-		
+
 		values.put("lat", trackPoint.getLatE6());
 		values.put("lng", trackPoint.getLngE6());
 		values.put("elevation", Utils.formatNumber(trackPoint.getElevation(), 1));

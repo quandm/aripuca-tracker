@@ -52,6 +52,18 @@ public class Segments {
 	}
 
 	
+	public static int getCount(SQLiteDatabase db, long trackId) {
+
+		String sql = "SELECT COUNT(*) AS count FROM " + TABLE_NAME + " WHERE track_id = " + trackId;
+		
+		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+		int count = cursor.getInt(cursor.getColumnIndex("count"));
+		cursor.close();
+		
+		return count; 
+	}
+	
 	public static Segment get(SQLiteDatabase db, long trackId, long segmentId, int segmentIndex) {
 
 		String sql = "SELECT segments.*, COUNT(track_points._id) AS points_count FROM segments, track_points WHERE"

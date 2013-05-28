@@ -37,7 +37,7 @@ public class App extends Application {
 				@Override
 				public void uncaughtException(Thread thread, Throwable ex) {
 
-					AppLog.e(getApplicationContext(), "uncought exception");
+					AppLog.e(getApplicationContext(), "!!! Uncaught exception !!!");
 
 					// re-throw critical exception further to the os (important)
 					defaultUncaughtExceptionHandler.uncaughtException(thread, ex);

@@ -216,7 +216,18 @@ public class TrackPoint {
 		
 	}
 	
-	
+	public Location getLocation() {
+		
+		Location loc = new Location("gps");
+
+		loc.setLatitude(lat);
+		loc.setLongitude(lng);
+		loc.setAltitude(elevation);
+		loc.setTime(time);
+
+		return loc;
+		
+	}
 	
 
 }
