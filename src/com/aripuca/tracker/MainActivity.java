@@ -845,8 +845,6 @@ public class MainActivity extends Activity {
 
 		this.startOrResumeTracking(appService);
 
-		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
-
 	}
 
 	/**
@@ -857,30 +855,38 @@ public class MainActivity extends Activity {
 
 		final AppService appService = as;
 		final Track lastRecordingTrack = Tracks.getLastRecordingTrack(app.getDatabase());
+		final Context context = MainActivity.this;
 
 		if (lastRecordingTrack != null) {
-
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			dialog.setMessage(R.string.resume_interrupted_track);
 			dialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					
 					appService.resumeInterruptedTrack(lastRecordingTrack);
+					
+					Toast.makeText(context, R.string.recording_started, Toast.LENGTH_SHORT).show();
 				}
 			});
 			dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-
-					//TODO: finish interrupted track
-
+					
 					appService.startTrackRecording();
+					
+					Toast.makeText(context, R.string.recording_started, Toast.LENGTH_SHORT).show();
+					
+					// mark all interrupted tracks as finished
+					Tracks.finishAllInterrupted(app.getDatabase());
+					
 				}
 			});
 			dialog.show();
 
 		} else {
 			appService.startTrackRecording();
+			Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 		}
 
 	}
