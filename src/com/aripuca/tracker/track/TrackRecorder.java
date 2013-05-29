@@ -37,7 +37,7 @@ public class TrackRecorder {
 	/**
 	 * Segment statistics object
 	 */
-	private SegmentStats segment;
+	private SegmentStats segmentStats;
 
 	public TrackStats getTrackStats() {
 		return trackStats;
@@ -69,7 +69,7 @@ public class TrackRecorder {
 	/**
 	 * recording start time (milliseconds since boot)
 	 */
-	//	private long startTime = 0;
+	// private long startTime = 0;
 
 	/**
 	 * 
@@ -123,7 +123,7 @@ public class TrackRecorder {
 
 		this.lastLocation = null;
 
-		//		currentSystemTime = 0;
+		// currentSystemTime = 0;
 		pauseTimeStart = 0;
 		idleTimeStart = 0;
 
@@ -148,14 +148,14 @@ public class TrackRecorder {
 
 		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
 
-		//		this.currentSystemTime = 0;
+		// this.currentSystemTime = 0;
 		this.pauseTimeStart = 0;
 		this.idleTimeStart = 0;
 
 		this.pointsCount = TrackPoints.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
-		// last segment index   
-		this.segmentIndex = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId());
+		// last segment index
+		this.segmentIndex = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId()) - 1;
 
 		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
 		this.minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
@@ -180,7 +180,7 @@ public class TrackRecorder {
 		// we won't insert segment data to db
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
-			this.segment = new SegmentStats(app);
+			this.segmentStats = new SegmentStats(app);
 
 			switch (this.segmentingMode) {
 
@@ -217,8 +217,8 @@ public class TrackRecorder {
 			// insert segment in db only if there were more then one segments in
 			// this track
 			if (this.segmentIndex > 0) {
-				this.segment.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
-				this.segment = null;
+				this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
+				this.segmentStats = null;
 			}
 		}
 
@@ -256,13 +256,13 @@ public class TrackRecorder {
 	 */
 	private void addNewSegment() {
 
-		this.segment.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
+		this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 
-		this.segment = null;
+		this.segmentStats = null;
 
 		this.segmentIndex++;
 
-		this.segment = new SegmentStats(app);
+		this.segmentStats = new SegmentStats(app);
 
 	}
 
@@ -315,7 +315,7 @@ public class TrackRecorder {
 
 			// accumulate segment distance
 			if (this.segmentingMode != Constants.SEGMENT_NONE) {
-				this.segment.updateDistance(distanceIncrement);
+				this.segmentStats.updateDistance(distanceIncrement);
 			}
 
 		} else {
@@ -339,10 +339,10 @@ public class TrackRecorder {
 		this.recordTrackPoint(location);
 
 		// TODO: ???
-		// update new track to avoid losing total statistics in case of
-		// application failure
+		// update new track to avoid losing total statistics in case of application failure
 		if (this.pointsCount % 10 == 0) {
 			this.trackStats.updateNewTrack();
+			// this.segmentStats.updateSegment();
 		}
 
 		// update new last location
@@ -370,10 +370,10 @@ public class TrackRecorder {
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 
 			if (validSpeed) {
-				this.segment.processSpeed(location.getSpeed());
+				this.segmentStats.processSpeed(location.getSpeed());
 			}
 
-			this.segment.processElevation(location);
+			this.segmentStats.processElevation(location);
 
 		}
 
@@ -393,9 +393,9 @@ public class TrackRecorder {
 
 		this.trackStats.setCurrentSystemTime(this.currentSystemTime);
 
-		//		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-		//			this.segment.setCurrentSystemTime(this.currentSystemTime);
-		//		}
+		// if (this.segmentingMode != Constants.SEGMENT_NONE) {
+		// this.segmentStats.setCurrentSystemTime(this.currentSystemTime);
+		// }
 
 		// first update sets startTime to time elapsed since boot
 		if (this.trackStats.getStartTime() == 0) {
@@ -403,9 +403,9 @@ public class TrackRecorder {
 		}
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			this.segment.setCurrentSystemTime(this.currentSystemTime);
-			if (this.segment.getStartTime() == 0) {
-				this.segment.setStartTime(this.currentSystemTime);
+			this.segmentStats.setCurrentSystemTime(this.currentSystemTime);
+			if (this.segmentStats.getStartTime() == 0) {
+				this.segmentStats.setStartTime(this.currentSystemTime);
 			}
 		}
 
@@ -438,7 +438,7 @@ public class TrackRecorder {
 				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+					this.segmentStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				}
 
 			}
@@ -453,7 +453,7 @@ public class TrackRecorder {
 				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+					this.segmentStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				}
 
 				this.idleTimeStart = 0;
@@ -477,7 +477,7 @@ public class TrackRecorder {
 				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
+					this.segmentStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				}
 
 				this.idleTimeStart = 0;
@@ -488,7 +488,7 @@ public class TrackRecorder {
 				this.trackStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
+					this.segmentStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 				}
 			}
 
@@ -502,7 +502,7 @@ public class TrackRecorder {
 				this.trackStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 
 				if (this.segmentingMode != Constants.SEGMENT_NONE) {
-					this.segment.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
+					this.segmentStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 				}
 			}
 

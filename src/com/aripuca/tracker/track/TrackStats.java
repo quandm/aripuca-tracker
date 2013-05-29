@@ -24,6 +24,11 @@ public class TrackStats extends AbstractTrackStats {
 	private Track track;
 
 	/**
+	 * Id of the track being recorded
+	 */
+	private long trackId;
+	
+	/**
 	 * 
 	 * @param context
 	 */
@@ -64,11 +69,6 @@ public class TrackStats extends AbstractTrackStats {
 
 	}
 	
-	/**
-	 * Id of the track being recorded
-	 */
-	private long trackId;
-
 	public void setTrackId(long tid) {
 		this.trackId = tid;
 	}

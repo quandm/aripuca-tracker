@@ -854,12 +854,23 @@ public class MainActivity extends Activity {
 	private void startOrResumeTracking(AppService as) {
 
 		final AppService appService = as;
+		
+		// find last track that was not properly finished (recording=1) 
 		final Track lastRecordingTrack = Tracks.getLastRecordingTrack(app.getDatabase());
+		
 		final Context context = MainActivity.this;
 
 		if (lastRecordingTrack != null) {
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-			dialog.setMessage(R.string.resume_interrupted_track);
+			
+			// format alert message
+			String trackDistance = Utils.formatDistance(lastRecordingTrack.getDistance(), distanceUnit) + " " + 
+						Utils.getLocalizedDistanceUnit(this, lastRecordingTrack.getDistance(), distanceUnit);
+			String trackStartTime = (String) DateFormat.format("yyyy-MM-dd k:mm", lastRecordingTrack.getStartTime());
+			
+			String alertMessage = String.format(getString(R.string.resume_interrupted_track), trackDistance, trackStartTime);
+			dialog.setMessage(alertMessage);
+			
 			dialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

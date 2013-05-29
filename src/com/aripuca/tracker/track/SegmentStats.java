@@ -8,20 +8,50 @@ import android.widget.Toast;
 
 import com.aripuca.tracker.db.Segment;
 import com.aripuca.tracker.db.Segments;
+import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.utils.AppLog;
 
 public class SegmentStats extends AbstractTrackStats {
-
-	public SegmentStats(Context context) {
-
-		super(context);
-
-	}
+	
+	private Segment segment;
+	
+	/**
+	 * Id of the track being recorded
+	 */
+	private long segmentId;
 
 	/**
 	 * Index of the segment being recorded
 	 */
 	private long segmentIndex;
+	
+	public SegmentStats(Context context) {
+
+		super(context);
+		
+	}
+	
+	public SegmentStats(Context context, Segment segment) {
+
+		super(context);
+
+		this.segment = segment;
+		
+		this.segmentId = this.segment.getId();
+
+		// loading saved track statistics
+		this.distance = this.segment.getDistance();
+		this.maxSpeed = this.segment.getMaxSpeed();
+		this.minElevation = this.segment.getMinElevation();
+		this.maxElevation = this.segment.getMaxElevation();
+		this.elevationGain = this.segment.getElevationGain();
+		this.elevationLoss = this.segment.getElevationLoss();
+		
+		this.trackTimeStart = this.segment.getStartTime();
+		this.totalIdleTime = this.segment.getTotalTime() - this.segment.getMovingTime();
+
+	}
+	
 
 	public void setSegmentIndex(long sid) {
 		this.segmentIndex = sid;
@@ -29,6 +59,27 @@ public class SegmentStats extends AbstractTrackStats {
 
 	public long getSegmentIndex() {
 		return this.segmentIndex;
+	}
+
+	/**
+	 * Add new segment for current track
+	 */
+	public void insertNewSegment(long trackId, int segmentIndex) {
+
+		Segment segment = new Segment(trackId, segmentIndex);
+		segment.setStartTime(this.trackTimeStart);
+
+		try {
+
+			this.segmentId = Segments.insert(app.getDatabase(), segment);
+			
+		} catch (SQLiteException e) {
+
+			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+			AppLog.w(context, "SQLiteException: " + e.getMessage());
+
+		}
+
 	}
 
 	/**
@@ -66,5 +117,10 @@ public class SegmentStats extends AbstractTrackStats {
 		return newSegmentId;
 
 	}
+	
+	public void updateSegment(long segmentId) {
 
+
+	}
+	
 }
