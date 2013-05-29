@@ -225,4 +225,15 @@ public class Tracks {
 
 	}
 
+	/**
+	 * Mark all tracks as finished
+	 * 
+	 * @param db
+	 */
+	public static void finishAllInterrupted(SQLiteDatabase db) {
+		ContentValues values = new ContentValues();
+		values.put("recording", 0);
+		db.update("tracks", values, null, null);
+	}
+	
 }

@@ -69,7 +69,7 @@ public class TrackRecorder {
 	/**
 	 * recording start time (milliseconds since boot)
 	 */
-//	private long startTime = 0;
+	//	private long startTime = 0;
 
 	/**
 	 * 
@@ -123,7 +123,7 @@ public class TrackRecorder {
 
 		this.lastLocation = null;
 
-//		currentSystemTime = 0;
+		//		currentSystemTime = 0;
 		pauseTimeStart = 0;
 		idleTimeStart = 0;
 
@@ -138,7 +138,7 @@ public class TrackRecorder {
 		this.trackStats = new TrackStats(app);
 
 		this.createSegmentStats();
-		
+
 	}
 
 	/**
@@ -148,13 +148,13 @@ public class TrackRecorder {
 
 		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
 
-//		this.currentSystemTime = 0;
+		//		this.currentSystemTime = 0;
 		this.pauseTimeStart = 0;
 		this.idleTimeStart = 0;
 
 		this.pointsCount = TrackPoints.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
-		// start new segment every time we resume interrupted track   
+		// last segment index   
 		this.segmentIndex = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
 		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
@@ -162,17 +162,17 @@ public class TrackRecorder {
 
 		// create new track statistics object
 		this.trackStats = new TrackStats(app, lastRecordingTrack);
-		
+
 		// start time for interrupted tracks is in the past
 		// if phone was restarted before resuming recording - startTime may become negative
 		this.trackStats.setStartTime(SystemClock.uptimeMillis() - lastRecordingTrack.getTotalTime());
 
 		this.createSegmentStats();
-		
+
 	}
-	
+
 	protected void createSegmentStats() {
-		
+
 		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
 
 		// creating default segment
@@ -205,7 +205,7 @@ public class TrackRecorder {
 			}
 
 		}
-		
+
 	}
 
 	/**
@@ -393,9 +393,9 @@ public class TrackRecorder {
 
 		this.trackStats.setCurrentSystemTime(this.currentSystemTime);
 
-//		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-//			this.segment.setCurrentSystemTime(this.currentSystemTime);
-//		}
+		//		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+		//			this.segment.setCurrentSystemTime(this.currentSystemTime);
+		//		}
 
 		// first update sets startTime to time elapsed since boot
 		if (this.trackStats.getStartTime() == 0) {
