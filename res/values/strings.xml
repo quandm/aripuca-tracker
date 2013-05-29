@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <!-- NOT TRANSLATABLE -->
     <string name="main_app_title">Aripuca GPS Tracker</string>
@@ -132,7 +131,7 @@
     <string name="recording_paused">Track recording paused</string>
     <string name="recording_resumed">Track recording resumed</string>
     <string name="recording_finished">New track saved</string>
-    <string name="resume_interrupted_track">Resume interrupted track?</string>
+    <string name="resume_interrupted_track" formatted="false">Interrupted track found. Distance %s. Recorded on %s. Resume?</string>
     <string name="track_title_required">Track title required</string>
     <string name="edit_track">Edit track</string>
     <string name="track_updated">Track updated</string>

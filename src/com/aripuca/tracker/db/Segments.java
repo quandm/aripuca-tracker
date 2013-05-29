@@ -81,6 +81,13 @@ public class Segments {
 		return segment;
 	}
 	
+	/**
+	 * Insert segment record 
+	 * 
+	 * @param db
+	 * @param segment
+	 * @return
+	 */
 	public static long insert(SQLiteDatabase db, Segment segment) {
 		
 		ContentValues values = new ContentValues();
@@ -107,5 +114,37 @@ public class Segments {
 		return db.insertOrThrow("segments", null, values);
 			
 	}
+	
+	/**
+	 * Update segment record
+	 *  
+	 * @param db
+	 * @param segment
+	 * @return
+	 */
+	public static long update(SQLiteDatabase db, Segment segment) {
+		
+		ContentValues values = new ContentValues();
+		
+		values.put("distance", Utils.formatNumber(segment.getDistance(), 1));
+		
+		values.put("total_time", segment.getTotalTime());
+		values.put("moving_time",  segment.getMovingTime());
+		
+		values.put("max_speed", Utils.formatNumber(segment.getMaxSpeed(), 2));
+		
+		values.put("max_elevation", Utils.formatNumber(segment.getMaxElevation(), 1));
+		values.put("min_elevation", Utils.formatNumber(segment.getMinElevation(), 1));
+		
+		values.put("elevation_gain", segment.getElevationGain());
+		values.put("elevation_loss", segment.getElevationLoss());
+		
+		values.put("finish_time", segment.getFinishTime());
+
+//		return db.insertOrThrow("segments", null, values);
+		return db.update("segments", values, "_id=?", new String[] { String.valueOf(segment.getId()) });
+			
+	}
+	
 	
 }
