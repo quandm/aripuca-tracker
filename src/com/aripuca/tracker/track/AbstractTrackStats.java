@@ -65,6 +65,8 @@ public abstract class AbstractTrackStats {
 	 * time stamp of the track recording start
 	 */
 	protected long trackTimeStart;
+	
+	protected int pointsCount = 0;
 
 	public long getTrackTimeStart() {
 		return trackTimeStart;
@@ -282,6 +284,10 @@ public abstract class AbstractTrackStats {
 
 	}
 
+	public void setTotalIdleTime(long t) {
+		this.totalIdleTime = t;
+	}
+
 	public void updateTotalIdleTime(long t) {
 		this.totalIdleTime += t;
 	}
@@ -312,6 +318,20 @@ public abstract class AbstractTrackStats {
 
 	public float getAcceleration() {
 		return this.acceleration;
+	}
+
+	/**
+	 * @return the pointsCount
+	 */
+	public int getPointsCount() {
+		return pointsCount;
+	}
+
+	/**
+	 * @param pointsCount the pointsCount to set
+	 */
+	public void incPointsCount() {
+		this.pointsCount++;
 	}
 
 }
