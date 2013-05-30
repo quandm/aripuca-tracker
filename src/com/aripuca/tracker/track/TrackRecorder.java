@@ -139,11 +139,11 @@ public class TrackRecorder {
 		this.lastLocation = null;
 
 		// currentSystemTime = 0;
-		pauseTimeStart = 0;
-		idleTimeStart = 0;
+		this.pauseTimeStart = 0;
+		this.idleTimeStart = 0;
 
-		pointsCount = 0;
-		segmentIndex = 0;
+		this.pointsCount = 0;
+		this.segmentIndex = 0;
 
 		// create new track statistics object
 		this.trackStats = new TrackStats(app);
@@ -177,16 +177,16 @@ public class TrackRecorder {
 		// if phone was restarted before resuming recording - startTime may become negative
 		this.trackStats.setStartTime(SystemClock.uptimeMillis() - lastRecordingTrack.getTotalTime());
 
-		// number of saved segments 
+		// number of saved segments
 		int savedSegmentsCount = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId());
 		// number of started segments, from track_points table
 		int startedSegmentsCount = Segments.getStartedCount(app.getDatabase(), lastRecordingTrack.getId());
 
 		if (savedSegmentsCount == startedSegmentsCount) {
 			// no segment restoration required
-			this.segmentIndex = startedSegmentsCount + 1;
-		} else {
 			this.segmentIndex = startedSegmentsCount;
+		} else {
+			this.segmentIndex = startedSegmentsCount - 1;
 			this.restoreLastSegment(lastRecordingTrack.getId(), segmentIndex);
 		}
 
@@ -260,8 +260,8 @@ public class TrackRecorder {
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
 			// last segment in track
-			// insert segment only if there were more then one segments in this track
-			if (this.segmentIndex > 0) {
+			// insert segment only if there were more then one segments in this track and there were points recorded
+			if (this.segmentIndex > 0 && this.segmentStats.getPointsCount() > 0) {
 				this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 				this.segmentStats = null;
 			}
@@ -574,6 +574,10 @@ public class TrackRecorder {
 
 			pointsCount++;
 
+			if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				this.segmentStats.incPointsCount();
+			}
+
 		} else {
 
 			if (this.lastRecordedLocation.distanceTo(location) >= minDistance) {
@@ -582,8 +586,13 @@ public class TrackRecorder {
 				this.lastRecordedLocation = location;
 
 				pointsCount++;
+
+				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+					this.segmentStats.incPointsCount();
+				}
 			}
 		}
+
 	}
 
 	/**

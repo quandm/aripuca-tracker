@@ -877,6 +877,9 @@ public class MainActivity extends Activity {
 					
 					appService.resumeInterruptedTrack(lastRecordingTrack);
 					
+					// mark all interrupted tracks as finished
+					Tracks.finishAllInterrupted(app.getDatabase());
+					
 					Toast.makeText(context, R.string.recording_started, Toast.LENGTH_SHORT).show();
 				}
 			});
@@ -1390,7 +1393,7 @@ public class MainActivity extends Activity {
 		}
 
 		// ///////////////////////////////////////////////////////////////////
-		if (appService.isListening()) {
+		if (appService.isListening() || app.getPreferences().getBoolean("debug_on", false)) {
 			// activate buttons if location updates come from GPS
 			((Button) findViewById(R.id.trackRecordingButton)).setEnabled(true);
 			this.hideWaitForFixMessage();

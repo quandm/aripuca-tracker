@@ -58,7 +58,7 @@ public class TrackPoints {
 	public static TrackStatsBundle getStats(SQLiteDatabase db, long trackId, int segmentIndex) {
 
 		String segmentIndexCondition = "";
-		if (segmentIndex == -1) {
+		if (segmentIndex != -1) {
 			segmentIndexCondition = " AND segment_index=" + segmentIndex;
 		}
 
@@ -66,7 +66,7 @@ public class TrackPoints {
 				"MAX(elevation) AS max_elevation, " +
 				"MIN(elevation) AS min_elevation, " +
 				"MAX(time) - MIN(time) AS total_time, " +
-				"MIN(time) AS start_time, MAX(time) AS finish_time" +
+				"MIN(time) AS start_time, MAX(time) AS finish_time, " +
 				"MAX(speed) AS max_speed FROM track_points " +
 				"WHERE track_id=" + trackId + segmentIndexCondition;
 
