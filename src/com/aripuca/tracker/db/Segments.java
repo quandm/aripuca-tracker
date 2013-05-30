@@ -33,7 +33,7 @@ public class Segments {
 		ArrayList<Segment> segments = new ArrayList<Segment>();
 
 		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE track_id = " + trackId;
-		
+
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();
 
@@ -51,23 +51,44 @@ public class Segments {
 		return segments;
 	}
 
-	
 	public static int getCount(SQLiteDatabase db, long trackId) {
 
 		String sql = "SELECT COUNT(*) AS count FROM " + TABLE_NAME + " WHERE track_id = " + trackId;
-		
+
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();
 		int count = cursor.getInt(cursor.getColumnIndex("count"));
 		cursor.close();
-		
-		return count; 
+
+		return count;
 	}
-	
-	public static Segment get(SQLiteDatabase db, long trackId, long segmentId, int segmentIndex) {
+
+	/**
+	 * Returns number of started segments. If track recording is interrupted for
+	 * some reason, last segment will not be inserted in segments table, but
+	 * track_points table will have all the points from last segment recorded
+	 * with last segment_index
+	 * 
+	 * @param db
+	 * @param trackId
+	 * @return
+	 */
+	public static int getStartedCount(SQLiteDatabase db, long trackId) {
+
+		String sql = "SELECT COUNT(DISTINCT segment_index) AS count FROM track_points WHERE track_id=" + trackId;
+
+		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+		int count = cursor.getInt(cursor.getColumnIndex("count"));
+		cursor.close();
+
+		return count;
+	}
+
+	public static Segment get(SQLiteDatabase db, long segmentId, int segmentIndex) {
 
 		String sql = "SELECT segments.*, COUNT(track_points._id) AS points_count FROM segments, track_points WHERE"
-				+ " segments._id=" + segmentId + " AND segments.track_id=" + trackId
+				+ " segments._id=" + segmentId
 				+ " AND track_points.segment_index=" + (segmentIndex - 1)
 				+ " AND segments.track_id = track_points.track_id";
 
@@ -80,71 +101,70 @@ public class Segments {
 
 		return segment;
 	}
-	
+
 	/**
-	 * Insert segment record 
+	 * Insert segment record
 	 * 
 	 * @param db
 	 * @param segment
 	 * @return
 	 */
 	public static long insert(SQLiteDatabase db, Segment segment) {
-		
+
 		ContentValues values = new ContentValues();
-		
+
 		values.put("track_id", segment.getTrackId());
 		values.put("segment_index", segment.getSegmentIndex());
-		
+
 		values.put("distance", Utils.formatNumber(segment.getDistance(), 1));
-		
+
 		values.put("total_time", segment.getTotalTime());
-		values.put("moving_time",  segment.getMovingTime());
-		
+		values.put("moving_time", segment.getMovingTime());
+
 		values.put("max_speed", Utils.formatNumber(segment.getMaxSpeed(), 2));
-		
+
 		values.put("max_elevation", Utils.formatNumber(segment.getMaxElevation(), 1));
 		values.put("min_elevation", Utils.formatNumber(segment.getMinElevation(), 1));
-		
+
 		values.put("elevation_gain", segment.getElevationGain());
 		values.put("elevation_loss", segment.getElevationLoss());
-		
+
 		values.put("start_time", segment.getStartTime());
 		values.put("finish_time", segment.getFinishTime());
 
 		return db.insertOrThrow("segments", null, values);
-			
+
 	}
-	
+
 	/**
 	 * Update segment record
-	 *  
+	 * 
 	 * @param db
 	 * @param segment
 	 * @return
 	 */
 	public static long update(SQLiteDatabase db, Segment segment) {
-		
+
 		ContentValues values = new ContentValues();
-		
+
 		values.put("distance", Utils.formatNumber(segment.getDistance(), 1));
-		
+
 		values.put("total_time", segment.getTotalTime());
-		values.put("moving_time",  segment.getMovingTime());
-		
+		values.put("moving_time", segment.getMovingTime());
+
 		values.put("max_speed", Utils.formatNumber(segment.getMaxSpeed(), 2));
-		
+
 		values.put("max_elevation", Utils.formatNumber(segment.getMaxElevation(), 1));
 		values.put("min_elevation", Utils.formatNumber(segment.getMinElevation(), 1));
-		
+
 		values.put("elevation_gain", segment.getElevationGain());
 		values.put("elevation_loss", segment.getElevationLoss());
-		
+
 		values.put("finish_time", segment.getFinishTime());
 
-//		return db.insertOrThrow("segments", null, values);
+		//		return db.insertOrThrow("segments", null, values);
 		return db.update("segments", values, "_id=?", new String[] { String.valueOf(segment.getId()) });
-			
+
 	}
-	
-	
+
 }

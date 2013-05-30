@@ -76,7 +76,7 @@ public abstract class AbstractTrackStats {
 
 		this.context = context;
 
-		app = ((App) context.getApplicationContext());
+		this.app = ((App) context.getApplicationContext());
 
 		this.trackTimeStart = (new Date()).getTime();
 

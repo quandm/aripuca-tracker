@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.aripuca.tracker.utils.MapSpan;
+import com.aripuca.tracker.utils.TrackStatsBundle;
 import com.aripuca.tracker.utils.Utils;
 
 public class TrackPoints {
@@ -45,6 +46,49 @@ public class TrackPoints {
 
 		return count;
 	}
+
+	/**
+	 * Generating track statistics from recorded points
+	 * 
+	 * @param db
+	 * @param trackId
+	 * @param segmentIndex
+	 * @return
+	 */
+	public static TrackStatsBundle getStats(SQLiteDatabase db, long trackId, int segmentIndex) {
+
+		String segmentIndexCondition = "";
+		if (segmentIndex == -1) {
+			segmentIndexCondition = " AND segment_index=" + segmentIndex;
+		}
+
+		String sql = "SELECT MAX(distance)-MIN(distance) AS distance, " +
+				"MAX(elevation) AS max_elevation, " +
+				"MIN(elevation) AS min_elevation, " +
+				"MAX(time) - MIN(time) AS total_time, " +
+				"MIN(time) AS start_time, MAX(time) AS finish_time" +
+				"MAX(speed) AS max_speed FROM track_points " +
+				"WHERE track_id=" + trackId + segmentIndexCondition;
+
+		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+
+		TrackStatsBundle tsb = new TrackStatsBundle();
+		
+		tsb.setDistance(cursor.getFloat(cursor.getColumnIndex("distance")));
+		tsb.setMaxElevation(cursor.getDouble(cursor.getColumnIndex("max_elevation")));
+		tsb.setMinElevation(cursor.getDouble(cursor.getColumnIndex("min_elevation")));
+		tsb.setMaxSpeed(cursor.getFloat(cursor.getColumnIndex("max_speed")));
+		tsb.setTotalTime(cursor.getLong(cursor.getColumnIndex("total_time")));
+		tsb.setStartTime(cursor.getLong(cursor.getColumnIndex("start_time")));
+		tsb.setFinishTime(cursor.getLong(cursor.getColumnIndex("finish_time")));
+
+		cursor.close();
+
+		return tsb;
+	}
+
+	//
 
 	/**
 	 * Get all track points for required track
