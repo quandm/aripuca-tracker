@@ -167,7 +167,7 @@ public class TrackDetailsActivity extends Activity {
 
 		long segmentId = segments.get(segmentIndex - 1).getId();
 
-		Segment segment = Segments.get(app.getDatabase(), trackId, segmentId, segmentIndex);
+		Segment segment = Segments.get(app.getDatabase(), segmentId, segmentIndex);
 
 		// update description text view
 		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);

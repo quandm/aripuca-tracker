@@ -1,13 +1,16 @@
 package com.aripuca.tracker.track;
 
+import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.SystemClock;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
+import com.aripuca.tracker.db.Segment;
 import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.utils.TrackStatsBundle;
 
 /**
  * TrackRecorder class. Handles tracks and segments statistics
@@ -80,8 +83,17 @@ public class TrackRecorder {
 	 * Index of the current track segment
 	 */
 	private int segmentIndex = 0;
+
+	/**
+	 * 
+	 */
 	private float segmentInterval;
+
+	/**
+	 * 
+	 */
 	private float[] segmentIntervals;
+
 	/**
 	 * segmenting time interval in minutes
 	 */
@@ -121,6 +133,9 @@ public class TrackRecorder {
 	 */
 	public void start() {
 
+		// latest preferences
+		this.getPreferences();
+
 		this.lastLocation = null;
 
 		// currentSystemTime = 0;
@@ -128,16 +143,14 @@ public class TrackRecorder {
 		idleTimeStart = 0;
 
 		pointsCount = 0;
-
 		segmentIndex = 0;
-
-		minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
-		minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
 
 		// create new track statistics object
 		this.trackStats = new TrackStats(app);
 
-		this.createSegmentStats();
+		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+			this.segmentStats = new SegmentStats(app);
+		}
 
 	}
 
@@ -145,6 +158,9 @@ public class TrackRecorder {
 	 * Resume recording interrupted track
 	 */
 	public void resumeInterruptedTrack(Track lastRecordingTrack) {
+
+		// latest preferences
+		this.getPreferences();
 
 		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
 
@@ -154,12 +170,6 @@ public class TrackRecorder {
 
 		this.pointsCount = TrackPoints.getCount(app.getDatabase(), lastRecordingTrack.getId());
 
-		// last segment index
-		this.segmentIndex = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId()) - 1;
-
-		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
-		this.minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
-
 		// create new track statistics object
 		this.trackStats = new TrackStats(app, lastRecordingTrack);
 
@@ -167,42 +177,77 @@ public class TrackRecorder {
 		// if phone was restarted before resuming recording - startTime may become negative
 		this.trackStats.setStartTime(SystemClock.uptimeMillis() - lastRecordingTrack.getTotalTime());
 
-		this.createSegmentStats();
+		// number of saved segments 
+		int savedSegmentsCount = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId());
+		// number of started segments, from track_points table
+		int startedSegmentsCount = Segments.getStartedCount(app.getDatabase(), lastRecordingTrack.getId());
+
+		if (savedSegmentsCount == startedSegmentsCount) {
+			// no segment restoration required
+			this.segmentIndex = startedSegmentsCount + 1;
+		} else {
+			this.segmentIndex = startedSegmentsCount;
+			this.restoreLastSegment(lastRecordingTrack.getId(), segmentIndex);
+		}
+
+		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+			this.segmentStats = new SegmentStats(app);
+		}
 
 	}
 
-	protected void createSegmentStats() {
+	/**
+	 * Restore last segment that was not saved in db
+	 */
+	protected void restoreLastSegment(long trackId, int segmentIndex) {
+
+		TrackStatsBundle tsb = TrackPoints.getStats(app.getDatabase(), trackId, segmentIndex);
+
+		Segment segment = new Segment(trackId, segmentIndex);
+
+		segment.setDistance(tsb.getDistance());
+		segment.setTotalTime(tsb.getTotalTime());
+		segment.setMovingTime(tsb.getTotalTime());
+		segment.setMaxSpeed(tsb.getMaxSpeed());
+		segment.setMaxElevation(tsb.getMaxElevation());
+		segment.setMinElevation(tsb.getMinElevation());
+		segment.setElevationGain((float) (tsb.getMaxElevation() - tsb.getMinElevation()));
+		segment.setElevationLoss((float) (tsb.getMaxElevation() - tsb.getMinElevation()));
+		segment.setStartTime(tsb.getStartTime());
+		segment.setFinishTime(tsb.getFinishTime());
+
+		try {
+			Segments.insert(app.getDatabase(), segment);
+		} catch (SQLiteException e) {
+
+		}
+
+		this.segmentIndex++;
+
+	}
+
+	protected void getPreferences() {
+
+		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
+		this.minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
 
 		this.segmentingMode = Integer.parseInt(app.getPreferences().getString("segmenting_mode", "2"));
 
-		// creating default segment
-		// if no segments will be created during track recording
-		// we won't insert segment data to db
-		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+		switch (this.segmentingMode) {
+			case Constants.SEGMENT_DISTANCE:
+				// setting segment interval
+				this.segmentInterval = Float.parseFloat(app.getPreferences().getString("segment_distance", "5"));
+			break;
 
-			this.segmentStats = new SegmentStats(app);
+			case Constants.SEGMENT_TIME:
+				// default time segmenting: 10 minutes
+				this.segmentTimeInterval = Float.parseFloat(app.getPreferences().getString("segment_time", "10"));
+			break;
 
-			switch (this.segmentingMode) {
-
-				case Constants.SEGMENT_DISTANCE:
-
-					// setting segment interval
-					segmentInterval = Float.parseFloat(app.getPreferences().getString("segment_distance", "5"));
-				break;
-
-				case Constants.SEGMENT_TIME:
-
-					// default time segmenting: 10 minutes
-					segmentTimeInterval = Float.parseFloat(app.getPreferences().getString("segment_time", "10"));
-				break;
-
-				case Constants.SEGMENT_CUSTOM_1:
-				case Constants.SEGMENT_CUSTOM_2:
-
-					this.setSegmentIntervals();
-				break;
-
-			}
+			case Constants.SEGMENT_CUSTOM_1:
+			case Constants.SEGMENT_CUSTOM_2:
+				this.setSegmentIntervals();
+			break;
 
 		}
 
@@ -214,8 +259,8 @@ public class TrackRecorder {
 	public void stop() {
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			// insert segment in db only if there were more then one segments in
-			// this track
+			// last segment in track
+			// insert segment only if there were more then one segments in this track
 			if (this.segmentIndex > 0) {
 				this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 				this.segmentStats = null;
@@ -257,8 +302,6 @@ public class TrackRecorder {
 	private void addNewSegment() {
 
 		this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
-
-		this.segmentStats = null;
 
 		this.segmentIndex++;
 
