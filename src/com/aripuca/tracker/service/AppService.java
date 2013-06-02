@@ -95,21 +95,6 @@ public class AppService extends Service {
 	private ScheduledTrackRecorder scheduledTrackRecorder;
 
 	/**
-	 * gpsInUse setter
-	 */
-	public void setGpsInUse(boolean gpsInUse) {
-		this.gpsInUse = gpsInUse;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isGpsInUse() {
-		return this.gpsInUse;
-	}
-
-	/**
 	 * Defines a listener that responds to location updates
 	 */
 	private LocationListener locationListener = new LocationListener() {
@@ -418,6 +403,21 @@ public class AppService extends Service {
 		return running;
 	}
 
+	/**
+	 * gpsInUse setter
+	 */
+	public void setGpsInUse(boolean gpsInUse) {
+		this.gpsInUse = gpsInUse;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isGpsInUse() {
+		return this.gpsInUse;
+	}
+	
 	/**
 	 * Requesting last location from GPS or Network provider
 	 */

@@ -89,7 +89,7 @@ public class Segments {
 
 		String sql = "SELECT segments.*, COUNT(track_points._id) AS points_count FROM segments, track_points WHERE"
 				+ " segments._id=" + segmentId
-				+ " AND track_points.segment_index=" + (segmentIndex - 1)
+				+ " AND track_points.segment_index=" + segmentIndex
 				+ " AND segments.track_id = track_points.track_id";
 
 		Cursor cursor = db.rawQuery(sql, null);
@@ -143,7 +143,7 @@ public class Segments {
 	 * @param segment
 	 * @return
 	 */
-	public static long update(SQLiteDatabase db, Segment segment) {
+	public static int update(SQLiteDatabase db, Segment segment) {
 
 		ContentValues values = new ContentValues();
 

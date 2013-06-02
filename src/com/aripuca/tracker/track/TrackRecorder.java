@@ -17,6 +17,8 @@ import com.aripuca.tracker.utils.TrackStatsBundle;
  */
 public class TrackRecorder {
 
+	private boolean isResumeInterruptedTrack = false;
+
 	private static TrackRecorder instance = null;
 
 	/**
@@ -32,6 +34,8 @@ public class TrackRecorder {
 
 	protected Location lastRecordedLocation;
 
+	private long interruptedTrackTotalTime;
+
 	/**
 	 * track statistics object
 	 */
@@ -41,10 +45,6 @@ public class TrackRecorder {
 	 * Segment statistics object
 	 */
 	private SegmentStats segmentStats;
-
-	public TrackStats getTrackStats() {
-		return trackStats;
-	}
 
 	/**
 	 * recording paused flag
@@ -64,15 +64,6 @@ public class TrackRecorder {
 	private long currentSystemTime = 0;
 
 	private int pointsCount = 0;
-
-	public int getPointsCount() {
-		return pointsCount;
-	}
-
-	/**
-	 * recording start time (milliseconds since boot)
-	 */
-	// private long startTime = 0;
 
 	/**
 	 * 
@@ -100,32 +91,20 @@ public class TrackRecorder {
 	private float segmentTimeInterval;
 
 	/**
-	 * Returns number of segments created for the track
-	 */
-	public int getSegmentsCount() {
-		return segmentIndex + 1;
-	}
-
-	/**
 	 * Singleton pattern
 	 */
 	public static TrackRecorder getInstance(App app) {
-
 		if (instance == null) {
 			instance = new TrackRecorder(app);
 		}
-
 		return instance;
-
 	}
 
 	/**
 	 * Private constructor
 	 */
 	private TrackRecorder(App app) {
-
 		this.app = app;
-
 	}
 
 	/**
@@ -133,8 +112,10 @@ public class TrackRecorder {
 	 */
 	public void start() {
 
+		this.isResumeInterruptedTrack = false;
+
 		// latest preferences
-		this.getPreferences();
+		this.readPreferences();
 
 		this.lastLocation = null;
 
@@ -149,7 +130,7 @@ public class TrackRecorder {
 		this.trackStats = new TrackStats(app);
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			this.segmentStats = new SegmentStats(app);
+			this.segmentStats = new SegmentStats(app, this.trackStats.getTrack().getId(), this.segmentIndex);
 		}
 
 	}
@@ -159,10 +140,14 @@ public class TrackRecorder {
 	 */
 	public void resumeInterruptedTrack(Track lastRecordingTrack) {
 
-		// latest preferences
-		this.getPreferences();
+		this.isResumeInterruptedTrack = true;
+		this.interruptedTrackTotalTime = lastRecordingTrack.getTotalTime();
 
-		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
+		// latest preferences
+		this.readPreferences();
+
+//		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
+		this.lastLocation = null;
 
 		// this.currentSystemTime = 0;
 		this.pauseTimeStart = 0;
@@ -172,10 +157,6 @@ public class TrackRecorder {
 
 		// create new track statistics object
 		this.trackStats = new TrackStats(app, lastRecordingTrack);
-
-		// start time for interrupted tracks is in the past
-		// if phone was restarted before resuming recording - startTime may become negative
-		this.trackStats.setStartTime(SystemClock.uptimeMillis() - lastRecordingTrack.getTotalTime());
 
 		// number of saved segments
 		int savedSegmentsCount = Segments.getCount(app.getDatabase(), lastRecordingTrack.getId());
@@ -187,11 +168,11 @@ public class TrackRecorder {
 			this.segmentIndex = startedSegmentsCount;
 		} else {
 			this.segmentIndex = startedSegmentsCount - 1;
-			this.restoreLastSegment(lastRecordingTrack.getId(), segmentIndex);
+			this.restoreLastSegment(lastRecordingTrack.getId());
 		}
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			this.segmentStats = new SegmentStats(app);
+			this.segmentStats = new SegmentStats(app, this.getTrackStats().getTrack().getId(), this.segmentIndex);
 		}
 
 	}
@@ -199,11 +180,11 @@ public class TrackRecorder {
 	/**
 	 * Restore last segment that was not saved in db
 	 */
-	protected void restoreLastSegment(long trackId, int segmentIndex) {
+	protected void restoreLastSegment(long trackId) {
 
-		TrackStatsBundle tsb = TrackPoints.getStats(app.getDatabase(), trackId, segmentIndex);
+		TrackStatsBundle tsb = TrackPoints.getStats(app.getDatabase(), trackId, this.segmentIndex);
 
-		Segment segment = new Segment(trackId, segmentIndex);
+		Segment segment = new Segment(trackId, this.segmentIndex);
 
 		segment.setDistance(tsb.getDistance());
 		segment.setTotalTime(tsb.getTotalTime());
@@ -226,7 +207,7 @@ public class TrackRecorder {
 
 	}
 
-	protected void getPreferences() {
+	protected void readPreferences() {
 
 		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
 		this.minAccuracy = Integer.parseInt(app.getPreferences().getString("min_accuracy", "15"));
@@ -259,12 +240,9 @@ public class TrackRecorder {
 	public void stop() {
 
 		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			// last segment in track
-			// insert segment only if there were more then one segments in this track and there were points recorded
-			if (this.segmentIndex > 0 && this.segmentStats.getPointsCount() > 0) {
-				this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
-				this.segmentStats = null;
-			}
+			//this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
+			this.segmentStats.updateNewSegment();
+			this.segmentStats = null;
 		}
 
 		// updating track statistics in db
@@ -293,32 +271,6 @@ public class TrackRecorder {
 		if (this.segmentingMode == Constants.SEGMENT_PAUSE_RESUME) {
 			this.addNewSegment();
 		}
-
-	}
-
-	/**
-	 * Insert current segment to db and create new one
-	 */
-	private void addNewSegment() {
-
-		this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
-
-		this.segmentIndex++;
-
-		this.segmentStats = new SegmentStats(app);
-
-	}
-
-	/**
-	 * Track is being recorded if track statistics object exists
-	 */
-	public boolean isRecording() {
-		return this.trackStats != null;
-	}
-
-	public boolean isRecordingPaused() {
-
-		return this.recordingPaused;
 
 	}
 
@@ -381,11 +333,15 @@ public class TrackRecorder {
 		// add new track point to db
 		this.recordTrackPoint(location);
 
-		// TODO: ???
-		// update new track to avoid losing total statistics in case of application failure
-		if (this.pointsCount % 10 == 0) {
+		// update new track and segment to avoid losing some statistics in case of application failure
+		if (this.pointsCount % 5 == 0) {
+			
 			this.trackStats.updateNewTrack();
-			// this.segmentStats.updateSegment();
+			
+			if (this.segmentingMode != Constants.SEGMENT_NONE && this.segmentStats != null) {
+				this.segmentStats.updateNewSegment();
+			}
+			
 		}
 
 		// update new last location
@@ -419,10 +375,6 @@ public class TrackRecorder {
 			this.segmentStats.processElevation(location);
 
 		}
-
-	}
-
-	public void updateTime() {
 
 	}
 
@@ -691,6 +643,46 @@ public class TrackRecorder {
 		}
 
 		return 10000000;
+	}
+
+	/**
+	 * Insert current segment to db and create new one statistics object
+	 */
+	private void addNewSegment() {
+
+		//this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
+		this.segmentStats.updateNewSegment();
+
+		this.segmentIndex++;
+
+		this.segmentStats = new SegmentStats(app, this.trackStats.getTrack().getId(), this.segmentIndex);
+
+	}
+
+	/**
+	 * Track is being recorded if track statistics object exists
+	 */
+	public boolean isRecording() {
+		return this.trackStats != null;
+	}
+
+	public boolean isRecordingPaused() {
+		return this.recordingPaused;
+	}
+
+	public int getPointsCount() {
+		return pointsCount;
+	}
+
+	public TrackStats getTrackStats() {
+		return trackStats;
+	}
+
+	/**
+	 * Returns number of segments created for the track
+	 */
+	public int getSegmentsCount() {
+		return segmentIndex + 1;
 	}
 
 }

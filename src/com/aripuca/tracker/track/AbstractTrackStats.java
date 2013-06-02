@@ -30,6 +30,7 @@ public abstract class AbstractTrackStats {
 	protected float maxSpeed = 0;
 
 	protected double oldElevation = Double.NEGATIVE_INFINITY;
+	
 	protected double currentElevation = Double.NEGATIVE_INFINITY;
 
 	protected double minElevation = Double.POSITIVE_INFINITY;

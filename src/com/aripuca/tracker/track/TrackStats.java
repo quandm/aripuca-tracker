@@ -24,19 +24,12 @@ public class TrackStats extends AbstractTrackStats {
 	private Track track;
 
 	/**
-	 * Id of the track being recorded
-	 */
-	private long trackId;
-	
-	/**
 	 * 
 	 * @param context
 	 */
 	public TrackStats(Context context) {
 
 		super(context);
-
-		this.track = new Track();
 
 		this.insertNewTrack();
 
@@ -53,8 +46,6 @@ public class TrackStats extends AbstractTrackStats {
 		super(context);
 
 		this.track = track;
-		
-		this.trackId = this.track.getId();
 
 		// loading saved track statistics
 		this.distance = this.track.getDistance();
@@ -63,14 +54,10 @@ public class TrackStats extends AbstractTrackStats {
 		this.maxElevation = this.track.getMaxElevation();
 		this.elevationGain = this.track.getElevationGain();
 		this.elevationLoss = this.track.getElevationLoss();
-		
+
 		this.trackTimeStart = this.track.getStartTime();
 		this.totalIdleTime = this.track.getTotalTime() - this.track.getMovingTime();
 
-	}
-	
-	public void setTrackId(long tid) {
-		this.trackId = tid;
 	}
 
 	public Track getTrack() {
@@ -82,6 +69,8 @@ public class TrackStats extends AbstractTrackStats {
 	 */
 	public void insertNewTrack() {
 
+		this.track = new Track();
+		
 		track.setTitle("New track");
 		track.setActivity(Constants.ACTIVITY_TRACK);
 		track.setRecording(Constants.TRACK_RECORDING_IN_PROGRESS);
@@ -90,9 +79,9 @@ public class TrackStats extends AbstractTrackStats {
 
 		try {
 
-			this.trackId = Tracks.insert(app.getDatabase(), track);
+			long trackId = Tracks.insert(app.getDatabase(), track);
 
-			track.setId(this.trackId);
+			track.setId(trackId);
 
 		} catch (SQLiteException e) {
 			Toast.makeText(context, "SQLiteException: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -160,13 +149,12 @@ public class TrackStats extends AbstractTrackStats {
 	/**
 	 * Record one track point
 	 * 
-	 * @param location
-	 *            Current location
+	 * @param location Current location
 	 */
 	protected void recordTrackPoint(Location location, int segmentIndex) {
 
-		TrackPoint trackPoint = new TrackPoint(trackId, location);
-		
+		TrackPoint trackPoint = new TrackPoint(this.getTrack().getId(), location);
+
 		trackPoint.setDistance(this.distance);
 		trackPoint.setSegmentIndex(segmentIndex);
 
