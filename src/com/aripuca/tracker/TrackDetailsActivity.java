@@ -52,23 +52,16 @@ public class TrackDetailsActivity extends Activity {
 				return;
 			}
 
-			if (currentSegment == 0) {
-				currentSegment = numberOfSegments;
-				updateSegment(currentSegment);
-				return;
-
-			}
-
-			if (currentSegment > 1) {
-
+			if (currentSegment > 0) {
 				currentSegment--;
-				updateSegment(currentSegment);
-
+				if (currentSegment == 0) {
+					updateTrack();
+				} else {
+					updateSegment(currentSegment - 1);
+				}
 			} else {
-
-				currentSegment = 0;
-				updateTrack();
-
+				currentSegment = numberOfSegments;
+				updateSegment(currentSegment - 1);
 			}
 
 		}
@@ -85,17 +78,12 @@ public class TrackDetailsActivity extends Activity {
 			}
 
 			if (currentSegment < numberOfSegments) {
-
 				currentSegment++;
-				updateSegment(currentSegment);
-
+				updateSegment(currentSegment - 1);
 			} else {
-
 				currentSegment = 0;
 				updateTrack();
-
 			}
-
 		}
 
 	};
@@ -165,12 +153,12 @@ public class TrackDetailsActivity extends Activity {
 	 */
 	protected void updateSegment(int segmentIndex) {
 
-		long segmentId = segments.get(segmentIndex - 1).getId();
+		long segmentId = segments.get(segmentIndex).getId();
 
 		Segment segment = Segments.get(app.getDatabase(), segmentId, segmentIndex);
 
 		// update description text view
-		((TextView) findViewById(R.id.descr)).setText("Segment: " + segmentIndex);
+		((TextView) findViewById(R.id.descr)).setText("Segment: " + (segmentIndex + 1));
 
 		this.updateSegmentDetails(segment);
 
@@ -425,37 +413,37 @@ public class TrackDetailsActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 
-		case R.id.showOnMap:
+			case R.id.showOnMap:
 
-			i = new Intent(this, MyMapActivity.class);
+				i = new Intent(this, MyMapActivity.class);
 
-			// using Bundle to pass track id into new activity
-			b = new Bundle();
-			b.putInt("mode", Constants.SHOW_TRACK);
-			b.putLong("track_id", this.trackId);
-			b.putBoolean("display_info", true);
+				// using Bundle to pass track id into new activity
+				b = new Bundle();
+				b.putInt("mode", Constants.SHOW_TRACK);
+				b.putLong("track_id", this.trackId);
+				b.putBoolean("display_info", true);
 
-			i.putExtras(b);
-			startActivity(i);
+				i.putExtras(b);
+				startActivity(i);
 
-			return true;
+				return true;
 
-		case R.id.showTrackChart:
+			case R.id.showTrackChart:
 
-			i = new Intent(this, TrackChartActivity.class);
+				i = new Intent(this, TrackChartActivity.class);
 
-			// using Bundle to pass track id into new activity
-			b = new Bundle();
-			b.putLong("track_id", this.trackId);
+				// using Bundle to pass track id into new activity
+				b = new Bundle();
+				b.putLong("track_id", this.trackId);
 
-			i.putExtras(b);
-			startActivity(i);
+				i.putExtras(b);
+				startActivity(i);
 
-			return true;
+				return true;
 
-		default:
+			default:
 
-			return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(item);
 
 		}
 

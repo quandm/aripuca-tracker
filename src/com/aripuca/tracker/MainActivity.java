@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
 	private AppServiceConnection serviceConnection;
 
 	/**
-	 * location updates broadcast receiver
+	 * Location updates broadcast receiver. Updates initiated in AppService
 	 */
 	protected BroadcastReceiver locationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -149,6 +149,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Scheduled location updates broadcast receiver
+	 */
 	protected BroadcastReceiver scheduledLocationBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -163,6 +166,7 @@ public class MainActivity extends Activity {
 
 		}
 	};
+
 	/**
 	 * compass updates broadcast receiver
 	 */
@@ -208,6 +212,7 @@ public class MainActivity extends Activity {
 			containers.add(R.layout.container_time_1);
 			containers.add(R.layout.container_time_2);
 			containers.add(R.layout.container_time_3);
+			containers.add(R.layout.container_time_4);
 		}
 	};
 	private ContainerCarousel distanceContainerCarousel = new ContainerCarousel() {
@@ -826,7 +831,6 @@ public class MainActivity extends Activity {
 		this.initializeMeasuringUnits();
 
 		AppService appService = serviceConnection.getService();
-
 		if (appService == null) {
 			Toast.makeText(this, R.string.gps_service_not_connected, Toast.LENGTH_SHORT).show();
 			return;
@@ -843,7 +847,10 @@ public class MainActivity extends Activity {
 
 		this.replaceDynamicView(R.layout.main_tracking);
 
-		this.startOrResumeTracking(appService);
+		appService.startTrackRecording();
+		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
+		
+		//this.startOrResumeTracking(appService);
 
 	}
 
@@ -854,46 +861,48 @@ public class MainActivity extends Activity {
 	private void startOrResumeTracking(AppService as) {
 
 		final AppService appService = as;
-		
+
 		// find last track that was not properly finished (recording=1) 
 		final Track lastRecordingTrack = Tracks.getLastRecordingTrack(app.getDatabase());
-		
+
 		final Context context = MainActivity.this;
 
 		if (lastRecordingTrack != null) {
+			
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-			
+
 			// format alert message
-			String trackDistance = Utils.formatDistance(lastRecordingTrack.getDistance(), distanceUnit) + " " + 
-						Utils.getLocalizedDistanceUnit(this, lastRecordingTrack.getDistance(), distanceUnit);
+			String trackDistance = Utils.formatDistance(lastRecordingTrack.getDistance(), distanceUnit) + " " +
+					Utils.getLocalizedDistanceUnit(this, lastRecordingTrack.getDistance(), distanceUnit);
 			String trackStartTime = (String) DateFormat.format("yyyy-MM-dd k:mm", lastRecordingTrack.getStartTime());
-			
-			String alertMessage = String.format(getString(R.string.resume_interrupted_track), trackDistance, trackStartTime);
+
+			String alertMessage = String.format(getString(R.string.resume_interrupted_track), trackDistance,
+					trackStartTime);
 			dialog.setMessage(alertMessage);
-			
+
 			dialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					
+
 					appService.resumeInterruptedTrack(lastRecordingTrack);
-					
+
 					// mark all interrupted tracks as finished
 					Tracks.finishAllInterrupted(app.getDatabase());
-					
+
 					Toast.makeText(context, R.string.recording_started, Toast.LENGTH_SHORT).show();
 				}
 			});
 			dialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					
+
 					appService.startTrackRecording();
-					
+
 					Toast.makeText(context, R.string.recording_started, Toast.LENGTH_SHORT).show();
-					
+
 					// mark all interrupted tracks as finished
 					Tracks.finishAllInterrupted(app.getDatabase());
-					
+
 				}
 			});
 			dialog.show();
@@ -1382,7 +1391,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Update main activity view
+	 * Update main activity view. Entry point for all UI updates.
 	 */
 	public void updateActivity() {
 
@@ -1404,6 +1413,25 @@ public class MainActivity extends Activity {
 		}
 		// //////////////////////////////////////////////////////////////////
 
+		this.updateCoordinates();
+
+		this.updateAccuracy();
+
+		this.updateFixTime();
+
+		this.updateElevation();
+
+		this.updateSpeedAndPace();
+
+		// updating track recording info
+		this.updateTrackRecording();
+
+	}
+
+	/**
+	 * 
+	 */
+	private void updateCoordinates() {
 		// update coordinates
 		if (findViewById(R.id.lat) != null) {
 			((TextView) findViewById(R.id.lat)).setText(Utils.formatLat(currentLocation.getLatitude(), coordUnit));
@@ -1411,41 +1439,65 @@ public class MainActivity extends Activity {
 		if (findViewById(R.id.lng) != null) {
 			((TextView) findViewById(R.id.lng)).setText(Utils.formatLng(currentLocation.getLongitude(), coordUnit));
 		}
+	}
 
-		// update accuracy data
-		if (currentLocation.hasAccuracy()) {
+	/**
+	 * update accuracy data
+	 */
+	private void updateAccuracy() {
 
-			float accuracy = currentLocation.getAccuracy();
-
-			if (findViewById(R.id.accuracy) != null) {
-				((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR
-						+ Utils.formatDistance(accuracy, distanceUnit));
-			}
-			if (findViewById(R.id.accuracyUnit) != null) {
-				((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalizedDistanceUnit(this, accuracy,
-						distanceUnit));
-			}
+		if (!currentLocation.hasAccuracy()) {
+			return;
 		}
 
-		// last fix time
+		float accuracy = currentLocation.getAccuracy();
+
+		if (findViewById(R.id.accuracy) != null) {
+			((TextView) findViewById(R.id.accuracy)).setText(Utils.PLUSMINUS_CHAR
+					+ Utils.formatDistance(accuracy, distanceUnit));
+		}
+
+		if (findViewById(R.id.accuracyUnit) != null) {
+			((TextView) findViewById(R.id.accuracyUnit)).setText(Utils.getLocalizedDistanceUnit(this, accuracy,
+					distanceUnit));
+		}
+
+	}
+
+	/**
+	 * Update last fix time
+	 */
+	private void updateFixTime() {
 		if (findViewById(R.id.lastFix) != null) {
 			String lastFix = (String) DateFormat.format("k:mm:ss", currentLocation.getTime());
 			((TextView) findViewById(R.id.lastFix)).setText(lastFix);
 		}
+	}
 
-		// update elevation data
-		if (currentLocation.hasAltitude()) {
-			if (findViewById(R.id.elevation) != null) {
-				((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation(
-						(float) currentLocation.getAltitude(), elevationUnit));
-			}
-			if (findViewById(R.id.elevationUnit) != null) {
-				((TextView) findViewById(R.id.elevationUnit)).setText(Utils.getLocalizedElevationUnit(this,
-						elevationUnit));
-			}
+	/**
+	 * update elevation data
+	 */
+	private void updateElevation() {
+
+		if (!currentLocation.hasAltitude()) {
+			return;
+		}
+		if (findViewById(R.id.elevation) != null) {
+			((TextView) findViewById(R.id.elevation)).setText(Utils.formatElevation(
+					(float) currentLocation.getAltitude(), elevationUnit));
+		}
+		if (findViewById(R.id.elevationUnit) != null) {
+			((TextView) findViewById(R.id.elevationUnit)).setText(Utils.getLocalizedElevationUnit(this,
+					elevationUnit));
 		}
 
-		// current speed and pace
+	}
+
+	/**
+	 * current speed and pace
+	 */
+	private void updateSpeedAndPace() {
+
 		float speed = currentLocation.getSpeed();
 
 		// current speed (cycling, driving)
@@ -1461,10 +1513,6 @@ public class MainActivity extends Activity {
 		if (findViewById(R.id.pace) != null) {
 			((TextView) findViewById(R.id.pace)).setText(Utils.formatPace(speed, speedUnit));
 		}
-
-		// updating track recording info
-		this.updateTrackRecording();
-
 	}
 
 	/**
@@ -1478,7 +1526,7 @@ public class MainActivity extends Activity {
 			return;
 		}
 
-		TrackStats track = appService.getTrackRecorder().getTrackStats();
+		TrackStats trackStats = appService.getTrackRecorder().getTrackStats();
 
 		// number of track points recorded
 		if (findViewById(R.id.pointsCount) != null) {
@@ -1495,77 +1543,77 @@ public class MainActivity extends Activity {
 		// ------------------------------------------------------------------
 		// elevation gain
 		if (findViewById(R.id.elevationGain) != null) {
-			((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(track.getElevationGain(),
+			((TextView) findViewById(R.id.elevationGain)).setText(Utils.formatElevation(trackStats.getElevationGain(),
 					elevationUnit));
 		}
 
 		// elevation loss
 		if (findViewById(R.id.elevationLoss) != null) {
-			((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(track.getElevationLoss(),
+			((TextView) findViewById(R.id.elevationLoss)).setText(Utils.formatElevation(trackStats.getElevationLoss(),
 					elevationUnit));
 		}
 
 		// max elevation
 		if (findViewById(R.id.maxElevation) != null) {
-			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(track.getMaxElevation(),
+			((TextView) findViewById(R.id.maxElevation)).setText(Utils.formatElevation(trackStats.getMaxElevation(),
 					elevationUnit));
 		}
 
 		// min elevation
 		if (findViewById(R.id.minElevation) != null) {
-			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(track.getMinElevation(),
+			((TextView) findViewById(R.id.minElevation)).setText(Utils.formatElevation(trackStats.getMinElevation(),
 					elevationUnit));
 		}
 		// ------------------------------------------------------------------
 
 		// average speed
 		if (findViewById(R.id.averageSpeed) != null) {
-			((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(track.getAverageSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averageSpeed)).setText(Utils.formatSpeed(trackStats.getAverageSpeed(), speedUnit));
 		}
 
 		// average moving speed
 		if (findViewById(R.id.averageMovingSpeed) != null) {
-			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(track.getAverageMovingSpeed(),
+			((TextView) findViewById(R.id.averageMovingSpeed)).setText(Utils.formatSpeed(trackStats.getAverageMovingSpeed(),
 					speedUnit));
 		}
 
 		// max speed
 		if (findViewById(R.id.maxSpeed) != null) {
-			((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(track.getMaxSpeed(), speedUnit));
+			((TextView) findViewById(R.id.maxSpeed)).setText(Utils.formatSpeed(trackStats.getMaxSpeed(), speedUnit));
 		}
 
 		// acceleration
 		if (findViewById(R.id.acceleration) != null) {
 
 			// let's display last non-zero acceleration
-			((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(track.getAcceleration(), 2));
+			((TextView) findViewById(R.id.acceleration)).setText(Utils.formatNumber(trackStats.getAcceleration(), 2));
 
 		}
 
 		// average pace
 		if (findViewById(R.id.averagePace) != null) {
-			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(track.getAverageSpeed(), speedUnit));
+			((TextView) findViewById(R.id.averagePace)).setText(Utils.formatPace(trackStats.getAverageSpeed(), speedUnit));
 		}
 
 		// average moving pace
 		if (findViewById(R.id.averageMovingPace) != null) {
-			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(track.getAverageMovingSpeed(),
+			((TextView) findViewById(R.id.averageMovingPace)).setText(Utils.formatPace(trackStats.getAverageMovingSpeed(),
 					speedUnit));
 		}
 
 		// max pace
 		if (findViewById(R.id.maxPace) != null) {
-			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(track.getMaxSpeed(), speedUnit));
+			((TextView) findViewById(R.id.maxPace)).setText(Utils.formatPace(trackStats.getMaxSpeed(), speedUnit));
 		}
 
 		// total distance
 		if (findViewById(R.id.distance) != null) {
-			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(track.getDistance(), distanceUnit));
+			((TextView) findViewById(R.id.distance)).setText(Utils.formatDistance(trackStats.getDistance(), distanceUnit));
 		}
 
 		if (findViewById(R.id.distanceUnit) != null) {
 			((TextView) findViewById(R.id.distanceUnit)).setText(Utils.getLocalizedDistanceUnit(this,
-					track.getDistance(), distanceUnit));
+					trackStats.getDistance(), distanceUnit));
 		}
 
 	}
@@ -1670,6 +1718,11 @@ public class MainActivity extends Activity {
 						.getTrackStats().getMovingTime(), false));
 			}
 
+			if (findViewById(R.id.idleTime) != null) {
+				((TextView) findViewById(R.id.idleTime)).setText(Utils.formatInterval(appService.getTrackRecorder()
+						.getTrackStats().getTotalIdleTime(), false));
+			}
+			
 		}
 
 	}

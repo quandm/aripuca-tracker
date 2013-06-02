@@ -10,10 +10,6 @@ public class TrackStatsBundle {
 	private long startTime;
 	private long finishTime;
 	
-	public TrackStatsBundle() {
-		
-	}
-	
 	/**
 	 * @return the distance
 	 */

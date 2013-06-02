@@ -3,6 +3,7 @@ package com.aripuca.tracker;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -39,7 +40,11 @@ public class App extends Application {
 
 					AppLog.e(getApplicationContext(), "!!! Uncaught exception !!!");
 
-					// re-throw critical exception further to the os (important)
+					// remove all notifications
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					mNotificationManager.cancelAll();
+					
+					// re-throw critical exception further to the os
 					defaultUncaughtExceptionHandler.uncaughtException(thread, ex);
 				}
 			};
