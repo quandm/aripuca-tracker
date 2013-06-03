@@ -31,8 +31,6 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 	protected BubbleSurfaceView bubbleView;
 
-	protected Vibrator vibrator;
-
 	/**
 	 * Reference to Application object
 	 */
@@ -132,9 +130,6 @@ public class CompassActivity extends Activity implements OnTouchListener {
 
 		// reference to application object
 		app = ((App) getApplicationContext());
-
-		// reference to vibrator service
-		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 		// vibrate or not?
 		vibrationOn = app.getPreferences().getBoolean("compass_vibration", true);
@@ -286,7 +281,7 @@ public class CompassActivity extends Activity implements OnTouchListener {
 				this.rotateCompass(angle1 - angle2);
 
 				if (vibrationOn) {
-					vibrator.vibrate(5);
+					app.getVibrator().vibrate(5);
 				}
 
 				// update starting point for next move event

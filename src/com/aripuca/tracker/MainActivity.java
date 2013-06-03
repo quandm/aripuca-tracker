@@ -848,6 +848,7 @@ public class MainActivity extends Activity {
 		this.replaceDynamicView(R.layout.main_tracking);
 
 		appService.startTrackRecording();
+		
 		Toast.makeText(this, R.string.recording_started, Toast.LENGTH_SHORT).show();
 		
 		//this.startOrResumeTracking(appService);

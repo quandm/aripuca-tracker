@@ -36,7 +36,8 @@ public class MyBackupAgent extends BackupAgentHelper {
 				getString(R.string.settings_wpt_min_accuracy),
 				getString(R.string.settings_wpt_min_distance),
 				getString(R.string.settings_logging_level),
-				getString(R.string.settings_debug_on)
+				getString(R.string.settings_debug_on),
+				getString(R.string.settings_new_segment_vibration)
 				);
 
 		addHelper(SETTINGS_BACKUP_KEY, helper);

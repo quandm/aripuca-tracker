@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -53,6 +54,8 @@ public class App extends Application {
 	 * Android shared preferences
 	 */
 	private SharedPreferences preferences;
+	
+	private Vibrator vibrator;
 
 	/**
 	 * application directory
@@ -210,6 +213,9 @@ public class App extends Application {
 
 		}
 
+		// reference to vibrator service
+		this.vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		
 		// AppLog.d(this, "=================== app: onCreate ===================");
 
 	}
@@ -282,6 +288,13 @@ public class App extends Application {
 		Utils.createFolder(getAppDir() + "/" + Constants.PATH_BACKUP);
 		Utils.createFolder(getAppDir() + "/" + Constants.PATH_DEBUG);
 		Utils.createFolder(getAppDir() + "/" + Constants.PATH_LOGS);
+	}
+
+	/**
+	 * @return the vibrator
+	 */
+	public Vibrator getVibrator() {
+		return vibrator;
 	}
 
 }

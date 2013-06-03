@@ -32,10 +32,7 @@ public class Utils {
 	protected static final double MI_TO_M = 1609.344;
 	protected static final double MI_TO_FEET = 5280.0;
 	protected static final double KMH_TO_MPH = 0.621371192;
-	protected static final double KMH_TO_KNOTS = 0.539957; // 1 knot = 1
-															// nautical mile
-															// (1.852km) per
-															// hour
+	protected static final double KMH_TO_KNOTS = 0.539957; // 1 knot = 1 nautical mile (1.852km) per hour
 
 	public static String formatNumber(Object value, int max) {
 		return Utils.formatNumber(value, max, 0);
@@ -87,12 +84,12 @@ public class Utils {
 		if (unit.equals("km")) {
 
 			// 22343.2m formats as 10.2km
-			if (value > 10000) {
+			if (Math.round(value) >= 10000) {
 				return Utils.formatNumber(value / 1000, 1, 1);
 			}
 
 			// 2343.2m formats as 2.58km
-			if (value > 1000) {
+			if (Math.round(value) >= 1000) {
 				return Utils.formatNumber(value / 1000, 2, 2);
 			}
 
@@ -103,12 +100,12 @@ public class Utils {
 
 		if (unit.equals("mi")) {
 
-			if (value > 10 * MI_TO_M) {
+			if (Math.round(value) >= 10 * MI_TO_M) {
 				return Utils.formatNumber(value / 1000, 1, 1);
 			}
 
 			// convert to miles
-			if (value > MI_TO_M) {
+			if (Math.round(value) >= MI_TO_M) {
 				return Utils.formatNumber(value / MI_TO_M, 2, 2);
 			}
 
@@ -124,14 +121,14 @@ public class Utils {
 
 		if (unit.equals("km")) {
 
-			if (value > 1000) {
+			if (Math.round(value) >= 1000) {
 				return context.getString(R.string.km);
 			}
 			return context.getString(R.string.m);
 		}
 
 		if (unit.equals("mi")) {
-			if (value > MI_TO_M) {
+			if (Math.round(value) >= MI_TO_M) {
 				return context.getString(R.string.mi);
 			}
 			return context.getString(R.string.ft);

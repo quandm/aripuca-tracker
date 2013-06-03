@@ -135,8 +135,6 @@
     <string name="segment_custom_2">Custom intervals 2</string>
     <string name="segment_custom_summary">Segment by preset distances</string>
     <string name="no_segments">No segments created for this track</string>
-    <string name="segment_vibration">Wibracja do nowego segmentu</string>
-    <string name="segment_vibration_summary">Wibracja gdy rozpoczęła nowy segment</string>
     <string name="compass">Kompas</string>
     <string name="compass_summary">Gdzie są punkty kompasu, itp.</string>
     <string name="true_north">Point to True North</string>
@@ -227,4 +225,6 @@
     <string name="total_distance">Całkowity dystans</string>
     <string name="show_track_details">Pokaż stat</string>
     <string name="current">Current</string>
+    <string name="new_segment_vibration">Wibracja do nowego segmentu</string>
+    <string name="new_segment_vibration_summary">Wibracja gdy rozpoczęła nowy segment</string>
 </resources>

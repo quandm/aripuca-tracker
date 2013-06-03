@@ -215,11 +215,9 @@
     <string name="logging_level">Уровень записи в журнал</string>
     <string name="compass_vibration">Включить вибратор</string>
     <string name="compass_vibration_summary">Вибрировать при повороте кольца компаса</string>
-    <string name="segment_vibration">Вибрировать для нового сегмента</string>
     <string name="track_recording_in_progress">Идет запись трека</string>
     <string name="close">Закрыть</string>
     <string name="scheduled_track_points">Точки по рассписанию</string>
-    <string name="segment_vibration_summary">Вибрировать после начала нового сегмента</string>
     <string name="track_chart">График трека</string>
     <string name="track_points">Точки трека</string>
     <string name="my_location">Мое положение</string>
@@ -244,4 +242,6 @@
 в данный момент
 </string>
     <string name="edit_waypoint">Изменить точку</string>
+    <string name="new_segment_vibration">Вибрировать для нового сегмента</string>
+    <string name="new_segment_vibration_summary">Вибрировать после начала нового сегмента</string>
 </resources>

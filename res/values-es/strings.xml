@@ -141,8 +141,6 @@
     <string name="segment_custom_2">Intérvalos a medida 2</string>
     <string name="segment_custom_summary">Segmentar por distancias predefinidas</string>
     <string name="no_segments">No se han creado segmentos para esta track</string>
-    <string name="segment_vibration">Vibrar para nuevo segmento</string>
-    <string name="segment_vibration_summary">Vibrar cuando se inicia un nuevo segmento</string>
     <!-- Compass -->
     <string name="compass">Brújula</string>
     <string name="compass_summary">Dónde apunta la brújula, etc</string>
@@ -242,4 +240,6 @@ Está seguro?</string>
     <string name="logging_level_summary">Registrar errores, advertencias, información y mensajes de depuración</string>
     <string name="point">Punto</string>
     <string name="current">Actual</string>
+    <string name="new_segment_vibration">Vibrar para nuevo segmento</string>
+    <string name="new_segment_vibration_summary">Vibrar cuando se inicia un nuevo segmento</string>
 </resources>

@@ -3,6 +3,7 @@ package com.aripuca.tracker.track;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.SystemClock;
+import android.os.Vibrator;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
@@ -10,14 +11,13 @@ import com.aripuca.tracker.db.Segment;
 import com.aripuca.tracker.db.Segments;
 import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.TrackPoints;
+import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.TrackStatsBundle;
 
 /**
  * TrackRecorder class. Handles tracks and segments statistics
  */
 public class TrackRecorder {
-
-	private boolean isResumeInterruptedTrack = false;
 
 	private static TrackRecorder instance = null;
 
@@ -33,8 +33,6 @@ public class TrackRecorder {
 	protected Location lastLocation;
 
 	protected Location lastRecordedLocation;
-
-	private long interruptedTrackTotalTime;
 
 	/**
 	 * track statistics object
@@ -112,8 +110,6 @@ public class TrackRecorder {
 	 */
 	public void start() {
 
-		this.isResumeInterruptedTrack = false;
-
 		this.readPreferences();
 
 		this.lastLocation = null;
@@ -139,13 +135,10 @@ public class TrackRecorder {
 	 */
 	public void resumeInterruptedTrack(Track lastRecordingTrack) {
 
-		this.isResumeInterruptedTrack = true;
-		this.interruptedTrackTotalTime = lastRecordingTrack.getTotalTime();
-
 		// latest preferences
 		this.readPreferences();
 
-//		this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
+		// this.lastLocation = TrackPoints.getLast(app.getDatabase(), lastRecordingTrack.getId()).getLocation();
 		this.lastLocation = null;
 
 		// this.currentSystemTime = 0;
@@ -207,7 +200,7 @@ public class TrackRecorder {
 	}
 
 	/**
-	 * latest preferences (segmenting mode, min accuracy, etc) 
+	 * latest preferences (segmenting mode, min accuracy, etc)
 	 */
 	protected void readPreferences() {
 
@@ -241,8 +234,8 @@ public class TrackRecorder {
 	 */
 	public void stop() {
 
-		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-			//this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
+		if (this.segmentStats != null) {
+			// this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 			this.segmentStats.updateNewSegment();
 			this.segmentStats = null;
 		}
@@ -309,7 +302,7 @@ public class TrackRecorder {
 			this.trackStats.updateDistance(distanceIncrement);
 
 			// accumulate segment distance
-			if (this.segmentingMode != Constants.SEGMENT_NONE) {
+			if (this.segmentStats != null) {
 				this.segmentStats.updateDistance(distanceIncrement);
 			}
 
@@ -328,54 +321,33 @@ public class TrackRecorder {
 
 		this.trackStats.processElevation(location);
 
-		this.processSegments(location, speedValid);
+		// break track down into segments
+		this.segmentTrack(location);
+
+		// updating segment statistics
+		if (this.segmentStats != null) {
+			if (speedValid) {
+				this.segmentStats.processSpeed(location.getSpeed());
+			}
+			this.segmentStats.processElevation(location);
+		}
 
 		// add new track point to db
 		this.recordTrackPoint(location);
 
 		// update new track and segment to avoid losing some statistics in case of application failure
 		if (this.pointsCount % 5 == 0) {
-			
+
 			this.trackStats.updateNewTrack();
-			
-			if (this.segmentingMode != Constants.SEGMENT_NONE && this.segmentStats != null) {
+
+			if (this.segmentStats != null) {
 				this.segmentStats.updateNewSegment();
 			}
-			
+
 		}
 
-		// update new last location
+		// update last recorded location
 		this.lastLocation = location;
-
-	}
-
-	private void processSegments(Location location, boolean validSpeed) {
-
-		// SEGMENTING
-		switch (this.segmentingMode) {
-		// segmenting track by distance
-			case Constants.SEGMENT_DISTANCE:
-			case Constants.SEGMENT_CUSTOM_1:
-			case Constants.SEGMENT_CUSTOM_2:
-				this.segmentTrackByDistance();
-			break;
-			// segmenting track by time
-			case Constants.SEGMENT_TIME:
-				this.segmentTrackByTime();
-			break;
-		}
-
-		// updating segment statistics
-		if (this.segmentingMode != Constants.SEGMENT_NONE) {
-
-			if (validSpeed) {
-				this.segmentStats.processSpeed(location.getSpeed());
-			}
-
-			this.segmentStats.processElevation(location);
-
-		}
-
 	}
 
 	/**
@@ -397,7 +369,7 @@ public class TrackRecorder {
 			this.trackStats.setStartTime(this.currentSystemTime);
 		}
 
-		if (this.segmentingMode != Constants.SEGMENT_NONE) {
+		if (this.segmentStats != null) {
 			this.segmentStats.setCurrentSystemTime(this.currentSystemTime);
 			if (this.segmentStats.getStartTime() == 0) {
 				this.segmentStats.setStartTime(this.currentSystemTime);
@@ -432,7 +404,7 @@ public class TrackRecorder {
 
 				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				if (this.segmentStats != null) {
 					this.segmentStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				}
 
@@ -447,7 +419,7 @@ public class TrackRecorder {
 
 				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				if (this.segmentStats != null) {
 					this.segmentStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				}
 
@@ -471,7 +443,7 @@ public class TrackRecorder {
 
 				this.trackStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				if (this.segmentStats != null) {
 					this.segmentStats.updateTotalIdleTime(this.currentSystemTime - this.idleTimeStart);
 				}
 
@@ -482,7 +454,7 @@ public class TrackRecorder {
 
 				this.trackStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				if (this.segmentStats != null) {
 					this.segmentStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 				}
 			}
@@ -496,7 +468,7 @@ public class TrackRecorder {
 
 				this.trackStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				if (this.segmentStats != null) {
 					this.segmentStats.updateTotalPauseTime(this.currentSystemTime - this.pauseTimeStart);
 				}
 			}
@@ -526,7 +498,7 @@ public class TrackRecorder {
 
 			pointsCount++;
 
-			if (this.segmentingMode != Constants.SEGMENT_NONE) {
+			if (this.segmentStats != null) {
 				this.segmentStats.incPointsCount();
 			}
 
@@ -539,7 +511,7 @@ public class TrackRecorder {
 
 				pointsCount++;
 
-				if (this.segmentingMode != Constants.SEGMENT_NONE) {
+				if (this.segmentStats != null) {
 					this.segmentStats.incPointsCount();
 				}
 			}
@@ -547,37 +519,32 @@ public class TrackRecorder {
 
 	}
 
+	// --------------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------
+	
 	/**
 	 * 
+	 * @param location
 	 */
-	private void setSegmentIntervals() {
+	private void segmentTrack(Location location) {
 
-		String segmentIntervalsKey;
-		if (this.segmentingMode == Constants.SEGMENT_CUSTOM_1) {
-			segmentIntervalsKey = "segment_custom_1";
-		} else if (this.segmentingMode == Constants.SEGMENT_CUSTOM_2) {
-			segmentIntervalsKey = "segment_custom_2";
-		} else {
-			return;
-		}
-
-		String[] tmpArr = app.getPreferences().getString(segmentIntervalsKey, "").split(",");
-
-		segmentIntervals = new float[tmpArr.length];
-
-		for (int i = 0; i < tmpArr.length; i++) {
-
-			try {
-				segmentIntervals[i] = Float.parseFloat(tmpArr[i]);
-			} catch (NumberFormatException e) {
-				// default interval 5 km
-				segmentIntervals[i] = 5;
-			}
-
+		// SEGMENTING
+		switch (this.segmentingMode) {
+		// segmenting track by distance
+			case Constants.SEGMENT_DISTANCE:
+			case Constants.SEGMENT_CUSTOM_1:
+			case Constants.SEGMENT_CUSTOM_2:
+				this.segmentTrackByDistance();
+			break;
+			// segmenting track by time
+			case Constants.SEGMENT_TIME:
+				this.segmentTrackByTime();
+			break;
 		}
 
 	}
-
+	
 	/**
 	 * Check if segment id incrementing is required
 	 */
@@ -585,12 +552,20 @@ public class TrackRecorder {
 
 		if (this.trackStats.getDistance() / this.getNextSegment() > 1) {
 
+			AppLog.d(
+					app.getApplicationContext(),
+					"segmentTrackByDistance | distannce: " + this.trackStats.getDistance() + " | nextSegment: "
+							+ this.getNextSegment());
+
 			this.addNewSegment();
 
 		}
 
 	}
 
+	/**
+	 * 
+	 */
 	private void segmentTrackByTime() {
 
 		if (this.trackStats.getMovingTime() / this.getNextSegment() > 1) {
@@ -646,19 +621,60 @@ public class TrackRecorder {
 	}
 
 	/**
+	 * 
+	 */
+	private void setSegmentIntervals() {
+
+		String segmentIntervalsKey;
+		if (this.segmentingMode == Constants.SEGMENT_CUSTOM_1) {
+			segmentIntervalsKey = "segment_custom_1";
+		} else if (this.segmentingMode == Constants.SEGMENT_CUSTOM_2) {
+			segmentIntervalsKey = "segment_custom_2";
+		} else {
+			return;
+		}
+
+		String[] tmpArr = app.getPreferences().getString(segmentIntervalsKey, "").split(",");
+
+		segmentIntervals = new float[tmpArr.length];
+
+		for (int i = 0; i < tmpArr.length; i++) {
+
+			try {
+				segmentIntervals[i] = Float.parseFloat(tmpArr[i]);
+			} catch (NumberFormatException e) {
+				// default interval 5 km
+				segmentIntervals[i] = 5;
+			}
+
+		}
+
+	}
+	
+	/**
 	 * Insert current segment to db and create new one statistics object
 	 */
 	private void addNewSegment() {
 
-		//this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
+		// this.segmentStats.insertSegment(this.trackStats.getTrack().getId(), this.segmentIndex);
 		this.segmentStats.updateNewSegment();
 
 		this.segmentIndex++;
 
 		this.segmentStats = new SegmentStats(app, this.trackStats.getTrack().getId(), this.segmentIndex);
 
+		// vibrate when new segment created
+		if (app.getPreferences().getBoolean("settings_new_segment_vibration", false)) {
+			app.getVibrator().vibrate(500);	
+		}
+		
 	}
 
+	// --------------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------------------------------------
+	
+	
 	/**
 	 * Track is being recorded if track statistics object exists
 	 */

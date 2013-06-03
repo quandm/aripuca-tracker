@@ -148,8 +148,6 @@
     <string name="segment_custom_2">Anwender-Intervall 2</string>
     <string name="segment_custom_summary">Segmentierung nach vorgegebenen Entfernungen</string>
     <string name="no_segments">Keine Segmente für diesen Track vorhanden</string>
-    <string name="segment_vibration">Vibrieren für neues Segment</string>
-    <string name="segment_vibration_summary">Vibrieren wenn ein neues Segment begonnen wird</string>
     <!-- Compass -->
     <string name="compass">Kompass</string>
     <string name="compass_summary">Kompass-Ausrichtung, usw.</string>
@@ -260,4 +258,6 @@
     <string name="my_location">Meine Position</string>
     <string name="current">Aktuell</string>
     <string name="edit_waypoint">Waypoint bearbeiten</string>
+    <string name="new_segment_vibration">Vibrieren für neues Segment</string>
+    <string name="new_segment_vibration_summary">Vibrieren wenn ein neues Segment begonnen wird</string>
 </resources>

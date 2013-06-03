@@ -145,6 +145,13 @@
                 android:summary="@string/segment_custom_summary"
                 android:title="@string/segment_custom_2" >
             </EditTextPreference>
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/settings_new_segment_vibration"
+                android:summary="@string/new_segment_vibration_summary"
+                android:title="@string/new_segment_vibration" >
+            </CheckBoxPreference>
         </PreferenceCategory>
     </PreferenceScreen>
     <PreferenceScreen
