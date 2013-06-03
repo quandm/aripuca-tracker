@@ -1,0 +1,3 @@
+glob:doc/*
+glob:bin/*
+glob:gen/*

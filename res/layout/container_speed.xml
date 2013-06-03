@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Vert" >
+
+    <LinearLayout
+        style="@style/FillWidth.Vert.Center"
+        android:baselineAligned="false" >
+
+        <TextView
+            style="@style/WrapContent.Text.SmallHeader"
+            android:text="@string/speed" >
+        </TextView>
+
+        <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
+
+            <TextView
+                android:id="@+id/speed"
+                style="@style/WrapContent.Text.Text50" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/speedUnit"
+                style="@style/WrapContent.Text.Text13" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/FillWidth.Hor.Row"
+        android:baselineAligned="false" >
+
+        <LinearLayout
+            style="@style/Cell"
+            android:layout_weight="1" >
+
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/average" >
+            </TextView>
+
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+                <TextView
+                    android:id="@+id/averageSpeed"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Cell"
+            android:layout_weight="1" >
+
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/moving" >
+            </TextView>
+
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+                <TextView
+                    android:id="@+id/averageMovingSpeed"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Cell"
+            android:layout_weight="1" >
+
+            <TextView
+                style="@style/WrapContent.Text.SmallHeader"
+                android:text="@string/max" >
+            </TextView>
+
+            <LinearLayout style="@style/FillWidth.Hor.Center" >
+
+                <TextView
+                    android:id="@+id/maxSpeed"
+                    style="@style/WrapContent.Text.Text13" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

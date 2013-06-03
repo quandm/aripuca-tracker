@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg1repeat" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="43dp"
+        android:orientation="vertical"
+        android:paddingTop="2dp" >
+
+        <ScrollView
+            android:id="@+id/dynamicView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scrollbars="none" >
+
+            <!-- This scroll view will be dynamically populated by the required layout at runtime -->
+
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- CONTROL BUTTONS -->
+
+    <LinearLayout
+        style="@style/FillParent"
+        android:baselineAligned="false"
+        android:gravity="bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/waypointsButton"
+            style="@style/ControlButton"
+            android:text="@string/waypoints" >
+        </Button>
+
+        <Button
+            android:id="@+id/tracksButton"
+            style="@style/ControlButton"
+            android:text="@string/tracks" >
+        </Button>
+
+        <Button
+            android:id="@+id/addWaypointButton"
+            style="@style/ControlButton"
+            android:text="@string/add_waypoint" >
+        </Button>
+
+        <Button
+            android:id="@+id/trackRecordingButton"
+            style="@style/ControlButton"
+            android:text="@string/record_track" >
+        </Button>
+
+        <Button
+            android:id="@+id/pauseResumeTrackButton"
+            style="@style/ControlButton"
+            android:text="@string/pause"
+            android:visibility="gone" >
+        </Button>
+        
+    </LinearLayout>
+
+</FrameLayout>

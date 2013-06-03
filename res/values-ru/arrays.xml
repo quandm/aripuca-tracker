@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="speed_units_labels">
+        <item>км/ч</item>
+        <item>миль/ч</item>
+        <item>узел</item>
+    </string-array>
+    <string-array name="distance_units_labels">
+        <item>километры</item>
+        <item>мили</item>
+    </string-array>
+    <string-array name="elevation_units_labels">
+        <item>метры</item>
+        <item>футы</item>
+    </string-array>
+    <string-array name="coord_units_labels">
+        <item>градусы (dd.dd°)</item>
+        <item>минуты (dd°mm.mm\')</item>
+        <item>секунды (dd°mm\'ss.ss\'\')</item>
+    </string-array>
+    <string-array name="segmenting_modes_labels">
+        <item>Нет</item>
+        <item>Остановить/Продолжить</item>
+        <item>По расстоянию</item>
+        <item>По времени</item>
+        <item>Интервалы пользователя 1</item>
+        <item>Интервалы пользователя 2</item>
+    </string-array>
+    <string-array name="min_accuracy_labels">
+        <item>5 м</item>
+        <item>10 м</item>
+        <item>20 м</item>
+        <item>30 м (рекомендуется)</item>
+        <item>50 м</item>
+        <item>100 м</item>
+        <item>1000 м</item>
+    </string-array>
+    <string-array name="min_accuracy_labels_ft">
+        <item>15 футов</item>
+        <item>30 футов</item>
+        <item>60 футов</item>
+        <item>90 футов (рекомендуется)</item>
+        <item>150 футов</item>
+        <item>300 футов</item>
+        <item>3000 футов</item>
+    </string-array>
+    <string-array name="min_distance_labels">
+        <item>5 м</item>
+        <item>10 м</item>
+        <item>20 м (рекомендуется)</item>
+        <item>30 м</item>
+        <item>50 м</item>
+        <item>100 м</item>
+    </string-array>
+    <string-array name="min_distance_labels_ft">
+        <item>15 футов</item>
+        <item>30 футов</item>
+        <item>60 футов (рекомендуется)</item>
+        <item>90 футов</item>
+        <item>150 футов</item>
+        <item>300 футов</item>
+    </string-array>
+    <string-array name="wpt_request_interval_labels">
+        <item>5 мин</item>
+        <item>10 мин</item>
+        <item>15 мин</item>
+        <item>20 мин</item>
+        <item>30 мин</item>
+        <item>45 мин</item>
+        <item>1 час</item>
+        <item>2 часа</item>
+    </string-array>
+    <string-array name="wpt_fix_wait_time_labels">
+        <item>1 мин</item>
+        <item>2 мин</item>
+        <item>3 мин (рекомендуется)</item>
+        <item>4 мин</item>
+        <item>5 мин</item>
+    </string-array>
+    <string-array name="wpt_stop_recording_after_labels">
+        <item>1 час</item>
+        <item>2 часа</item>
+        <item>3 часа</item>
+        <item>4 часа</item>
+        <item>5 часов</item>
+        <item>6 часов</item>
+        <item>7 часов</item>
+        <item>8 часов</item>
+        <item>9 часов</item>
+        <item>10 часов</item>
+        <item>Не останавливать</item>
+    </string-array>
+    <string-array name="wpt_min_distance_labels">
+        <item>100 м</item>
+        <item>200 м</item>
+        <item>300 м</item>
+        <item>400 м</item>
+        <item>500 м</item>
+        <item>1 км</item>
+        <item>2 км</item>
+        <item>4 км</item>
+        <item>5 км</item>
+        <item>10 км</item>
+    </string-array>
+    <string-array name="wpt_min_distance_labels_ft">
+        <item>300 футов</item>
+        <item>600 футов</item>
+        <item>900 футов</item>
+        <item>1200 футов</item>
+        <item>1500 футов</item>
+        <item>3000 футов</item>
+        <item>6000 футов</item>
+        <item>12000 футов</item>
+        <item>15000 футов</item>
+        <item>30000 футов</item>
+    </string-array>
+    <string-array name="quick_help">
+        <item>Нажмите на любое показание в режиме записи трека, чтобы изменить его вид. Созданная схема будет автоматически сохранена.</item>        <item>Записанные треки можно экспортировать в GPX и KML формате.</item>
+        <item>Встроенный компас показывает две стрелки, указывающие на Истинный и Магнитный Север.</item>
+        <item>Треки могут быть автоматически разделены на сегменты по расстоянию или времени.</item>
+        <item>Сегменты трека отображаются на карте разными цветами.</item>
+        <item>База данных приложения может быть сохранена и восстановлена в формате SQLite.</item>
+        <item>Полный исходный код этого приложения доступен для загрузки на http://code.google.com/p/aripuca-tracker/.</item>
+        <item>Для получения дополнительной информации, пожалуйста, посетите наш блог на http://tracker.aripuca.com/blog/.</item>
+        <item>Слово \'Aripuca\' происходит от названия ловушки которую делали туземцы Guaraní для ловли животных не нанося им вреда.</item>
+        <item>Пожалуйста, направляйте все ваши вопросы и пожелания на tracker@aripuca.com.</item>
+        <item>Для экономии заряда аккумулятора можно записывать трек по рассписанию. Новая точка трека записывается каждые N минут в течение М часов, с точностью X и минимальным расстоянием между точками D.</item>
+        <item>Используйте адрес Google Geocoder как описание по умолчанию для путевой точки.</item>
+        <item>Для разработчиков: приложение поддерживает 4 уровня протоколирования: ошибки, предупреждения, информация и отладочные сообщения.</item>
+        <item>Вы можете одновременно записывать треки в реальном времени и по расписанию.</item>
+        <item>Диск компаса может вращаться для запоминания необходимого азимута. Сбросить компас можно нжатием на значение азимута.</item>
+    </string-array>
+
+</resources>

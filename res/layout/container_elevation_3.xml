@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FillWidth.Vert.Center" >
+
+    <TextView
+        style="@style/WrapContent.Text.SmallHeader"
+        android:text="@string/elevation" >
+    </TextView>
+
+    <LinearLayout style="@style/FillWidth.Hor.CenterBottom" >
+
+        <TextView
+            android:id="@+id/elevation"
+            style="@style/WrapContent.Text.Text30"
+            android:gravity="right" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/elevationUnit"
+            style="@style/WrapContent.Text.Text13"
+            android:gravity="left" >
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/compassView"
+    style="@style/FillParent"
+    android:background="@drawable/bg1repeat" >
+
+    <LinearLayout style="@style/FillParent" >
+
+        <com.aripuca.tracker.view.BubbleSurfaceView
+            android:id="@+id/bubbleSurfaceView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/compassLayout"
+        style="@style/FillParent.Center" >
+
+        <com.aripuca.tracker.view.CompassImage
+            android:id="@+id/compass"
+            android:layout_width="310dip"
+            android:layout_height="310dip"
+            android:src="@drawable/compass_bezel" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillParent.Center" >
+        <ImageView
+            android:layout_width="310dip"
+            android:layout_height="310dip"
+            android:src="@drawable/compass_baseplate" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillParent.Center" >
+
+        <com.aripuca.tracker.view.CompassImage
+            android:id="@+id/compassNeedleMagnetic"
+            android:layout_width="310dip"
+            android:layout_height="310dip"
+            android:src="@drawable/compass_needle"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/FillParent.Center" >
+
+        <com.aripuca.tracker.view.CompassImage
+            android:id="@+id/compassNeedle"
+            android:layout_width="310dp"
+            android:layout_height="310dp"
+            android:src="@drawable/compass_needle" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/FillParent"
+        android:gravity="center|bottom" >
+
+        <TextView
+            android:id="@+id/azimuth"
+            style="@style/WrapContent.Text.Text30"
+            android:text="@string/default_azimuth" >
+        </TextView>
+    </LinearLayout>
+
+
+</FrameLayout>

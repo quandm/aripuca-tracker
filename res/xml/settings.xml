@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/app_settings_title" >
+
+    <PreferenceScreen
+        android:summary="@string/user_interface_summary"
+        android:title="@string/user_interface" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/settings_wake_lock"
+            android:summary="@string/wake_lock_summary"
+            android:title="@string/wake_lock_title" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/settings_quick_help"
+            android:summary="@string/quick_help_summary"
+            android:title="@string/quick_help_title" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:summary="@string/units_summary"
+        android:title="@string/units" >
+        <ListPreference
+            android:defaultValue="kph"
+            android:dialogTitle="@string/speed"
+            android:entries="@array/speed_units_labels"
+            android:entryValues="@array/speed_units_values"
+            android:key="@string/settings_speed_units"
+            android:title="@string/speed" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="km"
+            android:dialogTitle="@string/distance"
+            android:entries="@array/distance_units_labels"
+            android:entryValues="@array/distance_units_values"
+            android:key="@string/settings_distance_units"
+            android:title="@string/distance" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="m"
+            android:dialogTitle="@string/speed"
+            android:entries="@array/elevation_units_labels"
+            android:entryValues="@array/elevation_units_values"
+            android:key="@string/settings_elevation_units"
+            android:title="@string/elevation" >
+        </ListPreference>
+        <ListPreference
+            android:defaultValue="0"
+            android:dialogTitle="@string/coordinates"
+            android:entries="@array/coord_units_labels"
+            android:entryValues="@array/coord_units_values"
+            android:key="@string/settings_coord_units"
+            android:title="@string/coordinates" >
+        </ListPreference>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:defaultValue="true"
+        android:summary="@string/compass_summary"
+        android:title="@string/compass" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/settings_true_north"
+            android:summary="@string/true_north_summary"
+            android:title="@string/true_north" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="false"
+            android:key="@string/settings_show_magnetic"
+            android:summary="@string/show_magnetic_summary"
+            android:title="@string/show_magnetic" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/settings_compass_vibration"
+            android:summary="@string/compass_vibration_summary"
+            android:title="@string/compass_vibration" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:summary="@string/waypoints_summary"
+        android:title="@string/waypoints" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/settings_waypoint_default_description"
+            android:summary="@string/waypoint_default_description_summary"
+            android:title="@string/waypoint_default_description" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:summary="@string/track_recording_summary"
+        android:title="@string/track_recording_title" >
+        <PreferenceCategory android:title="@string/tracks" >
+            <ListPreference
+                android:defaultValue="20"
+                android:dialogTitle="@string/min_distance_title"
+                android:entries="@array/min_distance_labels"
+                android:entryValues="@array/min_distance_values"
+                android:key="@string/settings_min_distance"
+                android:summary="@string/min_distance_summary"
+                android:title="@string/min_distance_title" >
+            </ListPreference>
+            <ListPreference
+                android:defaultValue="30"
+                android:dialogTitle="@string/min_accuracy_title"
+                android:entries="@array/min_accuracy_labels"
+                android:entryValues="@array/min_accuracy_values"
+                android:key="@string/settings_min_accuracy"
+                android:summary="@string/min_accuracy_summary"
+                android:title="@string/min_accuracy_title" >
+            </ListPreference>
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/segmenting" >
+            <ListPreference
+                android:defaultValue="2"
+                android:dialogTitle="@string/segmenting_mode"
+                android:entries="@array/segmenting_modes_labels"
+                android:entryValues="@array/segmenting_modes_values"
+                android:key="@string/settings_segmenting_mode"
+                android:title="@string/segmenting_mode" >
+            </ListPreference>
+
+            <EditTextPreference
+                android:defaultValue="5"
+                android:inputType="number"
+                android:key="@string/settings_segment_distance"
+                android:summary="@string/segment_distance_summary"
+                android:title="@string/segment_distance" >
+            </EditTextPreference>
+            <EditTextPreference
+                android:defaultValue="10"
+                android:inputType="number"
+                android:key="@string/settings_segment_time"
+                android:summary="@string/segment_time_summary"
+                android:title="@string/segment_time" >
+            </EditTextPreference>
+            <EditTextPreference
+                android:defaultValue="6,10,15,20,25"
+                android:key="@string/settings_segment_custom_1"
+                android:summary="@string/segment_custom_summary"
+                android:title="@string/segment_custom_1" >
+            </EditTextPreference>
+            <EditTextPreference
+                android:defaultValue="10,20,30,40"
+                android:key="@string/settings_segment_custom_2"
+                android:summary="@string/segment_custom_summary"
+                android:title="@string/segment_custom_2" >
+            </EditTextPreference>
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/settings_new_segment_vibration"
+                android:summary="@string/new_segment_vibration_summary"
+                android:title="@string/new_segment_vibration" >
+            </CheckBoxPreference>
+        </PreferenceCategory>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:summary="@string/wpt_summary"
+        android:title="@string/wpt_title" >
+        <ListPreference
+            android:defaultValue="10"
+            android:entries="@array/wpt_request_interval_labels"
+            android:entryValues="@array/wpt_request_interval_values"
+            android:key="@string/settings_wpt_request_interval"
+            android:summary="@string/wpt_request_interval_summary"
+            android:title="@string/wpt_request_interval_title" />
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/wpt_stop_recording_after_labels"
+            android:entryValues="@array/wpt_stop_recording_after_values"
+            android:key="@string/settings_wpt_stop_recording_after"
+            android:summary="@string/wpt_stop_recording_after_summary"
+            android:title="@string/wpt_stop_recording_after_title" />
+        <ListPreference
+            android:defaultValue="3"
+            android:entries="@array/wpt_fix_wait_time_labels"
+            android:entryValues="@array/wpt_fix_wait_time_values"
+            android:key="@string/settings_wpt_gps_fix_wait_time"
+            android:summary="@string/wpt_fix_wait_time_summary"
+            android:title="@string/wpt_fix_wait_time_title" />
+        <ListPreference
+            android:defaultValue="30"
+            android:entries="@array/min_accuracy_labels"
+            android:entryValues="@array/min_accuracy_values"
+            android:key="@string/settings_wpt_min_accuracy"
+            android:summary="@string/min_accuracy_summary"
+            android:title="@string/min_accuracy_title" />
+        <ListPreference
+            android:defaultValue="500"
+            android:dialogTitle="@string/min_distance_title"
+            android:entries="@array/wpt_min_distance_labels"
+            android:entryValues="@array/wpt_min_distance_values"
+            android:key="@string/settings_wpt_min_distance"
+            android:summary="@string/min_distance_summary"
+            android:title="@string/min_distance_title" >
+        </ListPreference>
+    </PreferenceScreen>
+    <PreferenceScreen android:title="Development" >
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/logging_level_labels"
+            android:entryValues="@array/logging_level_values"
+            android:key="@string/settings_logging_level"
+            android:summary="@string/logging_level_summary"
+            android:title="@string/logging_level" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/settings_debug_on"
+            android:title="Debugging" />
+    </PreferenceScreen>
+
+</PreferenceScreen>

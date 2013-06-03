@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="speed_units_labels">
+        <item>km/h</item>
+        <item>Meilen/h</item>
+        <item>Knoten</item>
+    </string-array>
+    <string-array name="distance_units_labels">
+        <item>Kilometer</item>
+        <item>Meilen</item>
+    </string-array>
+    <string-array name="elevation_units_labels">
+        <item>Meter</item>
+        <item>Fuß</item>
+    </string-array>
+    <string-array name="coord_units_labels">
+        <item>Grad (gg.gg°)</item>
+        <item>Minuten (gg°mm.mm\')</item>
+        <item>Sekunden (gg°mm\'ss.ss\'\')</item>
+    </string-array>
+    <string-array name="segmenting_modes_labels">
+        <item>Keine</item>
+        <item>Pause/Fortsetzen</item>
+        <item>Nach Entfernung</item>
+        <item>Nach Zeit</item>
+        <item>Anwenderspezifisches Intervall 1</item>
+        <item>Anwenderspezifisches Intervall 2</item>
+    </string-array>
+    <string-array name="min_accuracy_labels">
+        <item>5 m</item>
+        <item>10 m</item>
+        <item>20 m</item>
+        <item>30 m (recommended)</item>
+        <item>50 m</item>
+        <item>100 m</item>
+        <item>1000 m</item>
+    </string-array>
+    <string-array name="min_accuracy_labels_ft">
+        <item>15 Fuß</item>
+        <item>30 Fuß</item>
+        <item>60 Fuß</item>
+        <item>90 Fuß (empfohlen)</item>
+        <item>150 Fuß</item>
+        <item>300 Fuß</item>
+        <item>3000 Fuß</item>
+    </string-array>
+    <string-array name="min_distance_labels">
+        <item>5 m</item>
+        <item>10 m</item>
+        <item>20 m (empfohlen)</item>
+        <item>30 m</item>
+        <item>50 m</item>
+        <item>100 m</item>
+    </string-array>
+    <string-array name="min_distance_labels_ft">
+        <item>15 Fuß</item>
+        <item>30 Fuß</item>
+        <item>60 Fuß (empfohlen)</item>
+        <item>90 Fuß</item>
+        <item>150 Fuß</item>
+        <item>300 Fuß</item>
+    </string-array>
+    <string-array name="wpt_request_interval_labels">
+        <item>5 Minuten</item>
+        <item>10 Minuten</item>
+        <item>15 Minuten</item>
+        <item>20 Minuten</item>
+        <item>30 Minuten</item>
+        <item>45 Minuten</item>
+        <item>1 Stunde</item>
+        <item>2 Stunden</item>
+    </string-array>
+    <string-array name="wpt_fix_wait_time_labels">
+        <item>1 Minuten</item>
+        <item>2 Minuten</item>
+        <item>3 Minuten (empfohlen)</item>
+        <item>4 Minuten</item>
+        <item>5 Minuten</item>
+    </string-array>
+    <string-array name="wpt_stop_recording_after_labels">
+        <item>1 Stunde</item>
+        <item>2 Stunden</item>
+        <item>3 Stunden</item>
+        <item>4 Stunden</item>
+        <item>5 Stunden</item>
+        <item>6 Stunden</item>
+        <item>7 Stunden</item>
+        <item>8 Stunden</item>
+        <item>9 Stunden</item>
+        <item>10 Stunden</item>
+        <item>unbegrenzt</item>
+    </string-array>
+    <string-array name="wpt_min_distance_labels">
+        <item>100 m</item>
+        <item>200 m</item>
+        <item>300 m</item>
+        <item>400 m</item>
+        <item>500 m</item>
+        <item>1 km</item>
+        <item>2 km</item>
+        <item>4 km</item>
+        <item>5 km</item>
+        <item>10 km</item>
+    </string-array>
+    <string-array name="wpt_min_distance_labels_ft">
+        <item>300 Fuß</item>
+        <item>600 Fuß</item>
+        <item>900 Fuß</item>
+        <item>1200 Fuß</item>
+        <item>1500 Fuß</item>
+        <item>3000 Fuß</item>
+        <item>6000 Fuß</item>
+        <item>12000 Fuß</item>
+        <item>15000 Fuß</item>
+        <item>30000 Fuß</item>
+    </string-array>
+
+    <!-- Quick help dialog data source -->
+    <string-array name="quick_help">
+        <item>Drücke und Halte auf irgendein Statistik-Element um seine Anzeige zu verändern. Das Layout wird bis zum nächsten Anwendugsstart gespeichert.</item>
+        <item>Aufgezeichnete Tracks können im GPX- und KML-Format exportiert werden.</item>
+        <item>Der eingebaute Kompass zeigt zwei Pfeile an: Richtung Wahrer Norden und Richtung Magnetischer Norden.</item>
+        <item>Tracks können automatisch nach Entfernung, Zeit oder anwenderspezifischen Intervallen segmentiert werden.</item>
+        <item>Track-Segmente werden auf der Karte in verschiedenen Farben dargestellt.</item>
+        <item>Die gesamte Anwendungs-Datenbank kann in im SQLite-Format gesichert und wiederhergestellt werden.</item>
+        <item>Der komplette Source-Code dieser Anwendung ist verfügbar als Download unter http://code.google.com/p/aripuca-tracker/.</item>
+        <item>Für weitere Informationen besuche unser Blog unter http://tracker.aripuca.com/blog/.</item>
+        <item>Das Wort \'Aripuca\' stammt von einer Falle, welche von den Guaraní-Eingeborenen gebaut wird, um Tiere zu fangen ohne sie zu verletzen.</item>
+        <item>Aripuca GPS Tracker unterstützt viele verschiedene Sprachen. Die gesuchte Sprache nicht gefunden? Kein Problem, werde ein Übersetzer!</item>
+        <item>Erfahre mehr über die Anwendung an Hand des Einstellung-Menüs.</item>
+        <item>Bitte alle Fragen und Anliegen an tracker@aripuca.com senden.</item>
+        <item>Zeichne Tracks mit dem Zeitplaner auf und und spare Akkuladung. Ein neuer Trackpoint wird alle N Minuten für M Stunden mit einer Genauigkeit von X und einer Minimum Entfernung von D zwischen den Trackpoints aufgezeichnet.</item>
+        <item>Zeichne neue Waypoints auf und verwende die Google Geocoder-Beschreibung als Standard-Beschreibung.</item>
+        <item>Entwickler: die Anwendung unterstützt 4 Logging-Level: Fehler, Warnungen, Info und Debug-Nachrichten. Die Daten sind im \'logs\' Verzeichnis gespeichert.</item>
+        <item>Tracks können gleichzeitig in Echtzeit und per Zeitplaner aufgezeichnet werden.</item>
+        <item>Das Kompass-Rad kann auf die gewünschte Richtung ausgerichtet werden. Zurücksetzen des Kompass durch Lang-Klick auf den Azimut-Wert.</item>
+        <item>Pace ist die Zeit, die benötigt wird, um einen Kilometer oder eine Meile zurückzulegen.</item>
+    </string-array>
+    <string-array name="logging_level_labels">
+        <item>Kein Logging</item>
+        <item>Nur Fehler</item>
+        <item>Fehler, Warnungen</item>
+        <item>Fehler, Warnungen, Info</item>
+        <item>Debug (alles loggen)</item>
+    </string-array>
+
+</resources>

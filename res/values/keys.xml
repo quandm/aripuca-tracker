@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string name="settings_wake_lock">wake_lock</string>
+    <string name="settings_quick_help">quick_help</string>
+    <string name="settings_speed_units">speed_units</string>
+    <string name="settings_distance_units">distance_units</string>
+    <string name="settings_elevation_units">elevation_units</string>
+    <string name="settings_coord_units">coord_units</string>
+    <string name="settings_true_north">true_north</string>
+    <string name="settings_show_magnetic">show_magnetic</string>
+    <string name="settings_compass_vibration">compass_vibration</string>
+    <string name="settings_waypoint_default_description">waypoint_default_description</string>
+    <string name="settings_min_distance">min_distance</string>
+    <string name="settings_min_accuracy">min_accuracy</string>
+    <string name="settings_segmenting_mode">segmenting_mode</string>
+    <string name="settings_segment_distance">segment_distance</string>
+    <string name="settings_segment_time">segment_time</string>
+    <string name="settings_segment_custom_1">segment_custom_1</string>
+    <string name="settings_segment_custom_2">segment_custom_2</string>
+    <string name="settings_wpt_request_interval">wpt_request_interval</string>
+    <string name="settings_wpt_stop_recording_after">wpt_stop_recording_after</string>
+    <string name="settings_wpt_gps_fix_wait_time">wpt_gps_fix_wait_time</string>
+    <string name="settings_wpt_min_accuracy">wpt_min_accuracy</string>
+    <string name="settings_wpt_min_distance">wpt_min_distance</string>
+    <string name="settings_logging_level">logging_level</string>
+    <string name="settings_debug_on">debug_on</string>
+    <string name="settings_new_segment_vibration">vibrate_new_segment</string>
+    
+</resources>

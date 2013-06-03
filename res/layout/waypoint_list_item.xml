@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" 
+	android:padding="3dp"
+	android:baselineAligned="false"
+	>
+
+	<LinearLayout 
+		android:orientation="vertical" 
+		android:layout_width="0dp"
+		android:layout_weight="4"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="4dp"
+		>
+
+		<TextView android:id="@+id/waypoint_title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" 
+			android:textSize="18sp"
+			android:layout_marginBottom = "3dp"
+		/>
+
+		<TextView android:id="@+id/waypoint_details"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:textSize="12sp" 
+		/>
+			
+	</LinearLayout>
+	
+	<LinearLayout 
+		android:orientation="vertical" 
+		android:layout_width="0dp"
+		android:layout_weight="1.5"
+		android:layout_height="wrap_content"
+		android:gravity="right"
+		>
+
+		<com.aripuca.tracker.view.CompassImage 
+			android:id="@+id/compassImage"
+			android:src="@drawable/arrow36"
+			android:layout_margin="5dp"
+			android:layout_width="20dp"
+			android:layout_height="20dp"
+		 />
+		 
+		<TextView android:id="@+id/waypoint_distance"
+			android:paddingTop="3dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:textSize="12sp" 
+			android:textStyle="normal" />
+			
+	</LinearLayout>
+	
+</LinearLayout>
