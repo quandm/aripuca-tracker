@@ -114,7 +114,6 @@ public class TrackRecorder {
 
 		this.isResumeInterruptedTrack = false;
 
-		// latest preferences
 		this.readPreferences();
 
 		this.lastLocation = null;
@@ -207,6 +206,9 @@ public class TrackRecorder {
 
 	}
 
+	/**
+	 * latest preferences (segmenting mode, min accuracy, etc) 
+	 */
 	protected void readPreferences() {
 
 		this.minDistance = Integer.parseInt(app.getPreferences().getString("min_distance", "15"));
@@ -284,8 +286,6 @@ public class TrackRecorder {
 		// measure time intervals (idle, pause)
 		if (!this.measureTrackTimes(location)) {
 			// recording paused
-			// after resuming the recording we will start measuring distance from saved location
-			this.lastLocation = location;
 			return;
 		}
 
@@ -357,7 +357,7 @@ public class TrackRecorder {
 			case Constants.SEGMENT_DISTANCE:
 			case Constants.SEGMENT_CUSTOM_1:
 			case Constants.SEGMENT_CUSTOM_2:
-				this.segmentTrack();
+				this.segmentTrackByDistance();
 			break;
 			// segmenting track by time
 			case Constants.SEGMENT_TIME:
@@ -581,7 +581,7 @@ public class TrackRecorder {
 	/**
 	 * Check if segment id incrementing is required
 	 */
-	public void segmentTrack() {
+	private void segmentTrackByDistance() {
 
 		if (this.trackStats.getDistance() / this.getNextSegment() > 1) {
 
@@ -591,7 +591,7 @@ public class TrackRecorder {
 
 	}
 
-	public void segmentTrackByTime() {
+	private void segmentTrackByTime() {
 
 		if (this.trackStats.getMovingTime() / this.getNextSegment() > 1) {
 

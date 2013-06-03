@@ -32,7 +32,14 @@ public class Segments {
 
 		ArrayList<Segment> segments = new ArrayList<Segment>();
 
-		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE track_id = " + trackId;
+		//String sql = "SELECT * FROM " + TABLE_NAME + " WHERE track_id = " + trackId;
+
+		String sql = "SELECT s.*, COUNT(s.segment_index) AS points_count " +
+				"FROM segments AS s " +
+				"LEFT JOIN track_points AS tp " +
+				"ON s.track_id = tp.track_id AND s.segment_index = tp.segment_index " +
+				"WHERE s. track_id=" + trackId + " " +
+				"GROUP BY s.segment_index";
 
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();
@@ -85,12 +92,13 @@ public class Segments {
 		return count;
 	}
 
-	public static Segment get(SQLiteDatabase db, long segmentId, int segmentIndex) {
+	public static Segment get(SQLiteDatabase db, long trackId, int segmentIndex) {
 
-		String sql = "SELECT segments.*, COUNT(track_points._id) AS points_count FROM segments, track_points WHERE"
-				+ " segments._id=" + segmentId
-				+ " AND track_points.segment_index=" + segmentIndex
-				+ " AND segments.track_id = track_points.track_id";
+		String sql = "SELECT s.*, COUNT(tp._id) AS points_count " +
+				"FROM segments AS s " +
+				"LEFT JOIN track_points AS tp " +
+				"ON s.track_id = tp.track_id AND s.segment_index = tp.segment_index " +
+				"WHERE s.track_id=" + trackId + " AND s.segment_index=" + segmentIndex;
 
 		Cursor cursor = db.rawQuery(sql, null);
 		cursor.moveToFirst();

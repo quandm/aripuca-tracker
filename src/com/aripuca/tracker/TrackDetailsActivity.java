@@ -153,10 +153,10 @@ public class TrackDetailsActivity extends Activity {
 	 */
 	protected void updateSegment(int segmentIndex) {
 
-		long segmentId = segments.get(segmentIndex).getId();
-
-		Segment segment = Segments.get(app.getDatabase(), segmentId, segmentIndex);
-
+//		Segment segment = Segments.get(app.getDatabase(), this.trackId, segmentIndex);
+		
+		Segment segment = segments.get(segmentIndex);
+		
 		// update description text view
 		((TextView) findViewById(R.id.descr)).setText("Segment: " + (segmentIndex + 1));
 
