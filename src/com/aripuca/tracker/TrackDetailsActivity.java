@@ -164,6 +164,11 @@ public class TrackDetailsActivity extends Activity {
 
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param segment
+	 */
 	private void updateSegmentDetails(Segment segment) {
 
 		// measuring units
