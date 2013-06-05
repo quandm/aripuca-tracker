@@ -25,6 +25,6 @@
     <string name="settings_wpt_min_distance">wpt_min_distance</string>
     <string name="settings_logging_level">logging_level</string>
     <string name="settings_debug_on">debug_on</string>
-    <string name="settings_new_segment_vibration">vibrate_new_segment</string>
+    <string name="settings_new_segment_vibration">new_segment_vibration</string>
     
 </resources>

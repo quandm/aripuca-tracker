@@ -29,8 +29,8 @@ import com.aripuca.tracker.Constants;
 import com.aripuca.tracker.NotificationActivity;
 import com.aripuca.tracker.R;
 import com.aripuca.tracker.db.Track;
-import com.aripuca.tracker.track.ScheduledTrackRecorder;
-import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.recorder.ScheduledTrackRecorder;
+import com.aripuca.tracker.recorder.TrackRecorder;
 import com.aripuca.tracker.utils.AppLog;
 import com.aripuca.tracker.utils.Utils;
 

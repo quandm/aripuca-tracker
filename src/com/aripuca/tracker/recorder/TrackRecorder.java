@@ -1,9 +1,8 @@
-package com.aripuca.tracker.track;
+package com.aripuca.tracker.recorder;
 
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.SystemClock;
-import android.os.Vibrator;
 
 import com.aripuca.tracker.App;
 import com.aripuca.tracker.Constants;
@@ -664,7 +663,7 @@ public class TrackRecorder {
 		this.segmentStats = new SegmentStats(app, this.trackStats.getTrack().getId(), this.segmentIndex);
 
 		// vibrate when new segment created
-		if (app.getPreferences().getBoolean("settings_new_segment_vibration", false)) {
+		if (app.getPreferences().getBoolean("new_segment_vibration", false)) {
 			app.getVibrator().vibrate(500);	
 		}
 		

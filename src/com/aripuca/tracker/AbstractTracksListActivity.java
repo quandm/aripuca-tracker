@@ -41,8 +41,8 @@ import com.aripuca.tracker.io.TrackExportTask;
 import com.aripuca.tracker.io.TrackGpxExportTask;
 import com.aripuca.tracker.io.TrackKmlExportTask;
 import com.aripuca.tracker.map.MyMapActivity;
-import com.aripuca.tracker.track.ScheduledTrackRecorder;
-import com.aripuca.tracker.track.TrackRecorder;
+import com.aripuca.tracker.recorder.ScheduledTrackRecorder;
+import com.aripuca.tracker.recorder.TrackRecorder;
 import com.aripuca.tracker.utils.Utils;
 
 //TODO: compare 2 tracks on the map, select track to compare
