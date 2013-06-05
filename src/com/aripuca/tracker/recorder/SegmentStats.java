@@ -1,4 +1,4 @@
-package com.aripuca.tracker.track;
+package com.aripuca.tracker.recorder;
 
 import java.util.Date;
 
