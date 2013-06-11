@@ -604,7 +604,7 @@ public class MainActivity extends Activity {
 		serviceConnection.bindAppService();
 
 		// start updating time of tracking every second
-		updateTimeHandler.postDelayed(updateTimeTask, 1000);
+		updateTimeHandler.postDelayed(updateTimeTask, 500);
 
 	}
 
@@ -1950,7 +1950,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void run() {
 			updateTime();
-			updateTimeHandler.postDelayed(this, 1000);
+			updateTimeHandler.postDelayed(this, 500);
 		}
 	};
 

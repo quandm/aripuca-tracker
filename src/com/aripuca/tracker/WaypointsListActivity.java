@@ -321,12 +321,16 @@ public class WaypointsListActivity extends ListActivity {
 				return;
 			}
 
-			// this activity is started by MainActivity which is always
-			// listening for location updates
+			if (!appService.isListening()) {
 
-			// by setting gpsInUse to true we insure that listening will not
-			// stop in AppService.stopLocationUpdatesThread
-			appService.setGpsInUse(true);
+				// location updates stopped at this time, so let's start them
+				appService.startLocationUpdates();
+
+			} else {
+
+				// keep listening for location updates
+				appService.setGpsInUse(true);
+			}
 
 			// this activity requires compass data
 			appService.startSensorUpdates();
@@ -359,8 +363,21 @@ public class WaypointsListActivity extends ListActivity {
 
 		unregisterReceiver(compassBroadcastReceiver);
 		unregisterReceiver(locationBroadcastReceiver);
+		
+		// stop location updates when not recording track
+		if (serviceConnection.getService() != null) {
 
-		serviceConnection.unbindAppService();
+			// at this point we most likely received one location update and
+			// already stopped listening
+			if (!serviceConnection.getService().getTrackRecorder().isRecording()) {
+				serviceConnection.getService().stopLocationUpdates();
+			}
+
+			serviceConnection.getService().stopSensorUpdates();
+
+		}
+
+		this.serviceConnection.unbindAppService();
 
 		super.onPause();
 	}
