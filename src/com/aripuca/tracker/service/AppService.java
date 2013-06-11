@@ -800,7 +800,7 @@ public class AppService extends Service {
 
 			try {
 				// wait for other activities to grab location updates
-				sleep(5000);
+				sleep(3000);
 			} catch (Exception e) {
 			}
 
