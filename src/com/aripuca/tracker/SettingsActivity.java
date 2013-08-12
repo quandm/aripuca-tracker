@@ -21,6 +21,8 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	 */
 	protected App app;
 
+	protected SharedPreferences preferences;
+
 	/**
 	 * Called when the activity created
 	 */
@@ -34,7 +36,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		// reference to application object
 		app = ((App) getApplicationContext());
 
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		preferences.registerOnSharedPreferenceChangeListener(this);
 
 		// Initializing preferences with current values
@@ -103,6 +105,33 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		wptMinDistance.setEntries(distanceUnit.equals("km") ? R.array.wpt_min_distance_labels
 				: R.array.wpt_min_distance_labels_ft);
 
+
+		//updateSegmentingModeEntries(distanceUnit);
+		
+	}
+	
+	private void updateSegmentingModeEntries(String distanceUnit) {
+
+		// display current segmenting info
+ 		final ListPreference segmentingMode = (ListPreference) findPreference("segmenting_mode");
+
+		CharSequence[] entries = segmentingMode.getEntries();
+		for (int i = 0; i < entries.length; i++) {
+
+			switch (i) {
+				case 2:
+					entries[i] = entries[i] + " (" + preferences.getString("segment_distance", "5") + " "
+							+ distanceUnit + ")";
+				break;
+				case 3:
+					entries[i] = entries[i] + " (" + preferences.getString("segment_time", "5") + " "
+							+ getString(R.string.minute) + ")";
+				break;
+				default:
+			}
+		}
+		segmentingMode.setEntries(entries);
+		
 	}
 
 	/**
@@ -155,7 +184,9 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 			String[] prefKeys = { "speed_units", "distance_units", "elevation_units", "coord_units", "segmenting_mode" };
 			// show set values only for defined keys
-			if (!ArrayUtils.contains(prefKeys, key)) { return; }
+			if (!ArrayUtils.contains(prefKeys, key)) {
+				return;
+			}
 
 			ListPreference listPref = (ListPreference) pref;
 			listPref.setSummary(listPref.getEntry());
@@ -165,14 +196,12 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		// requesting backup to the cloud
 		BackupManager bm = new BackupManager(this);
 		bm.dataChanged();
-		
+
 		/*
-		 * if (pref instanceof EditTextPreference) { EditTextPreference textPref
-		 * = (EditTextPreference) pref; if (textPref.getText() == null ||
-		 * textPref.getText().equals("")) { textPref.setSummary("not set"); }
-		 * else { if (textPref.getKey().equals("user_password")) {
-		 * textPref.setSummary(""); } else { // all fields except password will
-		 * display current value textPref.setSummary(textPref.getText()); } } }
+		 * if (pref instanceof EditTextPreference) { EditTextPreference textPref = (EditTextPreference) pref; if
+		 * (textPref.getText() == null || textPref.getText().equals("")) { textPref.setSummary("not set"); } else { if
+		 * (textPref.getKey().equals("user_password")) { textPref.setSummary(""); } else { // all fields except password
+		 * will display current value textPref.setSummary(textPref.getText()); } } }
 		 */
 
 	}

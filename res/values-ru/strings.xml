@@ -244,4 +244,5 @@
     <string name="edit_waypoint">Изменить точку</string>
     <string name="new_segment_vibration">Вибрировать для нового сегмента</string>
     <string name="new_segment_vibration_summary">Вибрировать после начала нового сегмента</string>
+    <string name="minute">мин.</string>
 </resources>

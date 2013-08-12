@@ -227,4 +227,5 @@
     <string name="current">Current</string>
     <string name="new_segment_vibration">Wibracja do nowego segmentu</string>
     <string name="new_segment_vibration_summary">Wibracja gdy rozpoczęła nowy segment</string>
+    <string name="minute">min</string>
 </resources>
