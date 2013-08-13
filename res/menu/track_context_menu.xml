@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/show_track_details"
+          android:title="@string/show_track_details" >
+    </item>
+    <item android:id="@+id/edit"
+          android:title="@string/edit" >
+    </item>
+    <item android:id="@+id/delete"
+          android:title="@string/delete" >
+    </item>
+    <item android:id="@+id/export"
+          android:title="@string/export" >
+        <!-- "file" submenu -->
+        <menu>
+            <item android:id="@+id/export_to_gpx"
+                  android:title="@string/export_to_gpx" />
+            <item android:id="@+id/export_to_kml"
+                  android:title="@string/export_to_kml" />
+        </menu>
+    </item>
+    <item android:id="@+id/send_as_attachment"
+          android:title="@string/send_as_attachment" >
+        <!-- "file" submenu -->
+        <menu>
+            <item android:id="@+id/send_as_gpx"
+                  android:title="@string/send_as_gpx" />
+            <item android:id="@+id/send_as_kml"
+                  android:title="@string/send_as_kml" />
+        </menu>
+    </item>
+    <item android:id="@+id/show_on_map"
+          android:title="@string/show_on_map" >
+    </item>
+</menu>

@@ -381,30 +381,33 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 
-		// MenuInflater inflater = getMenuInflater();
-		// inflater.inflate(R.menu.context_menu, menu);
+		menu.setHeaderTitle(getString(R.string.track));
+		
+//		this.addTrackDetailsMenu(menu);
+		
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.track_context_menu, menu);
 
 		// AdapterView.AdapterContextMenuInfo info =
 		// (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-		menu.setHeaderTitle(getString(R.string.track));
 		
-		this.addTrackDetailsMenu(menu);
+		/*
 		
 		menu.add(Menu.NONE, 2, 2, R.string.edit);
 		menu.add(Menu.NONE, 3, 3, R.string.delete);
 
-		SubMenu exportSubMenu = menu.addSubMenu(Menu.NONE, 4, 4, R.string.export);
+		SubMenu exportSubMenu = menu.addSubMenu(Menu.NONE, 4, 3, R.string.export);
 		exportSubMenu.add(Menu.NONE, 41, 1, R.string.export_to_gpx);
 		exportSubMenu.add(Menu.NONE, 42, 2, R.string.export_to_kml);
 
-		SubMenu exportSubMenu2 = menu.addSubMenu(Menu.NONE, 5, 5, R.string.send_as_attachment);
+		SubMenu exportSubMenu2 = menu.addSubMenu(Menu.NONE, 5, 4, R.string.send_as_attachment);
 		exportSubMenu2.add(Menu.NONE, 51, 1, R.string.send_as_gpx);
 		exportSubMenu2.add(Menu.NONE, 52, 2, R.string.send_as_kml);
 
-		// menu.add(Menu.NONE, 5, 5, R.string.online_sync);
-
-		menu.add(Menu.NONE, 6, 6, R.string.show_on_map);
+		menu.add(Menu.NONE, 6, 5, R.string.show_on_map);
+		
+		*/
 
 	}
 
@@ -427,12 +430,12 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 		switch (item.getItemId()) {
 
 		// view track info
-			case 1:
+			case R.id.show_track_details:
 				this.viewTrackDetails(info.id);
 			break;
 
 			// edit track info
-			case 2:
+			case R.id.edit:
 
 				if (isRecordingTrack(info.id)) {
 					Toast.makeText(AbstractTracksListActivity.this, R.string.cant_edit_track_being_recorded,
@@ -445,7 +448,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 			break;
 
 			// delete track
-			case 3:
+			case R.id.delete:
 
 				if (isRecordingTrack(info.id)) {
 					Toast.makeText(AbstractTracksListActivity.this, R.string.cant_delete_track_being_recorded,
@@ -458,22 +461,22 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 			break;
 
 			// export to GPX
-			case 41:
+			case R.id.export_to_gpx:
 				this.exportTrackToGpx(info.id, false);
 			break;
 
 			// export to KML
-			case 42:
+			case R.id.export_to_kml:
 				this.exportTrackToKml(info.id, false);
 			break;
 
 			// export to GPX and send as attachment
-			case 51:
+			case R.id.send_as_gpx:
 				this.exportTrackToGpx(info.id, true);
 			break;
 
 			// export to KML and send as attachment
-			case 52:
+			case R.id.send_as_kml:
 				this.exportTrackToKml(info.id, true);
 			break;
 
@@ -482,7 +485,7 @@ public abstract class AbstractTracksListActivity extends ListActivity {
 
 			break;
 
-			case 6:
+			case R.id.show_on_map:
 
 				this.showTrackOnMap(info.id);
 
