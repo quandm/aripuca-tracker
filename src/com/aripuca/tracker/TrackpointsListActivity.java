@@ -33,6 +33,7 @@ import com.aripuca.tracker.service.AppService;
 import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.CompassImage;
+import com.google.analytics.tracking.android.EasyTracker;
 
 //TODO: create abstract activity for track points and waypoints lists
 
@@ -266,6 +267,27 @@ public class TrackpointsListActivity extends ListActivity {
 		sortMethod = app.getPreferences().getInt("trackpoints_sort", 0);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 	private Runnable appServiceConnectionCallback = new Runnable() {
 
 		@Override

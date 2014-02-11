@@ -21,6 +21,7 @@ import com.aripuca.tracker.db.Track;
 import com.aripuca.tracker.db.Tracks;
 import com.aripuca.tracker.map.MyMapActivity;
 import com.aripuca.tracker.utils.Utils;
+import com.google.analytics.tracking.android.EasyTracker;
 
 /**
  * main application activity
@@ -111,6 +112,26 @@ public class TrackDetailsActivity extends Activity {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 	/**
 	 * 
 	 */
