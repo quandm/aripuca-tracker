@@ -22,6 +22,7 @@ import com.aripuca.tracker.utils.MapUtils;
 import com.aripuca.tracker.utils.Utils;
 import com.aripuca.tracker.view.BubbleSurfaceView;
 import com.aripuca.tracker.view.CompassImage;
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class CompassActivity extends Activity implements OnTouchListener {
 
@@ -154,6 +155,27 @@ public class CompassActivity extends Activity implements OnTouchListener {
 		}
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 
 	private Runnable appServiceConnectionCallback = new Runnable() {
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup.LayoutParams;
 import com.aripuca.tracker.chart.ChartPoint;
 import com.aripuca.tracker.chart.Series;
 import com.aripuca.tracker.view.TrackChartView;
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class TrackChartActivity extends Activity {
 
@@ -49,6 +50,26 @@ public class TrackChartActivity extends Activity {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 	private void createSeries() {
 
 		Bundle b = getIntent().getExtras();

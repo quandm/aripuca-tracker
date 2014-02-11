@@ -44,6 +44,7 @@ import com.aripuca.tracker.service.AppServiceConnection;
 import com.aripuca.tracker.utils.MapSpan;
 import com.aripuca.tracker.utils.MapUtils;
 import com.aripuca.tracker.utils.Utils;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -516,6 +517,26 @@ public class MyMapActivity extends MapActivity {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 	/**
 	 * onResume event handler
 	 */

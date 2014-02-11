@@ -13,6 +13,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 import com.aripuca.tracker.utils.ArrayUtils;
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
@@ -85,6 +86,26 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 	/**
 	 * update preference lists dependent on distance units
 	 */

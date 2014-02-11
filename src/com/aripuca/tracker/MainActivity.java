@@ -1,5 +1,7 @@
 package com.aripuca.tracker;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -508,6 +510,26 @@ public class MainActivity extends Activity {
 
 		this.setControlButtonListeners();
 
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		EasyTracker.getInstance(this).activityStart(this);		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 
 	/**
